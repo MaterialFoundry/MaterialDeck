@@ -1,0 +1,23 @@
+{
+    "name": "MaterialDeck",
+    "title": "Material Deck",
+    "description": "",
+    "version": "0.8.2",
+    "author": "CDeenen",
+    "esmodules": [
+      "./MaterialDeck.js"
+    ],
+    "socket": true,
+    "minimumCoreVersion": "0.7.5",
+    "compatibleCoreVersion": "0.7.6",
+    "languages": [
+      {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+      }
+    ],
+    "url": "https://github.com/CDeenen/MaterialDeck",
+    "manifest": "",
+    "download": ""
+  }

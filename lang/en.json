@@ -1,0 +1,39 @@
+{
+    "MaterialDeck.Notifications.Disconnected": "Disconnected from mdServer, attempting to reconnect",
+    "MaterialDeck.Notifications.ConnectFail": "Can't connect to mdServer, retrying",
+
+    "MaterialDeck.Sett.PlaylistConfig": "Playlist Configuration",
+    "MaterialDeck.Sett.SoundboardConfig": "Soundboard Configuration",
+    "MaterialDeck.Sett.MacroConfig": "Macro Configuration",
+    "MaterialDeck.Sett.Brightness": "Brightness",
+    "MaterialDeck.Sett.Brightness_Hint": "LED brightness level",
+    "MaterialDeck.Sett.Enable": "Enable module",
+    
+    "MaterialDeck.Playlist.Clear": "Clear data",
+    "MaterialDeck.Playlist.Playmethod.Header": "Play Method",
+    "MaterialDeck.Playlist.Playmethod.Label": "Method",
+    "MaterialDeck.Playlist.Playmethod.Unrestricted": "Unrestricted",
+    "MaterialDeck.Playlist.Playmethod.OneTrackPlaylist": "One track per playlist",
+    "MaterialDeck.Playlist.Playmethod.OneTrackTotal": "One track in total",
+    "MaterialDeck.Playlist.Playlists": "Playlists",
+    "MaterialDeck.Playlist.Playlist": "Playlist",
+    "MaterialDeck.Playlist.None": "None",
+    "MaterialDeck.Playlist.Save": "Save",
+    "MaterialDeck.Soundboard.Volume": "Volume",
+
+    "MaterialDeck.Soundboard.Sound": "Sound",
+    "MaterialDeck.Soundboard.Icon": "Icon",
+    "MaterialDeck.Soundboard.Playback": "Playback",
+    "MaterialDeck.Soundboard.Once": "Once",
+    "MaterialDeck.Soundboard.Repeat": "Repeat",
+    "MaterialDeck.Soundboard.Hold": "Hold",
+    "MaterialDeck.Soundboard.On": "On",
+    "MaterialDeck.Soundboard.Off": "Off",
+
+    "MaterialDeck.Macro.Macro": "Macro",
+    "MaterialDeck.Macro.Background": "Background",
+    "MaterialDeck.Macro.FurnaceArgs": "Furnace arguments",
+
+    "MaterialDeck.Name": "Name"
+}
+
