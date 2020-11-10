@@ -18,6 +18,6 @@
       }
     ],
     "url": "https://github.com/CDeenen/MaterialDeck",
-    "manifest": "https://raw.githubusercontent.com/CDeenen/MaterialDeck/master/module.json",
-    "download": "https://github.com/CDeenen/MaterialDeck/archive/master.zip"
+    "manifest": "https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json",
+    "download": "https://github.com/CDeenen/MaterialDeck/archive/Master.zip"
   }
