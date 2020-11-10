@@ -121,8 +121,9 @@ export class StreamDeck{
             }
         }
 
-        let split = src.split('.');
-        let format = split[1];
+        let split = src.split('?');
+        split = split[0].split('.');
+        let format = split[split.length-1];
         split = src.split(' ');
         if (split[0] == 'fas' || split[0] == 'far' || split[0] == 'fal' || split[0] == 'fad') format = 'icon';
         let msg = {
