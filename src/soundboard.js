@@ -23,7 +23,11 @@ export class SoundboardControl{
 
         let txt = "";
         let src = "";
-        let background = "#000000";
+        
+        let background = settings.background;
+        if (background == undefined) background = '#000000';
+
+        let ringColor = "#000000"
 
         if (mode == 0){ //play sound
             let soundNr = parseInt(settings.soundNr);
@@ -33,37 +37,33 @@ export class SoundboardControl{
 
             let soundboardSettings = game.settings.get(MODULE.moduleName, 'soundboardSettings');
             
-            let onColor = soundboardSettings.colorOn[soundNr];
-            let offColor = soundboardSettings.colorOff[soundNr];
+            if (this.activeSounds[soundNr]==false)
+                ringColor = soundboardSettings.colorOff[soundNr];
+            else 
+                ringColor = soundboardSettings.colorOn[soundNr];
 
-            background = onColor;
-            let ring = 2;
-            if (this.activeSounds[soundNr]==false) {
-                background = offColor;
-                ring = 1;
-            }
             if (settings.displayName) txt = soundboardSettings.name[soundNr];
             if (settings.displayIcon) src = soundboardSettings.img[soundNr];
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(1,context,src,background,ring,background);
+            streamDeck.setIcon(1,context,src,background,2,ringColor);
         }
         else if (mode == 1) { //Offset
-            src = "";
-            let onBackground = settings.onBackground;
-            if (onBackground == undefined) onBackground = '#00FF00';
-            let offBackground = settings.offBackground;
-            if (offBackground == undefined) offBackground = '#000000';
+            let ringOffColor = settings.offRing;
+            if (ringOffColor == undefined) ringOffColor = '#000000';
+
+            let ringOnColor = settings.onRing;
+            if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
             let offset = parseInt(settings.offset);
             if (isNaN(offset)) offset = 0;
-            if (offset == this.offset) background = onBackground;
-            else background = offBackground;
+            if (offset == this.offset) ringColor = ringOnColor;
+            else ringColor = ringOffColor;
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(1,context,src,background);
+            streamDeck.setIcon(1,context,"",background,2,ringColor);
         }
         else if (mode == 2) {   //Stop all sounds
             let src = 'action/images/soundboard/stop.png';
-            streamDeck.setIcon(0,context,src,settings.background);
+            streamDeck.setIcon(0,context,src,background);
         }
     }
 

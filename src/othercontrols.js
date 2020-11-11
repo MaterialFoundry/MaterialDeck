@@ -59,25 +59,39 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     updatePause(pauseFunction,context){
-        
-        if (pauseFunction == undefined) pauseFunction = 0;
         let src = "";
-        let name = "";
-        let background = "#000000";
+        if (pauseFunction == undefined) pauseFunction = 0;
+        
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let ringColor = "#000000";
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#000000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
+
+        let playlistType = settings.playlistType;
+        if (playlistType == undefined) playlistType = 0;
+
         if (pauseFunction == 0){ //Pause game
-            if (game.paused) background = "#00FF00"
+            if (game.paused) ringColor = ringOnColor;
+            else ringColor = ringOffColor;
             src = 'action/images/other/pause/pause.png';
         }
         else if (pauseFunction == 1){ //Resume game
-            if (game.paused == false) background = "#00FF00"
+            if (game.paused == false) ringColor = ringOnColor;
+            else ringColor = ringOffColor;
             src = 'action/images/other/pause/resume.png';
         }
         else if (pauseFunction == 2) { //toggle
-            if (game.paused == false) background = "#00FF00"
+            if (game.paused == false) ringColor = ringOnColor;
+            else ringColor = ringOffColor;
             src = 'action/images/other/pause/playpause.png';
         }
-        streamDeck.setIcon(0,context,src,background);
-        streamDeck.setTitle(name,context);
+        streamDeck.setIcon(0,context,src,background,2,ringColor);
     }
 
     keyPressPause(pauseFunction){
@@ -101,56 +115,54 @@ export class OtherControls{
         let func = settings.sceneFunction;
         if (func == undefined) func = 0;
 
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let ringColor = "#000000";
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#000000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
+
+        let playlistType = settings.playlistType;
+        if (playlistType == undefined) playlistType = 0;
+
+        let src = "";
+        let name = "";
         if (func == 0){ //visible scenes
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr)) nr = 1;
             nr--;
 
-            let background = settings.background;
-            if (background == undefined) background = "#000000";
-
             let scene = game.scenes.apps[0].scenes[nr];
-            let name = "";
-            let src = "";
-            let ringColor = "#000000";
-            let ring = 1;
             
             if (scene != undefined){
-                if (scene.isView) {
-                    ringColor = "#00FF00";
-                    ring = 2;
-                }
+                if (scene.isView) 
+                    ringColor = ringOnColor;
+                else 
+                    ringColor = ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
                 if (settings.displaySceneIcon) src = scene.img;
                 if (scene.active) name += "\n(Active)";
             }
-            streamDeck.setTitle(name,context);
-            streamDeck.setIcon(1, context,src,background,ring,ringColor);
+            
         }
         else if (func == 1) {   //all scenes
-            let name = settings.sceneName;
-            if (name == undefined) return;
-
-            let background = settings.background;
-            if (background == undefined) background = "#000000";
-
-            let src = "";
-            let ringColor = "#000000";
-            let ring = 1;
             let scene = game.scenes.apps[1].entities.find(p=>p.data.name == name);
-            name = "";
             if (scene != undefined){
-                if (scene.isView) {
-                    ringColor = "#00FF00";
-                    ring = 2;
-                }
+                if (scene.isView)
+                    ringColor = ringOnColor;
+                else 
+                    ringColor = ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
                 if (settings.displaySceneIcon) src = scene.img;
                 if (scene.active) name += "\n(Active)";
             }
-            streamDeck.setTitle(name,context);
-            streamDeck.setIcon(1, context,src,background,ring,ringColor);
         }
+        streamDeck.setTitle(name,context);
+        streamDeck.setIcon(1, context,src,background,2,ringColor);
     }
 
     keyPressScene(settings){
@@ -176,10 +188,10 @@ export class OtherControls{
                     if (scene.isView) scene.activate();
                     scene.view();
                 }
-            }
-            
+            }  
         }
     }
+
     //////////////////////////////////////////////////////////////////////////////////////////
     
     updateControl(settings,context){
@@ -189,27 +201,42 @@ export class OtherControls{
         let tool = settings.tool;
         if (tool == undefined) tool = 0;
 
+        let background = settings.background;
+        if (background == undefined) background = '#000000';
+
+        let ringColor = '#000000'
+
         const controlName = this.getControlName(control);
         const toolName = this.getToolName(control,tool);
 
         let txt = "";
         let src = "";
-        let background = "#000000";
-        let ringColor = "#FF7B00"
-        let selectedControl;
-        let selectedTool;
-        let ring = 1;
-        let activeControl = ui.controls.activeControl;
-        let activeTool = ui.controls.activeTool;
+        const activeControl = ui.controls.activeControl;
+        const activeTool = ui.controls.activeTool;
 
-        if (control == 0){
+        if (control == 0) { //displayed controls
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
 
-            selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
+            const selectedControl = ui.controls.controls[controlNr];
             if (selectedControl != undefined){
-                selectedTool = selectedControl.tools[controlNr];
+                if (tool == 0){  //open category
+                    txt = game.i18n.localize(selectedControl.title);
+                    src = selectedControl.icon;
+                    if (activeControl == selectedControl.name)
+                        ringColor = "#FF7B00";
+                }
+            }
+        }
+        else if (control == 1){  //displayed tools
+            let controlNr = parseInt(settings.controlNr);
+            if (isNaN(controlNr)) controlNr = 1;
+            controlNr--;
+
+            const selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
+            if (selectedControl != undefined){
+                const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
                     txt = game.i18n.localize(selectedTool.title);
                     src = selectedTool.icon;
@@ -218,25 +245,24 @@ export class OtherControls{
                         if (selectedTool.active)
                             ringColor = "#A600FF"
                         else    
-                            ringColor = "#340057"
-                        ring = 2;
+                            ringColor = "#340057";
                     }
                     else if (activeTool == selectedTool.name)
-                        ring = 2;
+                        ringColor = "#FF7B00";
                 }  
             }
         }
-        else {
-            selectedControl = ui.controls.controls.find(c => c.name == controlName);
+        else {  // specific control/tool
+            const selectedControl = ui.controls.controls.find(c => c.name == controlName);
             if (selectedControl != undefined){
                 if (tool == 0){  //open category
                         txt = game.i18n.localize(selectedControl.title);
                         src = selectedControl.icon;
                         if (activeControl == selectedControl.name)
-                            ring = 2;
+                            ringColor = "#FF7B00";
                 }
                 else {
-                    selectedTool = selectedControl.tools.find(t => t.name == toolName);
+                    const selectedTool = selectedControl.tools.find(t => t.name == toolName);
                     if (selectedTool != undefined){
                         txt = game.i18n.localize(selectedTool.title);
                         src = selectedTool.icon;
@@ -246,15 +272,14 @@ export class OtherControls{
                                 ringColor = "#A600FF"
                             else    
                                 ringColor = "#340057"
-                            ring = 2;
                         }
                         else if (activeTool == selectedTool.name && activeControl == selectedControl.name)
-                            ring = 2;
+                            ringColor = "#FF7B00";
                     }
                 }
             }
         }
-        streamDeck.setIcon(1,context,src,background,ring,ringColor);
+        streamDeck.setIcon(1,context,src,background,2,ringColor);
         streamDeck.setTitle(txt,context);
     }
 
@@ -268,29 +293,37 @@ export class OtherControls{
         const controlName = this.getControlName(control);
         const toolName = this.getToolName(control,tool);
         
-        if (control == 0){  //displayed tools
+        if (control == 0){  //displayed controls
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
-            let selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
+            const selectedControl = ui.controls.controls[controlNr];
             if (selectedControl != undefined){
-                let selectedTool = selectedControl.tools[controlNr];
+                ui.controls.activeControl = controlName;
+                selectedControl.activeTool = selectedControl.activeTool;
+                canvas.getLayer(selectedControl.layer).activate();
+            }
+        }
+        else if (control == 1){  //displayed tools
+            let controlNr = parseInt(settings.controlNr);
+            if (isNaN(controlNr)) controlNr = 1;
+            controlNr--;
+            const selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
+            if (selectedControl != undefined){
+                const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
-                    if (selectedTool.toggle){
-                        let newValue = !selectedTool.active;
-                        selectedTool.active = newValue;
-                    }
+                    if (selectedTool.toggle)
+                        selectedTool.active = !selectedTool.active;
                     else if (selectedTool.button){
                         selectedTool.onClick();
                     }
                     else
                         selectedControl.activeTool = selectedTool.name;
-                    ui.controls.render();
                 }  
             }
         }
         else {  //select control
-            let selectedControl = ui.controls.controls.find(c => c.name == controlName);
+            const selectedControl = ui.controls.controls.find(c => c.name == controlName);
             if (selectedControl != undefined){
                 if (tool == 0){  //open category
                     ui.controls.activeControl = controlName;
@@ -298,14 +331,12 @@ export class OtherControls{
                     canvas.getLayer(selectedControl.layer).activate();
                 }
                 else {
-                    let selectedTool = selectedControl.tools.find(t => t.name == toolName);
+                    const selectedTool = selectedControl.tools.find(t => t.name == toolName);
                     if (selectedTool != undefined){
                         ui.controls.activeControl = controlName;
                         canvas.getLayer(selectedControl.layer).activate();
-                        if (selectedTool.toggle){
-                            let newValue = !selectedTool.active;
-                            selectedTool.active = newValue;
-                        }
+                        if (selectedTool.toggle)
+                            selectedTool.active = !selectedTool.active;
                         else if (selectedTool.button){
                             selectedTool.onClick();
                         }
@@ -313,21 +344,13 @@ export class OtherControls{
                             selectedControl.activeTool = toolName;
                     }
                 }
-                ui.controls.render();
             }
-        }  
+        } 
+        ui.controls.render(); 
     }
 
-
-
-
-
-//ui.controls.controls.find(c => c.name == 'token')
-//ui.controls.controls.find(c => c.name == 'walls').tools.find(t => t.name == 'snap').active=false
-//ui.controls.render()
-
     getControlName(control){
-        control--;
+        control -= 2;
         let name;
         if (control == 0) name = 'token';
         else if (control == 1) name = 'measure';
@@ -341,7 +364,7 @@ export class OtherControls{
     }
 
     getToolName(control,tool){
-        control--;
+        control -= 2;
         tool--;
         let name;
         if (control == 0){  //basic controls

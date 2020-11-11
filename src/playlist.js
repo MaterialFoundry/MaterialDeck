@@ -31,8 +31,17 @@ export class PlaylistControl{
 
     updatePlaylist(settings,context){
         let name = "";
-        let src = 'action/images/Black.png';
-        let background = '#000000';
+
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let ringColor = "#000000"
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#FF0000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
         let playlistType = settings.playlistType;
         if (playlistType == undefined) playlistType = 0;
@@ -44,47 +53,39 @@ export class PlaylistControl{
             playlistNr--;
             playlistNr += this.playlistOffset;
 
-            let playBackground = settings.playBackground;
-            if (playBackground == undefined) playBackground == '#00FF00';
-            let stopBackground = settings.stopBackground;
-            if (stopBackground == undefined) stopBackground == '#FF0000';
-
             let playlist = this.getPlaylist(playlistNr);
             if (playlist != undefined){
-                if (playlist.playing) {
-                    background = playBackground;
-                    src = 'action/images/playlist/stop.png';
-                }
-                else {
-                    background = stopBackground;
-                    src = 'action/images/playlist/play.png';
-                }
+                if (playlist.playing) 
+                    ringColor = ringOnColor;
+                else
+                    ringColor = ringOffColor;
                 if (settings.displayName)
                     name = playlist.name;
             }
-            
         }
         //Offset
         else {
-            src = "";
-            let onBackground = settings.onBackground;
-            if (onBackground == undefined) onBackground = '#00FF00';
-            let offBackground = settings.offBackground;
-            if (offBackground == undefined) offBackground = '#000000';
-            
             let playlistOffset = parseInt(settings.offset);
             if (isNaN(playlistOffset)) playlistOffset = 0;
-            if (playlistOffset == this.playlistOffset) background = onBackground;
-            else background = offBackground;
+            if (playlistOffset == this.playlistOffset) ringColor = ringOnColor;
         }
-        streamDeck.setIcon(0,context,src,background);
+        streamDeck.setIcon(0,context,"",background,2,ringColor);
         streamDeck.setTitle(name,context);
     }
 
     updateTrack(settings,context){
         let name = "";
-        let src = 'action/images/Black.png';
-        let background = '#000000';
+
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let ringColor = "#000000"
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#FF0000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
         let playlistType = settings.playlistType;
         if (playlistType == undefined) playlistType = 0;
@@ -100,43 +101,26 @@ export class PlaylistControl{
             trackNr--;
             trackNr += this.trackOffset;
 
-            let playBackground = settings.playBackground;
-            if (playBackground == undefined) playBackground == '#00FF00';
-            let stopBackground = settings.stopBackground;
-            if (stopBackground == undefined) stopBackground == '#FF0000';
-
             let playlist = this.getPlaylist(playlistNr);
             if (playlist != undefined){
                 let track = playlist.data.sounds[trackNr];
                 if (track != undefined){
-                    if (track.playing) {
-                        background = playBackground;
-                        src = 'action/images/playlist/stop.png';
-                    }
-                    else {
-                        background = stopBackground;
-                        src = 'action/images/playlist/play.png';
-                    }
+                    if (track.playing) 
+                        ringColor = ringOnColor;
+                    else
+                        ringColor = ringOffColor;
                     if (settings.displayName)
                         name = track.name;
                 }
-            }
-            
+            } 
         }
         //Offset
         else {
-            src = "";
-            let onBackground = settings.onBackground;
-            if (onBackground == undefined) onBackground = '#00FF00';
-            let offBackground = settings.offBackground;
-            if (offBackground == undefined) offBackground = '#000000';
-            
             let trackOffset = parseInt(settings.offset);
             if (isNaN(trackOffset)) trackOffset = 0;
-            if (trackOffset == this.trackOffset) background = onBackground;
-            else background = offBackground;
+            if (trackOffset == this.trackOffset) ringColor = ringOnColor;
         }
-        streamDeck.setIcon(0,context,src,background);
+        streamDeck.setIcon(0,context,"",background,2,ringColor);
         streamDeck.setTitle(name,context);
     }
 

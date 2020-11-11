@@ -19,6 +19,8 @@ export class MacroControl{
         let displayName = settings.displayName;
         let macroNumber = settings.macroNumber;
         let background = settings.background;
+        let ringColor = "#000000";
+        let ring = 0;
         if(macroNumber == undefined || isNaN(parseInt(macroNumber))){
             macroNumber = 0;
         }
@@ -76,18 +78,21 @@ export class MacroControl{
                 }
             }
             else {
-                src = "";
-                let onBackground = settings.onBackground;
-                if (onBackground == undefined) onBackground = '#00FF00';
-                let offBackground = settings.offBackground;
-                if (offBackground == undefined) offBackground = '#000000';
+                let ringOffColor = settings.offRing;
+                if (ringOffColor == undefined) ringOffColor = '#000000';
+
+                let ringOnColor = settings.onRing;
+                if (ringOnColor == undefined) ringOnColor = '#00FF00';
+
                 let macroOffset = parseInt(settings.macroOffset);
                 if (macroOffset == undefined || isNaN(macroOffset)) macroOffset = 0;
                 
-                if (macroOffset == parseInt(this.offset)) background = onBackground;
-                else background = offBackground;
+                if (macroOffset == parseInt(this.offset)) ringColor = ringOnColor;
+                else ringColor = ringOffColor;
+
+                ring = 2;
             }
-            streamDeck.setIcon(1,context,src,background);
+            streamDeck.setIcon(1, context,src,background,ring,ringColor);
             if (displayName == 0) name = ""; 
             streamDeck.setTitle(name,context);
         }
@@ -140,13 +145,13 @@ export class MacroControl{
         let mode = settings.macroMode;
         if (mode == undefined) mode = 0;
 
-        if (mode == 0 || mode == 1){
-            let macroNumber = settings.macroNumber;
-            if(macroNumber == undefined || isNaN(parseInt(macroNumber))){
-                macroNumber = 0;
-            }
-            this.executeHotbar(macroNumber,mode);
+        let macroNumber = settings.macroNumber;
+        if(macroNumber == undefined || isNaN(parseInt(macroNumber))){
+            macroNumber = 0;
         }
+
+        if (mode == 0 || mode == 1)
+            this.executeHotbar(macroNumber,mode);
         else {
             if (settings.macroBoardMode == 0)
                 this.executeBoard(macroNumber);

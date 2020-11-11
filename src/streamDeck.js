@@ -180,7 +180,6 @@ export class StreamDeck{
         var content = window.getComputedStyle(
             elm, ':before'
         ).getPropertyValue('content')
-        //console.log(elm);
         document.body.removeChild(elm);
         return content;
     };
@@ -188,7 +187,7 @@ export class StreamDeck{
     getImage(data){
         if (data == undefined) 
             return;
-        console.log('image',data)
+        //console.log('image',data)
         const context = data.context;
         var url = data.url;
         const format = data.format;
@@ -246,14 +245,15 @@ export class StreamDeck{
             var content = window.getComputedStyle(
             elm, ':before'
             ).getPropertyValue('content')
-            //console.log(content[1]);
             canvas.removeChild(elm);
-            ctx.fillText(content[1], 35, 105);
+            const iconMeasurement = ctx.measureText(content[1]);
+            const horOffset = (144-iconMeasurement.width)/2;
+            const vertOffset = 144-(iconMeasurement.actualBoundingBoxAscent-iconMeasurement.actualBoundingBoxDescent)/2;
+            ctx.fillText(content[1], horOffset, vertOffset);
         }
 
         if (format != 'jpg' && format != 'jpeg' && format != 'png' && format != 'webm' && format != 'webp' && format != 'gif' && format != 'svg') url = "modules/MaterialDeck/img/transparant.png";
         if (url == "") url = "modules/MaterialDeck/img/transparant.png"
-        //console.log(url);
         let resImageURL = url;
         
         let img = new Image();

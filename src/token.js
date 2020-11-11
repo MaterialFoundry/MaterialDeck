@@ -6,7 +6,6 @@ export class TokenControl{
     }
 
     async update(tokenId){
-        console.log('tokenId',tokenId)
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'token') continue;
@@ -15,7 +14,6 @@ export class TokenControl{
     }
 
     pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
-        console.log('tk',tokenId,settings)
         let name = false;
         let icon = false;
         let type = 0;

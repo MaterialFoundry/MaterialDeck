@@ -45,7 +45,7 @@ async function analyzeWSmessage(msg,passthrough = false){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
     if (data == undefined || data.payload == undefined) return;
-    console.log(data);  
+    //console.log(data);  
     const action = data.action;
     const event = data.event;
     const context = data.context;
