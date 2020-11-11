@@ -13,7 +13,7 @@ export class playlistConfigForm extends FormApplication {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             id: "playlist-config",
-            title: "Material Deck: Playlist Config",
+            title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.PlaylistConfig"),
             template: "./modules/MaterialDeck/templates/playlistConfig.html",
             classes: ["sheet"],
             width: 500

@@ -39,8 +39,8 @@ export const registerSettings = function() {
     });
 
     game.settings.registerMenu(MODULE.moduleName, 'playlistConfigMenu',{
-        name: "Playlist Config",
-        label: "Playlist Config",
+        name: "Playlist Configuration",
+        label: "Playlist Configuration",
         type: playlistConfigForm,
         restricted: true
     });
