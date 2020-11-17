@@ -3,10 +3,12 @@ import {streamDeck} from "../MaterialDeck.js";
 
 export class MacroControl{
     constructor(){
+        this.active = false;
         this.offset = 0;
     }
 
     async updateAll(){
+        if (this.active == false) return;
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'macro') continue;
@@ -15,10 +17,13 @@ export class MacroControl{
     }
 
     update(settings,context){
+        this.active = true;
         let mode = settings.macroMode;
         let displayName = settings.displayName;
         let macroNumber = settings.macroNumber;
         let background = settings.background;
+        let icon = false;
+        if (settings.displayIcon) icon = true;
         let ringColor = "#000000";
         let ring = 0;
         if(macroNumber == undefined || isNaN(parseInt(macroNumber))){
@@ -53,15 +58,15 @@ export class MacroControl{
                     src += macro.img;
                 }
             }
-            
-            streamDeck.setIcon(1,context,src,background);
+            if (icon) streamDeck.setIcon(1,context,src,background);
+            else streamDeck.setIcon(0, context, "", background);
             if (displayName == 0) name = ""; 
             streamDeck.setTitle(name,context);
         }
-        else {
+        else {  //Macro board
             let name = "";
             let src = '';
-            if (settings.macroBoardMode == 0) {
+            if (settings.macroBoardMode == 0) { //Execute macro
                 macroNumber += this.offset - 1;
                 if (macroNumber < 0) macroNumber = 0;
                 var macroId = game.settings.get(MODULE.moduleName,'macroSettings').macros[macroNumber];
@@ -76,8 +81,8 @@ export class MacroControl{
                         src += macro.img;
                     }
                 }
-            }
-            else {
+            }   
+            else {  //Offset
                 let ringOffColor = settings.offRing;
                 if (ringOffColor == undefined) ringOffColor = '#000000';
 
@@ -92,7 +97,8 @@ export class MacroControl{
 
                 ring = 2;
             }
-            streamDeck.setIcon(1, context,src,background,ring,ringColor);
+            if (icon) streamDeck.setIcon(1, context,src,background,ring,ringColor);
+            else streamDeck.setIcon(0, context, "", background,ring,ringColor);
             if (displayName == 0) name = ""; 
             streamDeck.setTitle(name,context);
         }

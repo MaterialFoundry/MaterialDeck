@@ -3,11 +3,13 @@ import {streamDeck} from "../MaterialDeck.js";
 
 export class PlaylistControl{
     constructor(){
+        this.active = false;
         this.playlistOffset = 0;
         this.trackOffset = 0;
     }
 
     async updateAll(){
+        if (this.active == false) return;
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'playlist') continue;
@@ -16,6 +18,7 @@ export class PlaylistControl{
     }
 
     update(settings,context){
+        this.active = true;
         if (settings.playlistMode == undefined) settings.playlistMode = 0;
         if (settings.playlistMode == 0){
             this.updatePlaylist(settings,context);

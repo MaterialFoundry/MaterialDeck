@@ -3,10 +3,12 @@ import {streamDeck} from "../MaterialDeck.js";
 
 export class OtherControls{
     constructor(){
+        this.active = false;
         this.offset = 0;
     }
 
     async updateAll(){
+        if (this.active == false) return;
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'other') continue;
@@ -15,6 +17,7 @@ export class OtherControls{
     }
 
     update(settings,context){
+        this.active = true;
         let mode = settings.otherMode;
         if (mode == undefined) mode = 0;
 
@@ -312,8 +315,10 @@ export class OtherControls{
             if (selectedControl != undefined){
                 const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
-                    if (selectedTool.toggle)
+                    if (selectedTool.toggle) {
                         selectedTool.active = !selectedTool.active;
+                        selectedTool.onClick(selectedTool.active);
+                    }
                     else if (selectedTool.button){
                         selectedTool.onClick();
                     }
@@ -335,8 +340,10 @@ export class OtherControls{
                     if (selectedTool != undefined){
                         ui.controls.activeControl = controlName;
                         canvas.getLayer(selectedControl.layer).activate();
-                        if (selectedTool.toggle)
+                        if (selectedTool.toggle) {
                             selectedTool.active = !selectedTool.active;
+                            selectedTool.onClick(selectedTool.active);
+                        }
                         else if (selectedTool.button){
                             selectedTool.onClick();
                         }

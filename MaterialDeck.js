@@ -11,10 +11,10 @@ export var streamDeck;
 export var tokenControl;
 var move;
 export var macroControl;
-var combatTracker;
-var playlistControl;
-var soundboard;
-var otherControls;
+export var combatTracker;
+export var playlistControl;
+export var soundboard;
+export var otherControls;
 
 export const moduleName = "MaterialDeck";
 export var selectedTokenId;
@@ -45,7 +45,7 @@ async function analyzeWSmessage(msg,passthrough = false){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
     if (data == undefined || data.payload == undefined) return;
-    //console.log(data);  
+    //console.log("Received",data);  
     const action = data.action;
     const event = data.event;
     const context = data.context;
@@ -62,9 +62,9 @@ async function analyzeWSmessage(msg,passthrough = false){
         streamDeck.setContext(action,context,coordinates,settings);
 
         if (action == 'token'){
-            if (selectedTokenId != undefined)
-                tokenControl.update(selectedTokenId);
-        }
+            tokenControl.active = true;
+            tokenControl.update(selectedTokenId);
+        }  
         else if (action == 'macro')
             macroControl.update(settings,context);
         else if (action == 'combattracker')
@@ -126,7 +126,7 @@ function startWebsocket() {
 
     ws.onopen = function() {
         WSconnected = true;
-        ui.notifications.info("Material Deck Connected: "+ip+':'+port);
+        ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+ip+':'+port);
         wsOpen = true;
         let msg = {
             type: "Foundry"
@@ -276,6 +276,7 @@ Hooks.on('renderHotbar', (hotbar)=>{
 Hooks.on('renderCombatTracker',()=>{
     if (enableModule == false || ready == false) return;
     combatTracker.updateAll();
+    tokenControl.update(selectedTokenId);
 });
 
 Hooks.on('renderPlaylistDirectory', (playlistDirectory)=>{
@@ -307,6 +308,11 @@ Hooks.on('updateScene',()=>{
 Hooks.on('renderSceneControls',()=>{
     if (enableModule == false || ready == false) return;
     otherControls.updateAll();
+});
+
+Hooks.on('targetToken',(user,token,targeted)=>{
+    if (enableModule == false || ready == false) return;
+    if (token.id == selectedTokenId) tokenControl.update(selectedTokenId);
 });
 
   Hooks.once('init', ()=>{

@@ -3,6 +3,7 @@ import {streamDeck} from "../MaterialDeck.js";
 
 export class SoundboardControl{
     constructor(){
+        this.active = false;
         this.offset = 0;
         this.activeSounds = [];
         for (let i=0; i<64; i++)
@@ -10,6 +11,7 @@ export class SoundboardControl{
     }
 
     async updateAll(){
+        if (this.active == false) return;
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'soundboard') continue;
@@ -18,6 +20,7 @@ export class SoundboardControl{
     }
 
     update(settings,context){
+        this.active = true;
         let mode = settings.soundboardMode;
         if (mode == undefined) mode = 0;
 

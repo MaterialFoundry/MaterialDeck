@@ -8,10 +8,10 @@
         }
     </style>
     <div class="form-group">
-        <label>{{localize "MaterialDeck.Playlist.Playlist"}}&nbsp;&nbsp;&nbsp;</label>
+        <label>{{localize "MaterialDeck.Playlist"}}&nbsp;&nbsp;&nbsp;</label>
         <select name="playlist" class="playlist-select" default="" style="max-width:200px;">
             {{#select playlist}}
-                <option value="">{{localize "MaterialDeck.Playlist.None"}}</option>
+                <option value="">{{localize "MaterialDeck.None"}}</option>
                 {{#each playlists}}
                 <option value="{{this._id}}">{{this.name}}</option>
                 {{/each}}
@@ -23,19 +23,19 @@
             {{#each this.dataThis}}
                 <div class="boxed" style="padding: 5px; margin:2px">
                     <div style="text-align:center;">                    
-                        {{localize "MaterialDeck.Soundboard.Sound"}} {{this.iteration}}
+                        {{localize "MaterialDeck.Sound"}} {{this.iteration}}
                     </div>
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Name"}}
                     </div>
                     <input type="text" name="name" value="{{this.name}}">
                     <div style="text-align:center;">                    
-                        {{localize "MaterialDeck.Soundboard.Sound"}}
+                        {{localize "MaterialDeck.Sound"}}
                     </div>
                     <div>
                         <select name="sounds" class="sounds-select" default="" style="width:132px;" id="soundSelect{{this.iteration}}">
                             {{#select this.sound}}
-                                <option value="">{{localize "MaterialDeck.Playlist.None"}}</option>
+                                <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each sounds}}
                                 <option value="{{this._id}}">{{this.name}}</option>
                                 {{/each}}
@@ -43,7 +43,7 @@
                         </select>
                     </div>
                     <div style="text-align:center;">                    
-                        {{localize "MaterialDeck.Soundboard.Icon"}}
+                        {{localize "MaterialDeck.Icon"}}
                     </div>
                     <div class="form-fields">
                         <button type="button" class="file-picker" data-type="image" data-target="img{{this.iteration}}" title="Browse Files" tabindex="-1">
@@ -52,24 +52,24 @@
                         <input class="image" type="text" name="img{{this.iteration}}" id="imgPath{{this.iteration}}" placeholder="path/image.png" value={{this.imgPath}}>
                     </div>
                     <div class="flex-container" style="display:flex;flex-direction:row;padding-top:5px">  
-                        <label style="flex:1">{{localize "MaterialDeck.Soundboard.On"}}&nbsp;&nbsp;&nbsp;</label>
+                        <label style="flex:1">{{localize "MaterialDeck.On"}}&nbsp;&nbsp;&nbsp;</label>
                         <input style="flex:1" type="color" id="colorOn{{this.iteration}}" name="colorOn" style="flex:4" data-dtype="String" value="{{this.colorOn}}">
-                        <label style="flex:1">&nbsp;{{localize "MaterialDeck.Soundboard.Off"}}&nbsp;&nbsp;</label>
+                        <label style="flex:1">&nbsp;{{localize "MaterialDeck.Off"}}&nbsp;&nbsp;</label>
                         <input style="flex:1" type="color" id="colorOff{{this.iteration}}" name="colorOff" style="flex:4" data-dtype="String" value="{{this.colorOff}}"> 
                     </div>
                     
                     <div class="form-group options">
-                        <label>{{localize "MaterialDeck.Soundboard.Playback"}}</label>
+                        <label>{{localize "MaterialDeck.Playback"}}</label>
                         <select name="mode" style="flex:1">
                             {{#select this.mode}}
-                            <option value="0">{{localize "MaterialDeck.Soundboard.Once"}}</option>
-                            <option value="1">{{localize "MaterialDeck.Soundboard.Repeat"}}</option>
-                            <option value="2">{{localize "MaterialDeck.Soundboard.Hold"}}</option>
+                            <option value="0">{{localize "MaterialDeck.Once"}}</option>
+                            <option value="1">{{localize "MaterialDeck.Repeat"}}</option>
+                            <option value="2">{{localize "MaterialDeck.Hold"}}</option>
                             {{/select}}
                         </select>  
                     </div>
                     <div class="form-group options">
-                    <label>{{localize "MaterialDeck.Soundboard.Volume"}}</label>
+                    <label>{{localize "MaterialDeck.Volume"}}</label>
                         <input type="range" min="0" max="100" value={{this.volume}} class="slider" name="volume" id="volume{{this.iteration}}">
                     </div>
 
@@ -78,7 +78,7 @@
         </div>
     {{/each}}
     <button type="submit" name="submit">
-        <i class="far fa-save"></i> {{localize "MaterialDeck.Playlist.Save"}}
+        <i class="far fa-save"></i> {{localize "MaterialDeck.Save"}}
     </button>
 
 </form>

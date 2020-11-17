@@ -13,12 +13,12 @@
             {{#each this.dataThis}}
                 <div class="boxed" style="padding: 5px; margin:2px">
                     <div style="text-align:center;">                    
-                        {{localize "MaterialDeck.Macro.Macro"}} {{this.iteration}}
+                        {{localize "MaterialDeck.Macro"}} {{this.iteration}}
                     </div>
                     <div>
                         <select name="macros" class="macros-select" default="" style="max-width:140px;">
                             {{#select this.macro}}
-                                <option value="">{{localize "MaterialDeck.Playlist.None"}}</option>
+                                <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each macros}}
                                 <option value="{{this._id}}">{{this.name}}</option>
                                 {{/each}}
@@ -26,12 +26,12 @@
                         </select>
                     </div>
                     {{#if this.furnace}}
-                        <label>{{localize "MaterialDeck.Macro.FurnaceArgs"}}</label>
+                        <label>{{localize "MaterialDeck.FurnaceArgs"}}</label>
                         <input type="text" name="args" value="{{this.args}}">
                     {{/if}}
                     
                     <div class="flex-container" style="display:flex;flex-direction:row;padding-top:10px">  
-                        <label style="flex:1">{{localize "MaterialDeck.Macro.Background"}}</label>
+                        <label style="flex:1">{{localize "MaterialDeck.Background"}}</label>
                         <input style="flex:1" type="color" name="colorPicker" data-dtype="String" value="{{this.color}}">
                     </div>
                 </div>
@@ -39,7 +39,7 @@
         </div>
     {{/each}}
     <button type="submit" name="submit">
-        <i class="far fa-save"></i> {{localize "MaterialDeck.Playlist.Save"}}
+        <i class="far fa-save"></i> {{localize "MaterialDeck.Save"}}
     </button>
 
 </form>

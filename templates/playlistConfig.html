@@ -1,26 +1,26 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
     <div >                    
-        <h2>{{localize "MaterialDeck.Playlist.Playmethod.Header"}}</h2>
+        <h2>{{localize "MaterialDeck.PL.Header"}}</h2>
     </div>
     <div class="form-group">     
-        <label>{{localize "MaterialDeck.Playlist.Playmethod.Label"}}</label>
+        <label>{{localize "MaterialDeck.PL.Label"}}</label>
         <select name="playMethod" class="playMethod" default="">
             {{#select playMethod}}
-                <option value="0">{{localize "MaterialDeck.Playlist.Playmethod.Unrestricted"}}</option>
-                <option value="1">{{localize "MaterialDeck.Playlist.Playmethod.OneTrackPlaylist"}}</option>
-                <option value="2">{{localize "MaterialDeck.Playlist.Playmethod.OneTrackTotal"}}</option>
+                <option value="0">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
+                <option value="1">{{localize "MaterialDeck.PL.OneTrackPlaylist"}}</option>
+                <option value="2">{{localize "MaterialDeck.PL.OneTrackTotal"}}</option>
             {{/select}}
         </select>
     </div>
     <div>                    
-        <h2>{{localize "MaterialDeck.Playlist.Playlists"}}</h2>
+        <h2>{{localize "MaterialDeck.Playlists"}}</h2>
     </div>
     {{#each playlistData}}
         <div class="form-group">
-            <label>{{localize "MaterialDeck.Playlist.Playlist"}} {{this.iteration}}</label>
+            <label>{{localize "MaterialDeck.Playlist"}} {{this.iteration}}</label>
             <select name="selectedPlaylist" class="playlist-select" default="">
                 {{#select this.playlist}}
-                    <option value="">{{localize "MaterialDeck.Playlist.None"}}</option>
+                    <option value="">{{localize "MaterialDeck.None"}}</option>
                     {{#each this.playlists}}
                     <option value="{{this._id}}">{{this.name}}</option>
                     {{/each}}
@@ -30,7 +30,7 @@
     {{/each}}
 
     <button type="submit" name="submit">
-        <i class="far fa-save"></i> {{localize "MaterialDeck.Playlist.Save"}}
+        <i class="far fa-save"></i> {{localize "MaterialDeck.Save"}}
     </button>
 
 </form>

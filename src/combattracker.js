@@ -3,11 +3,12 @@ import {streamDeck, tokenControl} from "../MaterialDeck.js";
 
 export class CombatTracker{
     constructor(){
+        this.active = false;
         this.combatantLength = 0;
     }
 
     async updateAll(){
-
+        if (this.active == false) return;
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'combattracker') continue;
@@ -16,6 +17,7 @@ export class CombatTracker{
     }
 
     update(settings,context){
+        this.active = true;
         let ctFunction = settings.combatTrackerFunction;
         if (ctFunction == undefined) ctFunction == 0;
         

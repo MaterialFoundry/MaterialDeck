@@ -17,13 +17,13 @@ export const registerSettings = function() {
     });
 
     game.settings.register(MODULE.moduleName,'streamDeckModel', {
-        name: "Stream Deck Model",
-        hint: "Reduces the amount of macros and sounds in the macro and soundboard configuration screens. Gives a better overview, but if desired it can be set to XL to get the maximum number. This doesn't influence the operation of the module.",
+        name: "MaterialDeck.Sett.Model",
+        hint: "MaterialDeck.Sett.Model_Hint",
         scope: "world",
         config: true,
         type:Number,
         default:1,
-        choices:["Mini","Normal or Mobile","XL"],
+        choices:["MaterialDeck.Sett.Model_Mini","MaterialDeck.Sett.Model_Normal","MaterialDeck.Sett.Model_XL"],
     });
 
     /**
@@ -35,12 +35,12 @@ export const registerSettings = function() {
         config: false,
         type:Number,
         default:0,
-        choices:["Default","One track per playlist","One track in total"],
+        choices:["MaterialDeck.Playlist.Playmethod.Unrestricted","MaterialDeck.Playlist.Playmethod.OneTrackPlaylist","MaterialDeck.Playlist.Playmethod.OneTrackTotal"],
     });
 
     game.settings.registerMenu(MODULE.moduleName, 'playlistConfigMenu',{
-        name: "Playlist Configuration",
-        label: "Playlist Configuration",
+        name: "MaterialDeck.Sett.PlaylistConfig",
+        label: "MaterialDeck.Sett.PlaylistConfig",
         type: playlistConfigForm,
         restricted: true
     });

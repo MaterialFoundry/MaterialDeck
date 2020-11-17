@@ -23,6 +23,8 @@ export class StreamDeck{
         let canvasBox = document.createElement('div');
         canvasBox.id = 'sdCanvasBox';
         document.body.appendChild(canvasBox); // adds the canvas to the body element
+
+        this.syllableRegex = /[^aeiouy]*[aeiouy]+(?:[^aeiouy]*$|[^aeiouy](?=[^aeiouy]))?/gi;
     }
 
     setScreen(action){
@@ -42,20 +44,90 @@ export class StreamDeck{
     clearContext(action,coordinates = {column:0,row:0}){
         let num = coordinates.column + coordinates.row*8;
         this.buttonContext[num] = undefined;
+        if (this.getActive(action) == false){
+            if (action == 'token') MODULE.tokenControl.active = false; 
+            else if (action == 'macro') MODULE.macroControl.active = false; 
+            else if (action == 'combattracker') MODULE.combatTracker.active = false; 
+            else if (action == 'playlist') MODULE.playlistControl.active = false;
+            else if (action == 'soundboard') MODULE.soundboard.active = false;
+            else if (action == 'other') MODULE.otherControls.active = false;
+        }
+    }
+
+    getActive(action){
+        for (let i=0; i<this.buttonContext.length; i++){
+            if (this.buttonContext[i] != undefined && this.buttonContext[i].action == action)
+                return true;
+        }
+        return false;
+    }
+
+    
+    /*
+    *  Get syllables of a word. Taken from: https://stackoverflow.com/a/49407494
+    */
+    syllabify(words) {
+        return words.match(this.syllableRegex);
     }
 
     formatTitle(txt){
-        let txtArray = txt.split(" ");
-        let txtNew = "";
-        for (let i=0; i<txtArray.length; i++){
-            let txtNewPart = txtArray[i];
-            if (i<txtArray.length-1 && txtArray[i].length + txtArray[i+1].length < 8) {
-                txtNewPart = txtArray[i] + " " + txtArray[i+1];
-                i++;
+        let txtArrayOriginal = txt.split("\n");
+        let txtArray = [];
+        let counter = 0;
+        for (let i=0; i<txtArrayOriginal.length; i++){
+            
+            let txtArrayTemp = txtArrayOriginal[i].split(" ");
+            for (let j=0; j<txtArrayTemp.length; j++){
+                txtArray[counter] = txtArrayTemp[j];
+                counter++;
             }
+        }
+        let txtNew = "";
+        let newTxtArray = ['','','','','','','','','','','','','','','','','','','',''];
+        counter = 0;
+        for (let i=0; i<txtArray.length; i++){
+            
+            let txtNewPart = txtArray[i];
+            
+            if (txtNewPart != undefined && txtNewPart.length > 10){
+                let syllables = this.syllabify(txtNewPart);
+
+                for (let j=0; j<syllables.length; j++){
+                    if (syllables.length == 0){
+                        newTxtArray[counter] = txtNewPart;
+                        counter++;
+                    }
+                    else if (syllables[j+1] == undefined){
+                        newTxtArray[counter] = syllables[j];
+                        counter++;
+                    }
+                    else if ((syllables[j].length+syllables[j+1].length) < 10){
+                        newTxtArray[counter] = syllables[j]+syllables[j+1]; 
+                        if (syllables.length-2 > j) newTxtArray[counter] += '-';
+                        counter++;
+                        j++;
+                    }
+                    else {
+                        newTxtArray[counter] = syllables[j];
+                        if (syllables.length > j) newTxtArray[counter] += '-';
+                        counter++;
+                    }
+                }
+            }
+            else{
+                newTxtArray[counter] = txtNewPart;
+                counter++;
+            }
+        }
+        for (let i=0; i<counter; i++){
             if (txtNew.length > 0)
                 txtNew += "\n";
-            txtNew += txtNewPart;
+            if (i<counter-1 && newTxtArray[i].length + newTxtArray[i+1].length < 10) {
+                txtNew += newTxtArray[i] + " " + newTxtArray[i+1];
+                i++;
+            }
+            else
+                txtNew += newTxtArray[i];
         }
         return txtNew;
     }
@@ -107,7 +179,7 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(json));
     }
 
-    setIcon(iconLocation, context,src,background = '#000000',ring=0,ringColor = "#000000"){
+    setIcon(iconLocation, context,src,background = '#000000',ring=0,ringColor = "#000000",overlay=false){
         for (let i=0; i<32; i++){
             if (this.buttonContext[i] == undefined) continue;
             if (this.buttonContext[i].context == context) {
@@ -120,11 +192,11 @@ export class StreamDeck{
                 this.buttonContext[i].iconLocation = iconLocation;
             }
         }
-
-        let split = src.split('?');
-        split = split[0].split('.');
-        let format = split[split.length-1];
-        split = src.split(' ');
+        
+        let split = src.split('.');
+        //filter out stuff from Tokenizer
+        let format = split[split.length-1].split('?')[0];
+        split = split[0].split(' ');
         if (split[0] == 'fas' || split[0] == 'far' || split[0] == 'fal' || split[0] == 'fad') format = 'icon';
         let msg = {
             event: 'setIcon',
@@ -133,7 +205,8 @@ export class StreamDeck{
             format: format,
             background: background,
             ring: ring,
-            ringColor: ringColor
+            ringColor: ringColor,
+            overlay: overlay
         };
         if (iconLocation == 0){
             MODULE.sendWS(JSON.stringify(msg));
@@ -257,8 +330,10 @@ export class StreamDeck{
         let resImageURL = url;
         
         let img = new Image();
+        img.setAttribute('crossorigin', 'anonymous');
         img.onload = () => {
             if (format == 'color') ctx.filter = "opacity(0)";
+            if (data.overlay) ctx.filter = "brightness(60%)";
             //ctx.filter = "brightness(0) saturate(100%) invert(38%) sepia(62%) saturate(2063%) hue-rotate(209deg) brightness(90%) contrast(95%)";
             var imageAspectRatio = img.width / img.height;
             var canvasAspectRatio = canvas.width / canvas.height;
