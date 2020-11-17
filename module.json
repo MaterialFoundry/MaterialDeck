@@ -9,7 +9,7 @@
     ],
     "socket": true,
     "minimumCoreVersion": "0.7.5",
-    "compatibleCoreVersion": "0.7.6",
+    "compatibleCoreVersion": "0.7.7",
     "languages": [
       {
         "lang": "en",

@@ -12,6 +12,7 @@
 <li>Added support for localization (module only)</li>
 <li>Fixed issue where SD buttons would not load properly if Foundry was initialized before the SD, or if Foundry was refreshed</li>
 <li>Long words now split up onto multiple lines</li>
+<li>Confirmed compatibility with Foundry v0.7.7</li>
 </ul>
 <b>Compatible server app and SD plugin:</b><br>
 Server v0.2.4 (no change)<br>
