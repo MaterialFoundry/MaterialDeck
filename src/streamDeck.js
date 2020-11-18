@@ -144,6 +144,7 @@ export class StreamDeck{
             }
         }
         let msg = {
+            target: "SD",
             event: 'setTitle',
             context: context,
             payload: {
@@ -156,6 +157,7 @@ export class StreamDeck{
     
     setColor(context,color = '#000000'){
         let msg = {
+            target: "SD",
             event: 'setIcon',
             context: context,
             url: '',
@@ -169,6 +171,7 @@ export class StreamDeck{
         //var image = "data:image/svg+xml;charset=utf8,<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  --><svg version=\"1.1\" id=\"Capa_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"	 viewBox=\"0 0 288 288\" style=\"enable-background:new 0 0 288 288;\" xml:space=\"preserve\">	 <style>	 	.text {			 font-family: sans-serif;			 fill: red;			 font-size: 10em;		 }	</style><g>  <text x=\"0px\" y=\"100px\"  class=\"text\">GPUUTILIZATION</text></g></svg>";
 
         var json = {
+            target: "SD",
             event: "setImage",
             context: context,
             payload: {
@@ -199,6 +202,7 @@ export class StreamDeck{
         split = split[0].split(' ');
         if (split[0] == 'fas' || split[0] == 'far' || split[0] == 'fal' || split[0] == 'fad') format = 'icon';
         let msg = {
+            target: "SD",
             event: 'setIcon',
             context: context,
             url: src,
@@ -217,6 +221,7 @@ export class StreamDeck{
 
     setState(state,context,action){
         let msg = {
+            target: "SD",
             event: 'setStateCustom',
             context: context,
             action: action,
@@ -230,12 +235,13 @@ export class StreamDeck{
         if (action == 'playlistcontrol')
             profile = 'MaterialDeck-Playlist'
         var json = {
-            "source": 1,
-            "event": "switchToProfile",
-            "context": this.pluginId,
-            "device": device,
-            "payload": {
-                "profile": profile
+            target: "SD",
+            source: 1,
+            event: "switchToProfile",
+            context: this.pluginId,
+            device: device,
+            payload: {
+                profile: profile
             }
         };
         MODULE.sendWS(JSON.stringify(json));

@@ -30,7 +30,7 @@ var enableModule;
 
 //Websocket variables
 let ip = "localhost";       //Ip address of the websocket server
-let port = "3003";                //Port of the websocket server
+let port = "3001";                //Port of the websocket server
 var ws;                         //Websocket variable
 let wsOpen = false;             //Bool for checking if websocket has ever been opened => changes the warning message if there's no connection
 let wsInterval;                 //Interval timer to detect disconnections
@@ -41,11 +41,20 @@ let WSconnected = false;
  * 
  * @param {*} msg Message received
  */
-async function analyzeWSmessage(msg,passthrough = false){
+async function analyzeWSmessage(msg){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
+    //console.log("Received",data);
+
+    if (data.type == "connected" && data.data == "SD"){
+        console.log("streamdeck connected to server");
+    }
+
+
+
+
     if (data == undefined || data.payload == undefined) return;
-    //console.log("Received",data);  
+      
     const action = data.action;
     const event = data.event;
     const context = data.context;
@@ -114,11 +123,10 @@ async function analyzeWSmessage(msg,passthrough = false){
  */
 function startWebsocket() {
     //ip = localhost;
-    ws = new WebSocket('ws://'+ip+':'+port+'/1');
+    ws = new WebSocket('ws://'+ip+':'+port);
 
     ws.onmessage = function(msg){
         //console.log(msg);
-        
         analyzeWSmessage(msg.data);
         clearInterval(wsInterval);
         wsInterval = setInterval(resetWS, 5000);
@@ -128,10 +136,16 @@ function startWebsocket() {
         WSconnected = true;
         ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+ip+':'+port);
         wsOpen = true;
-        let msg = {
-            type: "Foundry"
+        const msg = {
+            target: "server",
+            module: "MD"
         }
         ws.send(JSON.stringify(msg));
+        const msg2 = {
+            target: "SD",
+            type: "init"
+        }
+        ws.send(JSON.stringify(msg2));
         clearInterval(wsInterval);
         wsInterval = setInterval(resetWS, 5000);
     }

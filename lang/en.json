@@ -1,6 +1,6 @@
 {
-    "MaterialDeck.Notifications.Disconnected": "Disconnected from mdServer, attempting to reconnect",
-    "MaterialDeck.Notifications.ConnectFail": "Can't connect to mdServer, retrying",
+    "MaterialDeck.Notifications.Disconnected": "Disconnected from Material Server, attempting to reconnect",
+    "MaterialDeck.Notifications.ConnectFail": "Can't connect to Material Server, retrying",
     "MaterialDeck.Notifications.Connected": "Connected",
     
     "MaterialDeck.Sett.Enable": "Enable module",

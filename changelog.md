@@ -1,4 +1,13 @@
 # Changelog Material Deck Module
+### v0.8.6 - 18-11-2020
+<ul>
+<li>Added support for the new Material Server app</li>
+</ul>
+
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.0: https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v0.7.3: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v0.8.5 - 17-11-2020
 <ul>
 <li>Added 'Display Icon' to Macro action</li>
