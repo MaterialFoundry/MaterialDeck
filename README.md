@@ -1,5 +1,4 @@
-I created a <a href="https://discord.gg/3hd4G6TkmA">Discord server</a> to discuss this and other hardware-based Foundry modules. Feel free to join if you'd like to be updated on this module.<br>
-<br>
+I created a <a href="https://discord.gg/3hd4G6TkmA">Discord server</a> to discuss this and other hardware-based Foundry modules. Feel free to join if you'd like to be updated on this module.
 
 # Material Deck
 Material Deck is a Foundry VTT module that allows you to control certain Foundry functions using an Elgato Stream Deck. A Stream Deck is a device that has physical buttons with displays behind them. Material Deck uses this to, for example, control playlists, execute macros, display and control the combat tracker.<br>
