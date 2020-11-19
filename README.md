@@ -1,8 +1,11 @@
-I created a <a href="https://discord.gg/3hd4G6TkmA">Discord server</a> to discuss this and other hardware-based Foundry modules. Feel free to join if you'd like to be updated on this module.
+<b>Note:</b> At the moment only Windows support has been confirmed. Right now it doesn't appear to work on MacOS. Linux support is unknown, there is no official Linux support for the Stream Deck, but there exist a 3rd party <a href="https://timothycrosley.com/project-7-streamdeck_ui">Stream Deck UI</a> that might be compatible.<br>
+<b>In any case: Proceed at your own risk, I will not take any responsibility if you spent money and the module doesn't work!</b>
+
+I created a <a href="https://discord.gg/3hd4G6TkmA">Discord server</a> to discuss this and other hardware-based Foundry modules. Feel free to join if you'd like to join the discussion and be updated on this module.
 
 # Material Deck
-Material Deck is a Foundry VTT module that allows you to control certain Foundry functions using an Elgato Stream Deck. A Stream Deck is a device that has physical buttons with displays behind them. Material Deck uses this to, for example, control playlists, execute macros, display and control the combat tracker.<br>
-The module allows a high degree of customization, where each button on the Stream Deck can be assigned any desired function. Furthermore, it supports folder structures, allowing easy switching between various button configurations so you can easily switch between the combat tracker, soundboard, or any other (custom) configuration.<br>
+Material Deck is a Foundry VTT module that allows you to control certain Foundry functions using an Elgato Stream Deck. A Stream Deck is a device that has physical buttons with displays behind them. Material Deck uses this to, for example, control playlists, execute macros, display and control the combat tracker.<br><br>
+The module allows a high degree of customization, where each button on the Stream Deck can be assigned any desired function. Furthermore, it supports folder structures, allowing easy switching between various button configurations so you can easily switch between the combat tracker, soundboard, or any other (custom) configuration.<br><br>
 The functions are categorized into actions. Here is a list of the available actions and their most important functions:
 <ul>
   <li>Playlist Action: Control Foundry's playlists</li>
