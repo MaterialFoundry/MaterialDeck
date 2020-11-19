@@ -36,6 +36,15 @@ export class OtherControls{
         else if (mode == 4){    //roll tables
             this.updateRollTable(settings,context);
         }
+        else if (mode == 5) {   //open sidebar tab
+            this.updateSidebar(settings,context);
+        }
+        else if (mode == 6) {   //open compendium
+            this.updateCompendium(settings,context);
+        }
+        else if (mode == 7) {   //open journal
+            this.updateJournal(settings,context);
+        }
     }
 
     keyPress(settings){
@@ -56,6 +65,15 @@ export class OtherControls{
         }
         else if (mode == 4) {   //roll tables
             this.keyPressRollTable(settings);
+        }
+        else if (mode == 5) {   //sidebar
+            this.keyPressSidebar(settings);
+        }
+        else if (mode == 6) {   //open compendium
+            this.keyPressCompendium(settings);
+        }
+        else if (mode == 7) {   //open journal
+            this.keyPressJournal(settings);
         }
     }
 
@@ -527,5 +545,176 @@ export class OtherControls{
                 table.draw({rollMode:"selfroll"});
             }
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    getSidebarId(nr){
+        let id;
+        if (nr == 0) id = 'chat';
+        else if (nr == 1) id = 'combat';
+        else if (nr == 2) id = 'scenes';
+        else if (nr == 3) id = 'actors';
+        else if (nr == 4) id = 'items';
+        else if (nr == 5) id = 'journal';
+        else if (nr == 6) id = 'tables';
+        else if (nr == 7) id = 'playlists';
+        else if (nr == 8) id = 'compendium';
+        else if (nr == 9) id = 'settings';
+        else id = '';
+        return id;
+    }
+
+    getSidebarName(nr){
+        let name;
+        if (nr == 0) name = game.i18n.localize("SIDEBAR.TabChat");
+        else if (nr == 1) name = game.i18n.localize("SIDEBAR.TabCombat");
+        else if (nr == 2) name = game.i18n.localize("SIDEBAR.TabScenes");
+        else if (nr == 3) name = game.i18n.localize("SIDEBAR.TabActors");
+        else if (nr == 4) name = game.i18n.localize("SIDEBAR.TabItems");
+        else if (nr == 5) name = game.i18n.localize("SIDEBAR.TabJournal");
+        else if (nr == 6) name = game.i18n.localize("SIDEBAR.TabTables");
+        else if (nr == 7) name = game.i18n.localize("SIDEBAR.TabPlaylists");
+        else if (nr == 8) name = game.i18n.localize("SIDEBAR.TabCompendium");
+        else if (nr == 9) name = game.i18n.localize("SIDEBAR.TabSettings");
+        else if (nr == 10) name = game.i18n.localize("SIDEBAR.CollapseToggle");
+        return name;
+    }
+
+    getSidebarIcon(nr){
+        let icon;
+        if (nr == 0) icon = window.CONFIG.ChatMessage.sidebarIcon;
+        else if (nr == 1) icon = window.CONFIG.Combat.sidebarIcon;
+        else if (nr == 2) icon = window.CONFIG.Scene.sidebarIcon;
+        else if (nr == 3) icon = window.CONFIG.Actor.sidebarIcon;
+        else if (nr == 4) icon = window.CONFIG.Item.sidebarIcon;
+        else if (nr == 5) icon = window.CONFIG.JournalEntry.sidebarIcon;
+        else if (nr == 6) icon = window.CONFIG.RollTable.sidebarIcon;
+        else if (nr == 7) icon = window.CONFIG.Playlist.sidebarIcon;
+        else if (nr == 8) icon = "fas fa-atlas";
+        else if (nr == 9) icon = "fas fa-cogs";
+        else if (nr == 10) icon = "fas fa-caret-right";
+        return icon;
+    }
+    
+    updateSidebar(settings,context){
+        let sidebarTab = settings.sidebarTab;
+        if (sidebarTab == undefined) sidebarTab = 0;
+
+        let activeTab = ui.sidebar.activeTab;
+        let collapsed = ui.sidebar._collapsed;
+
+        let name = "";
+        let icon = "";
+
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let ringColor = "#000000";
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#000000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
+
+        if (settings.displaySidebarName) name = this.getSidebarName(sidebarTab);
+        if (settings.displaySidebarIcon) icon = this.getSidebarIcon(sidebarTab);
+
+        if ((sidebarTab == 10 && collapsed)) 
+            ringColor = ringOnColor;
+        else    
+            ringColor = ringOffColor;
+        streamDeck.setTitle(name,context);
+        streamDeck.setIcon(1,context,icon,background,2,ringColor);
+    }
+
+    keyPressSidebar(settings){
+        let sidebarTab = settings.sidebarTab;
+        if (sidebarTab == undefined) sidebarTab = 0;
+        let collapsed = ui.sidebar._collapsed;
+
+        if (sidebarTab < 10) ui.sidebar.activateTab(this.getSidebarId(sidebarTab));
+        else if (collapsed) ui.sidebar.expand();
+        else if (collapsed == false) ui.sidebar.collapse();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    updateCompendium(settings,context){
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let name = settings.compendiumName;
+        if (name == undefined) return;
+
+        const compendium = game.packs.entries.find(p=>p.metadata.label == name);
+        if (compendium == undefined) return;
+
+        let ringColor = "#000000";
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#000000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
+
+        
+        if (compendium.rendered) ringColor = ringOnColor;
+        else ringColor = ringOffColor;
+
+        if (settings.displayCompendiumName) streamDeck.setTitle(name,context);
+        streamDeck.setIcon(0,context,"",background,2,ringColor);
+    }
+
+    keyPressCompendium(settings){
+        let name = settings.compendiumName;
+        if (name == undefined) return;
+
+        const compendium = game.packs.entries.find(p=>p.metadata.label == name);
+        if (compendium == undefined) return;
+        if (compendium.rendered) compendium.close();
+        else compendium.render(true);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    //Journals
+    //game.journal.entries[0].render(true)
+
+    updateJournal(settings,context){
+        let background = settings.background;
+        if(background == undefined) background = '#000000';
+
+        let name = settings.compendiumName;
+        if (name == undefined) return;
+        const journal = game.journal.entries.find(p=>p.name == name);
+        if (journal == undefined) return;
+
+        let ringColor = "#000000";
+
+        let ringOffColor = settings.offRing;
+        if (ringOffColor == undefined) ringOffColor = '#000000';
+
+        let ringOnColor = settings.onRing;
+        if (ringOnColor == undefined) ringOnColor = '#00FF00';
+
+        
+       
+        if (journal.sheet.rendered) ringColor = ringOnColor;
+        else ringColor = ringOffColor;
+        
+        if (settings.displayCompendiumName) streamDeck.setTitle(name,context);
+        streamDeck.setIcon(0,context,"",background,2,ringColor);
+    }
+
+    keyPressJournal(settings){
+        let name = settings.compendiumName;
+        if (name == undefined) return;
+
+        const journal = game.journal.entries.find(p=>p.name == name);
+        if (journal == undefined) return;
+        //if (journal.sheet.rendered) journal.close();
+        journal.render(true);
     }
 }

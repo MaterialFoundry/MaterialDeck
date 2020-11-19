@@ -5,6 +5,8 @@ export class playlistConfigForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
         this.data = data;
+        this.playlistNr;
+        this.updatePlaylistNr = false;
     }
 
     /**
@@ -24,26 +26,31 @@ export class playlistConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
-        const selectedPlaylists = game.settings.get(MODULE.moduleName,'selectedPlaylists');
-        let playlistData = {};
-
-        for (let i=0; i<9; i++){
-            let playlist;
-            playlist = MODULE.getFromJSONArray(selectedPlaylists,i);
-
+        let selectedPlaylists = game.settings.get(MODULE.moduleName,'selectedPlaylists');
+        if (selectedPlaylists == undefined) selectedPlaylists = [];
+        let selectedPlaylistMethod = game.settings.get(MODULE.moduleName, 'selectedPlaylistMethod');
+        if (selectedPlaylistMethod == undefined) selectedPlaylistMethod = [];
+        let playlistData = [];
+        let numberOfPlaylists = game.settings.get(MODULE.moduleName,'numberOfPlaylists');
+        if (this.updatePlaylistNr) numberOfPlaylists = this.playlistNr;
+        this.updatePlaylistNr = false;
+        for (let i=0; i<numberOfPlaylists; i++){
+            if (selectedPlaylists[i] == undefined) selectedPlaylists[i] = 'none';
+            if (selectedPlaylistMethod[i] == undefined) selectedPlaylistMethod[i] = 0;
             let dataThis = {
                 iteration: i+1,
                 playlist: selectedPlaylists[i],
+                playlistMethod: selectedPlaylistMethod[i],
                 playlists: game.playlists.entities
             }
-            MODULE.setToJSONArray(playlistData,i,dataThis);
+            playlistData.push(dataThis);
         }
-
         if (!this.data && selectedPlaylists) {
             this.data = selectedPlaylists;
         }
         return {
             playlists: game.playlists.entities,
+            numberOfPlaylists: numberOfPlaylists,
             playlistData: playlistData,
             playMethod: game.settings.get(MODULE.moduleName,'playlistMethod')
         } 
@@ -57,14 +64,19 @@ export class playlistConfigForm extends FormApplication {
     async _updateObject(event, formData) {
         await game.settings.set(MODULE.moduleName,'selectedPlaylists', formData["selectedPlaylist"]);
         await game.settings.set(MODULE.moduleName,'playlistMethod',formData["playMethod"]);
-        
+        await game.settings.set(MODULE.moduleName,'numberOfPlaylists',formData["plNum"]);
+        await game.settings.set(MODULE.moduleName,'selectedPlaylistMethod',formData["playlistMethod"]);
 
     }
 
     activateListeners(html) {
         super.activateListeners(html);
-
-        
+        const numberOfPlaylists = html.find("input[name='plNum']");
+        numberOfPlaylists.on("change", event => {
+            this.playlistNr = event.target.value;
+            this.updatePlaylistNr = true;
+            this.render();
+        });
     }
 }
 
@@ -80,21 +92,21 @@ export class macroConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        /*
         let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
         let width;
         if (streamDeckModel == 0)
-            width = 500;
+            width = 550;
         else if (streamDeckModel == 1)
-            width= 800;
+            width= 885;
         else   
             width = 1400;
-
+        */
         return mergeObject(super.defaultOptions, {
             id: "macro-config",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.MacroConfig"),
             template: "./modules/MaterialDeck/templates/macroConfig.html",
-            classes: ["sheet"],
-            width: width
+            classes: ["sheet"]
         });
     }
     
@@ -108,7 +120,7 @@ export class macroConfigForm extends FormApplication {
         if (selectedMacros == undefined) selectedMacros = [];
         if (color == undefined) color = [];
         if (args == undefined) args = [];
-        let macroData = {};
+        let macroData = [];
         let furnaceEnabled = false;
         let furnace = game.modules.get("furnace");
         if (furnace != undefined && furnace.active) furnaceEnabled = true;
@@ -132,7 +144,7 @@ export class macroConfigForm extends FormApplication {
 
         let iteration = 0;
         for (let j=0; j<jMax; j++){
-            let macroThis = {};
+            let macroThis = [];
       
             for (let i=0; i<iMax; i++){
                 let colorThis = color[iteration];
@@ -156,13 +168,13 @@ export class macroConfigForm extends FormApplication {
                     args: args[iteration],
                     furnace: furnaceEnabled
                 }
-                MODULE.setToJSONArray(macroThis,i,dataThis);
+                macroThis.push(dataThis);
                 iteration++;
             }
             let data = {
                 dataThis: macroThis,
             };
-            MODULE.setToJSONArray(macroData,j,data);
+            macroData.push(data);
         }
         
         return {
@@ -187,7 +199,8 @@ export class macroConfigForm extends FormApplication {
         let furnace = game.modules.get("furnace");
         if (furnace != undefined && furnace.active) 
             await game.settings.set(MODULE.moduleName,'macroArgs', formData["args"]);
-        macroControl.updateAll();
+        if (MODULE.enableModule)
+            macroControl.updateAll();
     }
 
     activateListeners(html) {
@@ -202,7 +215,7 @@ export class soundboardConfigForm extends FormApplication {
         super(data, options);
         this.data = data;
         //this.soundData = {};
-        this.playlist;
+        this.playlists = [];
         this.updatePlaylist = false;
     }
 
@@ -210,21 +223,21 @@ export class soundboardConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        /*
         let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
         let width;
         if (streamDeckModel == 0)
-            width = 500;
+            width = 550;
         else if (streamDeckModel == 1)
-            width= 800;
+            width= 885;
         else   
             width = 1400;
-
+        */
         return mergeObject(super.defaultOptions, {
             id: "soundboard-config",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.SoundboardConfig"),
             template: "./modules/MaterialDeck/templates/soundboardConfig.html",
             classes: ["sheet"],
-            width: width,
             height: 720
         });
     }
@@ -237,17 +250,7 @@ export class soundboardConfigForm extends FormApplication {
     /**
      * Provide data to the template
      */
-    getData() {
-        let playlistId = game.settings.get(MODULE.moduleName,'soundboardSettings').playlist;
-        if (this.updatePlaylist) playlistId = this.playlist;
-        this.updatePlaylist = false;
-        let playlist = 'none';
-        let sounds = [];
-        if (playlistId != undefined){
-            playlist = game.playlists.entities.find(p => p._id == playlistId);
-            if (playlist != undefined) sounds = playlist.sounds;
-            else playlist = 'none';
-        }
+    getData() {     
         let selectedSounds = game.settings.get(MODULE.moduleName,'soundboardSettings').sounds;
         let colorOn = game.settings.get(MODULE.moduleName,'soundboardSettings').colorOn;
         let colorOff = game.settings.get(MODULE.moduleName,'soundboardSettings').colorOff;
@@ -255,6 +258,15 @@ export class soundboardConfigForm extends FormApplication {
         let volume = game.settings.get(MODULE.moduleName,'soundboardSettings').volume;
         let img = game.settings.get(MODULE.moduleName,'soundboardSettings').img;
         let name = game.settings.get(MODULE.moduleName,'soundboardSettings').name;
+        let selectedPlaylists = game.settings.get(MODULE.moduleName,'soundboardSettings').selectedPlaylists;
+        let src = game.settings.get(MODULE.moduleName,'soundboardSettings').src;
+
+        let playlists = [];
+        playlists.push({id:"none",name:game.i18n.localize("MaterialDeck.None")});
+        playlists.push({id:"FP",name:game.i18n.localize("MaterialDeck.FilePicker")})
+        for (let i=0; i<game.playlists.entities.length; i++){
+            playlists.push({id:game.playlists.entities[i]._id,name:game.playlists.entities[i].name});
+        }
 
         if (selectedSounds == undefined) selectedSounds = [];
         if (colorOn == undefined) colorOn = [];
@@ -262,7 +274,9 @@ export class soundboardConfigForm extends FormApplication {
         if (mode == undefined) mode = [];
         if (img == undefined) img = [];
         if (name == undefined) name = [];
-        let soundData = {};
+        if (selectedPlaylists == undefined) selectedPlaylists = [];
+        if (src == undefined) src = [];
+        let soundData = [];
 
         let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
         let iMax,jMax;
@@ -279,40 +293,58 @@ export class soundboardConfigForm extends FormApplication {
             iMax = 8;
         }
 
+        if (this.updatePlaylist) selectedPlaylists = this.playlists;
+        else this.playlists = selectedPlaylists;
+        this.updatePlaylist = false;
+
         let iteration = 0;
 
         for (let j=0; j<jMax; j++){
-            let soundsThis = {};
+            let soundsThis = [];
             for (let i=0; i<iMax; i++){
+                let selectedPlaylist;
+                let sounds = [];
                 if (volume == undefined) volume = 50;
-                
-
+                if (selectedPlaylists[iteration]==undefined) selectedPlaylist = 'none';
+                else if (selectedPlaylists[iteration] == 'none') selectedPlaylist = 'none';
+                else if (selectedPlaylists[iteration] == 'FP') selectedPlaylist = 'FP';
+                else {
+                    const pl = game.playlists.entities.find(p => p._id == selectedPlaylists[iteration]);
+                    selectedPlaylist = pl._id;
+                    sounds = pl.sounds;
+                }
+                let styleSS = "";
+                let styleFP ="display:none";
+                if (selectedPlaylist == 'FP') {
+                    styleSS = 'display:none';
+                    styleFP = ''
+                }
                 let dataThis = {
                     iteration: iteration+1,
+                    playlists: playlists,
+                    selectedPlaylist: selectedPlaylist,
                     sound: selectedSounds[iteration],
                     sounds: sounds,
+                    srcPath: src[iteration],
                     colorOn: colorOn[iteration],
                     colorOff: colorOff[iteration],
                     mode: mode[iteration],
                     volume: volume[iteration],
                     imgPath: img[iteration],
-                    name: name[iteration]
+                    name: name[iteration],
+                    styleSS: styleSS,
+                    styleFP: styleFP
                 }
-                MODULE.setToJSONArray(soundsThis,i,dataThis);
+                soundsThis.push(dataThis);
                 iteration++;
             }
             let data = {
                 dataThis: soundsThis,
             };
-            MODULE.setToJSONArray(soundData,j,data);
-
+            soundData.push(data);
         }
         return {
-            playlists: game.playlists.entities,
-            playlist: playlistId,
-            sounds: sounds,
-            selectedSound81: selectedSounds.a,
-            soundData: soundData,
+            soundData: soundData
         } 
     }
 
@@ -324,86 +356,42 @@ export class soundboardConfigForm extends FormApplication {
     async _updateObject(event, formData) {
         let length = formData["sounds"].length;
         let img = [];
+        let soundSrc = []
         for (let i=0; i<length; i++){
             let name = "img"+(i+1);
             let src = formData[name];
             img[i] = src;
+
+            name = "src"+(i+1);
+            src = formData[name];
+            soundSrc[i] = src;
         }
 
         await game.settings.set(MODULE.moduleName,'soundboardSettings',{
-            playlist: formData["playlist"],
+            selectedPlaylists: formData["playlist"],
             sounds: formData["sounds"],
             colorOn: formData["colorOn"],
             colorOff: formData["colorOff"],
             mode: formData["mode"],
             img: img,
             volume: formData["volume"],
-            name: formData["name"]
+            name: formData["name"],
+            src: soundSrc
         });
-        //MODULE.launchpad.audioSoundboardUpdate();
     }
 
     async activateListeners(html) {
         super.activateListeners(html);
-        const colorPickerOn = html.find("button[name='colorPickerOn']");
-        const colorPickerOff = html.find("button[name='colorPickerOff']");
         const playlistSelect = html.find("select[name='playlist']");
-        const volumeSlider = html.find("input[name='volume']");
-        const soundSelect = html.find("select[name='sounds']");
 
-        /*
-        colorPickerOn.on('click',(event) => {
-            let target = event.currentTarget.value;
-            let color = document.getElementById("colorOn"+target).value;
-            if ((color < 0 && color > 127) || color == "") color = 0;
-            MODULE.launchpad.colorPicker(target,1,color);
-            
-        });
-        colorPickerOff.on('click',(event) => {
-            let target = event.currentTarget.value;
-            let color = document.getElementById("colorOff"+target).value;
-            if ((color < 0 && color > 127) || color == "") color = 0;
-            MODULE.launchpad.colorPicker(target,0,color);
-            
-        });
         if (playlistSelect.length > 0) {
             playlistSelect.on("change", event => {
-                this.playlist = event.target.value;
+                let id = event.target.id.replace('playlists','');
+                this.playlists[id-1] = event.target.value;
                 this.updatePlaylist = true;
                 this.render();
             });
         }
-        volumeSlider.on('change', event => {
-            let id = event.target.id.replace('volume','');
-            let column = id%10-1;
-            let row = 8-Math.floor(id/10);
-            id = row*8+column;
-            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            settings.volume[id] = event.target.value;
-            game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
-            if (MODULE.launchpad.activeSounds[id] != false){
-                let volume = AudioHelper.inputToVolume(event.target.value/100) * game.settings.get("core", "globalInterfaceVolume");
-                MODULE.launchpad.activeSounds[id].volume(volume);
-            }
-        });
-        if (soundSelect.length > 0) {
-            soundSelect.on("change",event => {
-                let id = event.target.id.replace('soundSelect','');
-                let column = id%10-1;
-                let row = 8-Math.floor(id/10);
-                id = row*8+column;
-                let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-                settings.sounds[id] = event.target.value;
-                game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
-                if (MODULE.launchpad.activeSounds[id] != false){
-                    let mode = settings.mode[id];
-                    let repeat = false;
-                    if (mode == 1) repeat = true;
-                    MODULE.launchpad.playSound(id,repeat,false);
-                }
-            });
-        }
-        */
     }
     
 }

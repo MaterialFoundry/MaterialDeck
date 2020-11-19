@@ -1,4 +1,18 @@
 # Changelog Material Deck Module
+### v0.8.7 - 19-11-2020
+<ul>
+<li>Added support for more playlists</li>
+<li>Added playmode setting for each playlist, which overrides the default playmode</li>
+<li>Added option to use the file picker to select Soundboard sounds, including support for wildcard names</li>
+<li>Fixed issue where macro config screen would not close if the module was disabled</li>
+<li>Fixed issue where the layout of the configuration screens would be messed up depending on browser/screen size</li>
+<li>Added option to open compendia and journal entries</li>
+</ul>
+
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.1: https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v0.9.0: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v0.8.6 - 18-11-2020
 <ul>
 <li>Added support for the new Material Server app</li>

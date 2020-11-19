@@ -127,10 +127,25 @@ export class PlaylistControl{
         streamDeck.setTitle(name,context);
     }
 
-    stopAll(){
-        let playing = game.playlists.playing;
-        for (let i=0; i<playing.length; i++){
-            playing[i].stopAll();
+    stopAll(force=false){
+        if (force){
+            let playing = game.playlists.playing;
+            for (let i=0; i<playing.length; i++){
+                playing[i].stopAll();
+            }
+        }
+        else {
+            let playing = game.playlists.playing;
+            console.log(playing);
+            let selectedPlaylists = game.settings.get(MODULE.moduleName,'selectedPlaylists');
+            console.log(selectedPlaylists);
+            for (let i=0; i<playing.length; i++){
+                const playlistNr = selectedPlaylists.findIndex(p => p == playing[i]._id);
+                const mode = game.settings.get(MODULE.moduleName,'selectedPlaylistMethod')[playlistNr];
+                if (mode == 0) playing[i].stopAll();
+                console.log(playlistNr,mode);
+            }
+            
         }
     }
 
@@ -156,11 +171,11 @@ export class PlaylistControl{
                 let playlist = this.getPlaylist(playlistNr);
                 if (playlist != undefined){
                     if (settings.playlistMode == 0)
-                        this.playPlaylist(playlist);
+                        this.playPlaylist(playlist,playlistNr);
                     else {
                         let track = playlist.data.sounds[trackNr];
                         if (track != undefined){
-                            this.playTrack(track,playlist);
+                            this.playTrack(track,playlist,playlistNr);
                         }
                     }
                 }
@@ -178,29 +193,37 @@ export class PlaylistControl{
             }
         }
         else {
-            this.stopAll();
+            this.stopAll(true);
         }   
     }
 
-    async playPlaylist(playlist){
+    async playPlaylist(playlist,playlistNr){
         if (playlist.playing) {
             playlist.stopAll();
             return;
         }
-        let mode = game.settings.get(MODULE.moduleName,'playlistMethod');
-        if (mode == 2) await this.stopAll();
+        let mode = game.settings.get(MODULE.moduleName,'selectedPlaylistMethod')[playlistNr];
+        if (mode == 0) {
+            mode = game.settings.get(MODULE.moduleName,'playlistMethod');
+            if (mode == 2) await this.stopAll();
+        }
         playlist.playAll();
     }
     
-    async playTrack(track,playlist){
+    async playTrack(track,playlist,playlistNr){
         let play;
         if (track.playing)
             play = false;
         else {
             play = true;
-            let mode = game.settings.get(MODULE.moduleName,'playlistMethod');
-            if (mode == 1) await playlist.stopAll();
-            else if (mode == 2) await this.stopAll();
+            let mode = game.settings.get(MODULE.moduleName,'selectedPlaylistMethod')[playlistNr];
+            console.log('mode',mode);
+            if (mode == 0) {
+                mode = game.settings.get(MODULE.moduleName,'playlistMethod');
+                if (mode == 1) await playlist.stopAll();
+                else if (mode == 2) await this.stopAll();
+            }
+            else if (mode == 2) await playlist.stopAll();
         }
         await playlist.updateEmbeddedEntity("PlaylistSound", {_id: track._id, playing: play});
         playlist.update({playing: play});

@@ -9,9 +9,9 @@ export const registerSettings = function() {
     //Enabled the module
     game.settings.register(MODULE.moduleName,'Enable', {
         name: "MaterialDeck.Sett.Enable",
-        scope: "world",
+        scope: "global",
         config: true,
-        default: true,
+        default: false,
         type: Boolean,
         onChange: x => window.location.reload()
     });
@@ -24,6 +24,19 @@ export const registerSettings = function() {
         type:Number,
         default:1,
         choices:["MaterialDeck.Sett.Model_Mini","MaterialDeck.Sett.Model_Normal","MaterialDeck.Sett.Model_XL"],
+    });
+
+    /**
+     * Sets the ip address of the server
+     */
+    game.settings.register(MODULE.moduleName,'address', {
+        name: "MaterialDeck.Sett.ServerAddr",
+        hint: "MaterialDeck.Sett.ServerAddrHint",
+        scope: "world",
+        config: true,
+        default: "localhost:3001",
+        type: String,
+        onChange: x => window.location.reload()
     });
 
     /**
@@ -49,7 +62,23 @@ export const registerSettings = function() {
         name: "selectedPlaylists",
         scope: "world",
         type: Object,
-        default: {a: "None",b: "None",c: "none",d: "none",e: "none",f: "none",g: "none",h: "none",i: "none"},
+        default: {},
+        config: false
+    });
+
+    game.settings.register(MODULE.moduleName, 'selectedPlaylistMethod', {
+        name: "selectedPlaylistMethod",
+        scope: "world",
+        type: Object,
+        default: {},
+        config: false
+    });
+
+    game.settings.register(MODULE.moduleName, 'numberOfPlaylists', {
+        name: "numberOfPlaylists",
+        scope: "world",
+        type: Number,
+        default: 9,
         config: false
     });
 

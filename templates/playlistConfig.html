@@ -1,9 +1,9 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
     <div >                    
-        <h2>{{localize "MaterialDeck.PL.Header"}}</h2>
+        <h2>{{localize "MaterialDeck.PL.Settings"}}</h2>
     </div>
     <div class="form-group">     
-        <label>{{localize "MaterialDeck.PL.Label"}}</label>
+        <label>{{localize "MaterialDeck.PL.Mode"}}</label>
         <select name="playMethod" class="playMethod" default="">
             {{#select playMethod}}
                 <option value="0">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
@@ -11,6 +11,10 @@
                 <option value="2">{{localize "MaterialDeck.PL.OneTrackTotal"}}</option>
             {{/select}}
         </select>
+    </div>
+    <div class="form-group">     
+        <label>{{localize "MaterialDeck.PL.Nr"}}</label>
+        <input type="number" id="numberOfPlaylists" name="plNum" min="0" max="127" value={{numberOfPlaylists}}>
     </div>
     <div>                    
         <h2>{{localize "MaterialDeck.Playlists"}}</h2>
@@ -24,6 +28,14 @@
                     {{#each this.playlists}}
                     <option value="{{this._id}}">{{this.name}}</option>
                     {{/each}}
+                {{/select}}
+            </select>
+            &nbsp;
+            <select name="playlistMethod" class="playlistMethod" default="">
+                {{#select this.playlistMethod}}
+                    <option value="0">{{localize "MaterialDeck.PL.Mode"}}</option>
+                    <option value="1">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
+                    <option value="2">{{localize "MaterialDeck.PL.OneTrack"}}</option>
                 {{/select}}
             </select>
         </div>

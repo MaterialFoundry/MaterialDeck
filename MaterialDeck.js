@@ -20,17 +20,17 @@ export const moduleName = "MaterialDeck";
 export var selectedTokenId;
 
 let ready = false;
+let activeSounds = [];
+       
 //CONFIG.debug.hooks = true;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Global variables
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-var enableModule;
+export var enableModule;
 
 //Websocket variables
-let ip = "localhost";       //Ip address of the websocket server
-let port = "3001";                //Port of the websocket server
 var ws;                         //Websocket variable
 let wsOpen = false;             //Bool for checking if websocket has ever been opened => changes the warning message if there's no connection
 let wsInterval;                 //Interval timer to detect disconnections
@@ -101,17 +101,16 @@ async function analyzeWSmessage(msg){
             combatTracker.keyPress(settings,context);
         else if (action == 'playlist')
             playlistControl.keyPress(settings,context);
-        else if (action == 'soundboard'){
+        else if (action == 'soundboard')
             soundboard.keyPressDown(settings);
-        }
+        else if (action == 'other')
+            otherControls.keyPress(settings);
     }
 
     else if (event == 'keyUp'){
         if (action == 'soundboard'){
             soundboard.keyPressUp(settings);
         }
-        else if (action == 'other')
-            otherControls.keyPress(settings);
     }
 };
 
@@ -122,8 +121,8 @@ async function analyzeWSmessage(msg){
  * If message is received, reset the interval, and send the message to analyzeWSmessage()
  */
 function startWebsocket() {
-    //ip = localhost;
-    ws = new WebSocket('ws://'+ip+':'+port);
+    const address = game.settings.get(moduleName,'address');
+    ws = new WebSocket('ws://'+address+'/');
 
     ws.onmessage = function(msg){
         //console.log(msg);
@@ -134,7 +133,7 @@ function startWebsocket() {
 
     ws.onopen = function() {
         WSconnected = true;
-        ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+ip+':'+port);
+        ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+address);
         wsOpen = true;
         const msg = {
             target: "server",
@@ -181,28 +180,31 @@ export function sendWS(txt){
  */
 Hooks.once('ready', ()=>{
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
-    if (enableModule == false) return;
+    
     
     game.socket.on(`module.MaterialDeck`, (payload) =>{
         //console.log(payload);
         if (payload.msgType != "playSound") return;
-        playTrack(payload.trackNr,payload.play,payload.repeat,payload.volume);  
+        playTrack(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
     });
 
+    for (let i=0; i<64; i++)
+        activeSounds[i] = false;
+
+    if (enableModule == false) return;
     if (game.user.isGM == false) {
         ready = true;
         return;
     }
     
     startWebsocket();
-
+    soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
     tokenControl = new TokenControl();
     move = new Move();
     macroControl = new MacroControl();
     combatTracker = new CombatTracker();
     playlistControl = new PlaylistControl();
-    soundboard = new SoundboardControl();
     otherControls = new OtherControls();
 
 
@@ -235,18 +237,9 @@ Hooks.once('ready', ()=>{
     
 });
 
-export function playTrack(soundNr,play,repeat,volume){
+export function playTrack(soundNr,src,play,repeat,volume){
     if (play){
-        let trackId = game.settings.get(moduleName,'soundboardSettings').sounds[soundNr];
-        let playlistId = game.settings.get(moduleName,'soundboardSettings').playlist;
-        let sounds = game.playlists.entities.find(p => p._id == playlistId).data.sounds;
-        let sound = sounds.find(p => p._id == trackId);
-        if (sound == undefined){
-            activeSounds[soundNr] = false;
-            return;
-        }
         volume *= game.settings.get("core", "globalInterfaceVolume");
-        let src = sound.path;
 
         let howl = new Howl({src, volume, loop: repeat, onend: (id)=>{
             if (repeat == false){
@@ -260,7 +253,8 @@ export function playTrack(soundNr,play,repeat,volume){
         activeSounds[soundNr] = howl;
    }
    else {
-       activeSounds[soundNr].stop();
+        activeSounds[soundNr].stop();
+        activeSounds[soundNr] = false;
    }
 }
 
@@ -329,7 +323,32 @@ Hooks.on('targetToken',(user,token,targeted)=>{
     if (token.id == selectedTokenId) tokenControl.update(selectedTokenId);
 });
 
-  Hooks.once('init', ()=>{
+Hooks.on('sidebarCollapse',()=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll();
+});
+
+Hooks.on('renderCompendium',()=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll();
+});
+
+Hooks.on('closeCompendium',()=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll();
+});
+
+Hooks.on('renderJournalSheet',()=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll();
+});
+
+Hooks.on('closeJournalSheet',()=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll();
+});
+
+Hooks.once('init', ()=>{
     //CONFIG.debug.hooks = true;
     registerSettings(); //in ./src/settings.js
 });
@@ -350,6 +369,21 @@ export function getFromJSONArray(data,i){
     else if (i == 6) val = data.g;
     else if (i == 7) val = data.h;
     else if (i == 8) val = data.i;
+    else if (i == 9) val = data.j;
+    else if (i == 10) val = data.k;
+    else if (i == 11) val = data.l;
+    else if (i == 12) val = data.m;
+    else if (i == 13) val = data.n;
+    else if (i == 14) val = data.o;
+    else if (i == 15) val = data.p;
+    else if (i == 16) val = data.q;
+    else if (i == 17) val = data.r;
+    else if (i == 18) val = data.s;
+    else if (i == 19) val = data.t;
+    else if (i == 20) val = data.u;
+    else if (i == 21) val = data.v;
+    else if (i == 22) val = data.w;
+    else if (i == 23) val = data.x;
     return val;
 }
 
@@ -364,4 +398,19 @@ export function setToJSONArray(data,i,val){
     else if (i == 6) data.g = val;
     else if (i == 7) data.h = val;
     else if (i == 8) data.i = val;
+    else if (i == 9) data.j = val;
+    else if (i == 10) data.k = val;
+    else if (i == 11) data.l = val;
+    else if (i == 12) data.m = val;
+    else if (i == 13) data.n = val;
+    else if (i == 14) data.o = val;
+    else if (i == 15) data.p = val;
+    else if (i == 16) data.q = val;
+    else if (i == 17) data.r = val;
+    else if (i == 18) data.s = val;
+    else if (i == 19) data.t = val;
+    else if (i == 20) data.u = val;
+    else if (i == 21) data.v = val;
+    else if (i == 22) data.w = val;
+    else if (i == 23) data.x = val;
 }

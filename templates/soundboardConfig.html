@@ -3,21 +3,11 @@
         .boxed {
             border: 1px solid black ;
             border-radius: 5px ; 
-            width: 100px;
-            height: 255px;
+            max-width: 166px;
+            height: 300px;
         }
     </style>
-    <div class="form-group">
-        <label>{{localize "MaterialDeck.Playlist"}}&nbsp;&nbsp;&nbsp;</label>
-        <select name="playlist" class="playlist-select" default="" style="max-width:200px;">
-            {{#select playlist}}
-                <option value="">{{localize "MaterialDeck.None"}}</option>
-                {{#each playlists}}
-                <option value="{{this._id}}">{{this.name}}</option>
-                {{/each}}
-            {{/select}}
-        </select>
-    </div>
+    
     {{#each soundData}}
         <div class="form-group">
             {{#each this.dataThis}}
@@ -29,10 +19,24 @@
                         {{localize "MaterialDeck.Name"}}
                     </div>
                     <input type="text" name="name" value="{{this.name}}">
+
+                    <div style="text-align:center;">                    
+                        {{localize "MaterialDeck.Playlist"}}
+                    </div>
+                    <div>
+                        <select name="playlist" class="playlist-select" default="" style="width:132px;" id="playlists{{this.iteration}}">
+                            {{#select this.selectedPlaylist}}
+                                {{#each playlists}}
+                                <option value="{{this.id}}">{{this.name}}</option>
+                                {{/each}}
+                            {{/select}}
+                        </select>
+                    </div>
+
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Sound"}}
                     </div>
-                    <div>
+                    <div class="form-fields" style={{this.styleSS}}>
                         <select name="sounds" class="sounds-select" default="" style="width:132px;" id="soundSelect{{this.iteration}}">
                             {{#select this.sound}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
@@ -41,6 +45,12 @@
                                 {{/each}}
                             {{/select}}
                         </select>
+                    </div>
+                    <div class="form-fields" style={{this.styleFP}}>
+                        <button type="button" class="file-picker" data-type="audio" data-target="src{{this.iteration}}" title="Browse Files" tabindex="-1">
+                            <i class="fas fa-file-import fa-fw"></i>
+                        </button>
+                        <input class="image" type="text" name="src{{this.iteration}}" id="srcPath{{this.iteration}}" placeholder="path/audio.mp3" value={{this.srcPath}}>
                     </div>
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Icon"}}
