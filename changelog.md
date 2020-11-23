@@ -12,8 +12,8 @@
 <b>Note2:</b> Any settings set in 'Playlist Configuration' have to be set again<br>
 <br>
 <b>Compatible server app and SD plugin:</b><br>
-Material Server v1.0.1: https://github.com/CDeenen/MaterialServer/releases <br>
-SD plugin v0.9.1 (unchanged): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+Material Server v1.0.1 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v0.9.1: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
 
 ### v0.9.0 - 19-11-2020
 <ul>
