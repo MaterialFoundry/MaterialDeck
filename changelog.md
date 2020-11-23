@@ -5,6 +5,7 @@
 <li>Fixed 'Soundboard Configuration' issue where changing the playlist would reset everything you've changed since last save</li>
 <li>'Soundboard Configuration', 'Macro Configuration' and 'Playlist Configuration' now save after each change, and update the SD instantly</li>
 <li>Save button has been removed from configuration screens, since it is now redundant</li>
+<li>Added support for DnD3.5e and Pathfinder 2e</li>
 </ul>
 
 <b>Note1:</b> In 'Macro Configuration', previously saved Furnace arguments have to be filled in again.<br>
