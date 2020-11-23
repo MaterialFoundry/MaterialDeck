@@ -2,7 +2,7 @@
     "name": "MaterialDeck",
     "title": "Material Deck",
     "description": "",
-    "version": "0.9.0",
+    "version": "0.9.1",
     "author": "CDeenen",
     "esmodules": [
       "./MaterialDeck.js"

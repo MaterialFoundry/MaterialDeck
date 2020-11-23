@@ -75,7 +75,10 @@ export class StreamDeck{
         let txtArray = [];
         let counter = 0;
         for (let i=0; i<txtArrayOriginal.length; i++){
-            
+            if (i>0){
+                txtArray[counter] = '';
+                counter++;
+            }
             let txtArrayTemp = txtArrayOriginal[i].split(" ");
             for (let j=0; j<txtArrayTemp.length; j++){
                 txtArray[counter] = txtArrayTemp[j];

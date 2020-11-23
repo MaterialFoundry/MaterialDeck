@@ -196,7 +196,7 @@ export class MacroControl{
         if (macroId != undefined){
             let macro = game.macros.get(macroId);
             if (macro != undefined && macro != null) {
-                const args = game.settings.get(MODULE.moduleName,'macroArgs')[macroNumber];
+                const args = game.settings.get(MODULE.moduleName,'macroSettings').args[macroNumber];
                 let furnaceEnabled = false;
                 let furnace = game.modules.get("furnace");
                 if (furnace != undefined && furnace.active) furnaceEnabled = true;

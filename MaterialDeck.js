@@ -265,6 +265,18 @@ Hooks.on('updateToken',(scene,token)=>{
         tokenControl.update(selectedTokenId);
 });
 
+Hooks.on('updateActor',(scene,actor)=>{
+    if (enableModule == false || ready == false) return;
+    let children = canvas.tokens.children[0].children;
+    for (let i=0; i<children.length; i++){
+        if (children[i].actor.id == actor._id){
+            let tokenId = children[i].id;
+            if (tokenId == selectedTokenId)
+                tokenControl.update(selectedTokenId);
+        }
+    }
+});
+
 Hooks.on('controlToken',(token,controlled)=>{
     if (enableModule == false || ready == false) return;
     if (controlled) {

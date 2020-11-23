@@ -1,5 +1,5 @@
 import * as MODULE from "../MaterialDeck.js";
-import {macroControl} from "../MaterialDeck.js";
+import {macroControl,soundboard,playlistControl} from "../MaterialDeck.js";
 
 export class playlistConfigForm extends FormApplication {
     constructor(data, options) {
@@ -26,33 +26,43 @@ export class playlistConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
-        let selectedPlaylists = game.settings.get(MODULE.moduleName,'selectedPlaylists');
+        let settings = game.settings.get(MODULE.moduleName,'playlists');
+        let selectedPlaylists = settings.selectedPlaylist;
         if (selectedPlaylists == undefined) selectedPlaylists = [];
-        let selectedPlaylistMethod = game.settings.get(MODULE.moduleName, 'selectedPlaylistMethod');
-        if (selectedPlaylistMethod == undefined) selectedPlaylistMethod = [];
-        let playlistData = [];
-        let numberOfPlaylists = game.settings.get(MODULE.moduleName,'numberOfPlaylists');
+        let selectedPlaylistMode = settings.playlistMode;
+        if (selectedPlaylistMode == undefined) selectedPlaylistMode = [];
+        let numberOfPlaylists = settings.playlistNumber;
         if (this.updatePlaylistNr) numberOfPlaylists = this.playlistNr;
+        if (numberOfPlaylists == undefined) numberOfPlaylists = 9;
+        let playMode = settings.playMode;
+        if (playMode == undefined) playMode = 0;
+        let playlistData = [];
+        
         this.updatePlaylistNr = false;
         for (let i=0; i<numberOfPlaylists; i++){
             if (selectedPlaylists[i] == undefined) selectedPlaylists[i] = 'none';
-            if (selectedPlaylistMethod[i] == undefined) selectedPlaylistMethod[i] = 0;
+            if (selectedPlaylistMode[i] == undefined) selectedPlaylistMode[i] = 0;
             let dataThis = {
                 iteration: i+1,
                 playlist: selectedPlaylists[i],
-                playlistMethod: selectedPlaylistMethod[i],
+                playlistMode: selectedPlaylistMode[i],
                 playlists: game.playlists.entities
             }
             playlistData.push(dataThis);
         }
-        if (!this.data && selectedPlaylists) {
-            this.data = selectedPlaylists;
+
+        this.data = {
+            playMode: playMode,
+            playlistNumber: numberOfPlaylists,
+            selectedPlaylist: selectedPlaylists,
+            playlistMode: selectedPlaylistMode
         }
+
         return {
             playlists: game.playlists.entities,
             numberOfPlaylists: numberOfPlaylists,
             playlistData: playlistData,
-            playMethod: game.settings.get(MODULE.moduleName,'playlistMethod')
+            playMode: playMode
         } 
     }
 
@@ -62,21 +72,48 @@ export class playlistConfigForm extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
-        await game.settings.set(MODULE.moduleName,'selectedPlaylists', formData["selectedPlaylist"]);
-        await game.settings.set(MODULE.moduleName,'playlistMethod',formData["playMethod"]);
-        await game.settings.set(MODULE.moduleName,'numberOfPlaylists',formData["plNum"]);
-        await game.settings.set(MODULE.moduleName,'selectedPlaylistMethod',formData["playlistMethod"]);
+       // await game.settings.set(MODULE.moduleName,'selectedPlaylists', formData["selectedPlaylist"]);
+     //   await game.settings.set(MODULE.moduleName,'playlistMethod',formData["playMethod"]);
+       // await game.settings.set(MODULE.moduleName,'numberOfPlaylists',formData["plNum"]);
+       // await game.settings.set(MODULE.moduleName,'selectedPlaylistMode',formData["playlistMethod"]);
 
     }
 
     activateListeners(html) {
         super.activateListeners(html);
+        const playMode = html.find("select[name='playMode']");
         const numberOfPlaylists = html.find("input[name='plNum']");
+        const selectedPlaylist = html.find("select[name='selectedPlaylist']");
+        const playlistMode = html.find("select[name='playlistMode']");
+
+        playMode.on("change", event => {
+            this.data.playMode=event.target.value;
+            this.updateSettings(this.data);
+        });
+
         numberOfPlaylists.on("change", event => {
             this.playlistNr = event.target.value;
             this.updatePlaylistNr = true;
-            this.render();
+            this.data.playlistNumber=event.target.value;
+            this.updateSettings(this.data);
         });
+
+        selectedPlaylist.on("change", event => {
+            let id = event.target.id.replace('playlist','');
+            this.data.selectedPlaylist[id-1]=event.target.value;
+            this.updateSettings(this.data);
+        });
+
+        playlistMode.on("change", event => {
+            let id = event.target.id.replace('playlistMode','');
+            this.data.playlistMode[id-1]=event.target.value;
+            this.updateSettings(this.data);
+        });
+    }
+    async updateSettings(settings){
+        await game.settings.set(MODULE.moduleName,'playlists', settings);
+        if (MODULE.enableModule) playlistControl.updateAll();
+        this.render();
     }
 }
 
@@ -116,7 +153,7 @@ export class macroConfigForm extends FormApplication {
     getData() {
         var selectedMacros = game.settings.get(MODULE.moduleName,'macroSettings').macros;
         var color = game.settings.get(MODULE.moduleName,'macroSettings').color;
-        var args = game.settings.get(MODULE.moduleName,'macroArgs');
+        var args = game.settings.get(MODULE.moduleName,'macroSettings').args;
         if (selectedMacros == undefined) selectedMacros = [];
         if (color == undefined) color = [];
         if (args == undefined) args = [];
@@ -191,9 +228,11 @@ export class macroConfigForm extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
+        /*
        await game.settings.set(MODULE.moduleName,'macroSettings',{
             macros: formData["macros"],
-            color: formData["colorPicker"]
+            color: formData["colorPicker"],
+            args: formData["args"]
        });
 
         let furnace = game.modules.get("furnace");
@@ -201,10 +240,41 @@ export class macroConfigForm extends FormApplication {
             await game.settings.set(MODULE.moduleName,'macroArgs', formData["args"]);
         if (MODULE.enableModule)
             macroControl.updateAll();
+        */
     }
 
     activateListeners(html) {
         super.activateListeners(html); 
+        const macro = html.find("select[name='macros']");
+        const args = html.find("input[name='args']");
+        const color = html.find("input[name='colorPicker']");
+
+        macro.on("change", event => {
+            let id = event.target.id.replace('macros','');
+            let settings = game.settings.get(MODULE.moduleName,'macroSettings');
+            settings.macros[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        args.on("change", event => {
+            let id = event.target.id.replace('args','');
+            let settings = game.settings.get(MODULE.moduleName,'macroSettings');
+            settings.args[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        color.on("change", event => {
+            let id = event.target.id.replace('colorpicker','');
+            let settings = game.settings.get(MODULE.moduleName,'macroSettings');
+            settings.color[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+    }
+
+    async updateSettings(settings){
+        await game.settings.set(MODULE.moduleName,'macroSettings',settings);
+        if (MODULE.enableModule) macroControl.updateAll();
+        this.render();
     }
 }
 
@@ -217,6 +287,9 @@ export class soundboardConfigForm extends FormApplication {
         //this.soundData = {};
         this.playlists = [];
         this.updatePlaylist = false;
+        this.update = false;
+        this.iMax;
+        this.jMax;
     }
 
     /**
@@ -250,7 +323,11 @@ export class soundboardConfigForm extends FormApplication {
     /**
      * Provide data to the template
      */
-    getData() {     
+    getData() { 
+        if (this.update) {
+            this.update=false;
+            return {soundData: this.data};
+        }   
         let selectedSounds = game.settings.get(MODULE.moduleName,'soundboardSettings').sounds;
         let colorOn = game.settings.get(MODULE.moduleName,'soundboardSettings').colorOn;
         let colorOff = game.settings.get(MODULE.moduleName,'soundboardSettings').colorOff;
@@ -279,29 +356,25 @@ export class soundboardConfigForm extends FormApplication {
         let soundData = [];
 
         let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
-        let iMax,jMax;
+       
         if (streamDeckModel == 0){
-            jMax = 6;
-            iMax = 3;
+            this.jMax = 6;
+            this.iMax = 3;
         }
         else if (streamDeckModel == 1){
-            jMax = 6;
-            iMax = 5;
+            this.jMax = 6;
+            this.iMax = 5;
         }
         else {
-            jMax = 8;
-            iMax = 8;
+            this.jMax = 8;
+            this.iMax = 8;
         }
-
-        if (this.updatePlaylist) selectedPlaylists = this.playlists;
-        else this.playlists = selectedPlaylists;
-        this.updatePlaylist = false;
 
         let iteration = 0;
 
-        for (let j=0; j<jMax; j++){
+        for (let j=0; j<this.jMax; j++){
             let soundsThis = [];
-            for (let i=0; i<iMax; i++){
+            for (let i=0; i<this.iMax; i++){
                 let selectedPlaylist;
                 let sounds = [];
                 if (volume == undefined) volume = 50;
@@ -343,8 +416,10 @@ export class soundboardConfigForm extends FormApplication {
             };
             soundData.push(data);
         }
+        this.data = soundData;
+
         return {
-            soundData: soundData
+            soundData: this.data
         } 
     }
 
@@ -354,6 +429,7 @@ export class soundboardConfigForm extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
+        /*
         let length = formData["sounds"].length;
         let img = [];
         let soundSrc = []
@@ -375,23 +451,160 @@ export class soundboardConfigForm extends FormApplication {
             mode: formData["mode"],
             img: img,
             volume: formData["volume"],
-            name: formData["name"],
+            name: formData["namebox"],
             src: soundSrc
         });
+        */
     }
 
     async activateListeners(html) {
         super.activateListeners(html);
+        const nameField = html.find("input[name='namebox']");
         const playlistSelect = html.find("select[name='playlist']");
+        const soundSelect = html.find("select[name='sounds']");
+        const soundFP = html.find("input[name2='soundSrc']");
+        const imgFP = html.find("input[name2='imgSrc']");
+        const onCP = html.find("input[name='colorOn']");
+        const offCP = html.find("input[name='colorOff']");
+        const playMode = html.find("select[name='mode']");
+        const volume = html.find("input[name='volume']");
+
+        nameField.on("change",event => {
+            let id = event.target.id.replace('name','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].name=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.name[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
 
         if (playlistSelect.length > 0) {
             playlistSelect.on("change", event => {
                 let id = event.target.id.replace('playlists','');
-                this.playlists[id-1] = event.target.value;
-                this.updatePlaylist = true;
-                this.render();
+                let j = Math.floor(id/this.jMax);
+                let i = id % this.jMax-1;
+                this.data[j].dataThis[i].selectedPlaylist=event.target.value;
+
+                let selectedPlaylist;
+                let sounds = [];
+                if (event.target.value==undefined) selectedPlaylist = 'none';
+                else if (event.target.value == 'none') selectedPlaylist = 'none';
+                else if (event.target.value == 'FP') selectedPlaylist = 'FP';
+                else {
+                    const pl = game.playlists.entities.find(p => p._id == event.target.value);
+                    selectedPlaylist = pl._id;
+                    sounds = pl.sounds;
+                }
+                this.data[j].dataThis[i].sounds=sounds;
+
+                let styleSS = "";
+                let styleFP ="display:none";
+                if (selectedPlaylist == 'FP') {
+                    styleSS = 'display:none';
+                    styleFP = ''
+                }
+                this.data[j].dataThis[i].styleSS=styleSS;
+                this.data[j].dataThis[i].styleFP=styleFP;
+                this.update = true;
+
+                let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+                settings.selectedPlaylists[id-1]=event.target.value;
+                this.updateSettings(settings);
             });
         }
+
+        soundSelect.on("change", event => {
+            let id = event.target.id.replace('soundSelect','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].sound=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.sounds[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+        
+        soundFP.on("change",event => {
+            let id = event.target.id.replace('srcPath','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].srcPath=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.src[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        imgFP.on("change",event => {
+            let id = event.target.id.replace('imgPath','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].imgPath=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.img[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        onCP.on("change",event => {
+            let id = event.target.id.replace('colorOn','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].colorOn=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.colorOn[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        offCP.on("change",event => {
+            let id = event.target.id.replace('colorOff','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].colorOff=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.colorOff[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        playMode.on("change",event => {
+            let id = event.target.id.replace('playmode','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].mode=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.mode[id-1]=event.target.value;
+            this.updateSettings(settings);
+        });
+
+        volume.on("change",event => {
+            let id = event.target.id.replace('volume','');
+            let j = Math.floor(id/this.jMax);
+            let i = id % this.jMax-1;
+            this.data[j].dataThis[i].volume=event.target.value;
+            this.update = true;
+
+            let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+            settings.volume[id-1]=event.target.value;
+            this.updateSettings(settings); 
+        });
+    }
+    
+    async updateSettings(settings){
+        await game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
+        if (MODULE.enableModule) soundboard.updateAll();
+        this.render();
     }
     
 }

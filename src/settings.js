@@ -42,15 +42,6 @@ export const registerSettings = function() {
     /**
      * Playlist soundboard
      */
-    game.settings.register(MODULE.moduleName,'playlistMethod', {
-        name: "Playlist play method",
-        scope: "world",
-        config: false,
-        type:Number,
-        default:0,
-        choices:["MaterialDeck.Playlist.Playmethod.Unrestricted","MaterialDeck.Playlist.Playmethod.OneTrackPlaylist","MaterialDeck.Playlist.Playmethod.OneTrackTotal"],
-    });
-
     game.settings.registerMenu(MODULE.moduleName, 'playlistConfigMenu',{
         name: "MaterialDeck.Sett.PlaylistConfig",
         label: "MaterialDeck.Sett.PlaylistConfig",
@@ -58,27 +49,11 @@ export const registerSettings = function() {
         restricted: true
     });
 
-    game.settings.register(MODULE.moduleName, 'selectedPlaylists', {
+    game.settings.register(MODULE.moduleName, 'playlists', {
         name: "selectedPlaylists",
         scope: "world",
         type: Object,
         default: {},
-        config: false
-    });
-
-    game.settings.register(MODULE.moduleName, 'selectedPlaylistMethod', {
-        name: "selectedPlaylistMethod",
-        scope: "world",
-        type: Object,
-        default: {},
-        config: false
-    });
-
-    game.settings.register(MODULE.moduleName, 'numberOfPlaylists', {
-        name: "numberOfPlaylists",
-        scope: "world",
-        type: Number,
-        default: 9,
         config: false
     });
 

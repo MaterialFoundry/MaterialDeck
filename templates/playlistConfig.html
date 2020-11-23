@@ -4,8 +4,8 @@
     </div>
     <div class="form-group">     
         <label>{{localize "MaterialDeck.PL.Mode"}}</label>
-        <select name="playMethod" class="playMethod" default="">
-            {{#select playMethod}}
+        <select name="playMode" class="playMode" default="">
+            {{#select playMode}}
                 <option value="0">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
                 <option value="1">{{localize "MaterialDeck.PL.OneTrackPlaylist"}}</option>
                 <option value="2">{{localize "MaterialDeck.PL.OneTrackTotal"}}</option>
@@ -22,7 +22,7 @@
     {{#each playlistData}}
         <div class="form-group">
             <label>{{localize "MaterialDeck.Playlist"}} {{this.iteration}}</label>
-            <select name="selectedPlaylist" class="playlist-select" default="">
+            <select name="selectedPlaylist" class="playlist-select" id="playlist{{this.iteration}}" default="">
                 {{#select this.playlist}}
                     <option value="">{{localize "MaterialDeck.None"}}</option>
                     {{#each this.playlists}}
@@ -31,8 +31,8 @@
                 {{/select}}
             </select>
             &nbsp;
-            <select name="playlistMethod" class="playlistMethod" default="">
-                {{#select this.playlistMethod}}
+            <select name="playlistMode" class="playlistMode" id="playlistMode{{this.iteration}}" default="">
+                {{#select this.playlistMode}}
                     <option value="0">{{localize "MaterialDeck.PL.Mode"}}</option>
                     <option value="1">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
                     <option value="2">{{localize "MaterialDeck.PL.OneTrack"}}</option>
@@ -40,9 +40,4 @@
             </select>
         </div>
     {{/each}}
-
-    <button type="submit" name="submit">
-        <i class="far fa-save"></i> {{localize "MaterialDeck.Save"}}
-    </button>
-
 </form>

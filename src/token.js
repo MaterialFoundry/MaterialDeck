@@ -16,64 +16,128 @@ export class TokenControl{
     }
 
     pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
+        console.log('token',settings);
         let name = false;
         let icon = false;
-        let type = 0;
+        let stats =  settings.stats;
         let background = "#000000";
 
         if (settings.displayIcon) icon = true;
         if (settings.displayName) name = true;
-        if (settings.stats != undefined) type = settings.stats;
+        if (stats == undefined) stats = 0;
         if (settings.background) background = settings.background;
-        
+
+        let system = settings.system;
+        if (system == undefined) system = 'dnd5e';
+
         let tokenName = "";
-        let hp = "";
-        let AC = "";
-        let speed = "";
-        let initiative = "";
         let txt = "";
         let iconSrc = "";
         if (tokenId != undefined) {
             let token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
             tokenName = token.data.name;
+            if (name) txt += tokenName;
+            if (name && stats != 0) txt += "\n";
             iconSrc += token.data.img;
             let actor = canvas.tokens.children[0].children.find(p => p.id == tokenId).actor;
-            let system = game.system.id;
-            if (system == 'dnd5e'){
+            if (system == 'dnd5e' && game.system.id == 'dnd5e'){
                 let attributes = actor.data.data.attributes;
-                let hpCurrent = attributes.hp.value;
-                let hpMax = attributes.hp.max;
-                hp = hpCurrent + "/" + hpMax;
-                AC = attributes.ac.value;
-                
-                if (attributes.speed._deprecated){
-                    if (attributes.movement.burrow > 0) speed += attributes.movement.burrow + attributes.movement.units + " burrow";
-                    if (attributes.movement.climb > 0) {
-                        if (speed.length > 0) speed += '\n';
-                        speed += attributes.movement.climb + attributes.movement.units + " climb";
-                    }
-                    if (attributes.movement.fly > 0) {
-                        if (speed.length > 0) speed += '\n';
-                        speed += attributes.movement.fly + attributes.movement.units + " fly";
-                    }
-                    if (attributes.movement.hover > 0) {
-                        if (speed.length > 0) speed += '\n';
-                        speed += attributes.movement.hover + attributes.movement.units + " hover";
-                    }
-                    if (attributes.movement.swim > 0) {
-                        if (speed.length > 0) speed += '\n';
-                        speed += attributes.movement.swim + attributes.movement.units + " swim";
-                    }
-                    if (attributes.movement.walk > 0) {
-                        if (speed.length > 0) speed += '\n';
-                        speed += attributes.movement.walk + attributes.movement.units + " walk";
-                    }
+                if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                else if (stats == 'TempHP') {
+                    txt += attributes.hp.temp;
+                    if (attributes.hp.tempmax != null)
+                    txt += "/" + attributes.hp.tempmax;
                 }
-                else {
-                    speed = attributes.speed.value;
-                    if (attributes.speed.special.length > 0) speed + "\n" + attributes.speed.special;
+                else if (stats == 'AC') txt += attributes.ac.value;
+                else if (stats == 'Speed'){
+                    let speed = "";
+                    if (attributes.speed._deprecated){
+                        if (attributes.movement.burrow > 0) speed += game.i18n.localize("DND5E.MovementBurrow") + ': ' +  attributes.movement.burrow + attributes.movement.units;
+                        if (attributes.movement.climb > 0) {
+                            if (speed.length > 0) speed += '\n';
+                            speed += game.i18n.localize("DND5E.MovementClimb") + ': ' + attributes.movement.climb + attributes.movement.units;
+                        }
+                        if (attributes.movement.fly > 0) {
+                            if (speed.length > 0) speed += '\n';
+                            speed += game.i18n.localize("DND5E.MovementFly") + ': ' + attributes.movement.fly + attributes.movement.units;
+                        }
+                        if (attributes.movement.hover > 0) {
+                            if (speed.length > 0) speed += '\n';
+                            speed += game.i18n.localize("DND5E.MovementHover") + ': ' + attributes.movement.hover + attributes.movement.units;
+                        }
+                        if (attributes.movement.swim > 0) {
+                            if (speed.length > 0) speed += '\n';
+                            speed += game.i18n.localize("DND5E.MovementSwim") + ': ' + attributes.movement.swim + attributes.movement.units;
+                        }
+                        if (attributes.movement.walk > 0) {
+                            if (speed.length > 0) speed += '\n';
+                            speed += game.i18n.localize("DND5E.MovementWalk") + ': ' + attributes.movement.walk + attributes.movement.units;
+                        }
+                    }
+                    else {
+                        speed = attributes.speed.value;
+                        if (attributes.speed.special.length > 0) speed + "\n" + attributes.speed.special;
+                    }
+                    txt += speed;
                 }
-                initiative = attributes.init.total;
+                else if (stats == 'Init') txt += attributes.init.total;
+                else if (stats == 'PassivePerception') txt += actor.data.data.skills.prc.passive;
+                else if (stats == 'PassiveInvestigation') txt += actor.data.data.skills.inv.passive;
+            }
+            else if (system == 'dnd3.5e' && game.system.id == 'D35E'){
+                let attributes = actor.data.data.attributes;
+                if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                else if (stats == 'TempHP') {
+                    if (attributes.hp.temp == null) txt += '0';
+                    else txt += attributes.hp.temp;
+                }
+                else if (stats == 'AC') txt += attributes.ac.normal.total;
+                else if (stats == 'Speed'){
+                    let speed = "";
+                    if (attributes.speed.burrow.total > 0) speed += 'Burrow: ' +  attributes.speed.burrow.total + 'Ft';
+                    if (attributes.speed.climb.total > 0) {
+                        if (speed.length > 0) speed += '\n';
+                        speed += 'Climb: ' + attributes.speed.climb.total + 'Ft';
+                    }
+                    if (attributes.speed.fly.total > 0) {
+                        if (speed.length > 0) speed += '\n';
+                        speed += 'Fly: ' + attributes.speed.fly.total + 'Ft';
+                    }
+                    if (attributes.speed.land.total > 0) {
+                        if (speed.length > 0) speed += '\n';
+                        speed += 'Land: ' + attributes.speed.land.total + 'Ft';
+                    }
+                    if (attributes.speed.swim.total > 0) {
+                        if (speed.length > 0) speed += '\n';
+                        speed += 'Swim: ' + attributes.speed.swim.total + 'Ft';
+                    }
+                    txt += speed;
+                }
+                else if (stats == 'Init') txt += attributes.init.total;
+            }
+            else if (system == 'pf2e' && game.system.id == 'pf2e'){
+                let attributes = actor.data.data.attributes;
+                if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                else if (stats == 'TempHP') {
+                    if (attributes.hp.temp == null) txt += '0';
+                    else {
+                        txt += attributes.hp.temp;
+                        if (attributes.hp.tempmax > 0) txt += '/' + attributes.hp.tempmax;
+                    }  
+                }
+                else if (stats == 'AC') txt += attributes.ac.value;
+                else if (stats == 'Speed'){
+                    let speed = "Land: " + attributes.speed.value.replace('feet','') + ' feet';
+                    const otherSpeeds = attributes.speed.otherSpeeds;
+                    if (otherSpeeds.length > 0)
+                        for (let i=0; i<otherSpeeds.length; i++)
+                            speed += '\n' + otherSpeeds[i].type + ": " + otherSpeeds[i].value;    
+                    txt += speed;
+                }
+                else if (stats == 'Init') {
+                    let init = attributes.initiative.totalModifier;
+                    if (init != undefined) txt += init;
+                }
             }
             else {
                 //Other systems
@@ -82,6 +146,7 @@ export class TokenControl{
 
 
             }
+
             if (settings.onClick == 4) { //toggle visibility
                 ring = 1;
                 if (token.data.hidden){
@@ -119,18 +184,29 @@ export class TokenControl{
                 ring = 1;
                 let condition = settings.condition;
                 if (condition == undefined) condition = 0;
-
                 if (condition == 0 && icon == false){
                     iconSrc = window.CONFIG.controlIcons.effects;
                 }
                 else if (icon == false) {
-                    let effect = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition));
-                    iconSrc = effect.icon;
-                    let effects = token.actor.effects.entries;
-                    let active = effects.find(e => e.isTemporary === this.getStatusId(condition));
-                    if (active != undefined){
-                        ring = 2;
-                        ringColor = "#FF7B00";
+                    if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E')){
+                        let effect = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition));
+                        iconSrc = effect.icon;
+                        let effects = token.actor.effects.entries;
+                        let active = effects.find(e => e.isTemporary === this.getStatusId(condition));
+                        if (active != undefined){
+                            ring = 2;
+                            ringColor = "#FF7B00";
+                        }
+                    }
+                    else if (system == 'pf2e' && game.system.id == 'pf2e') {
+                        let effects = token.data.effects;
+                        for (let i=0; i<effects.length; i++){
+                            if (CONFIG.statusEffects[condition-1] == effects[i]){
+                                ring = 2;
+                                ringColor = "#FF7B00";
+                            }       
+                        }
+                        iconSrc = CONFIG.statusEffects[condition-1];
                     }
                 } 
                 streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor,true);
@@ -164,19 +240,16 @@ export class TokenControl{
                     iconSrc = window.CONFIG.controlIcons.effects;
                 }
                 else if (icon == false) {
-                    iconSrc = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition)).icon;
+                    if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E'))
+                        iconSrc = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition)).icon;
+                    else if (system == 'pf2e' && game.system.id == 'pf2e')
+                        iconSrc = CONFIG.statusEffects[condition-1];
                 } 
                 streamDeck.setIcon(1,context,iconSrc,background,1,'#000000',true);
             }
         }
         if (icon) streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor);
         
-        if (name) txt += tokenName;
-        if (name && type > 0) txt += "\n";
-        if (type == 1) txt += hp;
-        else if (type == 2) txt += AC;
-        else if (type == 3) txt += speed;
-        else if (type == 4) txt += initiative;
         streamDeck.setTitle(txt,context);
     }
     
@@ -189,6 +262,9 @@ export class TokenControl{
 
         const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
         if (token == undefined) return;
+
+        let system = settings.system;
+        if (system == undefined) system = 'dnd5e';
 
         if (onClick == 0)   //Do nothing
             return;
@@ -218,12 +294,20 @@ export class TokenControl{
             if (condition == 0){
                 const effects = token.actor.effects.entries;
                 for (let i=0; i<effects.length; i++){
-                    const effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
+                    let effect;
+                    if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E'))
+                        effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
+                    else if (system == 'pf2e' && game.system.id == 'pf2e')
+                        effect = CONFIG.statusEffects[condition-1];
                     await token.toggleEffect(effect)
                 }
             }
             else {
-                const effect = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition));
+                let effect;
+                if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E'))
+                    effect = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition));
+                else if (system == 'pf2e' && game.system.id == 'pf2e')
+                    effect = CONFIG.statusEffects[condition-1];
                 token.toggleEffect(effect);
             }
             

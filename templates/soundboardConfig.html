@@ -18,7 +18,7 @@
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Name"}}
                     </div>
-                    <input type="text" name="name" value="{{this.name}}">
+                    <input type="text" name="namebox" value="{{this.name}}" id="name{{this.iteration}}">
 
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Playlist"}}
@@ -50,7 +50,7 @@
                         <button type="button" class="file-picker" data-type="audio" data-target="src{{this.iteration}}" title="Browse Files" tabindex="-1">
                             <i class="fas fa-file-import fa-fw"></i>
                         </button>
-                        <input class="image" type="text" name="src{{this.iteration}}" id="srcPath{{this.iteration}}" placeholder="path/audio.mp3" value={{this.srcPath}}>
+                        <input class="image" type="text" name="src{{this.iteration}}" name2="soundSrc" id="srcPath{{this.iteration}}" placeholder="path/audio.mp3" value={{this.srcPath}}>
                     </div>
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Icon"}}
@@ -59,7 +59,7 @@
                         <button type="button" class="file-picker" data-type="image" data-target="img{{this.iteration}}" title="Browse Files" tabindex="-1">
                             <i class="fas fa-file-import fa-fw"></i>
                         </button>
-                        <input class="image" type="text" name="img{{this.iteration}}" id="imgPath{{this.iteration}}" placeholder="path/image.png" value={{this.imgPath}}>
+                        <input class="image" type="text" name="img{{this.iteration}}" name2="imgSrc"  id="imgPath{{this.iteration}}" placeholder="path/image.png" value={{this.imgPath}}>
                     </div>
                     <div class="flex-container" style="display:flex;flex-direction:row;padding-top:5px">  
                         <label style="flex:1">{{localize "MaterialDeck.On"}}&nbsp;&nbsp;&nbsp;</label>
@@ -70,7 +70,7 @@
                     
                     <div class="form-group options">
                         <label>{{localize "MaterialDeck.Playback"}}</label>
-                        <select name="mode" style="flex:1">
+                        <select name="mode" id="playmode{{this.iteration}}" style="flex:1">
                             {{#select this.mode}}
                             <option value="0">{{localize "MaterialDeck.Once"}}</option>
                             <option value="1">{{localize "MaterialDeck.Repeat"}}</option>
@@ -87,8 +87,4 @@
             {{/each}}
         </div>
     {{/each}}
-    <button type="submit" name="submit">
-        <i class="far fa-save"></i> {{localize "MaterialDeck.Save"}}
-    </button>
-
 </form>

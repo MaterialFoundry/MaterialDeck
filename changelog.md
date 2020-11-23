@@ -1,5 +1,20 @@
 # Changelog Material Deck Module
-### v0.8.7 - 19-11-2020
+### v0.9.1 - 23-11-2020
+<ul>
+<li>Fixed 'Playlist' action issue where 'TrackNr' wouldn't show</li>
+<li>Fixed 'Soundboard Configuration' issue where changing the playlist would reset everything you've changed since last save</li>
+<li>'Soundboard Configuration', 'Macro Configuration' and 'Playlist Configuration' now save after each change, and update the SD instantly</li>
+<li>Save button has been removed from configuration screens, since it is now redundant</li>
+</ul>
+
+<b>Note1:</b> In 'Macro Configuration', previously saved Furnace arguments have to be filled in again.<br>
+<b>Note2:</b> Any settings set in 'Playlist Configuration' have to be set again<br>
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.1: https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v0.9.1 (unchanged): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
+### v0.9.0 - 19-11-2020
 <ul>
 <li>Added support for more playlists</li>
 <li>Added playmode setting for each playlist, which overrides the default playmode</li>

@@ -136,21 +136,19 @@ export class PlaylistControl{
         }
         else {
             let playing = game.playlists.playing;
-            console.log(playing);
-            let selectedPlaylists = game.settings.get(MODULE.moduleName,'selectedPlaylists');
-            console.log(selectedPlaylists);
+            let settings = game.settings.get(MODULE.moduleName,'playlists');
+            let selectedPlaylists = settings.selectedPlaylist;
             for (let i=0; i<playing.length; i++){
                 const playlistNr = selectedPlaylists.findIndex(p => p == playing[i]._id);
-                const mode = game.settings.get(MODULE.moduleName,'selectedPlaylistMethod')[playlistNr];
+                const mode = settings.playlistMode[playlistNr];
                 if (mode == 0) playing[i].stopAll();
-                console.log(playlistNr,mode);
             }
             
         }
     }
 
     getPlaylist(num){
-        let playlistId = game.settings.get(MODULE.moduleName,'selectedPlaylists')[num];
+        let playlistId = game.settings.get(MODULE.moduleName,'playlists').selectedPlaylist[num];
         return game.playlists.entities.find(p => p._id == playlistId);
     }
 
@@ -202,9 +200,9 @@ export class PlaylistControl{
             playlist.stopAll();
             return;
         }
-        let mode = game.settings.get(MODULE.moduleName,'selectedPlaylistMethod')[playlistNr];
+        let mode = game.settings.get(MODULE.moduleName,'playlists').playlistMode[playlistNr];
         if (mode == 0) {
-            mode = game.settings.get(MODULE.moduleName,'playlistMethod');
+            mode = game.settings.get(MODULE.moduleName,'playlists').playMode;
             if (mode == 2) await this.stopAll();
         }
         playlist.playAll();
@@ -216,10 +214,9 @@ export class PlaylistControl{
             play = false;
         else {
             play = true;
-            let mode = game.settings.get(MODULE.moduleName,'selectedPlaylistMethod')[playlistNr];
-            console.log('mode',mode);
+            let mode = game.settings.get(MODULE.moduleName,'playlists').playlistMode[playlistNr];
             if (mode == 0) {
-                mode = game.settings.get(MODULE.moduleName,'playlistMethod');
+                mode = game.settings.get(MODULE.moduleName,'playlists').playMode;
                 if (mode == 1) await playlist.stopAll();
                 else if (mode == 2) await this.stopAll();
             }
