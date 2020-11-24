@@ -1,4 +1,14 @@
 # Changelog Material Deck Module
+### v1.0.0 - 24-11-2020
+Release
+<ul>
+<li>Fixed issue where the last column in 'Soundboard Configuration' would not work properly</li>
+</ul>
+
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2: https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.0.0: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v0.9.2 - 24-11-2020
 <ul>
 <li>Removed unnecessary errors when module is not fully configured</li>

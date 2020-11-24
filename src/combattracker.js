@@ -46,8 +46,7 @@ export class CombatTracker{
                 else {
                     streamDeck.setIcon(0,context,src,background);
                     streamDeck.setTitle(txt,context);
-                }
-                
+                } 
             }
             else {
                 streamDeck.setIcon(0,context,src,background);
@@ -63,8 +62,6 @@ export class CombatTracker{
                 streamDeck.setIcon(0,context,src,background);
                 streamDeck.setTitle(txt,context);
             }
-            
-
         }
         else if (mode == 2){
             

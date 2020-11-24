@@ -169,7 +169,6 @@ export class OtherControls{
                 if (settings.displaySceneIcon) src = scene.img;
                 if (scene.active) name += "\n(Active)";
             }
-            
         }
         else if (func == 1) {   //all scenes
             let scene = game.scenes.apps[1].entities.find(p=>p.data.name == name);
@@ -217,7 +216,6 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
     
     updateControl(settings,context){
-        //if (canvas.scene == null) return;
         let control = settings.control;
         if (control == undefined) control = 0;
 
@@ -664,7 +662,6 @@ export class OtherControls{
         let ringOnColor = settings.onRing;
         if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
-        
         if (compendium.rendered) ringColor = ringOnColor;
         else ringColor = ringOffColor;
 
@@ -703,8 +700,6 @@ export class OtherControls{
 
         let ringOnColor = settings.onRing;
         if (ringOnColor == undefined) ringOnColor = '#00FF00';
-
-        
        
         if (journal.sheet.rendered) ringColor = ringOnColor;
         else ringColor = ringOffColor;
@@ -719,7 +714,7 @@ export class OtherControls{
 
         const journal = game.journal.entries.find(p=>p.name == name);
         if (journal == undefined) return;
-        //if (journal.sheet.rendered) journal.close();
+        
         journal.render(true);
     }
 }

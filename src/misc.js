@@ -72,10 +72,6 @@ export class playlistConfigForm extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
-       // await game.settings.set(MODULE.moduleName,'selectedPlaylists', formData["selectedPlaylist"]);
-     //   await game.settings.set(MODULE.moduleName,'playlistMethod',formData["playMethod"]);
-       // await game.settings.set(MODULE.moduleName,'numberOfPlaylists',formData["plNum"]);
-       // await game.settings.set(MODULE.moduleName,'selectedPlaylistMode',formData["playlistMethod"]);
 
     }
 
@@ -228,19 +224,7 @@ export class macroConfigForm extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
-        /*
-       await game.settings.set(MODULE.moduleName,'macroSettings',{
-            macros: formData["macros"],
-            color: formData["colorPicker"],
-            args: formData["args"]
-       });
 
-        let furnace = game.modules.get("furnace");
-        if (furnace != undefined && furnace.active) 
-            await game.settings.set(MODULE.moduleName,'macroArgs', formData["args"]);
-        if (MODULE.enableModule)
-            macroControl.updateAll();
-        */
     }
 
     activateListeners(html) {
@@ -284,7 +268,6 @@ export class soundboardConfigForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
         this.data = data;
-        //this.soundData = {};
         this.playlists = [];
         this.updatePlaylist = false;
         this.update = false;
@@ -330,18 +313,6 @@ export class soundboardConfigForm extends FormApplication {
             return {soundData: this.data};
         }
         this.settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-        /*
-        let selectedSounds = this.settings.sounds;
-        let colorOn = this.settings.colorOn;
-        let colorOff = this.settings.colorOff;
-        let mode = this.settings.mode;
-        let volume = this.settings.volume;
-        let img = this.settings.img;
-        let name = this.settings.name;
-        let selectedPlaylists = this.settings.selectedPlaylists;
-        let src = this.settings.src;
-        */
-
         let playlists = [];
         playlists.push({id:"none",name:game.i18n.localize("MaterialDeck.None")});
         playlists.push({id:"FP",name:game.i18n.localize("MaterialDeck.FilePicker")})
@@ -434,32 +405,7 @@ export class soundboardConfigForm extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
-        /*
-        let length = formData["sounds"].length;
-        let img = [];
-        let soundSrc = []
-        for (let i=0; i<length; i++){
-            let name = "img"+(i+1);
-            let src = formData[name];
-            img[i] = src;
-
-            name = "src"+(i+1);
-            src = formData[name];
-            soundSrc[i] = src;
-        }
-
-        await game.settings.set(MODULE.moduleName,'soundboardSettings',{
-            selectedPlaylists: formData["playlist"],
-            sounds: formData["sounds"],
-            colorOn: formData["colorOn"],
-            colorOff: formData["colorOff"],
-            mode: formData["mode"],
-            img: img,
-            volume: formData["volume"],
-            name: formData["namebox"],
-            src: soundSrc
-        });
-        */
+   
     }
 
     async activateListeners(html) {
@@ -475,23 +421,21 @@ export class soundboardConfigForm extends FormApplication {
         const volume = html.find("input[name='volume']");
 
         nameField.on("change",event => {
-            let id = event.target.id.replace('name','');
+            let id = event.target.id.replace('name','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].name=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            //console.log('settings',settings);
-            this.settings.name[id-1]=event.target.value;
+            this.settings.name[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         if (playlistSelect.length > 0) {
             playlistSelect.on("change", event => {
-                let id = event.target.id.replace('playlists','');
+                let id = event.target.id.replace('playlists','')-1;
                 let j = Math.floor(id/this.jMax);
-                let i = id % this.jMax-1;
+                let i = id % this.jMax;
                 this.data[j].dataThis[i].selectedPlaylist=event.target.value;
 
                 let selectedPlaylist;
@@ -516,93 +460,85 @@ export class soundboardConfigForm extends FormApplication {
                 this.data[j].dataThis[i].styleFP=styleFP;
                 this.update = true;
 
-                //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-                this.settings.selectedPlaylists[id-1]=event.target.value;
+                this.settings.selectedPlaylists[id]=event.target.value;
                 this.updateSettings(this.settings);
             });
         }
 
         soundSelect.on("change", event => {
-            let id = event.target.id.replace('soundSelect','');
+            let id = event.target.id.replace('soundSelect','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].sound=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.sounds[id-1]=event.target.value;
+            this.settings.sounds[id]=event.target.value;
             this.updateSettings(this.settings);
         });
         
         soundFP.on("change",event => {
-            let id = event.target.id.replace('srcPath','');
+            let id = event.target.id.replace('srcPath','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].srcPath=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.src[id-1]=event.target.value;
+            this.settings.src[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         imgFP.on("change",event => {
-            let id = event.target.id.replace('imgPath','');
+            let id = event.target.id.replace('imgPath','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].imgPath=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.img[id-1]=event.target.value;
+            this.settings.img[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         onCP.on("change",event => {
-            let id = event.target.id.replace('colorOn','');
+            let id = event.target.id.replace('colorOn','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].colorOn=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.colorOn[id-1]=event.target.value;
+            this.settings.colorOn[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         offCP.on("change",event => {
-            let id = event.target.id.replace('colorOff','');
+            let id = event.target.id.replace('colorOff','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].colorOff=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.colorOff[id-1]=event.target.value;
+            this.settings.colorOff[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         playMode.on("change",event => {
-            let id = event.target.id.replace('playmode','');
+            let id = event.target.id.replace('playmode','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].mode=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.mode[id-1]=event.target.value;
+            this.settings.mode[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         volume.on("change",event => {
-            let id = event.target.id.replace('volume','');
+            let id = event.target.id.replace('volume','')-1;
             let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax-1;
+            let i = id % this.jMax;
             this.data[j].dataThis[i].volume=event.target.value;
             this.update = true;
 
-            //let settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-            this.settings.volume[id-1]=event.target.value;
+            this.settings.volume[id]=event.target.value;
             this.updateSettings(this.settings); 
         });
     }

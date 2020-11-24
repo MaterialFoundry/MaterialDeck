@@ -16,7 +16,6 @@ export class TokenControl{
     }
 
     pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
-        //console.log('token',settings);
         let name = false;
         let icon = false;
         let stats =  settings.stats;

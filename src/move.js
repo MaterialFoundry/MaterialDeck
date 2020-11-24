@@ -7,7 +7,6 @@ export class Move{
 
     keyPress(settings){
         if (canvas.scene == null) return;
-        //console.log('move',settings)
         let dir = settings.dir;
         let mode = settings.mode;
         if (mode == undefined) mode = 0;

@@ -143,7 +143,6 @@ export class PlaylistControl{
                 const mode = settings.playlistMode[playlistNr];
                 if (mode == 0) playing[i].stopAll();
             }
-            
         }
     }
 
@@ -227,7 +226,4 @@ export class PlaylistControl{
         await playlist.updateEmbeddedEntity("PlaylistSound", {_id: track._id, playing: play});
         playlist.update({playing: play});
     }
-
-
-
 }

@@ -61,7 +61,6 @@ export class StreamDeck{
         }
         return false;
     }
-
     
     /*
     *  Get syllables of a word. Taken from: https://stackoverflow.com/a/49407494
@@ -171,8 +170,6 @@ export class StreamDeck{
     }
 
     setImage(image,context){
-        //var image = "data:image/svg+xml;charset=utf8,<?xml version=\"1.0\" encoding=\"iso-8859-1\"?><!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  --><svg version=\"1.1\" id=\"Capa_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"	 viewBox=\"0 0 288 288\" style=\"enable-background:new 0 0 288 288;\" xml:space=\"preserve\">	 <style>	 	.text {			 font-family: sans-serif;			 fill: red;			 font-size: 10em;		 }	</style><g>  <text x=\"0px\" y=\"100px\"  class=\"text\">GPUUTILIZATION</text></g></svg>";
-
         var json = {
             target: "SD",
             event: "setImage",
@@ -269,7 +266,6 @@ export class StreamDeck{
     getImage(data){
         if (data == undefined) 
             return;
-        //console.log('image',data)
         const context = data.context;
         var url = data.url;
         const format = data.format;

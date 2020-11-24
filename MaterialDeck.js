@@ -50,9 +50,6 @@ async function analyzeWSmessage(msg){
         console.log("streamdeck connected to server");
     }
 
-
-
-
     if (data == undefined || data.payload == undefined) return;
       
     const action = data.action;
@@ -62,7 +59,6 @@ async function analyzeWSmessage(msg){
     if (coordinates == undefined) coordinates = 0;
     const settings = data.payload.settings;
 
-    
     if (data.data == 'init'){
 
     }
@@ -180,7 +176,6 @@ export function sendWS(txt){
  */
 Hooks.once('ready', ()=>{
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
-    
     
     game.socket.on(`module.MaterialDeck`, (payload) =>{
         //console.log(payload);
@@ -368,61 +363,3 @@ Hooks.once('init', ()=>{
 Hooks.once('canvasReady',()=>{
     ready = true;
 });
-
-export function getFromJSONArray(data,i){
-    if (i>9) return 'nul';
-    let val;
-    if (i == 0) val = data.a;
-    else if (i == 1) val = data.a;
-    else if (i == 2) val = data.c;
-    else if (i == 3) val = data.d;
-    else if (i == 4) val = data.e;
-    else if (i == 5) val = data.f;
-    else if (i == 6) val = data.g;
-    else if (i == 7) val = data.h;
-    else if (i == 8) val = data.i;
-    else if (i == 9) val = data.j;
-    else if (i == 10) val = data.k;
-    else if (i == 11) val = data.l;
-    else if (i == 12) val = data.m;
-    else if (i == 13) val = data.n;
-    else if (i == 14) val = data.o;
-    else if (i == 15) val = data.p;
-    else if (i == 16) val = data.q;
-    else if (i == 17) val = data.r;
-    else if (i == 18) val = data.s;
-    else if (i == 19) val = data.t;
-    else if (i == 20) val = data.u;
-    else if (i == 21) val = data.v;
-    else if (i == 22) val = data.w;
-    else if (i == 23) val = data.x;
-    return val;
-}
-
-export function setToJSONArray(data,i,val){
-    if (i>9) return 'nul';
-    if (i == 0) data.a = val;
-    else if (i == 1) data.b = val;
-    else if (i == 2) data.c = val;
-    else if (i == 3) data.d = val;
-    else if (i == 4) data.e = val;
-    else if (i == 5) data.f = val;
-    else if (i == 6) data.g = val;
-    else if (i == 7) data.h = val;
-    else if (i == 8) data.i = val;
-    else if (i == 9) data.j = val;
-    else if (i == 10) data.k = val;
-    else if (i == 11) data.l = val;
-    else if (i == 12) data.m = val;
-    else if (i == 13) data.n = val;
-    else if (i == 14) data.o = val;
-    else if (i == 15) data.p = val;
-    else if (i == 16) data.q = val;
-    else if (i == 17) data.r = val;
-    else if (i == 18) data.s = val;
-    else if (i == 19) data.t = val;
-    else if (i == 20) data.u = val;
-    else if (i == 21) data.v = val;
-    else if (i == 22) data.w = val;
-    else if (i == 23) data.x = val;
-}

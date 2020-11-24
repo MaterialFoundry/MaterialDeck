@@ -177,6 +177,5 @@ export class SoundboardControl{
             this.activeSounds[soundNr] = false;
         }
         this.updateAll();
-        
     }
 }
