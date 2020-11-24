@@ -16,7 +16,7 @@ export class TokenControl{
     }
 
     pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
-        console.log('token',settings);
+        //console.log('token',settings);
         let name = false;
         let icon = false;
         let stats =  settings.stats;
@@ -258,7 +258,7 @@ export class TokenControl{
         const tokenId = MODULE.selectedTokenId;
 
         let onClick = settings.onClick;
-        if (onClick == undefined) conClick = 0;
+        if (onClick == undefined) onClick = 0;
 
         const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
         if (token == undefined) return;

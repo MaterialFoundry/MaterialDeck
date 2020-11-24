@@ -70,7 +70,7 @@ export class StreamDeck{
         return words.match(this.syllableRegex);
     }
 
-    formatTitle(txt){
+    formatTitle(txt=''){
         let txtArrayOriginal = txt.split("\n");
         let txtArray = [];
         let counter = 0;
@@ -185,7 +185,7 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(json));
     }
 
-    setIcon(iconLocation, context,src,background = '#000000',ring=0,ringColor = "#000000",overlay=false){
+    setIcon(iconLocation, context,src='',background = '#000000',ring=0,ringColor = "#000000",overlay=false){
         for (let i=0; i<32; i++){
             if (this.buttonContext[i] == undefined) continue;
             if (this.buttonContext[i].context == context) {
@@ -291,7 +291,7 @@ export class StreamDeck{
             canvas.id = canvasId;
             canvas.width="144";
             canvas.height="144";
-            canvas.style="background-color:transparent";
+            canvas.style="background-color:transparent;visibility:hidden";
             document.getElementById('sdCanvasBox').appendChild(canvas); // adds the canvas to #someBox
         }
         this.counter++;

@@ -18,13 +18,13 @@
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Name"}}
                     </div>
-                    <input type="text" name="namebox" value="{{this.name}}" id="name{{this.iteration}}">
+                    <input type="text" name="namebox" value="{{this.name}}" id="name{{this.iteration}}" style="width:100%;" >
 
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Playlist"}}
                     </div>
                     <div>
-                        <select name="playlist" class="playlist-select" default="" style="width:132px;" id="playlists{{this.iteration}}">
+                        <select name="playlist" class="playlist-select" default="" style="width:100%;" id="playlists{{this.iteration}}">
                             {{#select this.selectedPlaylist}}
                                 {{#each playlists}}
                                 <option value="{{this.id}}">{{this.name}}</option>
@@ -37,7 +37,7 @@
                         {{localize "MaterialDeck.Sound"}}
                     </div>
                     <div class="form-fields" style={{this.styleSS}}>
-                        <select name="sounds" class="sounds-select" default="" style="width:132px;" id="soundSelect{{this.iteration}}">
+                        <select name="sounds" class="sounds-select" default="" style="width:100%;" id="soundSelect{{this.iteration}}">
                             {{#select this.sound}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each sounds}}

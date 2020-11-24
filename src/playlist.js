@@ -148,8 +148,10 @@ export class PlaylistControl{
     }
 
     getPlaylist(num){
-        let playlistId = game.settings.get(MODULE.moduleName,'playlists').selectedPlaylist[num];
-        return game.playlists.entities.find(p => p._id == playlistId);
+        let selectedPlaylists = game.settings.get(MODULE.moduleName,'playlists').selectedPlaylist;
+        if (selectedPlaylists != undefined) 
+            return game.playlists.entities.find(p => p._id == selectedPlaylists[num]);
+        else return undefined;
     }
 
     keyPress(settings,context){

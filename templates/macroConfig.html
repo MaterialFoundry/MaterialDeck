@@ -16,7 +16,7 @@
                         {{localize "MaterialDeck.Macro"}} {{this.iteration}}
                     </div>
                     <div>
-                        <select name="macros" class="macros-select" id="macros{{this.iteration}}" default="" style="max-width:140px;">
+                        <select name="macros" class="macros-select" id="macros{{this.iteration}}" default="" style="min-width:140px;">
                             {{#select this.macro}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each macros}}

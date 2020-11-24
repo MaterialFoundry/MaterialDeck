@@ -1,4 +1,10 @@
 # Changelog Material Deck Module
+### v0.9.2 - 24-11-2020
+<ul>
+<li>Removed unnecessary errors when module is not fully configured</li>
+<li>Solved issue that soundboard config couldn't be saved on a world that hadn't run Material Deck previously</li>
+</ul>
+
 ### v0.9.1 - 23-11-2020
 <ul>
 <li>Fixed 'Playlist' action issue where 'TrackNr' wouldn't show</li>

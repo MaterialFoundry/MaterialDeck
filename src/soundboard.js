@@ -45,8 +45,8 @@ export class SoundboardControl{
             else 
                 ringColor = soundboardSettings.colorOn[soundNr];
 
-            if (settings.displayName) txt = soundboardSettings.name[soundNr];
-            if (settings.displayIcon) src = soundboardSettings.img[soundNr];
+            if (settings.displayName && soundboardSettings.name != undefined) txt = soundboardSettings.name[soundNr];
+            if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
             streamDeck.setTitle(txt,context);
             streamDeck.setIcon(1,context,src,background,2,ringColor);
         }
@@ -119,7 +119,8 @@ export class SoundboardControl{
 
     async playSound(soundNr,repeat,play){  
         const soundBoardSettings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-        const playlistId = soundBoardSettings.selectedPlaylists[soundNr];
+        let playlistId;
+        if (soundBoardSettings.selectedPlaylists != undefined) playlistId = soundBoardSettings.selectedPlaylists[soundNr];
         let src;
         if (playlistId == "" || playlistId == undefined) return;
         if (playlistId == 'none') return;

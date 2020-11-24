@@ -139,7 +139,8 @@ export class CombatTracker{
                 if (combat != null && combat != undefined && combat.started)
                     tokenId = combat.combatant.tokenId;
                 
-            let token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+            let token
+            if (canvas.tokens.children[0] != undefined) token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
             if (token == undefined) return;
             if (onClick == 0)   //Do nothing
                 return;

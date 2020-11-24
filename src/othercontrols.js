@@ -133,6 +133,7 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     updateScene(settings,context){
+        if (canvas.scene == null) return;
         let func = settings.sceneFunction;
         if (func == undefined) func = 0;
 
@@ -216,6 +217,7 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
     
     updateControl(settings,context){
+        //if (canvas.scene == null) return;
         let control = settings.control;
         if (control == undefined) control = 0;
 
@@ -305,6 +307,7 @@ export class OtherControls{
     }
 
     keyPressControl(settings){
+        if (canvas.scene == null) return;
         let control = settings.control;
         if (control == undefined) control = 0;
 
@@ -474,7 +477,8 @@ export class OtherControls{
         }
         else if (func == 2){    //display darkness
             src = 'action/images/other/darkness/darkness.png';
-            let darkness = Math.floor(canvas.scene.data.darkness*100)/100;
+            let darkness = '';
+            if (canvas.scene != null) darkness = Math.floor(canvas.scene.data.darkness*100)/100;
             txt += darkness;
         }
         streamDeck.setTitle(txt,context);
@@ -482,6 +486,7 @@ export class OtherControls{
     }
 
     keyPressDarkness(settings) {
+        if (canvas.scene == null) return;
         let func = settings.darknessFunction;
         if (func == undefined) func = 0;
 
