@@ -135,6 +135,7 @@ export class StreamDeck{
     }
 
     setTitle(txt,context){
+        if (txt == null || txt == undefined) txt = '';
         txt = this.formatTitle(txt);
         for (let i=0; i<32; i++){
             if (this.buttonContext[i] == undefined) continue;
@@ -183,6 +184,7 @@ export class StreamDeck{
     }
 
     setIcon(iconLocation, context,src='',background = '#000000',ring=0,ringColor = "#000000",overlay=false){
+        if (src == null || src == undefined) src = '';
         for (let i=0; i<32; i++){
             if (this.buttonContext[i] == undefined) continue;
             if (this.buttonContext[i].context == context) {

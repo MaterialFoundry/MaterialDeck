@@ -196,11 +196,11 @@ export class MacroControl{
         if (macroId != undefined){
             let macro = game.macros.get(macroId);
             if (macro != undefined && macro != null) {
-                const args = game.settings.get(MODULE.moduleName,'macroSettings').args[macroNumber];
+                const args = game.settings.get(MODULE.moduleName,'macroSettings').args;
                 let furnaceEnabled = false;
                 let furnace = game.modules.get("furnace");
                 if (furnace != undefined && furnace.active) furnaceEnabled = true;
-                if (args == "") furnaceEnabled = false;
+                if (args == undefined || args[number] == undefined || args[macroNumber] == "") furnaceEnabled = false;
                 if (furnaceEnabled == false) macro.execute();
                 else {
                     let chatData = {

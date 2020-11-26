@@ -1,4 +1,14 @@
 # Changelog Material Deck Module
+### V1.0.1 - 26-11-2020
+<ul>
+<li>Fixed issue where macro from macroboard wouldn't execute if furnace arguments were not defined</li>
+<li>Fixed issue where soundboard wouldn't save if no previous data existed for that sound</li>
+</ul>
+
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.0.0 (unchanged): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.0.0 - 24-11-2020
 Release
 <ul>
