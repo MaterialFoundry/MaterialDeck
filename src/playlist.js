@@ -19,16 +19,19 @@ export class PlaylistControl{
 
     update(settings,context){
         this.active = true;
-        if (settings.playlistMode == undefined) settings.playlistMode = 0;
-        if (settings.playlistMode == 0){
+        if (settings.playlistMode == undefined) settings.playlistMode = 'playlist';
+        if (settings.playlistMode == 'playlist'){
             this.updatePlaylist(settings,context);
         }
-        else if (settings.playlistMode == 1){
+        else if (settings.playlistMode == 'track'){
             this.updateTrack(settings,context);
         }
         else {
-            let src = 'action/images/playlist/stop.png';
-            streamDeck.setIcon(0,context,src,settings.background);
+            let src = 'modules/MaterialDeck/img/playlist/stop.png';
+            if (game.playlists.playing.length > 0)
+                streamDeck.setIcon(context,src,settings.background,2,'#00FF00',true);
+            else
+                streamDeck.setIcon(context,src,settings.background,1,'#000000',true);
         }
     }
 
@@ -47,10 +50,10 @@ export class PlaylistControl{
         if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
         let playlistType = settings.playlistType;
-        if (playlistType == undefined) playlistType = 0;
+        if (playlistType == undefined) playlistType = 'playStop';
 
         //Play/Stop
-        if (playlistType == 0){
+        if (playlistType == 'playStop'){
             let playlistNr = parseInt(settings.playlistNr);
             if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
             playlistNr--;
@@ -67,12 +70,12 @@ export class PlaylistControl{
             }
         }
         //Offset
-        else {
+        else if (playlistType == 'offset') {
             let playlistOffset = parseInt(settings.offset);
             if (isNaN(playlistOffset)) playlistOffset = 0;
             if (playlistOffset == this.playlistOffset) ringColor = ringOnColor;
         }
-        streamDeck.setIcon(0,context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",background,2,ringColor);
         streamDeck.setTitle(name,context);
     }
 
@@ -91,10 +94,10 @@ export class PlaylistControl{
         if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
         let playlistType = settings.playlistType;
-        if (playlistType == undefined) playlistType = 0;
+        if (playlistType == undefined) playlistType = 'playStop';
 
         //Play/Stop
-        if (playlistType == 0){
+        if (playlistType == 'playStop'){
             let playlistNr = parseInt(settings.playlistNr);
             if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
             playlistNr--;
@@ -123,7 +126,7 @@ export class PlaylistControl{
             if (isNaN(trackOffset)) trackOffset = 0;
             if (trackOffset == this.trackOffset) ringColor = ringOnColor;
         }
-        streamDeck.setIcon(0,context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",background,2,ringColor);
         streamDeck.setTitle(name,context);
     }
 
@@ -163,13 +166,16 @@ export class PlaylistControl{
         trackNr--;
         trackNr += this.trackOffset;
 
-        if (settings.playlistMode == undefined) settings.playlistMode = 0;
-        if (settings.playlistType == undefined) settings.playlistType = 0;
-        if (settings.playlistMode < 2){
-            if (settings.playlistType == 0) {
+        if (settings.playlistMode == undefined) settings.playlistMode = 'playlist';
+        if (settings.playlistType == undefined) settings.playlistType = 'playStop';
+        if (settings.playlistMode == 'stopAll') {
+            this.stopAll(true);
+        } 
+        else {
+            if (settings.playlistType == 'playStop') {
                 let playlist = this.getPlaylist(playlistNr);
                 if (playlist != undefined){
-                    if (settings.playlistMode == 0)
+                    if (settings.playlistMode == 'playlist')
                         this.playPlaylist(playlist,playlistNr);
                     else {
                         let track = playlist.data.sounds[trackNr];
@@ -180,7 +186,7 @@ export class PlaylistControl{
                 }
             }
             else {
-                if (settings.playlistMode == 0) {
+                if (settings.playlistMode == 'playlist') {
                     this.playlistOffset = parseInt(settings.offset);
                     if (isNaN(this.playlistOffset)) this.playlistOffset = 0;
                 }
@@ -191,9 +197,7 @@ export class PlaylistControl{
                 this.updateAll();
             }
         }
-        else {
-            this.stopAll(true);
-        }   
+          
     }
 
     async playPlaylist(playlist,playlistNr){

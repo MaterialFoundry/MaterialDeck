@@ -1,0 +1,5 @@
+combattracker.png: Edited from https://fontawesome.com/icons/fist-raised?style=solid
+nextturn.png, previousturn.png: Edited from https://fontawesome.com/icons/arrow-right?style=solid
+nextround.png, previousround.png: Edited from https://fontawesome.com/icons/step-forward?style=solid
+startcombat.png: Edited from https://fontawesome.com/icons/play?style=solid
+stopcombat.png: Edited from https://fontawesome.com/icons/stop?style=solid

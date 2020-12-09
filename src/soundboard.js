@@ -22,7 +22,7 @@ export class SoundboardControl{
     update(settings,context){
         this.active = true;
         let mode = settings.soundboardMode;
-        if (mode == undefined) mode = 0;
+        if (mode == undefined) mode = 'playSound';
 
         let txt = "";
         let src = "";
@@ -32,7 +32,7 @@ export class SoundboardControl{
 
         let ringColor = "#000000"
 
-        if (mode == 0){ //play sound
+        if (mode == 'playSound'){ //play sound
             let soundNr = parseInt(settings.soundNr);
             if (isNaN(soundNr)) soundNr = 1;
             soundNr--;
@@ -48,9 +48,9 @@ export class SoundboardControl{
             if (settings.displayName && soundboardSettings.name != undefined) txt = soundboardSettings.name[soundNr];
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(1,context,src,background,2,ringColor);
+            streamDeck.setIcon(context,src,background,2,ringColor);
         }
-        else if (mode == 1) { //Offset
+        else if (mode == 'offset') { //Offset
             let ringOffColor = settings.offRing;
             if (ringOffColor == undefined) ringOffColor = '#000000';
 
@@ -62,18 +62,24 @@ export class SoundboardControl{
             if (offset == this.offset) ringColor = ringOnColor;
             else ringColor = ringOffColor;
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(1,context,"",background,2,ringColor);
+            streamDeck.setIcon(context,"",background,2,ringColor);
         }
-        else if (mode == 2) {   //Stop all sounds
-            let src = 'action/images/soundboard/stop.png';
-            streamDeck.setIcon(0,context,src,background);
+        else if (mode == 'stopAll') {   //Stop all sounds
+            let src = 'modules/MaterialDeck/img/playlist/stop.png';
+            let soundPlaying = false;
+            for (let i=0; i<this.activeSounds.length; i++)
+                if (this.activeSounds[i]) soundPlaying = true;
+            if (soundPlaying)
+                streamDeck.setIcon(context,src,settings.background,2,'#00FF00',true);
+            else
+                streamDeck.setIcon(context,src,settings.background,1,'#000000',true);
         }
     }
 
     keyPressDown(settings){
         let mode = settings.soundboardMode;
-        if (mode == undefined) mode = 0;
-        if (mode == 0) {    //Play sound
+        if (mode == undefined) mode = 'playSound';
+        if (mode == 'playSound') {    //Play sound
             let soundNr = parseInt(settings.soundNr);
             if (isNaN(soundNr)) soundNr = 1;
             soundNr--;
@@ -87,13 +93,13 @@ export class SoundboardControl{
             if (this.activeSounds[soundNr] == false) play = true;
             this.playSound(soundNr,repeat,play);
         }
-        else if (mode == 1) { //Offset
+        else if (mode == 'offset') { //Offset
             let offset = parseInt(settings.offset);
             if (isNaN(offset)) offset = 0;
             this.offset = offset;
             this.updateAll();
         }
-        else {  //Stop All Sounds
+        else if (mode == 'stopAll') {  //Stop All Sounds
             for (let i=0; i<64; i++) {
                 if (this.activeSounds[i] != false){
                     this.playSound(i,false,false);
@@ -104,8 +110,8 @@ export class SoundboardControl{
 
     keyPressUp(settings){
         let mode = settings.soundboardMode;
-        if (mode == undefined) mode = 0;
-        if (mode != 0) return;
+        if (mode == undefined) mode = 'playSound';
+        if (mode != 'playSound') return;
         let soundNr = parseInt(settings.soundNr);
         if (isNaN(soundNr)) soundNr = 1;
         soundNr--;

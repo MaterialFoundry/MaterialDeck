@@ -19,60 +19,60 @@ export class OtherControls{
     update(settings,context){
         this.active = true;
         let mode = settings.otherMode;
-        if (mode == undefined) mode = 0;
+        if (mode == undefined) mode = 'pause';
 
-        if (mode == 0) {    //pause
+        if (mode == 'pause') {    //pause
             this.updatePause(settings.pauseFunction,context);
         }
-        else if (mode == 1) {   //scene selection
+        else if (mode == 'sceneSelect') {   //scene selection
             this.updateScene(settings,context);
         }
-        else if (mode == 2){    //control buttons
+        else if (mode == 'controlButtons'){    //control buttons
             this.updateControl(settings,context);
         }
-        else if (mode == 3){    //darkness
+        else if (mode == 'darkness'){    //darkness
             this.updateDarkness(settings,context);
         }
-        else if (mode == 4){    //roll tables
+        else if (mode == 'rollTables'){    //roll tables
             this.updateRollTable(settings,context);
         }
-        else if (mode == 5) {   //open sidebar tab
+        else if (mode == 'sidebarTab') {   //open sidebar tab
             this.updateSidebar(settings,context);
         }
-        else if (mode == 6) {   //open compendium
+        else if (mode == 'compendium') {   //open compendium
             this.updateCompendium(settings,context);
         }
-        else if (mode == 7) {   //open journal
+        else if (mode == 'journal') {   //open journal
             this.updateJournal(settings,context);
         }
     }
 
     keyPress(settings){
         let mode = settings.otherMode;
-        if (mode == undefined) mode = 0;
+        if (mode == undefined) mode = 'pause';
 
-        if (mode == 0) {    //pause
+        if (mode == 'pause') {    //pause
             this.keyPressPause(settings.pauseFunction);
         }
-        else if (mode == 1) {   //scene
+        else if (mode == 'sceneSelect') {   //scene
             this.keyPressScene(settings);
         }
-        else if (mode == 2) {   //control buttons
+        else if (mode == 'controlButtons') {   //control buttons
             this.keyPressControl(settings);
         }
-        else if (mode == 3) {   //darkness controll
+        else if (mode == 'darkness') {   //darkness controll
             this.keyPressDarkness(settings);
         }
-        else if (mode == 4) {   //roll tables
+        else if (mode == 'rollTables') {   //roll tables
             this.keyPressRollTable(settings);
         }
-        else if (mode == 5) {   //sidebar
+        else if (mode == 'sidebarTab') {   //sidebar
             this.keyPressSidebar(settings);
         }
-        else if (mode == 6) {   //open compendium
+        else if (mode == 'compendium') {   //open compendium
             this.keyPressCompendium(settings);
         }
-        else if (mode == 7) {   //open journal
+        else if (mode == 'journal') {   //open journal
             this.keyPressJournal(settings);
         }
     }
@@ -81,7 +81,7 @@ export class OtherControls{
 
     updatePause(pauseFunction,context){
         let src = "";
-        if (pauseFunction == undefined) pauseFunction = 0;
+        if (pauseFunction == undefined) pauseFunction = 'pause';
         
         let background = settings.background;
         if(background == undefined) background = '#000000';
@@ -97,35 +97,38 @@ export class OtherControls{
         let playlistType = settings.playlistType;
         if (playlistType == undefined) playlistType = 0;
 
-        if (pauseFunction == 0){ //Pause game
+        if (pauseFunction == 'pause'){ //Pause game
             if (game.paused) ringColor = ringOnColor;
             else ringColor = ringOffColor;
-            src = 'action/images/other/pause/pause.png';
+            src = 'modules/MaterialDeck/img/other/pause/pause.png';
+            //src = 'action/images/other/pause/pause.png';
         }
-        else if (pauseFunction == 1){ //Resume game
+        else if (pauseFunction == 'resume'){ //Resume game
             if (game.paused == false) ringColor = ringOnColor;
             else ringColor = ringOffColor;
-            src = 'action/images/other/pause/resume.png';
+            src = 'modules/MaterialDeck/img/other/pause/resume.png';
+            //src = 'action/images/other/pause/resume.png';
         }
-        else if (pauseFunction == 2) { //toggle
+        else if (pauseFunction == 'toggle') { //toggle
             if (game.paused == false) ringColor = ringOnColor;
             else ringColor = ringOffColor;
-            src = 'action/images/other/pause/playpause.png';
+            src = 'modules/MaterialDeck/img/other/pause/playpause.png';
+            //src = 'action/images/other/pause/playpause.png';
         }
-        streamDeck.setIcon(0,context,src,background,2,ringColor);
+        streamDeck.setIcon(context,src,background,2,ringColor,true);
     }
 
     keyPressPause(pauseFunction){
-        if (pauseFunction == undefined) pauseFunction = 0;
-        if (pauseFunction == 0){ //Pause game
+        if (pauseFunction == undefined) pauseFunction = 'pause';
+        if (pauseFunction == 'pause'){ //Pause game
             if (game.paused) return; 
             game.togglePause();
         }
-        else if (pauseFunction == 1){ //Resume game
+        else if (pauseFunction == 'resume'){ //Resume game
             if (game.paused == false) return; 
             game.togglePause();
         }
-        else if (pauseFunction == 2) { //toggle
+        else if (pauseFunction == 'toggle') { //toggle
             game.togglePause();
         }
     }
@@ -135,7 +138,7 @@ export class OtherControls{
     updateScene(settings,context){
         if (canvas.scene == null) return;
         let func = settings.sceneFunction;
-        if (func == undefined) func = 0;
+        if (func == undefined) func = 'visible';
 
         let background = settings.background;
         if(background == undefined) background = '#000000';
@@ -148,12 +151,9 @@ export class OtherControls{
         let ringOnColor = settings.onRing;
         if (ringOnColor == undefined) ringOnColor = '#00FF00';
 
-        let playlistType = settings.playlistType;
-        if (playlistType == undefined) playlistType = 0;
-
         let src = "";
         let name = "";
-        if (func == 0){ //visible scenes
+        if (func == 'visible'){ //visible scenes
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr)) nr = 1;
             nr--;
@@ -170,7 +170,7 @@ export class OtherControls{
                 if (scene.active) name += "\n(Active)";
             }
         }
-        else if (func == 1) {   //all scenes
+        else if (func == 'any') {   //all scenes
             let scene = game.scenes.apps[1].entities.find(p=>p.data.name == name);
             if (scene != undefined){
                 if (scene.isView)
@@ -183,15 +183,15 @@ export class OtherControls{
             }
         }
         streamDeck.setTitle(name,context);
-        streamDeck.setIcon(1, context,src,background,2,ringColor);
+        streamDeck.setIcon(context,src,background,2,ringColor);
     }
 
     keyPressScene(settings){
         let func = settings.sceneFunction;
-        if (func == undefined) func = 0;
-        if (func == 0){ //visible scenes
+        if (func == undefined) func = 'visible';
+        if (func == 'visible'){ //visible scenes
             let viewFunc = settings.sceneViewFunction;
-            if (viewFunc == undefined) viewFunc = 0;
+            if (viewFunc == undefined) viewFunc = 'view';
 
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr)) nr = 1;
@@ -199,10 +199,10 @@ export class OtherControls{
             let scene = game.scenes.apps[0].scenes[nr];
             
             if (scene != undefined){
-                if (viewFunc == 0){
+                if (viewFunc == 'view'){
                     scene.view();
                 }
-                else if (viewFunc == 1){
+                else if (viewFunc == 'activate'){
                     scene.activate();
                 }
                 else {
@@ -217,32 +217,29 @@ export class OtherControls{
     
     updateControl(settings,context){
         let control = settings.control;
-        if (control == undefined) control = 0;
+        if (control == undefined) control = 'dispControls';
 
         let tool = settings.tool;
-        if (tool == undefined) tool = 0;
+        if (tool == undefined) tool = 'open';
 
         let background = settings.background;
         if (background == undefined) background = '#000000';
 
         let ringColor = '#000000'
 
-        const controlName = this.getControlName(control);
-        const toolName = this.getToolName(control,tool);
-
         let txt = "";
         let src = "";
         const activeControl = ui.controls.activeControl;
         const activeTool = ui.controls.activeTool;
 
-        if (control == 0) { //displayed controls
+        if (control == 'dispControls') { //displayed controls
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
 
             const selectedControl = ui.controls.controls[controlNr];
             if (selectedControl != undefined){
-                if (tool == 0){  //open category
+                if (tool == 'open'){  //open category
                     txt = game.i18n.localize(selectedControl.title);
                     src = selectedControl.icon;
                     if (activeControl == selectedControl.name)
@@ -250,7 +247,7 @@ export class OtherControls{
                 }
             }
         }
-        else if (control == 1){  //displayed tools
+        else if (control == 'dispTools'){  //displayed tools
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
@@ -274,16 +271,16 @@ export class OtherControls{
             }
         }
         else {  // specific control/tool
-            const selectedControl = ui.controls.controls.find(c => c.name == controlName);
+            const selectedControl = ui.controls.controls.find(c => c.name == control);
             if (selectedControl != undefined){
-                if (tool == 0){  //open category
+                if (tool == 'open'){  //open category
                         txt = game.i18n.localize(selectedControl.title);
                         src = selectedControl.icon;
                         if (activeControl == selectedControl.name)
                             ringColor = "#FF7B00";
                 }
                 else {
-                    const selectedTool = selectedControl.tools.find(t => t.name == toolName);
+                    const selectedTool = selectedControl.tools.find(t => t.name == tool);
                     if (selectedTool != undefined){
                         txt = game.i18n.localize(selectedTool.title);
                         src = selectedTool.icon;
@@ -300,33 +297,30 @@ export class OtherControls{
                 }
             }
         }
-        streamDeck.setIcon(1,context,src,background,2,ringColor);
+        streamDeck.setIcon(context,src,background,2,ringColor);
         streamDeck.setTitle(txt,context);
     }
 
     keyPressControl(settings){
         if (canvas.scene == null) return;
         let control = settings.control;
-        if (control == undefined) control = 0;
+        if (control == undefined) control = 'dispControls';
 
         let tool = settings.tool;
-        if (tool == undefined) tool = 0;
-
-        const controlName = this.getControlName(control);
-        const toolName = this.getToolName(control,tool);
+        if (tool == undefined) tool = 'open';
         
-        if (control == 0){  //displayed controls
+        if (control == 'dispControls'){  //displayed controls
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
             const selectedControl = ui.controls.controls[controlNr];
             if (selectedControl != undefined){
-                ui.controls.activeControl = controlName;
+                ui.controls.activeControl = 'token';
                 selectedControl.activeTool = selectedControl.activeTool;
                 canvas.getLayer(selectedControl.layer).activate();
             }
         }
-        else if (control == 1){  //displayed tools
+        else if (control == 'dispTools'){  //displayed tools
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
@@ -347,17 +341,17 @@ export class OtherControls{
             }
         }
         else {  //select control
-            const selectedControl = ui.controls.controls.find(c => c.name == controlName);
+            const selectedControl = ui.controls.controls.find(c => c.name == control);
             if (selectedControl != undefined){
-                if (tool == 0){  //open category
-                    ui.controls.activeControl = controlName;
+                if (tool == 'open'){  //open category
+                    ui.controls.activeControl = 'token';
                     selectedControl.activeTool = selectedControl.activeTool;
                     canvas.getLayer(selectedControl.layer).activate();
                 }
                 else {
-                    const selectedTool = selectedControl.tools.find(t => t.name == toolName);
+                    const selectedTool = selectedControl.tools.find(t => t.name == tool);
                     if (selectedTool != undefined){
-                        ui.controls.activeControl = controlName;
+                        ui.controls.activeControl = control;
                         canvas.getLayer(selectedControl.layer).activate();
                         if (selectedTool.toggle) {
                             selectedTool.active = !selectedTool.active;
@@ -367,7 +361,7 @@ export class OtherControls{
                             selectedTool.onClick();
                         }
                         else
-                            selectedControl.activeTool = toolName;
+                            selectedControl.activeTool = tool;
                     }
                 }
             }
@@ -375,87 +369,11 @@ export class OtherControls{
         ui.controls.render(); 
     }
 
-    getControlName(control){
-        control -= 2;
-        let name;
-        if (control == 0) name = 'token';
-        else if (control == 1) name = 'measure';
-        else if (control == 2) name = 'tiles';
-        else if (control == 3) name = 'drawings';
-        else if (control == 4) name = 'walls';
-        else if (control == 5) name = 'lighting';
-        else if (control == 6) name = 'sounds';
-        else if (control == 7) name = 'notes';
-        return name;
-    }
-
-    getToolName(control,tool){
-        control -= 2;
-        tool--;
-        let name;
-        if (control == 0){  //basic controls
-            if (tool == 0) name = 'select';
-            else if (tool == 1) name = 'target';
-            else if (tool == 2) name = 'ruler';
-        }
-        else if (control == 1){  //measurement controls
-            if (tool == 0) name = 'circle';
-            else if (tool == 1) name = 'cone';
-            else if (tool == 2) name = 'rect';
-            else if (tool == 3) name = 'ray';
-            else if (tool == 4) name = 'clear';
-        }
-        else if (control == 2){  //tile controls
-            if (tool == 0) name = 'select';
-            else if (tool == 1) name = 'tile';
-            else if (tool == 2) name = 'browse';
-        }
-        else if (control == 3){  //drawing tools
-            if (tool == 0) name = 'select';
-            else if (tool == 1) name = 'rect';
-            else if (tool == 2) name = 'ellipse';
-            else if (tool == 3) name = 'polygon';
-            else if (tool == 4) name = 'freehand';
-            else if (tool == 5) name = 'text';
-            else if (tool == 6) name = 'configure';
-            else if (tool == 7) name = 'clear';
-        }
-        else if (control == 4){  //wall controls
-            if (tool == 0) name = 'select';
-            else if (tool == 1) name = 'walls';
-            else if (tool == 2) name = 'terrain';
-            else if (tool == 3) name = 'invisible';
-            else if (tool == 4) name = 'ethereal';
-            else if (tool == 5) name = 'doors';
-            else if (tool == 6) name = 'secret';
-            else if (tool == 7) name = 'clone';
-            else if (tool == 8) name = 'snap';
-            else if (tool == 9) name = 'clear';
-        }
-        else if (control == 5){  //lighting controls
-            if (tool == 0) name = 'light';
-            else if (tool == 1) name = 'day';
-            else if (tool == 2) name = 'night';
-            else if (tool == 3) name = 'reset';
-            else if (tool == 4) name = 'clear';
-        }
-        else if (control == 6){  //ambient sound controls
-            if (tool == 0) name = 'sound';
-            else if (tool == 1) name = 'clear';
-        }
-        else if (control == 7){  //journal notes
-            if (tool == 0) name = 'select';
-            else if (tool == 1) name = 'toggle';
-            else if (tool == 2) name = 'clear';
-        }
-        return name;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateDarkness(settings,context){
         let func = settings.darknessFunction;
-        if (func == undefined) func = 0;
+        if (func == undefined) func = 'value';
 
         let value = settings.darknessValue;
         if (value == undefined) value = 0;
@@ -466,35 +384,34 @@ export class OtherControls{
         let src = "";
         let txt = "";
 
-        if (func == 0){ //value
-            src = 'action/images/other/darkness/darkness.png';
+        if (func == 'value'){ //value
+            src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
         }
-        else if (func == 1){ //increase/decrease
-            if (value < 0) src = 'action/images/other/darkness/decreasedarkness.png';
-            else src = 'action/images/other/darkness/increasedarkness.png';
+        else if (func == 'incDec'){ //increase/decrease
+            if (value < 0) src = 'modules/MaterialDeck/img/other/darkness/decreasedarkness.png';
+            else src = 'modules/MaterialDeck/img/other/darkness/increasedarkness.png';
         }
-        else if (func == 2){    //display darkness
-            src = 'action/images/other/darkness/darkness.png';
+        else if (func == 'display'){    //display darkness
+            src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
             let darkness = '';
             if (canvas.scene != null) darkness = Math.floor(canvas.scene.data.darkness*100)/100;
             txt += darkness;
         }
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(0, context,src,background);
+        streamDeck.setIcon(context,src,background);
     }
 
     keyPressDarkness(settings) {
         if (canvas.scene == null) return;
         let func = settings.darknessFunction;
-        if (func == undefined) func = 0;
+        if (func == undefined) func = 'value';
 
         let value = parseFloat(settings.darknessValue);
         if (value == undefined) value = 0;
 
-        if (func == 0){ //value
+        if (func == 'value') //value
             canvas.scene.update({darkness: value});
-        }
-        else if (func == 1){ //increase/decrease
+        else if (func == 'incDec'){ //increase/decrease
             let darkness = canvas.scene.data.darkness;
             darkness += -1*value;
             if (darkness > 1) darkness = 1;
@@ -522,12 +439,12 @@ export class OtherControls{
             if (settings.displayRollName) txt = table.name;
         }
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(1, context,src,background);
+        streamDeck.setIcon(context,src,background);
     }
 
     keyPressRollTable(settings){
         let func = settings.rolltableFunction;
-        if (func == undefined) func = 0;
+        if (func == undefined) func = 'open';
 
         let name = settings.rollTableName;
         if (name == undefined) return;
@@ -538,71 +455,55 @@ export class OtherControls{
         let table = game.tables.entities.find(p=>p.name == name);
 
         if (table != undefined) {
-            if (func == 0){ //open
-                table.sheet.render(true);
+            if (func == 'open'){ //open
+                const element = document.getElementById(table.sheet.id);
+                if (element == null) table.sheet.render(true);
+                else table.sheet.close();
             }
-            else if (func == 1) {//Public roll
+            else if (func == 'public') //Public roll
                 table.draw({rollMode:"roll"});
-            }
-            else if (func == 2) {//private roll
+            else if (func == 'private') //private roll
                 table.draw({rollMode:"selfroll"});
-            }
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    getSidebarId(nr){
-        let id;
-        if (nr == 0) id = 'chat';
-        else if (nr == 1) id = 'combat';
-        else if (nr == 2) id = 'scenes';
-        else if (nr == 3) id = 'actors';
-        else if (nr == 4) id = 'items';
-        else if (nr == 5) id = 'journal';
-        else if (nr == 6) id = 'tables';
-        else if (nr == 7) id = 'playlists';
-        else if (nr == 8) id = 'compendium';
-        else if (nr == 9) id = 'settings';
-        else id = '';
-        return id;
-    }
-
     getSidebarName(nr){
         let name;
-        if (nr == 0) name = game.i18n.localize("SIDEBAR.TabChat");
-        else if (nr == 1) name = game.i18n.localize("SIDEBAR.TabCombat");
-        else if (nr == 2) name = game.i18n.localize("SIDEBAR.TabScenes");
-        else if (nr == 3) name = game.i18n.localize("SIDEBAR.TabActors");
-        else if (nr == 4) name = game.i18n.localize("SIDEBAR.TabItems");
-        else if (nr == 5) name = game.i18n.localize("SIDEBAR.TabJournal");
-        else if (nr == 6) name = game.i18n.localize("SIDEBAR.TabTables");
-        else if (nr == 7) name = game.i18n.localize("SIDEBAR.TabPlaylists");
-        else if (nr == 8) name = game.i18n.localize("SIDEBAR.TabCompendium");
-        else if (nr == 9) name = game.i18n.localize("SIDEBAR.TabSettings");
-        else if (nr == 10) name = game.i18n.localize("SIDEBAR.CollapseToggle");
+        if (nr == 'chat') name = game.i18n.localize("SIDEBAR.TabChat");
+        else if (nr == 'combat') name = game.i18n.localize("SIDEBAR.TabCombat");
+        else if (nr == 'scenes') name = game.i18n.localize("SIDEBAR.TabScenes");
+        else if (nr == 'actors') name = game.i18n.localize("SIDEBAR.TabActors");
+        else if (nr == 'items') name = game.i18n.localize("SIDEBAR.TabItems");
+        else if (nr == 'journal') name = game.i18n.localize("SIDEBAR.TabJournal");
+        else if (nr == 'tables') name = game.i18n.localize("SIDEBAR.TabTables");
+        else if (nr == 'playlists') name = game.i18n.localize("SIDEBAR.TabPlaylists");
+        else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
+        else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
+        else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
         return name;
     }
 
     getSidebarIcon(nr){
         let icon;
-        if (nr == 0) icon = window.CONFIG.ChatMessage.sidebarIcon;
-        else if (nr == 1) icon = window.CONFIG.Combat.sidebarIcon;
-        else if (nr == 2) icon = window.CONFIG.Scene.sidebarIcon;
-        else if (nr == 3) icon = window.CONFIG.Actor.sidebarIcon;
-        else if (nr == 4) icon = window.CONFIG.Item.sidebarIcon;
-        else if (nr == 5) icon = window.CONFIG.JournalEntry.sidebarIcon;
-        else if (nr == 6) icon = window.CONFIG.RollTable.sidebarIcon;
-        else if (nr == 7) icon = window.CONFIG.Playlist.sidebarIcon;
-        else if (nr == 8) icon = "fas fa-atlas";
-        else if (nr == 9) icon = "fas fa-cogs";
-        else if (nr == 10) icon = "fas fa-caret-right";
+        if (nr == 'chat') icon = window.CONFIG.ChatMessage.sidebarIcon;
+        else if (nr == 'combat') icon = window.CONFIG.Combat.sidebarIcon;
+        else if (nr == 'scenes') icon = window.CONFIG.Scene.sidebarIcon;
+        else if (nr == 'actors') icon = window.CONFIG.Actor.sidebarIcon;
+        else if (nr == 'items') icon = window.CONFIG.Item.sidebarIcon;
+        else if (nr == 'journal') icon = window.CONFIG.JournalEntry.sidebarIcon;
+        else if (nr == 'tables') icon = window.CONFIG.RollTable.sidebarIcon;
+        else if (nr == 'playlists') icon = window.CONFIG.Playlist.sidebarIcon;
+        else if (nr == 'compendium') icon = "fas fa-atlas";
+        else if (nr == 'settings') icon = "fas fa-cogs";
+        else if (nr == 'collapse') icon = "fas fa-caret-right";
         return icon;
     }
     
     updateSidebar(settings,context){
         let sidebarTab = settings.sidebarTab;
-        if (sidebarTab == undefined) sidebarTab = 0;
+        if (sidebarTab == undefined) sidebarTab = 'chat';
 
         let activeTab = ui.sidebar.activeTab;
         let collapsed = ui.sidebar._collapsed;
@@ -624,22 +525,24 @@ export class OtherControls{
         if (settings.displaySidebarName) name = this.getSidebarName(sidebarTab);
         if (settings.displaySidebarIcon) icon = this.getSidebarIcon(sidebarTab);
 
-        if ((sidebarTab == 10 && collapsed)) 
+        if ((sidebarTab == 'collapse' && collapsed)) 
             ringColor = ringOnColor;
         else    
             ringColor = ringOffColor;
         streamDeck.setTitle(name,context);
-        streamDeck.setIcon(1,context,icon,background,2,ringColor);
+        streamDeck.setIcon(context,icon,background,2,ringColor);
     }
 
     keyPressSidebar(settings){
         let sidebarTab = settings.sidebarTab;
-        if (sidebarTab == undefined) sidebarTab = 0;
+        if (sidebarTab == undefined) sidebarTab = 'chat';
         let collapsed = ui.sidebar._collapsed;
 
-        if (sidebarTab < 10) ui.sidebar.activateTab(this.getSidebarId(sidebarTab));
-        else if (collapsed) ui.sidebar.expand();
-        else if (collapsed == false) ui.sidebar.collapse();
+        if (sidebarTab == 'collapse'){
+            if (collapsed) ui.sidebar.expand();
+            else if (collapsed == false) ui.sidebar.collapse();
+        }
+        else ui.sidebar.activateTab(sidebarTab);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -666,7 +569,7 @@ export class OtherControls{
         else ringColor = ringOffColor;
 
         if (settings.displayCompendiumName) streamDeck.setTitle(name,context);
-        streamDeck.setIcon(0,context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",background,2,ringColor);
     }
 
     keyPressCompendium(settings){
@@ -705,7 +608,7 @@ export class OtherControls{
         else ringColor = ringOffColor;
         
         if (settings.displayCompendiumName) streamDeck.setTitle(name,context);
-        streamDeck.setIcon(0,context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",background,2,ringColor);
     }
 
     keyPressJournal(settings){
@@ -714,7 +617,8 @@ export class OtherControls{
 
         const journal = game.journal.entries.find(p=>p.name == name);
         if (journal == undefined) return;
-        
-        journal.render(true);
+        const element = document.getElementById("journal-"+journal.id);
+        if (element == null) journal.render(true);
+        else journal.sheet.close();
     }
 }

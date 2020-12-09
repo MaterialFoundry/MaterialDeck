@@ -1,0 +1,5 @@
+ac.webp: Foundry's icon folder, original name: heater-steel-worn.webp
+hp.png: made using Elgato's key creator: https://www.elgato.com/en/gaming/keycreator
+init.png: freepngimg.com, color inverted, from: https://freepngimg.com/png/81025-art-dice-dungeons-system-dragons-d20-triangle/icon
+speed.webp: Foundry's icon folder, original name: shoes-collared-leather-blue.webp
+mystery-man.png: Foundry's icon folder, converted from .svg

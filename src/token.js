@@ -23,7 +23,7 @@ export class TokenControl{
 
         if (settings.displayIcon) icon = true;
         if (settings.displayName) name = true;
-        if (stats == undefined) stats = 0;
+        if (stats == undefined) stats = 'none';
         if (settings.background) background = settings.background;
 
         let system = settings.system;
@@ -32,16 +32,19 @@ export class TokenControl{
         let tokenName = "";
         let txt = "";
         let iconSrc = "";
+        let overlay = false;
         if (tokenId != undefined) {
             let token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
             tokenName = token.data.name;
             if (name) txt += tokenName;
-            if (name && stats != 0) txt += "\n";
-            iconSrc += token.data.img;
+            if (name && stats != 'none') txt += "\n";
+            iconSrc = token.data.img;
             let actor = canvas.tokens.children[0].children.find(p => p.id == tokenId).actor;
             if (system == 'dnd5e' && game.system.id == 'dnd5e'){
                 let attributes = actor.data.data.attributes;
-                if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                if (stats == 'HP') {
+                    txt += attributes.hp.value + "/" + attributes.hp.max;
+                }
                 else if (stats == 'TempHP') {
                     txt += attributes.hp.temp;
                     if (attributes.hp.tempmax != null)
@@ -83,7 +86,7 @@ export class TokenControl{
                 else if (stats == 'PassivePerception') txt += actor.data.data.skills.prc.passive;
                 else if (stats == 'PassiveInvestigation') txt += actor.data.data.skills.inv.passive;
             }
-            else if (system == 'dnd3.5e' && game.system.id == 'D35E'){
+            else if ((system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
                 let attributes = actor.data.data.attributes;
                 if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
                 else if (stats == 'TempHP') {
@@ -138,6 +141,13 @@ export class TokenControl{
                     if (init != undefined) txt += init;
                 }
             }
+            else if (system == 'demonlord' && game.system.id == 'demonlord'){
+                let characteristics = actor.data.data.characteristics;
+                if (stats == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
+                else if (stats == 'AC') txt += characteristics.defense;
+                else if (stats == 'Speed') txt += characteristics.speed;
+                else if (stats == 'Init') txt += actor.data.data.fastturn ? "FAST" : "SLOW";
+            }
             else {
                 //Other systems
 
@@ -146,7 +156,7 @@ export class TokenControl{
 
             }
 
-            if (settings.onClick == 4) { //toggle visibility
+            if (settings.onClick == 'visibility') { //toggle visibility
                 ring = 1;
                 if (token.data.hidden){
                     ring = 2;
@@ -154,10 +164,10 @@ export class TokenControl{
                 }
                 if (icon == false) {
                     iconSrc = window.CONFIG.controlIcons.visibility;
-                    streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor,true);
+                    overlay = true;
                 }
             }
-            else if (settings.onClick == 5) { //toggle combat state
+            else if (settings.onClick == 'combatState') { //toggle combat state
                 ring = 1;
                 if (token.inCombat){
                     ring = 2;
@@ -165,10 +175,10 @@ export class TokenControl{
                 }
                 if (icon == false) {
                     iconSrc = window.CONFIG.controlIcons.combat;
-                    streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor,true);
+                    overlay = true;
                 }
             }
-            else if (settings.onClick == 6) { //target token
+            else if (settings.onClick == 'target') { //target token
                 ring = 1;
                 if (token.isTargeted){
                     ring = 2;
@@ -176,78 +186,133 @@ export class TokenControl{
                 }
                 if (icon == false) {
                     iconSrc = "fas fa-bullseye";
-                    streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor);
                 }
             }
-            else if (settings.onClick == 7) { //toggle condition
+            else if (settings.onClick == 'condition') { //toggle condition
                 ring = 1;
-                let condition = settings.condition;
-                if (condition == undefined) condition = 0;
-                if (condition == 0 && icon == false){
-                    iconSrc = window.CONFIG.controlIcons.effects;
-                }
-                else if (icon == false) {
-                    if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E')){
-                        let effect = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition));
+                if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
+                    let condition = settings.condition;
+                    if (condition == undefined) condition = 'removeAll';
+                    if (condition == 'removeAll' && icon == false)
+                        iconSrc = window.CONFIG.controlIcons.effects;
+                    else if (icon == false) {
+                        let effect = CONFIG.statusEffects.find(e => e.id === condition);
                         iconSrc = effect.icon;
                         let effects = token.actor.effects.entries;
-                        let active = effects.find(e => e.isTemporary === this.getStatusId(condition));
+                        let active = effects.find(e => e.isTemporary === condition);
                         if (active != undefined){
                             ring = 2;
                             ringColor = "#FF7B00";
-                        }
-                    }
-                    else if (system == 'pf2e' && game.system.id == 'pf2e') {
+                        } 
+                    } 
+                }
+                else if (system == 'pf2e' && game.system.id == 'pf2e') {
+                    let condition = settings.conditionPF2E;
+                    if (condition == undefined) condition = 'removeAll';
+                    if (condition == 'removeAll' && icon == false)
+                        iconSrc = window.CONFIG.controlIcons.effects;
+                    else if (icon == false) {
                         let effects = token.data.effects;
                         for (let i=0; i<effects.length; i++){
-                            if (CONFIG.statusEffects[condition-1] == effects[i]){
+                            if (this.pf2eCondition(condition) == effects[i]){
                                 ring = 2;
                                 ringColor = "#FF7B00";
                             }       
                         }
-                        iconSrc = CONFIG.statusEffects[condition-1];
-                    }
-                } 
-                streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor,true);
+                        iconSrc = this.pf2eCondition(condition);
+                    } 
+                }
+                else if (system == 'demonlord' && game.system.id == 'demonlord'){
+                    let condition = settings.conditionDemonlord;
+                    if (condition == undefined) condition = 'removeAll';
+                    if (condition == 'removeAll' && icon == false)
+                        iconSrc = window.CONFIG.controlIcons.effects;
+                    else if (icon == false) {
+                        let effect = CONFIG.statusEffects.find(e => e.id === condition);
+                        iconSrc = effect.icon;
+                        let effects = token.actor.effects.entries;
+                        let active = effects.find(e => e.isTemporary === condition);
+                        if (active != undefined){
+                            ring = 2;
+                            ringColor = "#FF7B00";
+                        } 
+                    } 
+                }
+                else
+                    iconSrc = "";
+                overlay = true;
             }
         }
         else {
             iconSrc += "";
-            if (settings.onClick == 4) { //toggle visibility
+            if (settings.onClick == 'visibility') { //toggle visibility
                 if (icon == false) {
                     iconSrc = window.CONFIG.controlIcons.visibility;
-                    streamDeck.setIcon(1,context,iconSrc,background,1,'#000000',true);
+                    ring = 2;
+                    overlay = true;
                 }
             }
-            else if (settings.onClick == 5) { //toggle combat state
+            else if (settings.onClick == 'combatState') { //toggle combat state
                 if (icon == false) {
                     iconSrc = window.CONFIG.controlIcons.combat;
-                    streamDeck.setIcon(1,context,iconSrc,background,1,'#000000',true);
+                    ring = 2;
+                    overlay = true;
                 }
             }
-            else if (settings.onClick == 6) { //target token
+            else if (settings.onClick == 'target') { //target token
                 if (icon == false) {
                     iconSrc = "fas fa-bullseye";
-                    streamDeck.setIcon(1,context,iconSrc,background,1,'#000000');
+                    ring = 2;
+                    overlay = true;
                 }
             }
-            else if (settings.onClick == 7) { //toggle condition
-                let condition = settings.condition;
-                if (condition == undefined) condition = 0;
+            else if (settings.onClick == 'condition') { //toggle condition
+                if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
+                    let condition = settings.condition;
+                    if (condition == undefined) condition = 'removeAll';
 
-                if (condition == 0 && icon == false){
-                    iconSrc = window.CONFIG.controlIcons.effects;
+                    if (condition == 'removeAll' && icon == false)
+                        iconSrc = window.CONFIG.controlIcons.effects;
+                    else if (icon == false) 
+                        iconSrc = CONFIG.statusEffects.find(e => e.id === condition).icon;
                 }
-                else if (icon == false) {
-                    if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E'))
-                        iconSrc = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition)).icon;
-                    else if (system == 'pf2e' && game.system.id == 'pf2e')
-                        iconSrc = CONFIG.statusEffects[condition-1];
-                } 
-                streamDeck.setIcon(1,context,iconSrc,background,1,'#000000',true);
+                else if (system == 'pf2e' && game.system.id == 'pf2e') {
+                    let condition = settings.conditionPF2E;
+                    if (condition == undefined) condition = 'removeAll';
+    
+                    if (condition == 'removeAll' && icon == false)
+                        iconSrc = window.CONFIG.controlIcons.effects;
+                    else if (icon == false) 
+                        iconSrc = this.pf2eCondition(condition);
+                }
+                else if (system == 'demonlord' && game.system.id == 'demonlord'){
+                    let condition = settings.conditionDemonlord;
+                    if (condition == undefined) condition = 'removeAll';
+
+                    if (condition == 'removeAll' && icon == false)
+                        iconSrc = window.CONFIG.controlIcons.effects;
+                    else if (icon == false) 
+                        iconSrc = CONFIG.statusEffects.find(e => e.id === condition).icon;
+                }
+                ring = 1;
+                overlay = true;
             }
         }
-        if (icon) streamDeck.setIcon(1,context,iconSrc,background,ring,ringColor);
+        if (icon == false){
+            if (stats == 'HP' || stats == 'TempHP') //HP
+                iconSrc = "modules/MaterialDeck/img/token/hp.png";
+            else if (stats == 'AC' || stats == 'ShieldHP') //AC
+                iconSrc = "modules/MaterialDeck/img/token/ac.webp";
+            else if (stats == 'Speed') //Speed
+                iconSrc = "modules/MaterialDeck/img/token/speed.webp";
+            else if (stats == 'Init') //Initiative
+                iconSrc = "modules/MaterialDeck/img/token/init.png";
+            else if (stats == 'PassivePerception') 
+                iconSrc = "modules/MaterialDeck/img/black.png";
+            else if (stats == 'PassiveInvestigation') 
+                iconSrc = "modules/MaterialDeck/img/black.png";
+        } 
+        streamDeck.setIcon(context,iconSrc,background,ring,ringColor,overlay);
         
         streamDeck.setTitle(txt,context);
     }
@@ -257,7 +322,7 @@ export class TokenControl{
         const tokenId = MODULE.selectedTokenId;
 
         let onClick = settings.onClick;
-        if (onClick == undefined) onClick = 0;
+        if (onClick == undefined) onClick = 'doNothing';
 
         const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
         if (token == undefined) return;
@@ -265,89 +330,91 @@ export class TokenControl{
         let system = settings.system;
         if (system == undefined) system = 'dnd5e';
 
-        if (onClick == 0)   //Do nothing
+        if (onClick == 'doNothing')   //Do nothing
             return;
-        else if (onClick == 1){ //center on token
+        else if (onClick == 'center'){ //center on token
             let location = token.getCenter(token.x,token.y); 
             canvas.animatePan(location);
         }
-        else if (onClick == 2){ //Open character sheet
-            token.actor.sheet.render(true);
+        else if (onClick == 'charSheet'){ //Open character sheet
+            const element = document.getElementById(token.actor.sheet.id);
+            if (element == null) token.actor.sheet.render(true);
+            else token.actor.sheet.close();
         }
-        else if (onClick == 3) {  //Open token config
-            token.sheet._render(true);
+        else if (onClick == 'tokenConfig') {  //Open token config
+            const element = document.getElementById(token.sheet.id);
+            if (element == null) token.sheet.render(true);
+            else token.sheet.close();
         }
-        else if (onClick == 4) {    //Toggle visibility
+        else if (onClick == 'visibility') {    //Toggle visibility
             token.toggleVisibility();
         }
-        else if (onClick == 5) {    //Toggle combat state
+        else if (onClick == 'combatState') {    //Toggle combat state
             token.toggleCombat();
         }
-        else if (onClick == 6) {    //Target token
+        else if (onClick == 'target') {    //Target token
             token.setTarget(!token.isTargeted,{releaseOthers:false});
         }
-        else if (onClick == 7) {    //Toggle condition
-            let condition = settings.condition;
-            if (condition == undefined) condition = 0;
+        else if (onClick == 'condition') {    //Toggle condition
+            if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
+                let condition = settings.condition;
+                if (condition == undefined) condition = 'removeAll';
 
-            if (condition == 0){
-                const effects = token.actor.effects.entries;
-                for (let i=0; i<effects.length; i++){
-                    let effect;
-                    if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E'))
-                        effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
-                    else if (system == 'pf2e' && game.system.id == 'pf2e')
-                        effect = CONFIG.statusEffects[condition-1];
-                    await token.toggleEffect(effect)
+                if (condition == 'removeAll'){
+                    const effects = token.actor.effects.entries;
+                    for (let i=0; i<effects.length; i++){
+                        const effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
+                        await token.toggleEffect(effect)
+                    }
+                }
+                else {
+                    const effect = CONFIG.statusEffects.find(e => e.id === condition);
+                    await token.toggleEffect(effect);
                 }
             }
-            else {
-                let effect;
-                if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E'))
-                    effect = CONFIG.statusEffects.find(e => e.id === this.getStatusId(condition));
-                else if (system == 'pf2e' && game.system.id == 'pf2e')
-                    effect = CONFIG.statusEffects[condition-1];
-                token.toggleEffect(effect);
-            }
+            else if (system == 'pf2e' && game.system.id == 'pf2e'){
+                let condition = settings.conditionPF2E;
+                if (condition == undefined) condition = 'removeAll';
+                if (condition == 'removeAll'){
+                    const effects = token.actor.effects.entries;
+                    for (let i=0; i<effects.length; i++){
+                        const effect = this.pf2eCondition(condition);
+                        await token.toggleEffect(effect)
+                    }
+                }
+                else {
+                    const effect = this.pf2eCondition(condition);
+                    await token.toggleEffect(effect);
+                }
+            }  
+            else if (system == 'demonlord' && game.system.id == 'demonlord'){
+                let condition = settings.conditionDemonlord;
+                if (condition == undefined) condition = 'removeAll';
+
+                if (condition == 'removeAll'){
+                    const effects = token.actor.effects.entries;
+                    for (let i=0; i<effects.length; i++){
+                        const effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
+                        await token.toggleEffect(effect)
+                    }
+                }
+                else {
+                    const effect = CONFIG.statusEffects.find(e => e.id === condition);
+                    await token.toggleEffect(effect);
+                }
+            }  
+            this.update(tokenId);
+            
+        }
+        else if (system == 'demonlord' && game.system.id == 'demonlord' && onClick == 'initiative'){
+            token.actor.update({
+                'data.fastturn': !token.actor.data?.data?.fastturn
+            })
             
         }
     }
 
-    getStatusId(nr){
-        let id;
-        if (nr == 1) id = 'dead';
-        else if (nr == 2) id = 'unconscious';
-        else if (nr == 3) id = 'sleep';
-        else if (nr == 4) id = 'stun';
-        else if (nr == 5) id = 'prone';
-        else if (nr == 6) id = 'restrain';
-        else if (nr == 7) id = 'paralysis';
-        else if (nr == 8) id = 'fly';
-        else if (nr == 9) id = 'bind';
-        else if (nr == 10) id = 'deaf';
-        else if (nr == 11) id = 'silence';
-        else if (nr == 12) id = 'fear';
-        else if (nr == 13) id = 'burning';
-        else if (nr == 14) id = 'frozen';
-        else if (nr == 15) id = 'shock';
-        else if (nr == 16) id = 'corrode';
-        else if (nr == 17) id = 'bleeding';
-        else if (nr == 18) id = 'disease';
-        else if (nr == 19) id = 'poison';
-        else if (nr == 20) id = 'radiation';
-        else if (nr == 21) id = 'regen';
-        else if (nr == 22) id = 'degen';
-        else if (nr == 23) id = 'upgrade';
-        else if (nr == 24) id = 'downgrade';
-        else if (nr == 25) id = 'target';
-        else if (nr == 26) id = 'eye';
-        else if (nr == 27) id = 'curse';
-        else if (nr == 28) id = 'bless';
-        else if (nr == 29) id = 'fireShield';
-        else if (nr == 30) id = 'coldShield';
-        else if (nr == 31) id = 'magicShield';
-        else if (nr == 32) id = 'holyShield';
-
-        return id;
+    pf2eCondition(condition){
+        return "systems/pf2e/icons/conditions-2/" + condition + ".png";
     }
 }

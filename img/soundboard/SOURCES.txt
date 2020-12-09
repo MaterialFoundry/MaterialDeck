@@ -1,0 +1,2 @@
+soundboard.png: Edited from https://fontawesome.com/icons/music?style=solid
+play.png: Edited from https://fontawesome.com/icons/play?style=solid

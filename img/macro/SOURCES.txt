@@ -1,0 +1,1 @@
+macro.png: Foundry's icon folder, converted from .svg, original name: dice-target.svg

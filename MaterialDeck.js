@@ -51,7 +51,7 @@ async function analyzeWSmessage(msg){
     }
 
     if (data == undefined || data.payload == undefined) return;
-      
+    //console.log("Received",data);
     const action = data.action;
     const event = data.event;
     const context = data.context;
@@ -70,6 +70,8 @@ async function analyzeWSmessage(msg){
             tokenControl.active = true;
             tokenControl.update(selectedTokenId);
         }  
+        else if (action == 'move')
+            move.update(settings,context);
         else if (action == 'macro')
             macroControl.update(settings,context);
         else if (action == 'combattracker')

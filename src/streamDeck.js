@@ -183,18 +183,18 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(json));
     }
 
-    setIcon(iconLocation, context,src='',background = '#000000',ring=0,ringColor = "#000000",overlay=false){
+    setIcon(context,src='',background = '#000000',ring=0,ringColor = "#000000",overlay=false){
         if (src == null || src == undefined) src = '';
+        if (src == '') src = 'modules/MaterialDeck/img/black.png';
         for (let i=0; i<32; i++){
             if (this.buttonContext[i] == undefined) continue;
             if (this.buttonContext[i].context == context) {
-                if (this.buttonContext[i].icon == src && this.buttonContext[i].ring == ring && this.buttonContext[i].ringColor == ringColor && this.buttonContext[i].background == background && this.buttonContext[i].iconLocation == iconLocation) 
+                if (this.buttonContext[i].icon == src && this.buttonContext[i].ring == ring && this.buttonContext[i].ringColor == ringColor && this.buttonContext[i].background == background) 
                     return;
                 this.buttonContext[i].icon = src;
                 this.buttonContext[i].ring = ring;
                 this.buttonContext[i].ringColor = ringColor;
                 this.buttonContext[i].background = background;
-                this.buttonContext[i].iconLocation = iconLocation;
             }
         }
         
@@ -214,10 +214,6 @@ export class StreamDeck{
             ringColor: ringColor,
             overlay: overlay
         };
-        if (iconLocation == 0){
-            MODULE.sendWS(JSON.stringify(msg));
-        }
-        else 
             this.getImage(msg);
     }
 
@@ -282,11 +278,8 @@ export class StreamDeck{
         if (BGvalid == false) background = '#000000';
 
         let canvas;
-        let canvasId = 'sdCanvas' + this.counter;
-        canvas = document.getElementById(canvasId);
-        if (canvas == null){
+        if (canvas == null || canvas == undefined){
             canvas = document.createElement('canvas');
-            canvas.id = canvasId;
             canvas.width="144";
             canvas.height="144";
             canvas.style="background-color:transparent;visibility:hidden";
@@ -333,9 +326,8 @@ export class StreamDeck{
         }
 
         if (format != 'jpg' && format != 'jpeg' && format != 'png' && format != 'webm' && format != 'webp' && format != 'gif' && format != 'svg') url = "modules/MaterialDeck/img/transparant.png";
-        if (url == "") url = "modules/MaterialDeck/img/transparant.png"
+        //if (url == "") url = "modules/MaterialDeck/img/transparant.png"
         let resImageURL = url;
-        
         let img = new Image();
         img.setAttribute('crossorigin', 'anonymous');
         img.onload = () => {
@@ -373,6 +365,7 @@ export class StreamDeck{
             }
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
             var dataURL = canvas.toDataURL();
+            canvas.remove();
             this.setImage(dataURL,data.context);
         };
         img.src = resImageURL;

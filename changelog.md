@@ -1,4 +1,24 @@
 # Changelog Material Deck Module
+### v1.1.0 - 09-12-2020
+Fixes
+<ul>
+<li>Settings would not show for Combat Tracker action</li>
+<li>Macro Action => Macro Board default settings fixed</li>
+</li>
+Additions/changes:
+<ul>
+<li>Added support for Pathfinder 1e and Shadow of the Demon Lord</li>
+<li>All dialogs that are openable using the SD can now be closed by pressing the button while the dialog is open</li>
+<li>Playlist Action & Soundboard Action => Stop All now indicates if there are tracks/playlists/sounds playing</li>
+<li>Confirmed Foundry 0.7.8 compatibility</li>
+<li>API has been improved, making integration with other hardware/software easier, and making future changes/additions easier</li>
+<li>Moved default images to Foundry module side instead of Stream Deck plugin</li>
+</li>
+
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.1.0: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### V1.0.1 - 26-11-2020
 <ul>
 <li>Fixed issue where macro from macroboard wouldn't execute if furnace arguments were not defined</li>
