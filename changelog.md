@@ -4,7 +4,7 @@ Fixes
 <ul>
 <li>Settings would not show for Combat Tracker action</li>
 <li>Macro Action => Macro Board default settings fixed</li>
-</li>
+</ul>
 Additions/changes:
 <ul>
 <li>Added support for Pathfinder 1e and Shadow of the Demon Lord</li>
@@ -13,7 +13,7 @@ Additions/changes:
 <li>Confirmed Foundry 0.7.8 compatibility</li>
 <li>API has been improved, making integration with other hardware/software easier, and making future changes/additions easier</li>
 <li>Moved default images to Foundry module side instead of Stream Deck plugin</li>
-</li>
+</ul>
 
 <b>Compatible server app and SD plugin:</b><br>
 Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
