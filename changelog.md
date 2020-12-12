@@ -1,5 +1,5 @@
 # Changelog Material Deck Module
-### v1.1.1 - 09-12-2020
+### v1.1.1 - 12-12-2020
 Fixes
 <ul>
 <li>Fixed issue where deleting a playlist would cause an error preventing the Soundboard Configuration to show up</li>
