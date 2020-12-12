@@ -65,7 +65,6 @@ export class MacroControl{
                 if (macroId != undefined){
                     let macro = game.macros._source.find(p => p._id == macroId);
                     if (macro != undefined) {
-                        console.log(macro);
                         name += macro.name;
                         src += macro.img;
                     }
