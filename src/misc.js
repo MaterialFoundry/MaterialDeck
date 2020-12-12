@@ -359,8 +359,14 @@ export class soundboardConfigForm extends FormApplication {
                 else if (this.settings.selectedPlaylists[iteration] == 'FP') selectedPlaylist = 'FP';
                 else {
                     const pl = game.playlists.entities.find(p => p._id == this.settings.selectedPlaylists[iteration]);
-                    selectedPlaylist = pl._id;
-                    sounds = pl.sounds;
+                    if (pl == undefined){
+                        selectedPlaylist = 'none';
+                        sounds = [];
+                    }
+                    else {
+                        sounds = pl.sounds;
+                        selectedPlaylist = pl._id;
+                    }  
                 }
                 let styleSS = "";
                 let styleFP ="display:none";
