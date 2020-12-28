@@ -53,7 +53,7 @@ export class TokenControl{
                 else if (stats == 'AC') txt += attributes.ac.value;
                 else if (stats == 'Speed'){
                     let speed = "";
-                    if (attributes.speed._deprecated){
+                    if (attributes.movement != undefined){
                         if (attributes.movement.burrow > 0) speed += game.i18n.localize("DND5E.MovementBurrow") + ': ' +  attributes.movement.burrow + attributes.movement.units;
                         if (attributes.movement.climb > 0) {
                             if (speed.length > 0) speed += '\n';

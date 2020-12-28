@@ -7,6 +7,7 @@ import {CombatTracker} from "./src/combattracker.js";
 import {PlaylistControl} from "./src/playlist.js";
 import {SoundboardControl} from "./src/soundboard.js";
 import {OtherControls} from "./src/othercontrols.js";
+import {ExternalModules} from "./src/external.js";
 export var streamDeck;
 export var tokenControl;
 var move;
@@ -15,6 +16,7 @@ export var combatTracker;
 export var playlistControl;
 export var soundboard;
 export var otherControls;
+export var externalModules;
 
 export const moduleName = "MaterialDeck";
 export var selectedTokenId;
@@ -82,6 +84,8 @@ async function analyzeWSmessage(msg){
             soundboard.update(settings,context); 
         else if (action == 'other')
             otherControls.update(settings,context);
+        else if (action == 'external')
+            externalModules.update(settings,context);
     }
     
     else if (event == 'willDisappear'){
@@ -103,6 +107,8 @@ async function analyzeWSmessage(msg){
             soundboard.keyPressDown(settings);
         else if (action == 'other')
             otherControls.keyPress(settings);
+        else if (action == 'external')
+            externalModules.keyPress(settings,context);
     }
 
     else if (event == 'keyUp'){
@@ -203,6 +209,7 @@ Hooks.once('ready', ()=>{
     combatTracker = new CombatTracker();
     playlistControl = new PlaylistControl();
     otherControls = new OtherControls();
+    externalModules = new ExternalModules();
 
 
     let soundBoardSettings = game.settings.get(moduleName,'soundboardSettings');
@@ -320,6 +327,7 @@ Hooks.on('renderSidebarTab',()=>{
 Hooks.on('updateScene',()=>{
     if (enableModule == false || ready == false) return;
     otherControls.updateAll();
+    externalModules.updateAll();
 });
 
 Hooks.on('renderSceneControls',()=>{

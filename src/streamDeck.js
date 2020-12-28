@@ -51,6 +51,7 @@ export class StreamDeck{
             else if (action == 'playlist') MODULE.playlistControl.active = false;
             else if (action == 'soundboard') MODULE.soundboard.active = false;
             else if (action == 'other') MODULE.otherControls.active = false;
+            else if (action == 'external') MODULE.externalModules.active = false;
         }
     }
 

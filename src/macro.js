@@ -52,7 +52,6 @@ export class MacroControl{
                 else ringColor = ringOffColor;
 
                 ring = 2;
-                //streamDeck.setIcon(context, "", background,ring,ringColor);
             }
             else { //Execute macro
                 macroNumber += this.offset - 1;
@@ -76,12 +75,16 @@ export class MacroControl{
             if (displayName == 0) name = ""; 
             streamDeck.setTitle(name,context);
         }
-        
         else { //Macro Hotbar
             let macroId 
             if (mode == 'hotbar') macroId = game.user.data.hotbar[macroNumber];
             else {
-                let macros = game.macros.apps[0].macros;
+                let macros;
+                if (mode == 'customHotbar' && game.modules.get('custom-hotbar') != undefined) { 
+                    macros = ui.customHotbar.macros;
+                }
+                else macros = game.macros.apps[0].macros;
+                if (macroNumber > 9) macroNumber = 0;
                 for (let j=0; j<10; j++){
                     if (macros[j].key == macroNumber){
                         if (macros[j].macro == null) macroId == undefined;
@@ -121,16 +124,17 @@ export class MacroControl{
             if(macroNumber == undefined || isNaN(parseInt(macroNumber))){
                 macroNumber = 1;
             }
-            if (mode == undefined) mode = 0;
-            if (mode == 2) continue;
+            if (mode == undefined) mode = 'hotbar';
+            if (mode == 'Macro Board') continue;
             if (displayName == undefined) displayName = false;
             if (background == undefined) background = '#000000';
             
             let macroId;
-            if (mode == 0){
+            if (mode == 'hotbar'){
                 macroId = game.user.data.hotbar[macroNumber];
             }
             else {
+                if (macroNumber > 9) macroNumber = 0;
                 for (let j=0; j<10; j++){
                     if (macros[j].key == macroNumber){
                         if (macros[j].macro == null) macroId == undefined;
@@ -159,7 +163,7 @@ export class MacroControl{
             macroNumber = 0;
         }
 
-        if (mode == 'hotbar' || mode == 'visibleHotbar')
+        if (mode == 'hotbar' || mode == 'visibleHotbar' || mode == 'customHotbar')
             this.executeHotbar(macroNumber,mode);
         else {
             if (settings.macroBoardMode == 'offset') {
@@ -175,9 +179,14 @@ export class MacroControl{
 
     executeHotbar(macroNumber,mode){
         let macroId 
-        if (mode == 0) macroId = game.user.data.hotbar[macroNumber];
+        if (mode == 'hotbar') macroId = game.user.data.hotbar[macroNumber];
         else {
-            let macros = game.macros.apps[0].macros;
+            let macros;
+            if (mode == 'customHotbar' && game.modules.get('custom-hotbar') != undefined) { 
+                macros = ui.customHotbar.macros;
+            }
+            else macros = game.macros.apps[0].macros;
+            if (macroNumber > 9) macroNumber = 0;
             for (let j=0; j<10; j++){
                 if (macros[j].key == macroNumber){
                     if (macros[j].macro == null) macroId == undefined;

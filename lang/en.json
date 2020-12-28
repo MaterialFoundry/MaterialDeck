@@ -40,6 +40,9 @@
     "MaterialDeck.Off": "Off",
     "MaterialDeck.Name": "Name",
     "MaterialDeck.None": "None",
-    "MaterialDeck.Save": "Save"
+    "MaterialDeck.Save": "Save",
+
+    "MaterialDeck.FxMaster.Colorize": "Colorize",
+    "MaterialDeck.FxMaster.Clear": "Clear All"
 }
 

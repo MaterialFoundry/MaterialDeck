@@ -136,6 +136,7 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     updateScene(settings,context){
+        
         if (canvas.scene == null) return;
         let func = settings.sceneFunction;
         if (func == undefined) func = 'visible';
@@ -171,7 +172,8 @@ export class OtherControls{
             }
         }
         else if (func == 'any') {   //all scenes
-            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == name);
+            if (settings.sceneName == undefined || settings.sceneName == '') return;
+            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
             if (scene != undefined){
                 if (scene.isView)
                     ringColor = ringOnColor;
@@ -210,6 +212,26 @@ export class OtherControls{
                     scene.view();
                 }
             }  
+        }
+        else if (func == 'any'){ //any scene
+            if (settings.sceneName == undefined || settings.sceneName == '') return;
+            const scenes = game.scenes.entries;
+            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
+            if (scene == undefined) return;
+
+            let viewFunc = settings.sceneViewFunction;
+            if (viewFunc == undefined) viewFunc = 'view';
+
+            if (viewFunc == 'view'){
+                scene.view();
+            }
+            else if (viewFunc == 'activate'){
+                scene.activate();
+            }
+            else {
+                if (scene.isView) scene.activate();
+                scene.view();
+            }
         }
     }
 
@@ -391,7 +413,7 @@ export class OtherControls{
             if (value < 0) src = 'modules/MaterialDeck/img/other/darkness/decreasedarkness.png';
             else src = 'modules/MaterialDeck/img/other/darkness/increasedarkness.png';
         }
-        else if (func == 'display'){    //display darkness
+        else if (func == 'disp'){    //display darkness
             src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
             let darkness = '';
             if (canvas.scene != null) darkness = Math.floor(canvas.scene.data.darkness*100)/100;

@@ -1,9 +1,26 @@
 # Changelog Material Deck Module
+### v1.2.0 - 28-12-2020
+Fixes
+<ul>
+<li>Incorrect link to some black backgrounds fixed</li>
+<li>Token Action: Movement speed wouldn't be displayed for DnD5e 1.2.0</li>
+<li>Macro Action => Hotbar: 10th macro would not trigger and display correctly</li>
+<li>Combat Tracker Action => Function: Default value would not properly initialize</li>
+<li>Other Actions => Darkness Control => Display would not function correctly</li>
+<li>Fixed some issues in the SD plugin where correct settings would not be displayed</li>
+</ul>
+Additions:
+<ul>
+<li>Added new 'External Modules Action', which will contain all module integrations that don't fit anywhere else</li>
+<li>Added support for the Custom Hotbar module in 'Macro Action' => Mode: 'Custom Hotbar'. Link to module: https://foundryvtt.com/packages/custom-hotbar/</li>
+<li>Added support for the FxMaster module in 'External Modules Action' => Mode: 'Fx Master'. Link to module: https://foundryvtt.com/packages/fxmaster/</li>
+</ul>
+
 ### v1.1.1 - 12-12-2020
 Fixes
 <ul>
 <li>Fixed issue where deleting a playlist would cause an error preventing the Soundboard Configuration to show up</li>
-</li>
+</ul>
 
 <b>Compatible server app and SD plugin:</b><br>
 Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
@@ -15,14 +32,14 @@ Fixes
 <li>Settings would not show for Combat Tracker action</li>
 <li>Macro Action => Macro Board default settings fixed</li>
 <li>API has been improved, making integration with other hardware/software easier, and making future changes/additions easier</li>
-</li>
+</ul>
 Additions:
 <ul>
 <li>Added support for Pathfinder 1e and Shadow of the Demon Lord</li>
 <li>All dialogs that are openable using the SD can now be closed by pressing the button while the dialog is open</li>
 <li>Playlist Action & Soundboard Action => Stop All now indicates if there are tracks/playlists/sounds playing</li>
 <li>Confirmed Foundry 0.7.8 compatibility</li>
-</li>
+</ul>
 
 <b>Compatible server app and SD plugin:</b><br>
 Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>

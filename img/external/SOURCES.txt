@@ -1,0 +1,2 @@
+external.png: Edited from https://fontawesome.com/icons/external-link-alt?style=solid
+fxmaster.png: Edited from https://fontawesome.com/icons/magic?style=solid

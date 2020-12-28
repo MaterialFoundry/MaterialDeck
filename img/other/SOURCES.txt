@@ -1,1 +1,2 @@
 other.png: Made using https://www.elgato.com/en/gaming/keycreator
+cogs.png: Edited from https://fontawesome.com/icons/cogs?style=solid

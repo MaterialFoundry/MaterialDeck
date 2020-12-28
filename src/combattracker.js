@@ -19,7 +19,7 @@ export class CombatTracker{
     update(settings,context){
         this.active = true;
         let ctFunction = settings.combatTrackerFunction;
-        if (ctFunction == undefined) ctFunction == 'startStop';
+        if (ctFunction == undefined) ctFunction = 'startStop';
         
 
         let combat = game.combat;
@@ -119,7 +119,7 @@ export class CombatTracker{
             if (combat == null || combat == undefined) return;
 
             let ctFunction = settings.combatTrackerFunction;
-            if (ctFunction == undefined) ctFunction == 'startStop';
+            if (ctFunction == undefined) ctFunction = 'startStop';
             if (ctFunction == 'startStop'){
                 let src;
                 let background;
