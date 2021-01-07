@@ -39,6 +39,17 @@ export const registerSettings = function() {
         onChange: x => window.location.reload()
     });
 
+    game.settings.register(MODULE.moduleName, 'imageBuffer', {
+        name: "MaterialDeck.Sett.ImageBuffer",
+        hint: "MaterialDeck.Sett.ImageBufferHint",
+        default: 0,
+        type: Number,
+        scope: 'world',
+        range: { min: 0, max: 500, step: 10 },
+        config: true
+        
+    });
+
     /**
      * Playlist soundboard
      */

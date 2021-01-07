@@ -8,6 +8,7 @@ import {PlaylistControl} from "./src/playlist.js";
 import {SoundboardControl} from "./src/soundboard.js";
 import {OtherControls} from "./src/othercontrols.js";
 import {ExternalModules} from "./src/external.js";
+import {SceneControl} from "./src/scene.js";
 export var streamDeck;
 export var tokenControl;
 var move;
@@ -17,6 +18,7 @@ export var playlistControl;
 export var soundboard;
 export var otherControls;
 export var externalModules;
+export var sceneControl;
 
 export const moduleName = "MaterialDeck";
 export var selectedTokenId;
@@ -50,6 +52,7 @@ async function analyzeWSmessage(msg){
 
     if (data.type == "connected" && data.data == "SD"){
         console.log("streamdeck connected to server");
+        streamDeck.resetImageBuffer();
     }
 
     if (data == undefined || data.payload == undefined) return;
@@ -86,6 +89,8 @@ async function analyzeWSmessage(msg){
             otherControls.update(settings,context);
         else if (action == 'external')
             externalModules.update(settings,context);
+        else if (action == 'scene')
+            sceneControl.update(settings,context);
     }
     
     else if (event == 'willDisappear'){
@@ -106,9 +111,11 @@ async function analyzeWSmessage(msg){
         else if (action == 'soundboard')
             soundboard.keyPressDown(settings);
         else if (action == 'other')
-            otherControls.keyPress(settings);
+            otherControls.keyPress(settings,context);
         else if (action == 'external')
             externalModules.keyPress(settings,context);
+        else if (action == 'scene')
+            sceneControl.keyPress(settings);
     }
 
     else if (event == 'keyUp'){
@@ -210,7 +217,7 @@ Hooks.once('ready', ()=>{
     playlistControl = new PlaylistControl();
     otherControls = new OtherControls();
     externalModules = new ExternalModules();
-
+    sceneControl = new SceneControl();
 
     let soundBoardSettings = game.settings.get(moduleName,'soundboardSettings');
     let macroSettings = game.settings.get(moduleName, 'macroSettings');
@@ -294,18 +301,18 @@ Hooks.on('controlToken',(token,controlled)=>{
 
 Hooks.on('renderHotbar', (hotbar)=>{
     if (enableModule == false || ready == false) return;
-    macroControl.hotbar(hotbar.macros);
+    if (macroControl != undefined) macroControl.hotbar(hotbar.macros);
 });
 
 Hooks.on('renderCombatTracker',()=>{
     if (enableModule == false || ready == false) return;
-    combatTracker.updateAll();
-    tokenControl.update(selectedTokenId);
+    if (combatTracker != undefined) combatTracker.updateAll();
+    if (tokenControl != undefined) tokenControl.update(selectedTokenId);
 });
 
 Hooks.on('renderPlaylistDirectory', (playlistDirectory)=>{
     if (enableModule == false || ready == false) return;
-    playlistControl.updateAll();
+    if (playlistControl != undefined) playlistControl.updateAll();
 });
 
 Hooks.on('closeplaylistConfigForm', (form)=>{
@@ -321,17 +328,19 @@ Hooks.on('pauseGame',()=>{
 
 Hooks.on('renderSidebarTab',()=>{
     if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    if (otherControls != undefined) otherControls.updateAll();
+    if (sceneControl != undefined) sceneControl.updateAll();
 });
 
 Hooks.on('updateScene',()=>{
     if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    sceneControl.updateAll();
     externalModules.updateAll();
+    otherControls.updateAll();
 });
 
 Hooks.on('renderSceneControls',()=>{
-    if (enableModule == false || ready == false) return;
+    if (enableModule == false || ready == false || otherControls == undefined) return;
     otherControls.updateAll();
 });
 

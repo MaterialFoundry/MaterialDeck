@@ -14,6 +14,8 @@
     "MaterialDeck.Sett.SoundboardConfig": "Soundboard Configuration",
     "MaterialDeck.Sett.ServerAddr": "Material Server Address",
     "MaterialDeck.Sett.ServerAddrHint": "Fill in the IP address and port of the Material Server. Must follow the format [ip_address]:[port], for example: 'localhost:3001' or '192.168.1.1:4000'.",
+    "MaterialDeck.Sett.ImageBuffer": "Image Buffer Size (EXPERIMENTAL)",
+    "MaterialDeck.Sett.ImageBufferHint": "Sets the amount of images to store in the image buffer. The image buffer will store all images sent to the Steram Deck in a buffer. This greatly improves the update speed, but can use big amounts of memory if set too high.",
 
     "MaterialDeck.PL.Unrestricted": "Unrestricted",
     "MaterialDeck.PL.OneTrackPlaylist": "One track per playlist",

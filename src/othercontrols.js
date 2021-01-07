@@ -4,7 +4,7 @@ import {streamDeck} from "../MaterialDeck.js";
 export class OtherControls{
     constructor(){
         this.active = false;
-        this.offset = 0;
+        this.rollData = {};
     }
 
     async updateAll(){
@@ -18,108 +18,75 @@ export class OtherControls{
 
     update(settings,context){
         this.active = true;
-        let mode = settings.otherMode;
-        if (mode == undefined) mode = 'pause';
+        const mode = settings.otherMode ? settings.otherMode : 'pause';
 
-        if (mode == 'pause') {    //pause
-            this.updatePause(settings.pauseFunction,context);
-        }
-        else if (mode == 'sceneSelect') {   //scene selection
-            this.updateScene(settings,context);
-        }
-        else if (mode == 'controlButtons'){    //control buttons
+        if (mode == 'pause')    //pause
+            this.updatePause(settings,context);
+        else if (mode == 'controlButtons')    //control buttons
             this.updateControl(settings,context);
-        }
-        else if (mode == 'darkness'){    //darkness
+        else if (mode == 'darkness')   //darkness
             this.updateDarkness(settings,context);
-        }
-        else if (mode == 'rollTables'){    //roll tables
+        else if (mode == 'rollDice')    //roll dice
+            this.updateRollDice(settings,context);
+        else if (mode == 'rollTables')    //roll tables
             this.updateRollTable(settings,context);
-        }
-        else if (mode == 'sidebarTab') {   //open sidebar tab
+        else if (mode == 'sidebarTab')    //open sidebar tab
             this.updateSidebar(settings,context);
-        }
-        else if (mode == 'compendium') {   //open compendium
+        else if (mode == 'compendium')    //open compendium
             this.updateCompendium(settings,context);
-        }
-        else if (mode == 'journal') {   //open journal
+        else if (mode == 'journal')    //open journal
             this.updateJournal(settings,context);
-        }
+        else if (mode == 'chatMessage')
+            this.updateChatMessage(settings,context);
     }
 
-    keyPress(settings){
-        let mode = settings.otherMode;
-        if (mode == undefined) mode = 'pause';
+    keyPress(settings,context){
+        const mode = settings.otherMode ? settings.otherMode : 'pause';
 
-        if (mode == 'pause') {    //pause
-            this.keyPressPause(settings.pauseFunction);
-        }
-        else if (mode == 'sceneSelect') {   //scene
-            this.keyPressScene(settings);
-        }
-        else if (mode == 'controlButtons') {   //control buttons
+        if (mode == 'pause')     //pause
+            this.keyPressPause(settings);
+        else if (mode == 'controlButtons')    //control buttons
             this.keyPressControl(settings);
-        }
-        else if (mode == 'darkness') {   //darkness controll
+        else if (mode == 'darkness')    //darkness controll
             this.keyPressDarkness(settings);
-        }
-        else if (mode == 'rollTables') {   //roll tables
+        else if (mode == 'rollDice')    //roll dice
+            this.keyPressRollDice(settings,context);
+        else if (mode == 'rollTables')    //roll tables
             this.keyPressRollTable(settings);
-        }
-        else if (mode == 'sidebarTab') {   //sidebar
+        else if (mode == 'sidebarTab')    //sidebar
             this.keyPressSidebar(settings);
-        }
-        else if (mode == 'compendium') {   //open compendium
+        else if (mode == 'compendium')    //open compendium
             this.keyPressCompendium(settings);
-        }
-        else if (mode == 'journal') {   //open journal
+        else if (mode == 'journal')    //open journal
             this.keyPressJournal(settings);
-        }
+        else if (mode == 'chatMessage')
+            this.keyPressChatMessage(settings);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    updatePause(pauseFunction,context){
+    updatePause(settings,context){
         let src = "";
-        if (pauseFunction == undefined) pauseFunction = 'pause';
-        
-        let background = settings.background;
-        if(background == undefined) background = '#000000';
+        const pauseFunction = settings.pauseFunction ? settings.pauseFunction : 'pause';
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        let ringColor = game.paused ? ringOnColor : ringOffColor;
 
-        let ringColor = "#000000";
-
-        let ringOffColor = settings.offRing;
-        if (ringOffColor == undefined) ringOffColor = '#000000';
-
-        let ringOnColor = settings.onRing;
-        if (ringOnColor == undefined) ringOnColor = '#00FF00';
-
-        let playlistType = settings.playlistType;
-        if (playlistType == undefined) playlistType = 0;
-
-        if (pauseFunction == 'pause'){ //Pause game
-            if (game.paused) ringColor = ringOnColor;
-            else ringColor = ringOffColor;
+        if (pauseFunction == 'pause') //Pause game
             src = 'modules/MaterialDeck/img/other/pause/pause.png';
-            //src = 'action/images/other/pause/pause.png';
-        }
         else if (pauseFunction == 'resume'){ //Resume game
-            if (game.paused == false) ringColor = ringOnColor;
-            else ringColor = ringOffColor;
+            ringColor = game.paused ? ringOffColor : ringOnColor;
             src = 'modules/MaterialDeck/img/other/pause/resume.png';
-            //src = 'action/images/other/pause/resume.png';
         }
-        else if (pauseFunction == 'toggle') { //toggle
-            if (game.paused == false) ringColor = ringOnColor;
-            else ringColor = ringOffColor;
+        else if (pauseFunction == 'toggle')  //toggle
             src = 'modules/MaterialDeck/img/other/pause/playpause.png';
-            //src = 'action/images/other/pause/playpause.png';
-        }
         streamDeck.setIcon(context,src,background,2,ringColor,true);
     }
 
-    keyPressPause(pauseFunction){
-        if (pauseFunction == undefined) pauseFunction = 'pause';
+    keyPressPause(settings){
+        const pauseFunction = settings.pauseFunction ? settings.pauseFunction : 'pause';
+
         if (pauseFunction == 'pause'){ //Pause game
             if (game.paused) return; 
             game.togglePause();
@@ -133,122 +100,13 @@ export class OtherControls{
         }
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    updateScene(settings,context){
-        
-        if (canvas.scene == null) return;
-        let func = settings.sceneFunction;
-        if (func == undefined) func = 'visible';
-
-        let background = settings.background;
-        if(background == undefined) background = '#000000';
-
-        let ringColor = "#000000";
-
-        let ringOffColor = settings.offRing;
-        if (ringOffColor == undefined) ringOffColor = '#000000';
-
-        let ringOnColor = settings.onRing;
-        if (ringOnColor == undefined) ringOnColor = '#00FF00';
-
-        let src = "";
-        let name = "";
-        if (func == 'visible'){ //visible scenes
-            let nr = parseInt(settings.sceneNr);
-            if (isNaN(nr)) nr = 1;
-            nr--;
-
-            let scene = game.scenes.apps[0].scenes[nr];
-            
-            if (scene != undefined){
-                if (scene.isView) 
-                    ringColor = ringOnColor;
-                else 
-                    ringColor = ringOffColor;
-                if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = scene.img;
-                if (scene.active) name += "\n(Active)";
-            }
-        }
-        else if (func == 'any') {   //all scenes
-            if (settings.sceneName == undefined || settings.sceneName == '') return;
-            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
-            if (scene != undefined){
-                if (scene.isView)
-                    ringColor = ringOnColor;
-                else 
-                    ringColor = ringOffColor;
-                if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = scene.img;
-                if (scene.active) name += "\n(Active)";
-            }
-        }
-        streamDeck.setTitle(name,context);
-        streamDeck.setIcon(context,src,background,2,ringColor);
-    }
-
-    keyPressScene(settings){
-        let func = settings.sceneFunction;
-        if (func == undefined) func = 'visible';
-        if (func == 'visible'){ //visible scenes
-            let viewFunc = settings.sceneViewFunction;
-            if (viewFunc == undefined) viewFunc = 'view';
-
-            let nr = parseInt(settings.sceneNr);
-            if (isNaN(nr)) nr = 1;
-            nr--;
-            let scene = game.scenes.apps[0].scenes[nr];
-            
-            if (scene != undefined){
-                if (viewFunc == 'view'){
-                    scene.view();
-                }
-                else if (viewFunc == 'activate'){
-                    scene.activate();
-                }
-                else {
-                    if (scene.isView) scene.activate();
-                    scene.view();
-                }
-            }  
-        }
-        else if (func == 'any'){ //any scene
-            if (settings.sceneName == undefined || settings.sceneName == '') return;
-            const scenes = game.scenes.entries;
-            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
-            if (scene == undefined) return;
-
-            let viewFunc = settings.sceneViewFunction;
-            if (viewFunc == undefined) viewFunc = 'view';
-
-            if (viewFunc == 'view'){
-                scene.view();
-            }
-            else if (viewFunc == 'activate'){
-                scene.activate();
-            }
-            else {
-                if (scene.isView) scene.activate();
-                scene.view();
-            }
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////
     
     updateControl(settings,context){
-        let control = settings.control;
-        if (control == undefined) control = 'dispControls';
-
-        let tool = settings.tool;
-        if (tool == undefined) tool = 'open';
-
-        let background = settings.background;
-        if (background == undefined) background = '#000000';
-
+        const control = settings.control ? settings.control : 'dispControls';
+        const tool = settings.tool ?  settings.tool : 'open';
+        let background = settings.background ? settings.background : '#000000';
         let ringColor = '#000000'
-
         let txt = "";
         let src = "";
         const activeControl = ui.controls.activeControl;
@@ -282,10 +140,7 @@ export class OtherControls{
                     src = selectedTool.icon;
                     if (selectedTool.toggle){
                         background = "#340057"
-                        if (selectedTool.active)
-                            ringColor = "#A600FF"
-                        else    
-                            ringColor = "#340057";
+                        ringColor = selectedTool.active ? "#A600FF" : "#340057";
                     }
                     else if (activeTool == selectedTool.name)
                         ringColor = "#FF7B00";
@@ -307,11 +162,8 @@ export class OtherControls{
                         txt = game.i18n.localize(selectedTool.title);
                         src = selectedTool.icon;
                         if (selectedTool.toggle){
-                            background = "#340057"
-                            if (selectedTool.active)
-                                ringColor = "#A600FF"
-                            else    
-                                ringColor = "#340057"
+                            background = "#340057";
+                            ringColor = selectedTool.active ? "#A600FF" : "#340057";
                         }
                         else if (activeTool == selectedTool.name && activeControl == selectedControl.name)
                             ringColor = "#FF7B00";
@@ -325,11 +177,8 @@ export class OtherControls{
 
     keyPressControl(settings){
         if (canvas.scene == null) return;
-        let control = settings.control;
-        if (control == undefined) control = 'dispControls';
-
-        let tool = settings.tool;
-        if (tool == undefined) tool = 'open';
+        const control = settings.control ? settings.control : 'dispControls';
+        const tool = settings.tool ?  settings.tool : 'open';
         
         if (control == 'dispControls'){  //displayed controls
             let controlNr = parseInt(settings.controlNr);
@@ -394,14 +243,9 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateDarkness(settings,context){
-        let func = settings.darknessFunction;
-        if (func == undefined) func = 'value';
-
-        let value = settings.darknessValue;
-        if (value == undefined) value = 0;
-
-        let background = settings.background;
-        if (background == undefined) background = "#000000";
+        const func = settings.darknessFunction ? settings.darknessFunction : 'value';
+        const value = parseFloat(settings.darknessValue) ? parseFloat(settings.darknessValue) : 0;
+        const background = settings.background ? settings.background : '#000000';
 
         let src = "";
         let txt = "";
@@ -415,8 +259,7 @@ export class OtherControls{
         }
         else if (func == 'disp'){    //display darkness
             src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
-            let darkness = '';
-            if (canvas.scene != null) darkness = Math.floor(canvas.scene.data.darkness*100)/100;
+            const darkness = canvas.scene != null ? Math.floor(canvas.scene.data.darkness*100)/100 : '';
             txt += darkness;
         }
         streamDeck.setTitle(txt,context);
@@ -425,17 +268,13 @@ export class OtherControls{
 
     keyPressDarkness(settings) {
         if (canvas.scene == null) return;
-        let func = settings.darknessFunction;
-        if (func == undefined) func = 'value';
-
-        let value = parseFloat(settings.darknessValue);
-        if (value == undefined) value = 0;
+        const func = settings.darknessFunction ? settings.darknessFunction : 'value';
+        const value = parseFloat(settings.darknessValue) ? parseFloat(settings.darknessValue) : 0;
 
         if (func == 'value') //value
             canvas.scene.update({darkness: value});
         else if (func == 'incDec'){ //increase/decrease
-            let darkness = canvas.scene.data.darkness;
-            darkness += -1*value;
+            let darkness = canvas.scene.data.darkness - value;
             if (darkness > 1) darkness = 1;
             if (darkness < 0) darkness = 0;
             canvas.scene.update({darkness: darkness});
@@ -444,37 +283,77 @@ export class OtherControls{
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
+    updateRollDice(settings,context){
+        const background = settings.background ? settings.background : '#000000';
+        let txt = '';
+
+        if (settings.displayDiceName) txt = 'Roll: ' + settings.rollDiceFormula;
+
+        streamDeck.setTitle(txt,context);
+        streamDeck.setIcon(context,'',background);
+    }
+
+    keyPressRollDice(settings,context){
+        if (settings.rollDiceFormula == undefined || settings.rollDiceFormula == '') return;
+        const rollFunction = settings.rollDiceFunction ? settings.rollDiceFunction : 'public';
+
+        let actor;
+        let tokenControlled = false;
+
+        if (MODULE.selectedTokenId != undefined) actor = canvas.tokens.children[0].children.find(p => p.id == MODULE.selectedTokenId).actor;
+        if (actor != undefined) tokenControlled = true;
+
+        let r;
+        if (tokenControlled) r = new Roll(settings.rollDiceFormula,actor.getRollData());
+        else r = new Roll(settings.rollDiceFormula);
+
+        r.evaluate();
+        
+        if (rollFunction == 'public') {
+            r.toMessage(r,{rollMode:"roll"})
+        }
+        else if (rollFunction == 'private') {
+            r.toMessage(r,{rollMode:"selfroll"})
+        }
+        else if (rollFunction == 'sd'){
+            let txt = settings.displayDiceName ? 'Roll: '+settings.rollDiceFormula + '\nResult: ' : '';
+            txt += r.total;
+            streamDeck.setTitle(txt,context);
+            let data = this.rollData
+            data[context] = {
+                formula: settings.rollDiceFormula,
+                result: txt
+            }
+            this.rollData = data;
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
     updateRollTable(settings,context){
-        let name = settings.rollTableName;
+        const name = settings.rollTableName;
         if (name == undefined) return;
 
-        let background = settings.background;
-        if (background == undefined) background = "#000000";
+        const background = settings.background ? settings.background : '#000000';
+        const table = game.tables.entities.find(p=>p.name == name);
+        let txt = settings.displayRollName ? table.name : '';
+        let src = settings.displayRollIcon ? table.data.img : '';
 
-        let table = game.tables.entities.find(p=>p.name == name);
-
-        let txt = "";
-        let src = "";
-
-        if (table != undefined) {
-            if (settings.displayRollIcon) src = table.data.img;
-            if (settings.displayRollName) txt = table.name;
+        if (table == undefined) {
+            src = '';
+            txt = '';
         }
+
         streamDeck.setTitle(txt,context);
         streamDeck.setIcon(context,src,background);
     }
 
     keyPressRollTable(settings){
-        let func = settings.rolltableFunction;
-        if (func == undefined) func = 'open';
-
-        let name = settings.rollTableName;
+        const name = settings.rollTableName;
         if (name == undefined) return;
 
-        let background = settings.background;
-        if (background == undefined) background = "#000000";
-
-        let table = game.tables.entities.find(p=>p.name == name);
+        const func = settings.rolltableFunction ? settings.rolltableFunction : 'open';
+        const table = game.tables.entities.find(p=>p.name == name);
 
         if (table != undefined) {
             if (func == 'open'){ //open
@@ -524,43 +403,24 @@ export class OtherControls{
     }
     
     updateSidebar(settings,context){
-        let sidebarTab = settings.sidebarTab;
-        if (sidebarTab == undefined) sidebarTab = 'chat';
+        const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
+        const background = settings.background ? settings.background : '#000000';
+        const collapsed = ui.sidebar._collapsed;
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringColor = (sidebarTab == 'collapse' && collapsed) ? ringOnColor : ringOffColor;
+        const name = settings.displaySidebarName ? this.getSidebarName(sidebarTab) : '';
+        const icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
 
-        let activeTab = ui.sidebar.activeTab;
-        let collapsed = ui.sidebar._collapsed;
-
-        let name = "";
-        let icon = "";
-
-        let background = settings.background;
-        if(background == undefined) background = '#000000';
-
-        let ringColor = "#000000";
-
-        let ringOffColor = settings.offRing;
-        if (ringOffColor == undefined) ringOffColor = '#000000';
-
-        let ringOnColor = settings.onRing;
-        if (ringOnColor == undefined) ringOnColor = '#00FF00';
-
-        if (settings.displaySidebarName) name = this.getSidebarName(sidebarTab);
-        if (settings.displaySidebarIcon) icon = this.getSidebarIcon(sidebarTab);
-
-        if ((sidebarTab == 'collapse' && collapsed)) 
-            ringColor = ringOnColor;
-        else    
-            ringColor = ringOffColor;
         streamDeck.setTitle(name,context);
         streamDeck.setIcon(context,icon,background,2,ringColor);
     }
 
     keyPressSidebar(settings){
-        let sidebarTab = settings.sidebarTab;
-        if (sidebarTab == undefined) sidebarTab = 'chat';
-        let collapsed = ui.sidebar._collapsed;
-
+        const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
+        
         if (sidebarTab == 'collapse'){
+            const collapsed = ui.sidebar._collapsed;
             if (collapsed) ui.sidebar.expand();
             else if (collapsed == false) ui.sidebar.collapse();
         }
@@ -570,27 +430,19 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateCompendium(settings,context){
-        let background = settings.background;
-        if(background == undefined) background = '#000000';
-
-        let name = settings.compendiumName;
+        const name = settings.compendiumName;
         if (name == undefined) return;
 
         const compendium = game.packs.entries.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
 
-        let ringColor = "#000000";
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringColor = compendium.rendered ? ringOnColor : ringOffColor;
+        const txt = settings.displayCompendiumName ? name : '';
 
-        let ringOffColor = settings.offRing;
-        if (ringOffColor == undefined) ringOffColor = '#000000';
-
-        let ringOnColor = settings.onRing;
-        if (ringOnColor == undefined) ringOnColor = '#00FF00';
-
-        if (compendium.rendered) ringColor = ringOnColor;
-        else ringColor = ringOffColor;
-
-        if (settings.displayCompendiumName) streamDeck.setTitle(name,context);
+        streamDeck.setTitle(txt,context);
         streamDeck.setIcon(context,"",background,2,ringColor);
     }
 
@@ -610,37 +462,50 @@ export class OtherControls{
     //game.journal.entries[0].render(true)
 
     updateJournal(settings,context){
-        let background = settings.background;
-        if(background == undefined) background = '#000000';
-
-        let name = settings.compendiumName;
+        const name = settings.compendiumName;
         if (name == undefined) return;
+
         const journal = game.journal.entries.find(p=>p.name == name);
         if (journal == undefined) return;
 
-        let ringColor = "#000000";
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringColor = journal.sheet.rendered ? ringOnColor : ringOffColor;
+        const txt = settings.displayCompendiumName ? name : '';
 
-        let ringOffColor = settings.offRing;
-        if (ringOffColor == undefined) ringOffColor = '#000000';
-
-        let ringOnColor = settings.onRing;
-        if (ringOnColor == undefined) ringOnColor = '#00FF00';
-       
-        if (journal.sheet.rendered) ringColor = ringOnColor;
-        else ringColor = ringOffColor;
-        
-        if (settings.displayCompendiumName) streamDeck.setTitle(name,context);
+        streamDeck.setTitle(txt,context);
         streamDeck.setIcon(context,"",background,2,ringColor);
     }
 
     keyPressJournal(settings){
-        let name = settings.compendiumName;
+        const name = settings.compendiumName;
         if (name == undefined) return;
 
         const journal = game.journal.entries.find(p=>p.name == name);
         if (journal == undefined) return;
+
         const element = document.getElementById("journal-"+journal.id);
         if (element == null) journal.render(true);
         else journal.sheet.close();
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+    updateChatMessage(settings,context){
+        const background = settings.background ? settings.background : '#000000';
+        streamDeck.setTitle("",context);
+        streamDeck.setIcon(context,"",background);
+    }
+
+    keyPressChatMessage(settings){
+        const message = settings.chatMessage ? settings.chatMessage : '';
+
+        let chatData = {
+            user: game.user._id,
+            speaker: ChatMessage.getSpeaker(),
+            content: message
+        };
+        ChatMessage.create(chatData, {});
     }
 }

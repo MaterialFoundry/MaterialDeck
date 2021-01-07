@@ -1,4 +1,31 @@
 # Changelog Material Deck Module
+### v1.2.1 - 07-01-2021
+<b>Note:</b> Due to a change in how scene control is handled (moved from 'Other Controls' to its own 'Scene Action'), any actions related to scenes no longer work. You will have to set them up again using the new Scene Action.<br>
+<br>
+Additions:
+<ul>
+<li>(EXPERIMENTAL) Added an image buffer to prevent resending of images that have already been sent, giving a slight performance boost. Buffer size can be set in the module settings</li>
+<li>Token Action => Display Stats: Added option to select a data path for an attribute</li>
+<li>External Modules => GM Screen: Open and close the GM screen. Link to module: https://foundryvtt.com/packages/gm-screen/</li>
+<li>Other Actions => Roll dice: Roll dice in foundry and select between public roll, private roll, or displaying result on the SD</li>
+<li>Scene Action: Added way to create scene selection screen similar to soundboard/macro board. New functions to do this: 'Scene Directory' and 'Scene Offset'</li>
+<li>Scene Action: Added 'Active Scene' function</li>
+<li>Move Action => Selected Token: Added rotate to and rotate by functions</li>
+<li>Token Action => On Click: Added 'Set Vision' option to set the token's vision and light emission</li>
+<li>Other Actions => Send Chat Message: Send a message to the Foundry chat</li>
+</ul>
+Other Changes:
+<ul>
+<li>Plugin: Scene Action created that replaces Other Actions => Scene Selection</li>
+<li>Plugin: Scene Action: Changed 'Any Scene' to 'Scene by Name'</li>
+<li>Plugin: Actions are now ordered alphabetically</li>
+<li>Plugin: Replaced color strings with color pickers</li>
+<li>Various minor bug fixes</li>
+</ul>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.2.1: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.2.0 - 28-12-2020
 Fixes
 <ul>

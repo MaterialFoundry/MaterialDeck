@@ -1,2 +1,3 @@
-center.png: made by me
+center.png: made by me.
+rotatecw.png & rotateccw.png Edited from https://fontawesome.com/icons/sync-alt?style=solid.
 All other images taken from freepngimg.com, iverted color and rotated. Source: https://freepngimg.com/png/24691-right-arrow-hd

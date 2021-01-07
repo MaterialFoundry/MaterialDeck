@@ -21,6 +21,7 @@ export class ExternalModules{
         if (module == undefined) module = 'fxmaster';
 
         if (module == 'fxmaster') this.updateFxMaster(settings,context);
+        else if (module == 'gmscreen') this.updateGMScreen(settings,context);
         
     }
 
@@ -29,9 +30,17 @@ export class ExternalModules{
         let module = settings.module;
         if (module == undefined) module = 'fxmaster';
 
-        if (module == 'fxmaster') {   //scene
+        if (module == 'fxmaster')    
             this.keyPressFxMaster(settings,context);
-        }
+        else if (module == 'gmscreen')
+            this.keyPressGMScreen(settings,context);
+        
+    }
+
+    getModuleEnable(moduleId){
+        const module = game.modules.get(moduleId);
+        if (module == undefined || module.active == false) return false;
+        return true;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,5 +239,32 @@ export class ExternalModules{
             if (weather === effect) return weatherIds[i];
         }
         return undefined;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //GM Screen
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    updateGMScreen(settings,context){
+        if (this.getModuleEnable("gm-screen") == false) return;
+
+        const background = settings.gmScreenBackground ? settings.gmScreenBackground : '#000000';
+        let ring = 1;
+        let ringColor = '#00FF00'
+        let src = '';
+        let txt = '';
+
+        //if (document.getElementsByClassName("gm-screen-app gm-screen-drawer expanded")[0] != undefined) ring = 2;
+        
+        if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
+        streamDeck.setIcon(context,src,background,ring,ringColor);
+        if (settings.displayGmScreenName) txt = game.i18n.localize(`GMSCR.gmScreen.Open`); 
+        streamDeck.setTitle(txt,context);
+    }
+
+    keyPressGMScreen(settings,context){
+        if (this.getModuleEnable("gm-screen") == false) return;
+
+        document.getElementsByClassName("gm-screen-button")[0].click();
     }
 }

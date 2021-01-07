@@ -18,28 +18,23 @@ export class CombatTracker{
 
     update(settings,context){
         this.active = true;
-        let ctFunction = settings.combatTrackerFunction;
-        if (ctFunction == undefined) ctFunction = 'startStop';
-        
-
-        let combat = game.combat;
+        const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
+        const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
+        const combat = game.combat;
         let src = "modules/MaterialDeck/img/black.png";
         let txt = "";
         let background = "#000000";
-        let mode = settings.combatTrackerMode;
-        if (mode == undefined) mode = 'combatants';
-
+        
         if (mode == 'combatants'){
             if (combat != null && combat != undefined && combat.turns.length != 0){
-                let initiativeOrder = combat.turns;
+                const initiativeOrder = combat.turns;
                 let nr = settings.combatantNr - 1;
                 if (nr == undefined || nr < 1) nr = 0;
-                let combatantState = 1;
-                if (nr == combat.turn) combatantState = 2;
-                let combatant = initiativeOrder[nr]
+                const combatantState = (nr == combat.turn) ? 2 : 1;
+                const combatant = initiativeOrder[nr]
 
                 if (combatant != undefined){
-                    let tokenId = combatant.tokenId;
+                    const tokenId = combatant.tokenId;
                     tokenControl.pushData(tokenId,settings,context,combatantState,'#cccc00');
                     return;
                 }
@@ -55,7 +50,7 @@ export class CombatTracker{
         }
         else if (mode == 'currentCombatant'){
             if (combat != null && combat != undefined && combat.started){
-                let tokenId = combat.combatant.tokenId;
+                const tokenId = combat.combatant.tokenId;
                 tokenControl.pushData(tokenId,settings,context);
             }
             else {
@@ -64,7 +59,6 @@ export class CombatTracker{
             }
         }
         else if (mode == 'function'){
-            
             if (ctFunction == 'startStop') {
                 if (combat == null || combat == undefined || combat.combatants.length == 0) {
                     src = "modules/MaterialDeck/img/combattracker/startcombat.png";
@@ -111,15 +105,12 @@ export class CombatTracker{
     }
 
     keyPress(settings,context){
-        let mode = settings.combatTrackerMode;
-        if (mode == undefined) mode = 'combatants';
-        
-        if (mode == 'function'){
-            let combat = game.combat;
-            if (combat == null || combat == undefined) return;
+        const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
+        const combat = game.combat;
 
-            let ctFunction = settings.combatTrackerFunction;
-            if (ctFunction == undefined) ctFunction = 'startStop';
+        if (mode == 'function'){
+            if (combat == null || combat == undefined) return;
+            const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
             if (ctFunction == 'startStop'){
                 let src;
                 let background;
@@ -144,19 +135,14 @@ export class CombatTracker{
             else if (ctFunction == 'prevRound') game.combat.previousRound();
         }
         else {
-            let onClick = settings.onClick;
-            if (onClick == undefined) onClick = 'doNothing';
+            const onClick = settings.onClick ? settings.onClick : 'doNothing';
             let tokenId;
-            let combat = game.combat;
             if (mode == 'combatants') {
                 if (combat != null && combat != undefined && combat.turns.length != 0){
-                    let initiativeOrder = combat.turns;
+                    const initiativeOrder = combat.turns;
                     let nr = settings.combatantNr - 1;
                     if (nr == undefined || nr < 1) nr = 0;
-                    let combatantState = 1;
-                    if (nr == combat.turn) combatantState = 2;
-                    let combatant = initiativeOrder[nr]
-
+                    const combatant = initiativeOrder[nr]
                     if (combatant == undefined) return;
                     tokenId = combatant.tokenId;
                 }
@@ -165,8 +151,7 @@ export class CombatTracker{
                 if (combat != null && combat != undefined && combat.started)
                     tokenId = combat.combatant.tokenId;
                 
-            let token
-            if (canvas.tokens.children[0] != undefined) token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+            let token = (canvas.tokens.children[0] != undefined) ? canvas.tokens.children[0].children.find(p => p.id == tokenId) : undefined;
             if (token == undefined) return;
             if (onClick == 'doNothing')   //Do nothing
                 return;
@@ -178,7 +163,7 @@ export class CombatTracker{
                 canvas.animatePan(location);
             }
             else if (onClick == 'centerSelect'){ //center on token and select
-                let location = token.getCenter(token.x,token.y); 
+                const location = token.getCenter(token.x,token.y); 
                 canvas.animatePan(location);
                 token.control();
             }

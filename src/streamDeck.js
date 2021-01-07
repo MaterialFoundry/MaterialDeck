@@ -25,6 +25,11 @@ export class StreamDeck{
         document.body.appendChild(canvasBox); // adds the canvas to the body element
 
         this.syllableRegex = /[^aeiouy]*[aeiouy]+(?:[^aeiouy]*$|[^aeiouy](?=[^aeiouy]))?/gi;
+
+        
+        this.imageBuffer = [];
+        this.imageBufferCounter = 0;
+        
     }
 
     setScreen(action){
@@ -52,6 +57,7 @@ export class StreamDeck{
             else if (action == 'soundboard') MODULE.soundboard.active = false;
             else if (action == 'other') MODULE.otherControls.active = false;
             else if (action == 'external') MODULE.externalModules.active = false;
+            else if (action == 'scene') MODULE.sceneControl.active = false;
         }
     }
 
@@ -171,14 +177,30 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(msg));
     }
 
-    setImage(image,context){
+    setImage(image,context,nr,id){
         var json = {
             target: "SD",
             event: "setImage",
             context: context,
             payload: {
-            image: "" + image,
-            target: 0
+                nr: nr,
+                id: id,
+                image: "" + image,
+                target: 0
+            }
+        };
+        MODULE.sendWS(JSON.stringify(json));
+    }
+
+    setBufferImage(context,nr,id){
+        var json = {
+            target: "SD",
+            event: "setBufferImage",
+            context: context,
+            payload: {
+                nr: nr,
+                id: id,
+                target: 0
             }
         };
         MODULE.sendWS(JSON.stringify(json));
@@ -198,6 +220,18 @@ export class StreamDeck{
                 this.buttonContext[i].background = background;
             }
         }
+        const data = {
+            url: src,
+            background:background,
+            ring:ring,
+            ringColor:ringColor,
+            overlay:overlay
+        }
+        const imgBuffer = this.checkImageBuffer(data);
+        if (imgBuffer != false) {
+            this.setBufferImage(context,imgBuffer,this.getImageBufferId(data))
+            return;
+        }
         
         let split = src.split('.');
         //filter out stuff from Tokenizer
@@ -215,7 +249,7 @@ export class StreamDeck{
             ringColor: ringColor,
             overlay: overlay
         };
-            this.getImage(msg);
+        this.getImage(msg);
     }
 
     setState(state,context,action){
@@ -265,6 +299,7 @@ export class StreamDeck{
     getImage(data){
         if (data == undefined) 
             return;
+        
         const context = data.context;
         var url = data.url;
         const format = data.format;
@@ -367,8 +402,46 @@ export class StreamDeck{
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
             var dataURL = canvas.toDataURL();
             canvas.remove();
-            this.setImage(dataURL,data.context);
+            const nr = this.addToImageBuffer(dataURL,data);
+            this.setImage(dataURL,data.context,nr,this.getImageBufferId(data));
         };
         img.src = resImageURL;
+    }
+
+    getImageBufferId(data){
+        return data.url+data.background+data.ring+data.ringColor+data.overlay;
+    }
+
+    addToImageBuffer(img,data){
+        const id = this.getImageBufferId(data);
+        const maxBufferSize = game.settings.get(MODULE.moduleName,'imageBuffer');
+        if (maxBufferSize == 0) return false;
+        if (this.imageBufferCounter > maxBufferSize) this.imageBufferCounter = 0;
+        
+        const newData = {
+            id: id,
+            img: img
+        }
+
+        if (this.imageBuffer[this.imageBufferCounter] == undefined) this.imageBuffer.push(newData);
+        else this.imageBuffer[this.imageBufferCounter] = newData;
+        this.imageBufferCounter++;
+        
+        return this.imageBufferCounter - 1;
+    }
+
+    checkImageBuffer(data){
+        if (game.settings.get(MODULE.moduleName,'imageBuffer') == 0) return false;
+        const id = this.getImageBufferId(data);
+        
+        for (let i=0; i<this.imageBuffer.length; i++){
+            if (this.imageBuffer[i].id == id) return i;
+        }
+        return false;
+    }
+
+    resetImageBuffer(){
+        this.imageBufferCounter = 0;
+        this.imageBuffer = [];
     }
 }

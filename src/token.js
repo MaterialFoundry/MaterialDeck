@@ -23,11 +23,11 @@ export class TokenControl{
 
         if (settings.displayIcon) icon = true;
         if (settings.displayName) name = true;
-        if (stats == undefined) stats = 'none';
-        if (settings.background) background = settings.background;
-
         let system = settings.system;
         if (system == undefined) system = 'dnd5e';
+        if (system == 'demonlord') stats = settings.statsDemonlord;
+        if (stats == undefined) stats = 'none';
+        if (settings.background) background = settings.background;
 
         let tokenName = "";
         let txt = "";
@@ -40,7 +40,25 @@ export class TokenControl{
             if (name && stats != 'none') txt += "\n";
             iconSrc = token.data.img;
             let actor = canvas.tokens.children[0].children.find(p => p.id == tokenId).actor;
-            if (system == 'dnd5e' && game.system.id == 'dnd5e'){
+            if (stats == 'custom'){
+                const custom = settings.custom ? settings.custom : '';
+                let split = custom.split('[');
+                for (let i=0; i<split.length; i++) split[i] = split[i].split(']');
+                for (let i=0; i<split.length; i++)
+                    for (let j=0; j<split[i].length; j++){
+                        if (split[i][j][0] != '@') txt += split[i][j];
+                        else {
+                            const dataPath = split[i][j].split('@')[1].split('.');
+                            let data = token;
+                            
+                            for (let i=0; i<dataPath.length; i++)
+                                data = data?.[dataPath[i]];
+                            if (data == undefined) txt += '[undef]';
+                            else txt += data;
+                        }
+                    }
+            }
+            else if (system == 'dnd5e' && game.system.id == 'dnd5e'){
                 let attributes = actor.data.data.attributes;
                 if (stats == 'HP') {
                     txt += attributes.hp.value + "/" + attributes.hp.max;
@@ -143,10 +161,10 @@ export class TokenControl{
             }
             else if (system == 'demonlord' && game.system.id == 'demonlord'){
                 let characteristics = actor.data.data.characteristics;
-                if (stats == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
-                else if (stats == 'AC') txt += characteristics.defense;
-                else if (stats == 'Speed') txt += characteristics.speed;
-                else if (stats == 'Init') txt += actor.data.data.fastturn ? "FAST" : "SLOW";
+                if (statsDemonlord == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
+                else if (statsDemonlord == 'AC') txt += characteristics.defense;
+                else if (statsDemonlord == 'Speed') txt += characteristics.speed;
+                else if (statsDemonlord == 'Init') txt += actor.data.data.fastturn ? "FAST" : "SLOW";
             }
             else {
                 //Other systems
@@ -405,6 +423,46 @@ export class TokenControl{
             }  
             this.update(tokenId);
             
+        }
+        else if (onClick == 'vision'){
+            const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+            if (token == undefined) return;
+            let tokenData = token.data;
+
+            const dimVision = parseInt(settings.dimVision);
+            const brightVision = parseInt(settings.brightVision);
+            const sightAngle = parseInt(settings.sightAngle);
+            const dimRadius = parseInt(settings.dimRadius);
+            const brightRadius = parseInt(settings.brightRadius);
+            const emissionAngle = parseInt(settings.emissionAngle);
+            const lightColor = settings.lightColor ? settings.lightColor : '#000000';
+            const colorIntensity = isNaN(parseInt(settings.colorIntensity)) ? 0 : parseInt(settings.colorIntensity)/100;
+            const animationType = settings.animationType ? settings.animationType : 'none';
+            const animationSpeed = isNaN(parseInt(settings.animationSpeed)) ? 1 : parseInt(settings.animationSpeed);
+            const animationIntensity = isNaN(parseInt(settings.animationIntensity)) ? 1 : parseInt(settings.animationIntensity);
+
+            let data = {};
+            if (isNaN(dimVision)==false) data.dimSight = dimVision;
+            if (isNaN(brightVision)==false) data.brightSight = brightVision;
+            if (isNaN(sightAngle)==false) data.sightAngle = sightAngle;
+            if (isNaN(dimRadius)==false) data.dimLight = dimRadius;
+            if (isNaN(brightRadius)==false) data.brightLight = brightRadius;
+            if (isNaN(emissionAngle)==false) data.lightAngle = emissionAngle;
+            data.lightColor = lightColor;
+            data.lightAlpha = Math.sqrt(colorIntensity).toNearest(0.05)
+            let animation = {
+                type: '',
+                speed: tokenData.lightAnimation.speed,
+                intensity: tokenData.lightAnimation.intensity
+            };
+            if (animationType != 'none'){
+                animation.type = animationType;
+                animation.intensity = animationIntensity;
+                animation.speed = animationSpeed;
+            }
+            data.lightAnimation = animation;
+
+            token.update(data);
         }
         else if (system == 'demonlord' && game.system.id == 'demonlord' && onClick == 'initiative'){
             token.actor.update({
