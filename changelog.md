@@ -4,7 +4,7 @@
 <br>
 Additions:
 <ul>
-<li>(EXPERIMENTAL) Added an image buffer to prevent resending of images that have already been sent, giving a slight performance boost. Buffer size can be set in the module settings</li>
+<li>EXPERIMENTAL: Added an image buffer to prevent resending of images that have already been sent, giving a slight performance boost. Buffer size can be set in the module settings</li>
 <li>Token Action => Display Stats: Added option to select a data path for an attribute</li>
 <li>External Modules => GM Screen: Open and close the GM screen. Link to module: https://foundryvtt.com/packages/gm-screen/</li>
 <li>Other Actions => Roll dice: Roll dice in foundry and select between public roll, private roll, or displaying result on the SD</li>
