@@ -1,4 +1,19 @@
 # Changelog Material Deck Module
+### v1.2.2 - 07-01-2021
+Additions:
+<ul>
+<li>Added a help button in the module configuration</li>
+<li>Token Action: Added support for easy token wildcard image changes</li>
+<li>Token Action: Added a comprehensive custom onClick function that can modify token and actor data, with support for basic mathematical expressions</li>
+</ul>
+Other Changes:
+<ul>
+<li>Improved GM screen compatibility</li>
+</ul>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.2.2: https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.2.1 - 07-01-2021
 <b>Note:</b> Due to a change in how scene control is handled (moved from 'Other Controls' to its own 'Scene Action'), any actions related to scenes no longer work. You will have to set them up again using the new Scene Action.<br>
 <br>

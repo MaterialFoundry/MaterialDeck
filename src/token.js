@@ -4,6 +4,7 @@ import {streamDeck} from "../MaterialDeck.js";
 export class TokenControl{
     constructor(){
         this.active = false;
+        this.wildcardOffset = 0;
     }
 
     async update(tokenId){
@@ -15,7 +16,7 @@ export class TokenControl{
         }
     }
 
-    pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
+    async pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
         let name = false;
         let icon = false;
         let stats =  settings.stats;
@@ -260,6 +261,40 @@ export class TokenControl{
                     iconSrc = "";
                 overlay = true;
             }
+            else if (settings.onClick == 'wildcard') { //wildcard images
+                if (icon == false) return;
+                const method = settings.wildcardMethod ? settings.wildcardMethod : 'iterate';
+                let value = parseInt(settings.wildcardValue);
+                if (isNaN(value)) value = 1;
+
+                const images = await token.actor.getTokenImages();
+                let currentImgNr = 0
+                let imgNr;
+                for (let i=0; i<images.length; i++) 
+                    if (images[i] == token.data.img){
+                        currentImgNr = i;
+                        break;
+                    }
+                
+                if (method == 'iterate'){
+                    imgNr = currentImgNr + value + this.wildcardOffset;
+                    while (imgNr >= images.length) imgNr -= images.length; 
+                    while (imgNr < 0) imgNr += images.length; 
+                    iconSrc = images[imgNr];
+                }
+                else if (method == 'set'){
+                    imgNr = value - 1 + this.wildcardOffset;
+                    if (value >= images.length) iconSrc = "modules/MaterialDeck/img/black.png";
+                    else iconSrc = images[imgNr];
+                    ring = 1;
+                    if (currentImgNr == imgNr) {
+                        ring = 2;
+                        ringColor = "#FF7B00";
+                    }
+                }
+                else return;
+                
+            }
         }
         else {
             iconSrc += "";
@@ -461,7 +496,6 @@ export class TokenControl{
                 animation.speed = animationSpeed;
             }
             data.lightAnimation = animation;
-
             token.update(data);
         }
         else if (system == 'demonlord' && game.system.id == 'demonlord' && onClick == 'initiative'){
@@ -470,6 +504,172 @@ export class TokenControl{
             })
             
         }
+        else if (settings.onClick == 'wildcard') { //wildcard images
+            const method = settings.wildcardMethod ? settings.wildcardMethod : 'iterate';
+            let value = parseInt(settings.wildcardValue);
+            if (isNaN(value)) value = 1;
+
+            const images = await token.actor.getTokenImages();
+            let imgNr;
+            let iconSrc;
+            if (method == 'iterate'){
+                let currentImgNr = 0
+                for (let i=0; i<images.length; i++) 
+                    if (images[i] == token.data.img){
+                        currentImgNr = i;
+                        break;
+                    }
+                
+                imgNr = currentImgNr + value + this.wildcardOffset;
+                while (imgNr >= images.length) imgNr -= images.length;  
+                while (imgNr < 0) imgNr += images.length;   
+            }
+            else if (method == 'set'){
+                imgNr = value - 1 + this.wildcardOffset;
+                if (value >= images.length || value < 1) return;
+                
+            }
+            else if (method == 'offset'){
+                this.wildcardOffset = value;
+                this.update(MODULE.selectedTokenId);
+            }
+            else return;
+
+            iconSrc = images[imgNr];
+            token.update({img: iconSrc})
+        }
+        else if (settings.onClick == 'custom') {//custom onClick function
+            const formula = settings.customOnClickFormula ? settings.customOnClickFormula : '';
+            if (formula == '') return;
+
+            let targetArrayTemp;
+            let formulaArrayTemp;
+            let split1 = formula.split(';');
+            for (let i=0; i<split1.length; i++){
+                let split2 = split1[i].split(' = ');
+                targetArrayTemp = split2[0];
+                formulaArrayTemp = split2[1];
+
+                let targetArray = this.splitCustom(targetArrayTemp);
+
+                for (let i=0; i<targetArray.length; i++){
+                    if (targetArray[i][0] == '@') {
+                        const dataPath = targetArray[i].split('@')[1].split('.');
+                        targetArray[i] = dataPath;
+                    } 
+                }
+
+                let formulaArray = this.splitCustom(formulaArrayTemp);
+
+                let value = 0;
+                let previousOperation = '+';
+                if (formulaArray.length == 1 && formulaArray[0][0] == '[')
+                    value = formulaArray[0].split('[')[1];
+                else if (formulaArray.length == 1)
+                    value = formulaArray[0];
+                else {
+                    for (let i=0; i<formulaArray.length; i++){
+                    let val;
+                    if (formulaArray[i][0] == '@') {
+                        let dataPath;
+                        if (formulaArray[i] == '@this') dataPath = targetArray[0];
+                        else dataPath = formulaArray[i].split('@')[1].split('.');
+                        let data = token;
+    
+                        for (let j=0; j<dataPath.length; j++)
+                                data = data?.[dataPath[j]];
+                        if (data == undefined) return;
+                        formulaArray[i] = data;
+                        val = data;
+                    }
+                    else if (isNaN(formulaArray[i])) {
+                        previousOperation = formulaArray[i];
+                        if (previousOperation == '++') value++;
+                        else if (previousOperation == '--') value--;
+                        continue;
+                    }
+                    else
+                        val = parseFloat(formulaArray[i]);
+                    if (previousOperation == '+') value += val;
+                    else if (previousOperation == '-') value -= val;
+                    else if (previousOperation == '*') value *= val;
+                    else if (previousOperation == '/') value /= val;
+                    else if (previousOperation == '**') value **= val;
+                    else if (previousOperation == '%') value %= val;
+                    else if (previousOperation == '<' && value >= val) {value = val-1;}
+                    else if (previousOperation == '>' && value <= val) {value = val+1;}
+                    else if (previousOperation == '<=' && value > val) {value = val;}
+                    else if (previousOperation == '>=' && value < val) {value = val;}
+                }
+                }
+    
+                for (let i=0; i<targetArray.length; i++){
+                    const dataPath = targetArray[i];
+                    let data;
+                    if (dataPath[0] == 'actor') {
+                        let actor = token.actor;
+    
+                        if (dataPath[1] == 'data'){
+                            let path = '';
+                            for (let j=2; j<targetArray[i].length; j++){
+                                if (path != '') path += '.';
+                                path += targetArray[i][j];
+                            }
+                            actor.update({[path]:value})
+                        }
+                        else {
+                            let path = '';
+                            for (let j=1; j<targetArray[i].length; j++){
+                                if (path != '') path += '.';
+                                path += targetArray[i][j];
+                            }
+                            actor.update({[path]:value})
+                        }
+                        
+                    }
+                    else {
+                        data = token;
+                        let path = '';
+                        for (let j=1; j<targetArray[i].length; j++){
+                            if (path != '') path += '.';
+                            path += targetArray[i][j];
+                        }
+                        token.update({[path]:value})
+                    }
+                }
+            }
+        }
+    }
+
+    splitCustom(string){
+        const split = string.split('[');
+        let array1 = [];
+        for (let i=0; i<split.length; i++){
+            if (i>0 && split[i][0] != '@' && split[i] != "" && isNaN(split[i])) split[i] = '['+split[i]
+            const split2 = split[i].split(']');
+            for (let j=0; j<split2.length; j++){
+                array1.push(split2[j]);
+            }  
+        }
+
+        let array2 = [];
+        for (let i=0; i<array1.length; i++){
+            if (array1[i][0] == '[') {
+                array2.push(array1[i]);
+                continue;
+            }
+            const split3 = array1[i].split(' ');
+            for (let j=0; j<split3.length; j++){
+                array2.push(split3[j]);
+            }  
+        }
+
+        let array3 = [];
+        for (let i=0; i<array2.length; i++){
+            if (array2[i] == "") continue;
+            array3.push(array2[i]);
+        }
+        return array3;
     }
 
     pf2eCondition(condition){

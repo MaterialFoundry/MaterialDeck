@@ -4,9 +4,13 @@ import {streamDeck} from "../MaterialDeck.js";
 export class ExternalModules{
     constructor(){
         this.active = false;
+        this.gmScreenOpen = false;
     }
 
-    async updateAll(){
+    async updateAll(data={}){
+        if (data.gmScreen != undefined){
+            this.gmScreenOpen = data.gmScreen.isOpen;
+        }
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
             let data = streamDeck.buttonContext[i];
@@ -254,7 +258,7 @@ export class ExternalModules{
         let src = '';
         let txt = '';
 
-        //if (document.getElementsByClassName("gm-screen-app gm-screen-drawer expanded")[0] != undefined) ring = 2;
+        if (this.gmScreenOpen) ring = 2;
         
         if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
         streamDeck.setIcon(context,src,background,ring,ringColor);
@@ -264,7 +268,6 @@ export class ExternalModules{
 
     keyPressGMScreen(settings,context){
         if (this.getModuleEnable("gm-screen") == false) return;
-
-        document.getElementsByClassName("gm-screen-button")[0].click();
+        window['gm-screen'].toggleGmScreenVisibility();
     }
 }

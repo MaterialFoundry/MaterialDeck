@@ -374,6 +374,11 @@ Hooks.on('closeJournalSheet',()=>{
     otherControls.updateAll();
 });
 
+Hooks.on('gmScreenOpenClose',(html,isOpen)=>{
+    if (enableModule == false || ready == false) return;
+    externalModules.updateAll({gmScreen:isOpen});
+});
+
 Hooks.once('init', ()=>{
     //CONFIG.debug.hooks = true;
     registerSettings(); //in ./src/settings.js
