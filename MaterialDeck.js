@@ -133,7 +133,9 @@ async function analyzeWSmessage(msg){
  */
 function startWebsocket() {
     const address = game.settings.get(moduleName,'address');
-    ws = new WebSocket('ws://'+address+'/');
+    const url = address.startsWith('wss://') ? address : ('ws://'+address+'/');
+
+    ws = new WebSocket(url);
 
     ws.onmessage = function(msg){
         //console.log(msg);
