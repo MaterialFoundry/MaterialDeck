@@ -19,13 +19,13 @@
                         <select name="macros" class="macros-select" id="macros{{this.iteration}}" default="" style="max-width:140px;">
                             {{#select this.macro}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
-                                {{#each macros}}
+                                {{#each ../../macros}}
                                 <option value="{{this._id}}">{{this.name}}</option>
                                 {{/each}}
                             {{/select}}
                         </select>
                     </div>
-                    {{#if this.furnace}}
+                    {{#if ../../furnace}}
                         <label>{{localize "MaterialDeck.FurnaceArgs"}}</label>
                         <input type="text" name="args" id="args{{this.iteration}}" value="{{this.args}}">
                     {{/if}}

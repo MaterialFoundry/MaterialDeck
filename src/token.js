@@ -10,37 +10,32 @@ export class TokenControl{
     async update(tokenId){
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
-            let data = streamDeck.buttonContext[i];
+            const data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'token') continue;
             await this.pushData(tokenId,data.settings,data.context);
         }
     }
 
     async pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
-        let name = false;
-        let icon = false;
-        let stats =  settings.stats;
-        let background = "#000000";
+        const name = settings.displayName ? settings.displayName : false;
+        const icon = settings.displayIcon ? settings.displayIcon : false;
+        const background = settings.background ? settings.background : "#000000";
+        const system = settings.system ? settings.system : 'dnd5e';
 
-        if (settings.displayIcon) icon = true;
-        if (settings.displayName) name = true;
-        let system = settings.system;
-        if (system == undefined) system = 'dnd5e';
-        if (system == 'demonlord') stats = settings.statsDemonlord;
+        let stats =  (system == 'demonlord') ? settings.statsDemonlord : settings.stats;
         if (stats == undefined) stats = 'none';
-        if (settings.background) background = settings.background;
-
+        
         let tokenName = "";
         let txt = "";
         let iconSrc = "";
         let overlay = false;
         if (tokenId != undefined) {
-            let token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+            const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
             tokenName = token.data.name;
             if (name) txt += tokenName;
             if (name && stats != 'none') txt += "\n";
             iconSrc = token.data.img;
-            let actor = canvas.tokens.children[0].children.find(p => p.id == tokenId).actor;
+
             if (stats == 'custom'){
                 const custom = settings.custom ? settings.custom : '';
                 let split = custom.split('[');
@@ -60,7 +55,7 @@ export class TokenControl{
                     }
             }
             else if (system == 'dnd5e' && game.system.id == 'dnd5e'){
-                let attributes = actor.data.data.attributes;
+                let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
                     txt += attributes.hp.value + "/" + attributes.hp.max;
                 }
@@ -102,11 +97,11 @@ export class TokenControl{
                     txt += speed;
                 }
                 else if (stats == 'Init') txt += attributes.init.total;
-                else if (stats == 'PassivePerception') txt += actor.data.data.skills.prc.passive;
-                else if (stats == 'PassiveInvestigation') txt += actor.data.data.skills.inv.passive;
+                else if (stats == 'PassivePerception') txt += token.actor.data.data.skills.prc.passive;
+                else if (stats == 'PassiveInvestigation') txt += token.actor.data.data.skills.inv.passive;
             }
             else if ((system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
-                let attributes = actor.data.data.attributes;
+                let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
                 else if (stats == 'TempHP') {
                     if (attributes.hp.temp == null) txt += '0';
@@ -137,7 +132,7 @@ export class TokenControl{
                 else if (stats == 'Init') txt += attributes.init.total;
             }
             else if (system == 'pf2e' && game.system.id == 'pf2e'){
-                let attributes = actor.data.data.attributes;
+                let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
                 else if (stats == 'TempHP') {
                     if (attributes.hp.temp == null) txt += '0';
@@ -161,11 +156,11 @@ export class TokenControl{
                 }
             }
             else if (system == 'demonlord' && game.system.id == 'demonlord'){
-                let characteristics = actor.data.data.characteristics;
-                if (statsDemonlord == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
-                else if (statsDemonlord == 'AC') txt += characteristics.defense;
-                else if (statsDemonlord == 'Speed') txt += characteristics.speed;
-                else if (statsDemonlord == 'Init') txt += actor.data.data.fastturn ? "FAST" : "SLOW";
+                let characteristics = token.actor.data.data.characteristics;
+                if (stats == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
+                else if (stats == 'AC') txt += characteristics.defense;
+                else if (stats == 'Speed') txt += characteristics.speed;
+                else if (stats == 'Init') txt += token.actor.data.data.fastturn ? "FAST" : "SLOW";
             }
             else {
                 //Other systems
@@ -210,8 +205,7 @@ export class TokenControl{
             else if (settings.onClick == 'condition') { //toggle condition
                 ring = 1;
                 if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
-                    let condition = settings.condition;
-                    if (condition == undefined) condition = 'removeAll';
+                    const condition = settings.condition ? settings.condition : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
                     else if (icon == false) {
@@ -226,8 +220,7 @@ export class TokenControl{
                     } 
                 }
                 else if (system == 'pf2e' && game.system.id == 'pf2e') {
-                    let condition = settings.conditionPF2E;
-                    if (condition == undefined) condition = 'removeAll';
+                    const condition = settings.conditionPF2E ? settings.conditionPF2E : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
                     else if (icon == false) {
@@ -242,8 +235,7 @@ export class TokenControl{
                     } 
                 }
                 else if (system == 'demonlord' && game.system.id == 'demonlord'){
-                    let condition = settings.conditionDemonlord;
-                    if (condition == undefined) condition = 'removeAll';
+                    const condition = settings.conditionDemonlord ? settings.conditionDemonlord : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
                     else if (icon == false) {
@@ -321,27 +313,21 @@ export class TokenControl{
             }
             else if (settings.onClick == 'condition') { //toggle condition
                 if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
-                    let condition = settings.condition;
-                    if (condition == undefined) condition = 'removeAll';
-
+                    const condition = settings.condition ? settings.condition : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
                     else if (icon == false) 
                         iconSrc = CONFIG.statusEffects.find(e => e.id === condition).icon;
                 }
                 else if (system == 'pf2e' && game.system.id == 'pf2e') {
-                    let condition = settings.conditionPF2E;
-                    if (condition == undefined) condition = 'removeAll';
-    
+                    const condition = settings.conditionPF2E ? settings.conditionPF2E : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
                     else if (icon == false) 
                         iconSrc = this.pf2eCondition(condition);
                 }
                 else if (system == 'demonlord' && game.system.id == 'demonlord'){
-                    let condition = settings.conditionDemonlord;
-                    if (condition == undefined) condition = 'removeAll';
-
+                    const condition = settings.conditionDemonlord ? settings.conditionDemonlord : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
                     else if (icon == false) 
@@ -366,7 +352,6 @@ export class TokenControl{
                 iconSrc = "modules/MaterialDeck/img/black.png";
         } 
         streamDeck.setIcon(context,iconSrc,background,ring,ringColor,overlay);
-        
         streamDeck.setTitle(txt,context);
     }
     
@@ -374,15 +359,14 @@ export class TokenControl{
         if (MODULE.selectedTokenId == undefined) return;
         const tokenId = MODULE.selectedTokenId;
 
-        let onClick = settings.onClick;
-        if (onClick == undefined) onClick = 'doNothing';
-
         const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
         if (token == undefined) return;
 
-        let system = settings.system;
-        if (system == undefined) system = 'dnd5e';
+        let system = settings.system ? settings.system : 'dnd5e';
 
+        let onClick = (system == 'demonlord') ? settings.onClickDemonlord : settings.onClick;
+        if (onClick == undefined) onClick = 'doNothing';
+        
         if (onClick == 'doNothing')   //Do nothing
             return;
         else if (onClick == 'center'){ //center on token
@@ -410,15 +394,10 @@ export class TokenControl{
         }
         else if (onClick == 'condition') {    //Toggle condition
             if ((system == 'dnd5e' && game.system.id == 'dnd5e') || (system == 'dnd3.5e' && game.system.id == 'D35E') || (system == 'pf1e' && game.system.id == 'pf1')){
-                let condition = settings.condition;
-                if (condition == undefined) condition = 'removeAll';
-
+                const condition = settings.condition ? settings.condition : 'removeAll';
                 if (condition == 'removeAll'){
-                    const effects = token.actor.effects.entries;
-                    for (let i=0; i<effects.length; i++){
-                        const effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
-                        await token.toggleEffect(effect)
-                    }
+                    for( let effect of token.actor.effects)
+                        await effect.delete();
                 }
                 else {
                     const effect = CONFIG.statusEffects.find(e => e.id === condition);
@@ -426,14 +405,10 @@ export class TokenControl{
                 }
             }
             else if (system == 'pf2e' && game.system.id == 'pf2e'){
-                let condition = settings.conditionPF2E;
-                if (condition == undefined) condition = 'removeAll';
+                const condition = settings.conditionPF2E ? settings.conditionPF2E : 'removeAll';
                 if (condition == 'removeAll'){
-                    const effects = token.actor.effects.entries;
-                    for (let i=0; i<effects.length; i++){
-                        const effect = this.pf2eCondition(condition);
-                        await token.toggleEffect(effect)
-                    }
+                    for( let effect of token.actor.effects)
+                        await effect.delete();
                 }
                 else {
                     const effect = this.pf2eCondition(condition);
@@ -441,15 +416,10 @@ export class TokenControl{
                 }
             }  
             else if (system == 'demonlord' && game.system.id == 'demonlord'){
-                let condition = settings.conditionDemonlord;
-                if (condition == undefined) condition = 'removeAll';
-
+                const condition = settings.conditionDemonlord ? settings.conditionDemonlord : 'removeAll';
                 if (condition == 'removeAll'){
-                    const effects = token.actor.effects.entries;
-                    for (let i=0; i<effects.length; i++){
-                        const effect = CONFIG.statusEffects.find(e => e.icon === effects[i].data.icon);
-                        await token.toggleEffect(effect)
-                    }
+                    for( let effect of token.actor.effects)
+                        await effect.delete();
                 }
                 else {
                     const effect = CONFIG.statusEffects.find(e => e.id === condition);
@@ -504,7 +474,7 @@ export class TokenControl{
             })
             
         }
-        else if (settings.onClick == 'wildcard') { //wildcard images
+        else if (onClick == 'wildcard') { //wildcard images
             const method = settings.wildcardMethod ? settings.wildcardMethod : 'iterate';
             let value = parseInt(settings.wildcardValue);
             if (isNaN(value)) value = 1;
@@ -538,7 +508,7 @@ export class TokenControl{
             iconSrc = images[imgNr];
             token.update({img: iconSrc})
         }
-        else if (settings.onClick == 'custom') {//custom onClick function
+        else if (onClick == 'custom') {//custom onClick function
             const formula = settings.customOnClickFormula ? settings.customOnClickFormula : '';
             if (formula == '') return;
 

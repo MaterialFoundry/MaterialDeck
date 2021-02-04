@@ -40,6 +40,8 @@ let wsOpen = false;             //Bool for checking if websocket has ever been o
 let wsInterval;                 //Interval timer to detect disconnections
 let WSconnected = false;
 
+//let furnace = game.modules.get("furnace");
+
 /*
  * Analyzes the message received 
  * 
@@ -51,6 +53,17 @@ async function analyzeWSmessage(msg){
     //console.log("Received",data);
 
     if (data.type == "connected" && data.data == "SD"){
+        /*
+        console.log(data);
+        const minimumSDversion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
+        const minimumMSversion = game.modules.get("MaterialDeck").data.minimumMSversion;
+        console.log('SD',minimumSDversion,minimumMSversion)
+        if (data.SDversion < minimumSDversion) console.log('SD: nope')
+        else console.log('SD: yes');
+        if (data.MSversion < minimumMSversion) console.log('MS: nope')
+        else console.log('MS: yes');
+        */
+
         console.log("streamdeck connected to server");
         streamDeck.resetImageBuffer();
     }
@@ -133,7 +146,10 @@ async function analyzeWSmessage(msg){
  */
 function startWebsocket() {
     const address = game.settings.get(moduleName,'address');
-    ws = new WebSocket('ws://'+address+'/');
+    
+    const url = address.startsWith('wss://') ? address : ('ws://'+address+'/');
+
+    ws = new WebSocket(url);
 
     ws.onmessage = function(msg){
         //console.log(msg);

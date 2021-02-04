@@ -6,7 +6,6 @@ export class playlistConfigForm extends FormApplication {
         super(data, options);
         this.data = data;
         this.playlistNr;
-        this.updatePlaylistNr = false;
     }
 
     /**
@@ -26,7 +25,10 @@ export class playlistConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
+        //Get the playlist settings
         let settings = game.settings.get(MODULE.moduleName,'playlists');
+
+        //Get values from the settings, and check if they are defined
         let selectedPlaylists = settings.selectedPlaylist;
         if (selectedPlaylists == undefined) selectedPlaylists = [];
         let selectedPlaylistMode = settings.playlistMode;
@@ -36,17 +38,17 @@ export class playlistConfigForm extends FormApplication {
         if (numberOfPlaylists == undefined) numberOfPlaylists = 9;
         let playMode = settings.playMode;
         if (playMode == undefined) playMode = 0;
+
+
+        //Create array to store all the data for each playlist
         let playlistData = [];
-        
-        this.updatePlaylistNr = false;
         for (let i=0; i<numberOfPlaylists; i++){
             if (selectedPlaylists[i] == undefined) selectedPlaylists[i] = 'none';
             if (selectedPlaylistMode[i] == undefined) selectedPlaylistMode[i] = 0;
             let dataThis = {
                 iteration: i+1,
                 playlist: selectedPlaylists[i],
-                playlistMode: selectedPlaylistMode[i],
-                playlists: game.playlists.entities
+                playlistMode: selectedPlaylistMode[i]
             }
             playlistData.push(dataThis);
         }
@@ -57,7 +59,7 @@ export class playlistConfigForm extends FormApplication {
             selectedPlaylist: selectedPlaylists,
             playlistMode: selectedPlaylistMode
         }
-
+ 
         return {
             playlists: game.playlists.entities,
             numberOfPlaylists: numberOfPlaylists,
@@ -89,9 +91,8 @@ export class playlistConfigForm extends FormApplication {
 
         numberOfPlaylists.on("change", event => {
             this.playlistNr = event.target.value;
-            this.updatePlaylistNr = true;
             this.data.playlistNumber=event.target.value;
-            this.updateSettings(this.data);
+            this.updateSettings(this.data,true);
         });
 
         selectedPlaylist.on("change", event => {
@@ -106,10 +107,11 @@ export class playlistConfigForm extends FormApplication {
             this.updateSettings(this.data);
         });
     }
-    async updateSettings(settings){
+
+    async updateSettings(settings,render){
         await game.settings.set(MODULE.moduleName,'playlists', settings);
         if (MODULE.enableModule) playlistControl.updateAll();
-        this.render();
+        if (render) this.render();
     }
 }
 
@@ -125,16 +127,6 @@ export class macroConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
-        /*
-        let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
-        let width;
-        if (streamDeckModel == 0)
-            width = 550;
-        else if (streamDeckModel == 1)
-            width= 1500;
-        else   
-            width = 1400;
-        */
         return mergeObject(super.defaultOptions, {
             id: "macro-config",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.MacroConfig"),
@@ -147,19 +139,26 @@ export class macroConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
+        //Get the settings
         var selectedMacros = game.settings.get(MODULE.moduleName,'macroSettings').macros;
         var color = game.settings.get(MODULE.moduleName,'macroSettings').color;
         var args = game.settings.get(MODULE.moduleName,'macroSettings').args;
+
+        //Check if the settings are defined
         if (selectedMacros == undefined) selectedMacros = [];
         if (color == undefined) color = [];
         if (args == undefined) args = [];
-        let macroData = [];
-        let furnaceEnabled = false;
-        let furnace = game.modules.get("furnace");
-        if (furnace != undefined && furnace.active) furnaceEnabled = true;
-        let height = 95;
-        if (furnaceEnabled) height += 50;
 
+        //Check if the Furnace is installed and enabled
+        let furnaceEnabled = false;
+        let height = 95;
+        let furnace = game.modules.get("furnace");
+        if (furnace != undefined && furnace.active) {
+            furnaceEnabled = true;
+            height += 50;
+        }
+
+        //Check what SD model the user is using, and set the number of rows and columns to correspond
         let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
         let iMax,jMax;
         if (streamDeckModel == 0){
@@ -176,45 +175,42 @@ export class macroConfigForm extends FormApplication {
         }
 
         let iteration = 0;
+        let macroData = [];
         for (let j=0; j<jMax; j++){
             let macroThis = [];
       
             for (let i=0; i<iMax; i++){
-                let colorThis = color[iteration];
-                if (colorThis != undefined){
+                let colorData = color[iteration];
+                if (colorData != undefined){
                     let colorCorrect = true;
-                    if (colorThis[0] != '#') colorCorrect = false;
+                    if (colorData[0] != '#') colorCorrect = false;
                     for (let k=0; k<6; k++){
-                        if (parseInt(colorThis[k+1],16)>15)
+                        if (parseInt(colorData[k+1],16)>15)
                             colorCorrect = false;
                     }
-                    if (colorCorrect == false) colorThis = '#000000'; 
+                    if (colorCorrect == false) colorData = '#000000'; 
                 }
                 else 
-                    colorThis = '#000000';
+                    colorData = '#000000';
                     
                 let dataThis = {
                     iteration: iteration+1,
                     macro: selectedMacros[iteration],
-                    color: colorThis,
-                    macros:game.macros,
-                    args: args[iteration],
-                    furnace: furnaceEnabled
+                    color: colorData,
+                    args: args[iteration]
                 }
                 macroThis.push(dataThis);
                 iteration++;
             }
-            let data = {
-                dataThis: macroThis,
-            };
-            macroData.push(data);
+            macroData.push({dataThis: macroThis});
         }
-        
+
         return {
             height: height,
             macros: game.macros,
             selectedMacros: selectedMacros,
             macroData: macroData,
+            furnace: furnaceEnabled
         } 
     }
 
@@ -258,7 +254,6 @@ export class macroConfigForm extends FormApplication {
     async updateSettings(settings){
         await game.settings.set(MODULE.moduleName,'macroSettings',settings);
         if (MODULE.enableModule) macroControl.updateAll();
-        this.render();
     }
 }
 
@@ -267,10 +262,7 @@ export class macroConfigForm extends FormApplication {
 export class soundboardConfigForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
-        this.data = data;
         this.playlists = [];
-        this.updatePlaylist = false;
-        this.update = false;
         this.iMax;
         this.jMax;
         this.settings = {};
@@ -280,16 +272,6 @@ export class soundboardConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
-        /*
-        let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
-        let width;
-        if (streamDeckModel == 0)
-            width = 550;
-        else if (streamDeckModel == 1)
-            width= 885;
-        else   
-            width = 1400;
-        */
         return mergeObject(super.defaultOptions, {
             id: "soundboard-config",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.SoundboardConfig"),
@@ -298,28 +280,15 @@ export class soundboardConfigForm extends FormApplication {
             height: 720
         });
     }
-    
-    getArray(data){
-        let array = [data.a,data.b,data.c,data.d,data.e,data.f,data.g,data.h];
-        return array;
-    }
 
     /**
      * Provide data to the template
      */
-    getData() { 
-        if (this.update) {
-            this.update=false;
-            return {soundData: this.data};
-        }
+    getData() {
+        //Get the settings
         this.settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-        let playlists = [];
-        playlists.push({id:"none",name:game.i18n.localize("MaterialDeck.None")});
-        playlists.push({id:"FP",name:game.i18n.localize("MaterialDeck.FilePicker")})
-        for (let i=0; i<game.playlists.entities.length; i++){
-            playlists.push({id:game.playlists.entities[i]._id,name:game.playlists.entities[i].name});
-        }
 
+        //Check if all settings are defined
         if (this.settings.sounds == undefined) this.settings.sounds = [];
         if (this.settings.colorOn == undefined) this.settings.colorOn = [];
         if (this.settings.colorOff == undefined) this.settings.colorOff = [];
@@ -329,8 +298,17 @@ export class soundboardConfigForm extends FormApplication {
         if (this.settings.name == undefined) this.settings.name = [];
         if (this.settings.selectedPlaylists == undefined) this.settings.selectedPlaylists = [];
         if (this.settings.src == undefined) this.settings.src = [];
-        let soundData = [];
 
+        //Create the playlist array
+        let playlists = [];
+        playlists.push({id:"none",name:game.i18n.localize("MaterialDeck.None")});
+        playlists.push({id:"FP",name:game.i18n.localize("MaterialDeck.FilePicker")})
+        for (let i=0; i<game.playlists.entities.length; i++){
+            playlists.push({id:game.playlists.entities[i]._id,name:game.playlists.entities[i].name});
+        }
+        this.playlists = playlists;
+
+        //Check what SD model the user is using, and set the number of rows and columns to correspond
         let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
        
         if (streamDeckModel == 0){
@@ -346,37 +324,54 @@ export class soundboardConfigForm extends FormApplication {
             this.iMax = 8;
         }
 
-        let iteration = 0;
+        let iteration = 0;  //Sound number
+        let soundData = []; //Stores all the data for each sound
 
+        //Fill soundData. soundData is an array the size of jMax (nr of rows), with each array element containing an array the size of iMax (nr of columns)
         for (let j=0; j<this.jMax; j++){
-            let soundsThis = [];
+            let soundsThis = [];    //Stores row data
             for (let i=0; i<this.iMax; i++){
+                //Each iteration gets the data for each sound
+
+                //If the volume is undefined for this sound, define it and set it to its default value
+                if (this.settings.volume[iteration] == undefined) this.settings.volume[iteration] = 50;
+
+                //Get the selected playlist and the sounds of that playlist
                 let selectedPlaylist;
                 let sounds = [];
-                if (this.settings.volume[iteration] == undefined) this.settings.volume[iteration] = 50;
                 if (this.settings.selectedPlaylists[iteration]==undefined) selectedPlaylist = 'none';
                 else if (this.settings.selectedPlaylists[iteration] == 'none') selectedPlaylist = 'none';
                 else if (this.settings.selectedPlaylists[iteration] == 'FP') selectedPlaylist = 'FP';
                 else {
+                    //Get the playlist
                     const pl = game.playlists.entities.find(p => p._id == this.settings.selectedPlaylists[iteration]);
                     if (pl == undefined){
                         selectedPlaylist = 'none';
                         sounds = [];
                     }
                     else {
-                        sounds = pl.sounds;
+                        //Add the sound name and id to the sounds array
+                        for (let i=0; i<pl.sounds.length; i++)
+                            sounds.push({
+                                name: pl.sounds[i].name,
+                                id: pl.sounds[i]._id
+                            });
+                        //Get the playlist id
                         selectedPlaylist = pl._id;
                     }  
                 }
+
+                //Determine whether the sound selector or file picker should be displayed
                 let styleSS = "";
                 let styleFP ="display:none";
                 if (selectedPlaylist == 'FP') {
                     styleSS = 'display:none';
                     styleFP = ''
                 }
+
+                //Create and fill the data object for this sound
                 let dataThis = {
                     iteration: iteration+1,
-                    playlists: playlists,
                     selectedPlaylist: selectedPlaylist,
                     sound: this.settings.sounds[iteration],
                     sounds: sounds,
@@ -390,18 +385,20 @@ export class soundboardConfigForm extends FormApplication {
                     styleSS: styleSS,
                     styleFP: styleFP
                 }
+
+                //Push the data to soundsThis (row array)
                 soundsThis.push(dataThis);
+
                 iteration++;
             }
-            let data = {
-                dataThis: soundsThis,
-            };
-            soundData.push(data);
+
+            //Push soundsThis (row array) to soundData (full data array)
+            soundData.push({dataThis: soundsThis});
         }
-        this.data = soundData;
 
         return {
-            soundData: this.data
+            soundData: soundData,
+            playlists
         } 
     }
 
@@ -428,122 +425,105 @@ export class soundboardConfigForm extends FormApplication {
 
         nameField.on("change",event => {
             let id = event.target.id.replace('name','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].name=event.target.value;
-            this.update = true;
-
             this.settings.name[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         if (playlistSelect.length > 0) {
-            playlistSelect.on("change", event => {
-                let id = event.target.id.replace('playlists','')-1;
-                let j = Math.floor(id/this.jMax);
-                let i = id % this.jMax;
-                this.data[j].dataThis[i].selectedPlaylist=event.target.value;
 
+            //Listener for when the playlist is changed
+            playlistSelect.on("change", event => {
+                //Get the sound number
+                const iteration = event.target.id.replace('playlists','');
+
+                //Get the selected playlist and the sounds of that playlist
                 let selectedPlaylist;
-                let sounds = [];
+                //let sounds = [];
                 if (event.target.value==undefined) selectedPlaylist = 'none';
                 else if (event.target.value == 'none') selectedPlaylist = 'none';
-                else if (event.target.value == 'FP') selectedPlaylist = 'FP';
+                else if (event.target.value == 'FP') {
+                    selectedPlaylist = 'FP';
+
+                    //Show the file picker
+                    document.querySelector(`#fp${iteration}`).style='';
+                    
+                    //Hide the sound selector
+                    document.querySelector(`#ss${iteration}`).style='display:none';
+                }
                 else {
+                    //Hide the file picker
+                    document.querySelector(`#fp${iteration}`).style='display:none';
+                    
+                    //Show the sound selector
+                    document.querySelector(`#ss${iteration}`).style='';
+
                     const pl = game.playlists.entities.find(p => p._id == event.target.value);
                     selectedPlaylist = pl._id;
-                    sounds = pl.sounds;
-                }
-                this.data[j].dataThis[i].sounds=sounds;
 
-                let styleSS = "";
-                let styleFP ="display:none";
-                if (selectedPlaylist == 'FP') {
-                    styleSS = 'display:none';
-                    styleFP = ''
-                }
-                this.data[j].dataThis[i].styleSS=styleSS;
-                this.data[j].dataThis[i].styleFP=styleFP;
-                this.update = true;
+                    //Get the sound select element
+                    let SSpicker = document.getElementById(`soundSelect${iteration}`);
 
-                this.settings.selectedPlaylists[id]=event.target.value;
+                    //Empty ss element
+                    SSpicker.options.length=0;
+
+                    //Create new options and append them
+                    let optionNone = document.createElement('option');
+                    optionNone.value = "";
+                    optionNone.innerHTML = game.i18n.localize("MaterialDeck.None");
+                    SSpicker.appendChild(optionNone);
+
+                    for (let i=0; i<pl.sounds.length; i++){
+                        let newOption = document.createElement('option');
+                        newOption.value = pl.sounds[i]._id;
+                        newOption.innerHTML = pl.sounds[i].name;
+                        SSpicker.appendChild(newOption);
+                    }
+                }
+
+                //Save the new playlist to this.settings, and update the settings
+                this.settings.selectedPlaylists[iteration-1]=event.target.value;
                 this.updateSettings(this.settings);
             });
         }
 
         soundSelect.on("change", event => {
             let id = event.target.id.replace('soundSelect','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].sound=event.target.value;
-            this.update = true;
-
             this.settings.sounds[id]=event.target.value;
             this.updateSettings(this.settings);
         });
         
         soundFP.on("change",event => {
             let id = event.target.id.replace('srcPath','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].srcPath=event.target.value;
-            this.update = true;
-
             this.settings.src[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         imgFP.on("change",event => {
             let id = event.target.id.replace('imgPath','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].imgPath=event.target.value;
-            this.update = true;
-
             this.settings.img[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         onCP.on("change",event => {
             let id = event.target.id.replace('colorOn','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].colorOn=event.target.value;
-            this.update = true;
-
             this.settings.colorOn[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         offCP.on("change",event => {
             let id = event.target.id.replace('colorOff','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].colorOff=event.target.value;
-            this.update = true;
-
             this.settings.colorOff[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         playMode.on("change",event => {
             let id = event.target.id.replace('playmode','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].mode=event.target.value;
-            this.update = true;
-
             this.settings.mode[id]=event.target.value;
             this.updateSettings(this.settings);
         });
 
         volume.on("change",event => {
             let id = event.target.id.replace('volume','')-1;
-            let j = Math.floor(id/this.jMax);
-            let i = id % this.jMax;
-            this.data[j].dataThis[i].volume=event.target.value;
-            this.update = true;
-
             this.settings.volume[id]=event.target.value;
             this.updateSettings(this.settings); 
         });
@@ -552,7 +532,5 @@ export class soundboardConfigForm extends FormApplication {
     async updateSettings(settings){
         await game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
         if (MODULE.enableModule) soundboard.updateAll();
-        this.render();
     }
-    
 }

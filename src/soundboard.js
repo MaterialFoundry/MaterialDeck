@@ -13,7 +13,7 @@ export class SoundboardControl{
     async updateAll(){
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
-            let data = streamDeck.buttonContext[i];
+            const data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'soundboard') continue;
             await this.update(data.settings,data.context);
         }
@@ -21,17 +21,13 @@ export class SoundboardControl{
 
     update(settings,context){
         this.active = true;
-        let mode = settings.soundboardMode;
-        if (mode == undefined) mode = 'playSound';
+        const mode = settings.soundboardMode ? settings.soundboardMode : 'playSound';
+        const background = settings.background ? settings.background : '#000000';
+        let ringColor = "#000000"
 
         let txt = "";
         let src = "";
         
-        let background = settings.background;
-        if (background == undefined) background = '#000000';
-
-        let ringColor = "#000000"
-
         if (mode == 'playSound'){ //play sound
             let soundNr = parseInt(settings.soundNr);
             if (isNaN(soundNr)) soundNr = 1;
@@ -39,28 +35,23 @@ export class SoundboardControl{
             soundNr += this.offset;
 
             let soundboardSettings = game.settings.get(MODULE.moduleName, 'soundboardSettings');
-            
-            if (this.activeSounds[soundNr]==false)
-                ringColor = soundboardSettings.colorOff[soundNr];
-            else 
-                ringColor = soundboardSettings.colorOn[soundNr];
+            ringColor = (this.activeSounds[soundNr]==false) ? soundboardSettings.colorOff[soundNr] : soundboardSettings.colorOn[soundNr];
 
             if (settings.displayName && soundboardSettings.name != undefined) txt = soundboardSettings.name[soundNr];
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
+
             streamDeck.setTitle(txt,context);
             streamDeck.setIcon(context,src,background,2,ringColor);
         }
         else if (mode == 'offset') { //Offset
-            let ringOffColor = settings.offRing;
-            if (ringOffColor == undefined) ringOffColor = '#000000';
-
-            let ringOnColor = settings.onRing;
-            if (ringOnColor == undefined) ringOnColor = '#00FF00';
+            const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+            const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
 
             let offset = parseInt(settings.offset);
             if (isNaN(offset)) offset = 0;
             if (offset == this.offset) ringColor = ringOnColor;
             else ringColor = ringOffColor;
+
             streamDeck.setTitle(txt,context);
             streamDeck.setIcon(context,"",background,2,ringColor);
         }
@@ -68,7 +59,8 @@ export class SoundboardControl{
             let src = 'modules/MaterialDeck/img/playlist/stop.png';
             let soundPlaying = false;
             for (let i=0; i<this.activeSounds.length; i++)
-                if (this.activeSounds[i]) soundPlaying = true;
+                if (this.activeSounds[i]) 
+                    soundPlaying = true;
             if (soundPlaying)
                 streamDeck.setIcon(context,src,settings.background,2,'#00FF00',true);
             else
@@ -77,8 +69,8 @@ export class SoundboardControl{
     }
 
     keyPressDown(settings){
-        let mode = settings.soundboardMode;
-        if (mode == undefined) mode = 'playSound';
+        const mode = settings.soundboardMode ? settings.soundboardMode : 'playSound';
+
         if (mode == 'playSound') {    //Play sound
             let soundNr = parseInt(settings.soundNr);
             if (isNaN(soundNr)) soundNr = 1;
@@ -86,11 +78,9 @@ export class SoundboardControl{
             soundNr += this.offset;
 
             const playMode = game.settings.get(MODULE.moduleName,'soundboardSettings').mode[soundNr];
+            const repeat = (playMode > 0) ? true : false;
+            const play = (this.activeSounds[soundNr] == false) ? true : false;
 
-            let repeat = false;
-            if (playMode > 0) repeat = true;
-            let play = false;
-            if (this.activeSounds[soundNr] == false) play = true;
             this.playSound(soundNr,repeat,play);
         }
         else if (mode == 'offset') { //Offset
@@ -109,9 +99,10 @@ export class SoundboardControl{
     }
 
     keyPressUp(settings){
-        let mode = settings.soundboardMode;
-        if (mode == undefined) mode = 'playSound';
+        const mode = settings.soundboardMode ? settings.soundboardMode : 'playSound';
+
         if (mode != 'playSound') return;
+
         let soundNr = parseInt(settings.soundNr);
         if (isNaN(soundNr)) soundNr = 1;
         soundNr--;
@@ -125,8 +116,7 @@ export class SoundboardControl{
 
     async playSound(soundNr,repeat,play){  
         const soundBoardSettings = game.settings.get(MODULE.moduleName,'soundboardSettings');
-        let playlistId;
-        if (soundBoardSettings.selectedPlaylists != undefined) playlistId = soundBoardSettings.selectedPlaylists[soundNr];
+        const playlistId = (soundBoardSettings.selectedPlaylists != undefined) ? soundBoardSettings.selectedPlaylists[soundNr] : undefined;
         let src;
         if (playlistId == "" || playlistId == undefined) return;
         if (playlistId == 'none') return;
@@ -134,7 +124,8 @@ export class SoundboardControl{
             src = soundBoardSettings.src[soundNr];
             const ret = await FilePicker.browse("data", src, {wildcard:true});
             const files = ret.files;
-            if (files.length == 1) src = files;
+            if (files.length == 1) 
+                src = files;
             else {
                 let value = Math.floor(Math.random() * Math.floor(files.length));
                 src = files[value];

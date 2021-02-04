@@ -11,7 +11,7 @@ export class SceneControl{
     async updateAll(){
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
-            let data = streamDeck.buttonContext[i];
+            const data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'scene') continue;
             await this.update(data.settings,data.context);
         }
@@ -29,7 +29,7 @@ export class SceneControl{
 
         let src = "";
         let name = "";
-        if (func == 'visible'){ //visible scenes
+        if (func == 'visible') { //visible scenes
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
             nr--;
@@ -37,10 +37,7 @@ export class SceneControl{
             let scene = game.scenes.apps[0].scenes[nr];
             
             if (scene != undefined){
-                if (scene.isView) 
-                    ringColor = ringOnColor;
-                else 
-                    ringColor = ringOffColor;
+                ringColor = scene.isView ? ringOnColor : ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
                 if (settings.displaySceneIcon) src = scene.img;
                 if (scene.active) name += "\n(Active)";
@@ -81,10 +78,7 @@ export class SceneControl{
             if (settings.sceneName == undefined || settings.sceneName == '') return;
             let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
             if (scene != undefined){
-                if (scene.isView)
-                    ringColor = ringOnColor;
-                else 
-                    ringColor = ringOffColor;
+                ringColor = scene.isView ? ringOnColor : ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
                 if (settings.displaySceneIcon) src = scene.img;
                 if (scene.active) name += "\n(Active)";
@@ -167,8 +161,7 @@ export class SceneControl{
             let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
             if (scene == undefined) return;
 
-            let viewFunc = settings.sceneViewFunction;
-            if (viewFunc == undefined) viewFunc = 'view';
+            const viewFunc = settings.sceneViewFunction ? settings.sceneViewFunction : 'view';
 
             if (viewFunc == 'view'){
                 scene.view();

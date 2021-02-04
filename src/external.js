@@ -13,7 +13,7 @@ export class ExternalModules{
         }
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
-            let data = streamDeck.buttonContext[i];
+            const data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'external') continue;
             await this.update(data.settings,data.context);
         }
@@ -21,18 +21,15 @@ export class ExternalModules{
 
     update(settings,context){
         this.active = true;
-        let module = settings.module;
-        if (module == undefined) module = 'fxmaster';
+        const module = settings.module ? settings.module : 'fxmaster';
 
         if (module == 'fxmaster') this.updateFxMaster(settings,context);
         else if (module == 'gmscreen') this.updateGMScreen(settings,context);
-        
     }
 
     keyPress(settings,context){
         if (this.active == false) return;
-        let module = settings.module;
-        if (module == undefined) module = 'fxmaster';
+        const module = settings.module ? settings.module : 'fxmaster';
 
         if (module == 'fxmaster')    
             this.keyPressFxMaster(settings,context);
@@ -254,7 +251,7 @@ export class ExternalModules{
 
         const background = settings.gmScreenBackground ? settings.gmScreenBackground : '#000000';
         let ring = 1;
-        let ringColor = '#00FF00'
+        const ringColor = '#00FF00'
         let src = '';
         let txt = '';
 

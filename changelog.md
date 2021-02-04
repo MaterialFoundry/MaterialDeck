@@ -1,5 +1,19 @@
 # Changelog Material Deck Module
-### v1.2.2 - 07-01-2021
+### v1.2.3 - 03-02-2021
+Fixes:
+<ul>
+<li>Fixed some issues for the Shadow of the Demon Lord system</li>
+</ul>
+Other Changes:
+<ul>
+<li>Improved performance of the 'Playlist Configuration', 'Macro Configuration' and 'Soundboard Configuration' screens</li>
+<li>Minor code clean-up</li>
+</ul>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.2.2 (unchanged): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
+### v1.2.2 - 02-02-2021
 Additions:
 <ul>
 <li>Added a help button in the module configuration</li>

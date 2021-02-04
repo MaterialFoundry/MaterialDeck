@@ -26,7 +26,7 @@
                     <div>
                         <select name="playlist" class="playlist-select" default="" style="width:100%;" id="playlists{{this.iteration}}">
                             {{#select this.selectedPlaylist}}
-                                {{#each playlists}}
+                                {{#each ../../playlists}}
                                 <option value="{{this.id}}">{{this.name}}</option>
                                 {{/each}}
                             {{/select}}
@@ -36,17 +36,17 @@
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Sound"}}
                     </div>
-                    <div class="form-fields" style={{this.styleSS}}>
+                    <div class="form-fields" id="ss{{this.iteration}}" style="{{this.styleSS}}">
                         <select name="sounds" class="sounds-select" default="" style="width:100%;" id="soundSelect{{this.iteration}}">
                             {{#select this.sound}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each sounds}}
-                                <option value="{{this._id}}">{{this.name}}</option>
+                                <option value="{{this.id}}">{{this.name}}</option>
                                 {{/each}}
                             {{/select}}
                         </select>
                     </div>
-                    <div class="form-fields" style={{this.styleFP}}>
+                    <div class="form-fields" id="fp{{this.iteration}}" style="{{this.styleFP}}">
                         <button type="button" class="file-picker" data-type="audio" data-target="src{{this.iteration}}" title="Browse Files" tabindex="-1">
                             <i class="fas fa-file-import fa-fw"></i>
                         </button>
