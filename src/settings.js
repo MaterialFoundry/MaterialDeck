@@ -75,7 +75,7 @@ export const registerSettings = function() {
         name: "MaterialDeck.Sett.Enable",
         scope: "client",
         config: true,
-        default: true,
+        default: false,
         type: Boolean,
         onChange: x => window.location.reload()
     });
