@@ -1,4 +1,6 @@
-<b>Note:</b> At the moment Windows and OSX support has been confirmed. Linux support is unknown, there is no official Linux support for the Stream Deck, but there exist a 3rd party <a href="https://timothycrosley.com/project-7-streamdeck_ui">Stream Deck UI</a> that might be compatible.<br>
+<b>Note:</b><br>
+At the moment Windows and OSX are supported. Linux has been reported to work, there is no official Linux support for the Stream Deck, but there exist a 3rd party <a href="https://timothycrosley.com/project-7-streamdeck_ui">Stream Deck UI</a> that appears be compatible. To get it working on Linux requires more work, and help I can personally offer is limited.<br>
+The module works on the native Foundry application, Chrome and Firefox. Safari (you'll need the latest dev version to get Foundry to work on it) doesn't work if your Foundry server is secured, unless you use something like Nginx with which I cannot help you.<br>
 <b>In any case: Proceed at your own risk, I will not take any responsibility if you spent money and the module doesn't work!</b>
 
 <b>Please read the documentation carefully, especially if you want to modify the default profile!</b>
@@ -72,7 +74,7 @@ Module manifest: https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/m
 
 ## Software Versions & Module Incompatibilities
 <b>Foundry VTT:</b> Tested on 0.7.9<br>
-<b>Module Incompatibilities:</b> None known.<br>
+<b>Module Incompatibilities:</b> Combat Utility Belt conditions do not work with the Token Action.<br>
 
 ## Feedback
 If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
