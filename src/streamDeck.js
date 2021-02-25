@@ -444,4 +444,12 @@ export class StreamDeck{
         this.imageBufferCounter = 0;
         this.imageBuffer = [];
     }
+
+    noPermission(context,showTxt=true){
+        const url = 'modules/MaterialDeck/img/black.png';
+        const background = '#000000';
+        const txt = showTxt ? 'no\npermission' : '';
+        this.setIcon(context,url,background);
+        this.setTitle(txt,context);
+    }
 }

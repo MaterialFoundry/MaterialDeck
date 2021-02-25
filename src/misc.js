@@ -25,6 +25,10 @@ export class playlistConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
+        if (MODULE.getPermission('PLAYLIST','CONFIGURE') == false ) {
+            ui.notifications.warn(game.i18n.localize("MaterialDeck.Notifications.Playlist.NoPermission"));
+            return;
+        }
         //Get the playlist settings
         let settings = game.settings.get(MODULE.moduleName,'playlists');
 
@@ -109,9 +113,19 @@ export class playlistConfigForm extends FormApplication {
     }
 
     async updateSettings(settings,render){
-        await game.settings.set(MODULE.moduleName,'playlists', settings);
-        if (MODULE.enableModule) playlistControl.updateAll();
-        if (render) this.render();
+        if (game.user.isGM) {
+            await game.settings.set(MODULE.moduleName,'playlists', settings);
+            if (MODULE.enableModule) playlistControl.updateAll();
+            if (render) this.render();
+        }
+        else {
+            const payload = {
+                "msgType": "playlistUpdate", 
+                "settings": settings,
+                "render": render
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+        }
     }
 }
 
@@ -139,6 +153,10 @@ export class macroConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
+        if (MODULE.getPermission('MACRO','MACROBOARD_CONFIGURE') == false ) {
+            ui.notifications.warn(game.i18n.localize("MaterialDeck.Notifications.Macroboard.NoPermission"));
+            return;
+        }
         //Get the settings
         var selectedMacros = game.settings.get(MODULE.moduleName,'macroSettings').macros;
         var color = game.settings.get(MODULE.moduleName,'macroSettings').color;
@@ -252,8 +270,17 @@ export class macroConfigForm extends FormApplication {
     }
 
     async updateSettings(settings){
-        await game.settings.set(MODULE.moduleName,'macroSettings',settings);
-        if (MODULE.enableModule) macroControl.updateAll();
+        if (game.user.isGM) {
+            await game.settings.set(MODULE.moduleName,'macroSettings',settings);
+            if (MODULE.enableModule) macroControl.updateAll();
+        }
+        else {
+            const payload = {
+                "msgType": "macroboardUpdate", 
+                "settings": settings
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+        }
     }
 }
 
@@ -285,6 +312,11 @@ export class soundboardConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
+        if (MODULE.getPermission('SOUNDBOARD','CONFIGURE') == false ) {
+            ui.notifications.warn(game.i18n.localize("MaterialDeck.Notifications.Soundboard.NoPermission"));
+            return;
+        }
+
         //Get the settings
         this.settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
 
@@ -530,7 +562,16 @@ export class soundboardConfigForm extends FormApplication {
     }
     
     async updateSettings(settings){
-        await game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
-        if (MODULE.enableModule) soundboard.updateAll();
+        if (game.user.isGM) {
+            await game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
+            if (MODULE.enableModule) soundboard.updateAll();
+        }
+        else {
+            const payload = {
+                "msgType": "soundboardUpdate", 
+                "settings": settings
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+        }
     }
 }

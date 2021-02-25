@@ -30,6 +30,10 @@ export class SceneControl{
         let src = "";
         let name = "";
         if (func == 'visible') { //visible scenes
+            if (MODULE.getPermission('SCENE','VISIBLE') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
             nr--;
@@ -44,6 +48,10 @@ export class SceneControl{
             }
         }
         else if (func == 'dir') {   //from directory
+            if (MODULE.getPermission('SCENE','DIRECTORY') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
             nr--;
@@ -75,8 +83,13 @@ export class SceneControl{
             }
         }
         else if (func == 'any') {   //by name
+            if (MODULE.getPermission('SCENE','NAME') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
             if (settings.sceneName == undefined || settings.sceneName == '') return;
-            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
+            let scene = game.scenes.getName(settings.sceneName);
+
             if (scene != undefined){
                 ringColor = scene.isView ? ringOnColor : ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
@@ -85,6 +98,10 @@ export class SceneControl{
             }
         }
         else if (func == 'active'){
+            if (MODULE.getPermission('SCENE','ACTIVE') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
             const scene = game.scenes.active;
             if (scene == undefined) return;
             if (settings.displaySceneName) name = scene.name;
@@ -105,6 +122,7 @@ export class SceneControl{
         const func = settings.sceneFunction ? settings.sceneFunction : 'visible';
 
         if (func == 'visible'){ //visible scenes
+            if (MODULE.getPermission('SCENE','VISIBLE') == false ) return;
             const viewFunc = settings.sceneViewFunction ? settings.sceneViewFunction : 'view';
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
@@ -125,6 +143,7 @@ export class SceneControl{
             }  
         }
         else if (func == 'dir') {   //from directory
+            if (MODULE.getPermission('SCENE','DIRECTORY') == false ) return;
             const viewFunc = settings.sceneViewFunction ? settings.sceneViewFunction : 'view';
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
@@ -156,9 +175,10 @@ export class SceneControl{
 
         }
         else if (func == 'any'){ //by name
+            if (MODULE.getPermission('SCENE','NAME') == false ) return;
             if (settings.sceneName == undefined || settings.sceneName == '') return;
             const scenes = game.scenes.entries;
-            let scene = game.scenes.apps[1].entities.find(p=>p.data.name == settings.sceneName);
+            let scene = game.scenes.getName(settings.sceneName);
             if (scene == undefined) return;
 
             const viewFunc = settings.sceneViewFunction ? settings.sceneViewFunction : 'view';
@@ -175,6 +195,7 @@ export class SceneControl{
             }
         }
         else if (func == 'active'){
+            if (MODULE.getPermission('SCENE','ACTIVE') == false ) return;
             const scene = game.scenes.active;
             if (scene == undefined) return;
             scene.view();

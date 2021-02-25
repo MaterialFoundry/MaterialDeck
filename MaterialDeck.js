@@ -25,6 +25,9 @@ export var selectedTokenId;
 
 let ready = false;
 let activeSounds = [];
+
+export let hotbarUses = false;
+export let calculateHotbarUses;
        
 //CONFIG.debug.hooks = true;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,19 +56,27 @@ async function analyzeWSmessage(msg){
     //console.log("Received",data);
 
     if (data.type == "connected" && data.data == "SD"){
+        const msg = {
+            target: "SD",
+            type: "init",
+            system: game.system.id
+        }
+        ws.send(JSON.stringify(msg));
+        
+
+        console.log("streamdeck connected to server");
+        streamDeck.resetImageBuffer();
+    }
+
+    if (data.type == "version" && data.source == "SD") {
         /*
         console.log(data);
         const minimumSDversion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
         const minimumMSversion = game.modules.get("MaterialDeck").data.minimumMSversion;
-        console.log('SD',minimumSDversion,minimumMSversion)
-        if (data.SDversion < minimumSDversion) console.log('SD: nope')
+        console.log('SD',minimumSDversion,data.version)
+        if (data.version < minimumSDversion) console.log('SD: nope')
         else console.log('SD: yes');
-        if (data.MSversion < minimumMSversion) console.log('MS: nope')
-        else console.log('MS: yes');
         */
-
-        console.log("streamdeck connected to server");
-        streamDeck.resetImageBuffer();
     }
 
     if (data == undefined || data.payload == undefined) return;
@@ -169,7 +180,8 @@ function startWebsocket() {
         ws.send(JSON.stringify(msg));
         const msg2 = {
             target: "SD",
-            type: "init"
+            type: "init",
+            system: game.system.id
         }
         ws.send(JSON.stringify(msg2));
         clearInterval(wsInterval);
@@ -195,6 +207,22 @@ export function sendWS(txt){
         ws.send(txt);
 }
 
+export function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
+export function getPermission(action,func) {
+    const role = game.user.role-1;
+    const settings = game.settings.get(moduleName,'userPermission');
+    if (action == 'ENABLE') return settings.enable[role];
+    else return settings.permissions?.[action]?.[func]?.[role];
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Hooks
@@ -205,25 +233,10 @@ export function sendWS(txt){
  * Ready hook
  * Attempt to open the websocket
  */
-Hooks.once('ready', ()=>{
+Hooks.once('ready', async()=>{
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
     
-    game.socket.on(`module.MaterialDeck`, (payload) =>{
-        //console.log(payload);
-        if (payload.msgType != "playSound") return;
-        playTrack(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
-    });
-
-    for (let i=0; i<64; i++)
-        activeSounds[i] = false;
-
-    if (enableModule == false) return;
-    if (game.user.isGM == false) {
-        ready = true;
-        return;
-    }
     
-    startWebsocket();
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
     tokenControl = new TokenControl();
@@ -234,6 +247,63 @@ Hooks.once('ready', ()=>{
     otherControls = new OtherControls();
     externalModules = new ExternalModules();
     sceneControl = new SceneControl();
+
+    game.socket.on(`module.MaterialDeck`, async(payload) =>{
+        //console.log(payload);
+        if (payload.msgType == "playSound") playTrack(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
+        else if (game.user.isGM && payload.msgType == "playPlaylist") {
+            const playlist = playlistControl.getPlaylist(payload.playlistNr);
+            playlistControl.playPlaylist(playlist,payload.playlistNr);
+        }
+        else if (game.user.isGM && payload.msgType == "playTrack") {
+            const playlist = playlistControl.getPlaylist(payload.playlistNr);
+            const sounds = playlist.data.sounds;
+            for (let track of sounds)
+                if (track._id == payload.trackId)
+                    playlistControl.playTrack(track,playlist,payload.playlistNr)
+        }
+        else if (game.user.isGM && payload.msgType == "stopAllPlaylists")
+            playlistControl.stopAll(payload.force);
+        else if (game.user.isGM && payload.msgType == "soundboardUpdate") {
+            await game.settings.set(moduleName,'soundboardSettings',payload.settings);
+            const payloadNew = {
+                "msgType": "soundboardRefresh"
+            };
+            game.socket.emit(`module.MaterialDeck`, payloadNew);
+        }
+        else if (game.user.isGM == false && payload.msgType == "soundboardRefresh" && enableModule)
+            soundboard.updateAll();
+        else if (game.user.isGM && payload.msgType == "macroboardUpdate") {
+            await game.settings.set(moduleName,'macroSettings',payload.settings);
+            const payloadNew = {
+                "msgType": "macroboardRefresh"
+            };
+            game.socket.emit(`module.MaterialDeck`, payloadNew);
+        }
+        else if (game.user.isGM == false && payload.msgType == "macroboardRefresh" && enableModule)
+            macroControl.updateAll();
+        else if (game.user.isGM && payload.msgType == "playlistUpdate") {
+            await game.settings.set(moduleName,'playlists',payload.settings);
+            const payloadNew = {
+                "msgType": "playlistRefresh"
+            };
+            game.socket.emit(`module.MaterialDeck`, payloadNew);
+        }
+        else if (game.user.isGM == false && payload.msgType == "playlistRefresh" && enableModule)
+            playlistControl.updateAll();
+            
+    });
+
+    for (let i=0; i<64; i++)
+        activeSounds[i] = false;
+
+    if (enableModule == false) return;
+    if (getPermission('ENABLE') == false) {
+        ready = true;
+        return;
+    }
+
+    startWebsocket();
 
     let soundBoardSettings = game.settings.get(moduleName,'soundboardSettings');
     let macroSettings = game.settings.get(moduleName, 'macroSettings');
@@ -260,6 +330,11 @@ Hooks.once('ready', ()=>{
             toggle: arrayZero,
             volume: arrayVolume
         });
+    }
+
+    const hotbarUsesTemp = game.modules.get("illandril-hotbar-uses");
+    if (hotbarUsesTemp != undefined) {
+        hotbarUses = true;
     }
     
 });
@@ -290,6 +365,7 @@ Hooks.on('updateToken',(scene,token)=>{
     let tokenId = token._id;
     if (tokenId == selectedTokenId)
         tokenControl.update(selectedTokenId);
+    if (macroControl != undefined) macroControl.updateAll();
 });
 
 Hooks.on('updateActor',(scene,actor)=>{
@@ -302,6 +378,7 @@ Hooks.on('updateActor',(scene,actor)=>{
                 tokenControl.update(selectedTokenId);
         }
     }
+    if (macroControl != undefined) macroControl.updateAll();
 });
 
 Hooks.on('controlToken',(token,controlled)=>{
@@ -313,7 +390,12 @@ Hooks.on('controlToken',(token,controlled)=>{
         selectedTokenId = undefined;
     }
     tokenControl.update(selectedTokenId);
+    if (macroControl != undefined) macroControl.updateAll();
 });
+
+Hooks.on('updateOwnedItem',()=>{
+    if (macroControl != undefined) macroControl.updateAll();
+})
 
 Hooks.on('renderHotbar', (hotbar)=>{
     if (enableModule == false || ready == false) return;
@@ -358,6 +440,7 @@ Hooks.on('updateScene',()=>{
 Hooks.on('renderSceneControls',()=>{
     if (enableModule == false || ready == false || otherControls == undefined) return;
     otherControls.updateAll();
+    externalModules.updateAll();
 });
 
 Hooks.on('targetToken',(user,token,targeted)=>{
@@ -394,6 +477,16 @@ Hooks.on('gmScreenOpenClose',(html,isOpen)=>{
     if (enableModule == false || ready == false) return;
     externalModules.updateAll({gmScreen:isOpen});
 });
+
+Hooks.on('ShareVision', ()=>{
+    if (enableModule == false || ready == false) return;
+    externalModules.updateAll();
+})
+
+Hooks.on('NotYourTurn', ()=>{
+    if (enableModule == false || ready == false) return;
+    externalModules.updateAll();
+})
 
 Hooks.once('init', ()=>{
     //CONFIG.debug.hooks = true;

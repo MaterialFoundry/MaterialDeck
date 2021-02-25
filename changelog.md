@@ -1,4 +1,35 @@
 # Changelog Material Deck Module
+### v1.3.0 - 25-02-2021
+Additions:
+<ul>
+<li>Material Deck can now be used by players. A 'User Permission Configuration' screen has been added to the module settings where the GM can deside what Material Deck functions are available to users</li>
+<li>Macro Action: Added support for Illandril's Hotbar Uses (only requires the module to be installed, does not have to be active)</li>
+<li>Token Action => OnClick: Added support for CUB conditions</li>
+<li>External Modules => Added support for the 'Trigger Happy' module</li>
+<li>External Modules => Added support for the 'MookAI' module</li>
+<li>External Modules => Added support for the 'Shared Vision' module</li>
+<li>External Modules => Added support for the 'Lock View' module</li>
+<li>External Modules => Added support for the 'Not Your Turn' module</li>
+<ul>
+Fixes:
+<ul>
+<li>Token Action => OnClick: Fixed conditions for pf1e and dnd3.5e</li>
+</ul>
+Other Changes:
+<ul>
+<li>Token and Combat Tracker Actions now autodetect the game system</li>
+<li>Game-system related settings in the SD app unified and improved</li>
+<li>Image Cache setting is no longer considered experimental</li>
+</ul>
+
+<b>Note 1: </b>Because the module can now be used by players, some settings have been moved from 'world' settings to 'client' settings. This means that previous settings have been deleted, and they have to be set up again in the module settings.<br>
+<b>Note 2: </b>You can give users access to the playlists, macro board and soundboard. Currently, everyone has to share the same configuration, so be careful with giving players permission to configure one of them.<br>
+<b>Note 3: </b>Because of the new game system autodetection, some settings for non dnd5e systems might be deleted. You'll have to reconfigure them.<br>
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.3.0 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.2.3 - 03-02-2021
 Fixes:
 <ul>

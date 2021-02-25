@@ -23,18 +23,26 @@ export class ExternalModules{
         this.active = true;
         const module = settings.module ? settings.module : 'fxmaster';
 
-        if (module == 'fxmaster') this.updateFxMaster(settings,context);
-        else if (module == 'gmscreen') this.updateGMScreen(settings,context);
+        if (module == 'fxmaster')           this.updateFxMaster(settings,context);
+        else if (module == 'gmscreen')      this.updateGMScreen(settings,context);
+        else if (module == 'triggerHappy')  this.updateTriggerHappy(settings,context);
+        else if (module == 'sharedVision')  this.updateSharedVision(settings,context);
+        else if (module == 'mookAI')        this.updateMookAI(settings,context);
+        else if (module == 'notYourTurn')   this.updateNotYourTurn(settings,context);
+        else if (module == 'lockView')      this.updateLockView(settings,context);
     }
 
     keyPress(settings,context){
         if (this.active == false) return;
         const module = settings.module ? settings.module : 'fxmaster';
 
-        if (module == 'fxmaster')    
-            this.keyPressFxMaster(settings,context);
-        else if (module == 'gmscreen')
-            this.keyPressGMScreen(settings,context);
+        if (module == 'fxmaster')           this.keyPressFxMaster(settings,context);
+        else if (module == 'gmscreen')      this.keyPressGMScreen(settings,context);
+        else if (module == 'triggerHappy')  this.keyPressTriggerHappy(settings,context);
+        else if (module == 'sharedVision')  this.keyPressSharedVision(settings,context);
+        else if (module == 'mookAI')        this.keyPressMookAI(settings,context);
+        else if (module == 'notYourTurn')   this.keyPressNotYourTurn(settings,context);
+        else if (module == 'lockView')      this.keyPressLockView(settings,context);
         
     }
 
@@ -48,6 +56,7 @@ export class ExternalModules{
     //FxMaster
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     updateFxMaster(settings,context){
+        if (game.user.isGM == false) return;
         const fxmaster = game.modules.get("fxmaster");
         if (fxmaster == undefined || fxmaster.active == false) return;
 
@@ -131,6 +140,7 @@ export class ExternalModules{
       }
 
     keyPressFxMaster(settings,context){
+        if (game.user.isGM == false) return;
         const fxmaster = game.modules.get("fxmaster");
         if (fxmaster == undefined || fxmaster.active == false) return;
 
@@ -248,6 +258,7 @@ export class ExternalModules{
 
     updateGMScreen(settings,context){
         if (this.getModuleEnable("gm-screen") == false) return;
+        if (game.user.isGM == false) return;
 
         const background = settings.gmScreenBackground ? settings.gmScreenBackground : '#000000';
         let ring = 1;
@@ -265,6 +276,213 @@ export class ExternalModules{
 
     keyPressGMScreen(settings,context){
         if (this.getModuleEnable("gm-screen") == false) return;
+        if (game.user.isGM == false) return;
         window['gm-screen'].toggleGmScreenVisibility();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Trigger Happy
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    updateTriggerHappy(settings,context) {
+        if (this.getModuleEnable("trigger-happy") == false) return;
+        if (game.user.isGM == false) return;
+        
+        const displayName = settings.displayTriggerHappyName ? settings.displayTriggerHappyName : false;
+        const displayIcon = settings.displayTriggerHappyIcon ? settings.displayTriggerHappyIcon : false;
+
+        const background = "#340057";
+        const ringColor = game.settings.get("trigger-happy", "enableTriggers") ? "#A600FF" : "#340057";
+
+        let txt = '';
+        if (displayIcon) streamDeck.setIcon(context,"fas fa-grin-squint-tears",background,2,ringColor);
+        else streamDeck.setIcon(context,'','#000000');
+        if (displayName) txt = 'Trigger Happy';
+        
+        streamDeck.setTitle(txt,context);
+    }
+
+    keyPressTriggerHappy(settings,context){
+        if (this.getModuleEnable("trigger-happy") == false) return;
+        if (game.user.isGM == false) return;
+        const mode = settings.triggerHappyMode ? settings.triggerHappyMode : 'toggle';
+
+        let val = game.settings.get("trigger-happy", "enableTriggers");
+        if (mode == 'toggle') val = !val;
+        else if (mode == 'enable') val = true;
+        else if (mode == 'disable') val = false;
+
+        game.settings.set("trigger-happy", "enableTriggers", val);
+
+        const control = ui.controls.controls.find(c => c.name == 'token');
+        if (control == undefined) return;
+        let tool = control.tools.find(t => t.name == 'triggers');
+        if (tool == undefined) return;
+        tool.active = val;
+        ui.controls.render(); 
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Shared Vision
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    updateSharedVision(settings,context) {
+        if (this.getModuleEnable("SharedVision") == false) return;
+        if (game.user.isGM == false) return;
+        
+        const displayName = settings.sharedVisionName ? settings.sharedVisionName : false;
+        const displayIcon = settings.sharedVisionIcon ? settings.sharedVisionIcon : false;
+
+        const background = "#340057";
+        const ringColor = game.settings.get("SharedVision", "enable") ? "#A600FF" : "#340057";
+
+        let txt = '';
+        if (displayIcon) streamDeck.setIcon(context,"fas fa-eye",background,2,ringColor);
+        else streamDeck.setIcon(context,'','#000000');
+        if (displayName) txt = 'Shared Vision';
+        streamDeck.setTitle(txt,context);
+    }
+
+    keyPressSharedVision(settings,context) {
+        if (this.getModuleEnable("SharedVision") == false) return;
+        if (game.user.isGM == false) return;
+
+        const mode = settings.sharedVisionMode ? settings.sharedVisionMode : 'toggle';
+
+        if (mode == 'toggle') Hooks.call("setShareVision",{enable:'toggle'});
+        else if (mode == 'enable') Hooks.call("setShareVision",{enable:true});
+        else if (mode == 'disable') Hooks.call("setShareVision",{enable:false});
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Mook AI
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    updateMookAI(settings,context) {
+        if (this.getModuleEnable("mookAI") == false) return;
+        if (game.user.isGM == false) return;
+        
+        const displayName = settings.mookName ? settings.mookName : false;
+        const displayIcon = settings.mookIcon ? settings.mookIcon : false;
+
+        const background = "#000000";
+
+        let txt = '';
+        if (displayIcon) streamDeck.setIcon(context,"fas fa-brain",'#000000');
+        else streamDeck.setIcon(context,'','#000000');
+        if (displayName) txt = 'Mook AI';
+        streamDeck.setTitle(txt,context);
+    }
+
+    async keyPressMookAI(settings,context) {
+        if (this.getModuleEnable("mookAI") == false) return;
+        if (game.user.isGM == false) return;
+        
+        let mook = await import('../../mookAI/scripts/mookAI.js');
+        let mookAI = new mook.MookAI ();
+        mookAI.takeNextTurn();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Not Your Turn!
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    updateNotYourTurn(settings,context) {
+        
+        if (this.getModuleEnable("NotYourTurn") == false) return;
+        if (game.user.isGM == false) return;
+
+        const mode = settings.notYourTurnMode ? settings.notYourTurnMode : 'toggle';
+        const displayName = settings.notYourTurnName ? settings.notYourTurnName : false;
+        const displayIcon = settings.notYourTurnIcon ? settings.notYourTurnIcon : false;
+
+        const background = "#340057";
+        let ringColor = "#340057" ;
+
+        let txt = '';
+        let icon = '';
+        if (mode == 'toggle' || mode == 'enable' || mode == 'disable') {
+            icon = "fas fa-fist-raised";
+            txt = "Block Combat Movement";
+            ringColor = game.settings.get('NotYourTurn','enable') ?  "#A600FF": "#340057" ;
+        }
+        else {
+            icon = "fas fa-lock";
+            txt = "Block Non-Combat Movement";
+            ringColor = game.settings.get('NotYourTurn','nonCombat') ?  "#A600FF": "#340057" ;
+        }
+        if (displayIcon) streamDeck.setIcon(context,icon,background,2,ringColor);
+        else streamDeck.setIcon(context,'','#000000');
+        if (displayName == false) txt = '';
+        streamDeck.setTitle(txt,context);
+    }
+
+    async keyPressNotYourTurn(settings,context) {
+        if (this.getModuleEnable("NotYourTurn") == false) return;
+        if (game.user.isGM == false) return;
+
+        const mode = settings.notYourTurnMode ? settings.notYourTurnMode : 'toggle';
+
+        if (mode == 'toggle') Hooks.call("setNotYourTurn",{combat:'toggle'});
+        else if (mode == 'enable') Hooks.call("setNotYourTurn",{combat:true});
+        else if (mode == 'disable') Hooks.call("setNotYourTurn",{combat:false});
+        else if (mode == 'toggleNonCombat') Hooks.call("setNotYourTurn",{nonCombat:'toggle'});
+        else if (mode == 'enableNonCombat') Hooks.call("setNotYourTurn",{nonCombat:true});
+        else if (mode == 'disableNonCombat') Hooks.call("setNotYourTurn",{nonCombat:false});
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Lock View
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    updateLockView(settings,context) {
+        
+        if (this.getModuleEnable("LockView") == false) return;
+        if (game.user.isGM == false) return;
+
+        const mode = settings.lockViewMode ? settings.lockViewMode : 'panLock';
+        const displayName = settings.lockViewName ? settings.lockViewName : false;
+        const displayIcon = settings.lockViewIcon ? settings.lockViewIcon : false;
+
+        const background = "#340057";
+        let ringColor = "#340057" ;
+
+        let txt = '';
+        let icon = '';
+        if (mode == 'panLock') {
+            icon = "fas fa-arrows-alt";
+            txt = "Pan Lock";
+            ringColor = canvas.scene.getFlag('LockView', 'lockPan') ?  "#A600FF": "#340057" ;
+        }
+        else if (mode == 'zoomLock') {
+            icon = "fas fa-search-plus";
+            txt = "Zoom Lock";
+            ringColor = canvas.scene.getFlag('LockView', 'lockZoom') ?  "#A600FF": "#340057" ;
+        }
+        else if (mode == 'boundingBox') {
+            icon = "fas fa-box";
+            txt = "Bounding Box";
+            ringColor = canvas.scene.getFlag('LockView', 'boundingBox') ?  "#A600FF": "#340057" ;
+        }
+        
+        if (displayIcon) streamDeck.setIcon(context,icon,background,2,ringColor);
+        else streamDeck.setIcon(context,'','#000000');
+        if (displayName == false) txt = '';
+        streamDeck.setTitle(txt,context);
+    }
+
+    async keyPressLockView(settings,context) {
+        if (this.getModuleEnable("LockView") == false) return;
+        if (game.user.isGM == false) return;
+
+        const mode = settings.lockViewMode ? settings.lockViewMode : 'panLock';
+        let toggle = settings.lockViewToggle ? settings.lockViewToggle : 'toggle';
+        if (toggle == 'enable') toggle = true;
+        else if (toggle == 'disable') toggle = false;
+        let msg = {};
+
+        if (mode == 'panLock') msg = {panLock:toggle};
+        else if (mode == 'zoomLock') msg = {zoomLock:toggle};
+        else if (mode == 'boundingBox') msg = {boundingBox:toggle};
+
+        Hooks.call("setLockView",msg);
+    }
 }
+
+

@@ -11,6 +11,11 @@ export class Move{
         const mode = settings.mode ? settings.mode : 'canvas';
         const type = settings.type ? settings.type : 'move';
 
+        if ((MODULE.getPermission('MOVE','TOKEN') == false && mode == 'selectedToken') || (MODULE.getPermission('MOVE','CANVAS') == false && mode == 'canvas')) {
+            streamDeck.noPermission(context);
+            return;
+        }
+
         let url = '';
         if (mode == 'canvas' || (mode == 'selectedToken' && type == 'move')){
             const dir = settings.dir ? settings.dir : 'center';
@@ -45,13 +50,20 @@ export class Move{
                 url = "modules/MaterialDeck/img/move/rotateccw.png";
         }
         streamDeck.setIcon(context,url,background);
+        streamDeck.setTitle('',context);
     }
 
     keyPress(settings){
         if (canvas.scene == null) return;
+        
         const dir = settings.dir ? settings.dir : 'center';
         const mode = settings.mode ? settings.mode : 'canvas';
         const type = settings.type ? settings.type : 'move';
+
+        if ((MODULE.getPermission('MOVE','TOKEN') == false && mode == 'selectedToken') || (MODULE.getPermission('MOVE','CANVAS') == false && mode == 'canvas')) {
+            streamDeck.noPermission(context);
+            return;
+        }
 
         if (type == 'move'){
             if (dir ==  'zoomIn') {//zoom in

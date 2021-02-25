@@ -24,8 +24,13 @@ export class CombatTracker{
         let src = "modules/MaterialDeck/img/black.png";
         let txt = "";
         let background = "#000000";
+        settings.combat = true;
         
         if (mode == 'combatants'){
+            if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
             if (combat != null && combat != undefined && combat.turns.length != 0){
                 const initiativeOrder = combat.turns;
                 let nr = settings.combatantNr - 1;
@@ -49,6 +54,10 @@ export class CombatTracker{
             }
         }
         else if (mode == 'currentCombatant'){
+            if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
             if (combat != null && combat != undefined && combat.started){
                 const tokenId = combat.combatant.tokenId;
                 tokenControl.pushData(tokenId,settings,context);
@@ -59,6 +68,20 @@ export class CombatTracker{
             }
         }
         else if (mode == 'function'){
+
+            if (ctFunction == 'turnDisplay' && MODULE.getPermission('COMBAT','TURN_DISPLAY') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
+            else if (ctFunction == 'endTurn' && MODULE.getPermission('COMBAT','END_TURN') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
+            else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && MODULE.getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
+
             if (ctFunction == 'startStop') {
                 if (combat == null || combat == undefined || combat.combatants.length == 0) {
                     src = "modules/MaterialDeck/img/combattracker/startcombat.png";
@@ -74,6 +97,9 @@ export class CombatTracker{
                         background = "#FF0000";
                     }
                 }
+            }
+            else if (ctFunction == 'endTurn') {
+                src = "modules/MaterialDeck/img/combattracker/nextturn.png";
             }
             else if (ctFunction == 'nextTurn') {
                 src = "modules/MaterialDeck/img/combattracker/nextturn.png";
@@ -111,6 +137,20 @@ export class CombatTracker{
         if (mode == 'function'){
             if (combat == null || combat == undefined) return;
             const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
+
+            if (ctFunction == 'turnDisplay' && MODULE.getPermission('COMBAT','TURN_DISPLAY') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
+            else if (ctFunction == 'endTurn' && MODULE.getPermission('COMBAT','END_TURN') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
+            else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && MODULE.getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
+                streamDeck.noPermission(context);
+                return;
+            }
+
             if (ctFunction == 'startStop'){
                 let src;
                 let background;
@@ -133,6 +173,7 @@ export class CombatTracker{
             else if (ctFunction == 'prevTurn') game.combat.previousTurn();
             else if (ctFunction == 'nextRound') game.combat.nextRound();
             else if (ctFunction == 'prevRound') game.combat.previousRound();
+            else if (ctFunction == 'endTurn' && game.combat.combatant.owner) game.combat.nextTurn();
         }
         else {
             const onClick = settings.onClick ? settings.onClick : 'doNothing';

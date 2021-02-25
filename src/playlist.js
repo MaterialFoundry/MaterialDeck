@@ -18,6 +18,10 @@ export class PlaylistControl{
     }
 
     update(settings,context){
+        if (MODULE.getPermission('PLAYLIST','PLAY') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         this.active = true;
         if (settings.playlistMode == undefined) settings.playlistMode = 'playlist';
         if (settings.playlistMode == 'playlist'){
@@ -131,6 +135,14 @@ export class PlaylistControl{
     }
 
     stopAll(force=false){
+        if (game.user.isGM == false) {
+            const payload = {
+                "msgType": "stopAllPlaylists", 
+                "force": force
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+            return;
+        }
         if (force){
             let playing = game.playlists.playing;
             for (let i=0; i<playing.length; i++){
@@ -152,11 +164,12 @@ export class PlaylistControl{
     getPlaylist(num){
         let selectedPlaylists = game.settings.get(MODULE.moduleName,'playlists').selectedPlaylist;
         if (selectedPlaylists != undefined) 
-            return game.playlists.entities.find(p => p._id == selectedPlaylists[num]);
+            return game.playlists.get(selectedPlaylists[num]);
         else return undefined;
     }
 
     keyPress(settings,context){
+        if (MODULE.getPermission('PLAYLIST','PLAY') == false ) return;
         let playlistNr = settings.playlistNr;
         if (playlistNr == undefined || playlistNr < 1) playlistNr = 1;
         playlistNr--;
@@ -201,6 +214,15 @@ export class PlaylistControl{
     }
 
     async playPlaylist(playlist,playlistNr){
+        if (game.user.isGM == false) {
+            const payload = {
+                "msgType": "playPlaylist", 
+                "playlistId": playlist.id,
+                "playlistNr": playlistNr
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+            return;
+        }
         if (playlist.playing) {
             playlist.stopAll();
             return;
@@ -214,6 +236,16 @@ export class PlaylistControl{
     }
     
     async playTrack(track,playlist,playlistNr){
+        if (game.user.isGM == false) {
+            const payload = {
+                "msgType": "playTrack", 
+                "playlistId": playlist.id,
+                "playlistNr": playlistNr,
+                "trackId": track._id
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+            return;
+        }
         let play;
         if (track.playing)
             play = false;

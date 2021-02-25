@@ -1,0 +1,113 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+
+    <style>
+    header.table-header {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+        border: 1px solid #191813;
+        text-align: center;
+        color: #f0f0e0;
+        font-weight: bold;
+        text-shadow: 1px 1px #000;
+      }
+      ul.permissions-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        overflow: hidden auto;
+        scrollbar-width: thin;
+      }
+      li.permission {
+        padding: 5px;
+        border-bottom: 1px solid #7a7971;
+      }
+      li.permission .form-fields {
+        justify-content: space-around;
+      }
+      li.permission input[type="checkbox"] {
+        margin: 0;
+      }
+      .index {
+        flex: 0 0 200px;
+        text-align: left;
+        font-weight: bold;
+      }
+      .hint {
+        flex: 0 0 100%;
+        color: #4b4a44;
+        font-size: 13px;
+        margin: 5px 0 0;
+      }
+
+      .form-fields {
+        justify-content: space-around;
+        }
+      </style>
+
+
+    <p class="notes">{{localize "MaterialDeck.Perm.Instructions"}}</p>
+    <hr>
+    
+    <div class="form-group">
+        <h2>{{ localize "MaterialDeck.Perm.ENABLE.label" }}</h2>
+    </div>
+    <header class="table-header flexrow">
+        <label class="index">{{ localize "PERMISSION.Permission" }}</label>
+        {{#each roles as |rl r|}}
+        <label>{{ localize rl}}</label>
+        {{/each}}
+    </header>
+    
+
+        <li class="permission form-group">
+            <label class="index">{{ localize "MaterialDeck.Perm.ENABLE.ENABLE.label" }}</label>
+            <div class="form-fields">
+                {{#each enable as |r|}}
+                    <input type="checkbox" name="ENABLE" {{checked r}}>
+                {{/each}}
+            </div>
+            <p class="hint">{{ localize "MaterialDeck.Perm.ENABLE.ENABLE.hint" }}</p>
+        </li>
+
+   
+    {{#each actions as |a|}}
+    
+    <div class="form-group">
+        <h2>{{ localize a.label }}</h2>
+    </div>
+    <header class="table-header flexrow">
+        <label class="index">{{ localize "PERMISSION.Permission" }}</label>
+        {{#each ../roles as |rl r|}}
+        <label>{{ localize rl}}</label>
+        {{/each}}
+    </header>
+    
+        <ul class="permissions-list">
+        {{#each a.permissions as |p|}}
+        <li class="permission form-group">
+            <label class="index">{{ localize p.label }}</label>
+            <div class="form-fields">
+                {{#each p.roles as |r|}}
+                    <input type="checkbox" id="{{p.id}}" name="{{a.id}}.{{p.id}}" {{checked r}}>
+                {{/each}}
+            </div>
+            <p class="hint">{{ localize p.hint }}</p>
+        </li>
+        {{/each}}
+    </ul>
+    
+    
+    {{/each}}
+    
+
+    <div class="form-group">
+        <button type="submit" name="submit">
+            <i class="fas fa-save"></i> {{localize 'PERMISSION.Submit'}}
+        </button>
+
+        <button type="button" name="reset">
+            <i class="fas fa-sync"></i> {{localize 'PERMISSION.Reset'}}
+        </button>
+    </div>
+</form>

@@ -20,6 +20,10 @@ export class SoundboardControl{
     }
 
     update(settings,context){
+        if (MODULE.getPermission('SOUNDBOARD','PLAY') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         this.active = true;
         const mode = settings.soundboardMode ? settings.soundboardMode : 'playSound';
         const background = settings.background ? settings.background : '#000000';
@@ -69,6 +73,7 @@ export class SoundboardControl{
     }
 
     keyPressDown(settings){
+        if (MODULE.getPermission('SOUNDBOARD','PLAY') == false ) return;
         const mode = settings.soundboardMode ? settings.soundboardMode : 'playSound';
 
         if (mode == 'playSound') {    //Play sound
@@ -99,6 +104,7 @@ export class SoundboardControl{
     }
 
     keyPressUp(settings){
+        if (MODULE.getPermission('SOUNDBOARD','PLAY') == false ) return;
         const mode = settings.soundboardMode ? settings.soundboardMode : 'playSound';
 
         if (mode != 'playSound') return;
@@ -133,7 +139,7 @@ export class SoundboardControl{
         }
         else {
             const soundId = soundBoardSettings.sounds[soundNr];
-            const sounds = game.playlists.entities.find(p => p._id == playlistId).data.sounds;
+            const sounds = game.playlists.get(playlistId).sounds;
             if (sounds == undefined) return;
             const sound = sounds.find(p => p._id == soundId);
             if (sound == undefined) return;

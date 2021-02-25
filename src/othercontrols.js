@@ -66,6 +66,11 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     updatePause(settings,context){
+        if (MODULE.getPermission('OTHER','PAUSE') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
+
         let src = "";
         const pauseFunction = settings.pauseFunction ? settings.pauseFunction : 'pause';
         const background = settings.background ? settings.background : '#000000';
@@ -82,9 +87,12 @@ export class OtherControls{
         else if (pauseFunction == 'toggle')  //toggle
             src = 'modules/MaterialDeck/img/other/pause/playpause.png';
         streamDeck.setIcon(context,src,background,2,ringColor,true);
+        streamDeck.setTitle('',context);
     }
 
     keyPressPause(settings){
+        if (MODULE.getPermission('OTHER','PAUSE') == false ) return;
+        
         const pauseFunction = settings.pauseFunction ? settings.pauseFunction : 'pause';
 
         if (pauseFunction == 'pause'){ //Pause game
@@ -103,6 +111,10 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
     
     updateControl(settings,context){
+        if (MODULE.getPermission('OTHER','CONTROL') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         const control = settings.control ? settings.control : 'dispControls';
         const tool = settings.tool ?  settings.tool : 'open';
         let background = settings.background ? settings.background : '#000000';
@@ -118,6 +130,10 @@ export class OtherControls{
             controlNr--;
 
             const selectedControl = ui.controls.controls[controlNr];
+            if (selectedControl.visible == false) {
+                streamDeck.noPermission(context,false);
+                return;
+            }
             if (selectedControl != undefined){
                 if (tool == 'open'){  //open category
                     txt = game.i18n.localize(selectedControl.title);
@@ -136,6 +152,10 @@ export class OtherControls{
             if (selectedControl != undefined){
                 const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
+                    if (selectedControl.visible == false || selectedTool.visible == false) {
+                        streamDeck.noPermission(context,false);
+                        return;
+                    }
                     txt = game.i18n.localize(selectedTool.title);
                     src = selectedTool.icon;
                     if (selectedTool.toggle){
@@ -150,6 +170,10 @@ export class OtherControls{
         else {  // specific control/tool
             const selectedControl = ui.controls.controls.find(c => c.name == control);
             if (selectedControl != undefined){
+                if (selectedControl.visible == false) {
+                    streamDeck.noPermission(context,false);
+                    return;
+                }
                 if (tool == 'open'){  //open category
                         txt = game.i18n.localize(selectedControl.title);
                         src = selectedControl.icon;
@@ -159,6 +183,10 @@ export class OtherControls{
                 else {
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
                     if (selectedTool != undefined){
+                        if (selectedTool.visible == false) {
+                            streamDeck.noPermission(context,false);
+                            return;
+                        }
                         txt = game.i18n.localize(selectedTool.title);
                         src = selectedTool.icon;
                         if (selectedTool.toggle){
@@ -176,6 +204,7 @@ export class OtherControls{
     }
 
     keyPressControl(settings){
+        if (MODULE.getPermission('OTHER','CONTROL') == false ) return;
         if (canvas.scene == null) return;
         const control = settings.control ? settings.control : 'dispControls';
         const tool = settings.tool ?  settings.tool : 'open';
@@ -186,6 +215,10 @@ export class OtherControls{
             controlNr--;
             const selectedControl = ui.controls.controls[controlNr];
             if (selectedControl != undefined){
+                if (selectedControl.visible == false) {
+                    streamDeck.noPermission(context,false);
+                    return;
+                }
                 ui.controls.activeControl = 'token';
                 selectedControl.activeTool = selectedControl.activeTool;
                 canvas.getLayer(selectedControl.layer).activate();
@@ -197,8 +230,16 @@ export class OtherControls{
             controlNr--;
             const selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
             if (selectedControl != undefined){
+                if (selectedControl.visible == false) {
+                    streamDeck.noPermission(context,false);
+                    return;
+                }
                 const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
+                    if (selectedTool.visible == false) {
+                        streamDeck.noPermission(context,false);
+                        return;
+                    }
                     if (selectedTool.toggle) {
                         selectedTool.active = !selectedTool.active;
                         selectedTool.onClick(selectedTool.active);
@@ -214,6 +255,10 @@ export class OtherControls{
         else {  //select control
             const selectedControl = ui.controls.controls.find(c => c.name == control);
             if (selectedControl != undefined){
+                if (selectedControl.visible == false) {
+                    streamDeck.noPermission(context,false);
+                    return;
+                }
                 if (tool == 'open'){  //open category
                     ui.controls.activeControl = 'token';
                     selectedControl.activeTool = selectedControl.activeTool;
@@ -222,6 +267,10 @@ export class OtherControls{
                 else {
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
                     if (selectedTool != undefined){
+                        if (selectedTool.visible == false) {
+                            streamDeck.noPermission(context,false);
+                            return;
+                        }
                         ui.controls.activeControl = control;
                         canvas.getLayer(selectedControl.layer).activate();
                         if (selectedTool.toggle) {
@@ -243,6 +292,10 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateDarkness(settings,context){
+        if (MODULE.getPermission('OTHER','DARKNESS') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         const func = settings.darknessFunction ? settings.darknessFunction : 'value';
         const value = parseFloat(settings.darknessValue) ? parseFloat(settings.darknessValue) : 0;
         const background = settings.background ? settings.background : '#000000';
@@ -268,6 +321,7 @@ export class OtherControls{
 
     keyPressDarkness(settings) {
         if (canvas.scene == null) return;
+        if (MODULE.getPermission('OTHER','DARKNESS') == false ) return;
         const func = settings.darknessFunction ? settings.darknessFunction : 'value';
         const value = parseFloat(settings.darknessValue) ? parseFloat(settings.darknessValue) : 0;
 
@@ -284,6 +338,10 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateRollDice(settings,context){
+        if (MODULE.getPermission('OTHER','DICE') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         const background = settings.background ? settings.background : '#000000';
         let txt = '';
 
@@ -294,6 +352,7 @@ export class OtherControls{
     }
 
     keyPressRollDice(settings,context){
+        if (MODULE.getPermission('OTHER','DICE') == false ) return;
         if (settings.rollDiceFormula == undefined || settings.rollDiceFormula == '') return;
         const rollFunction = settings.rollDiceFunction ? settings.rollDiceFunction : 'public';
 
@@ -333,9 +392,14 @@ export class OtherControls{
     updateRollTable(settings,context){
         const name = settings.rollTableName;
         if (name == undefined) return;
+        if (MODULE.getPermission('OTHER','TABLES') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
 
         const background = settings.background ? settings.background : '#000000';
         const table = game.tables.entities.find(p=>p.name == name);
+
         let txt = settings.displayRollName ? table.name : '';
         let src = settings.displayRollIcon ? table.data.img : '';
 
@@ -343,12 +407,19 @@ export class OtherControls{
             src = '';
             txt = '';
         }
+        else {
+            if (table.permission < 2 && MODULE.getPermission('OTHER','TABLES_ALL') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
+        }
 
         streamDeck.setTitle(txt,context);
         streamDeck.setIcon(context,src,background);
     }
 
     keyPressRollTable(settings){
+        if (MODULE.getPermission('OTHER','TABLES') == false ) return;
         const name = settings.rollTableName;
         if (name == undefined) return;
 
@@ -356,6 +427,7 @@ export class OtherControls{
         const table = game.tables.entities.find(p=>p.name == name);
 
         if (table != undefined) {
+            if (table.permission < 2 && MODULE.getPermission('OTHER','TABLES_ALL') == false ) return;
             if (func == 'open'){ //open
                 const element = document.getElementById(table.sheet.id);
                 if (element == null) table.sheet.render(true);
@@ -403,6 +475,10 @@ export class OtherControls{
     }
     
     updateSidebar(settings,context){
+        if (MODULE.getPermission('OTHER','SIDEBAR') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
         const background = settings.background ? settings.background : '#000000';
         const collapsed = ui.sidebar._collapsed;
@@ -417,6 +493,7 @@ export class OtherControls{
     }
 
     keyPressSidebar(settings){
+        if (MODULE.getPermission('OTHER','SIDEBAR') == false ) return;
         const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
         
         if (sidebarTab == 'collapse'){
@@ -432,10 +509,17 @@ export class OtherControls{
     updateCompendium(settings,context){
         const name = settings.compendiumName;
         if (name == undefined) return;
+        if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
 
         const compendium = game.packs.entries.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
-
+        if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) {
+            streamDeck.noPermission(context);
+            return;
+        }
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
@@ -449,24 +533,32 @@ export class OtherControls{
     keyPressCompendium(settings){
         let name = settings.compendiumName;
         if (name == undefined) return;
+        if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) return;
 
         const compendium = game.packs.entries.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
+        if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) return;
         if (compendium.rendered) compendium.close();
         else compendium.render(true);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    //Journals
-    //game.journal.entries[0].render(true)
-
     updateJournal(settings,context){
         const name = settings.compendiumName;
         if (name == undefined) return;
 
-        const journal = game.journal.entries.find(p=>p.name == name);
+        const journal = game.journal.getName(name);
         if (journal == undefined) return;
+
+        if (MODULE.getPermission('OTHER','JOURNAL') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
+        if (journal.permission < 2 && MODULE.getPermission('OTHER','JOURNAL_ALL') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
 
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
@@ -482,8 +574,11 @@ export class OtherControls{
         const name = settings.compendiumName;
         if (name == undefined) return;
 
-        const journal = game.journal.entries.find(p=>p.name == name);
+        const journal = game.journal.getName(name);
         if (journal == undefined) return;
+
+        if (MODULE.getPermission('OTHER','JOURNAL') == false ) return;
+        if (journal.permission < 2 && MODULE.getPermission('OTHER','JOURNAL_ALL') == false ) return;
 
         const element = document.getElementById("journal-"+journal.id);
         if (element == null) journal.render(true);
@@ -493,12 +588,17 @@ export class OtherControls{
 //////////////////////////////////////////////////////////////////////////////////////////
 
     updateChatMessage(settings,context){
+        if (MODULE.getPermission('OTHER','CHAT') == false ) {
+            streamDeck.noPermission(context);
+            return;
+        }
         const background = settings.background ? settings.background : '#000000';
         streamDeck.setTitle("",context);
         streamDeck.setIcon(context,"",background);
     }
 
     keyPressChatMessage(settings){
+        if (MODULE.getPermission('OTHER','CHAT') == false ) return;
         const message = settings.chatMessage ? settings.chatMessage : '';
 
         let chatData = {
