@@ -164,6 +164,10 @@
     "MaterialDeck.Perm.TOKEN.CONDITIONS.label": "Set Conditions",
     "MaterialDeck.Perm.TOKEN.CONDITIONS.hint": "Allow the users to set conditions for the controlled token",
     "MaterialDeck.Perm.TOKEN.CUSTOM.label": "Custom On-Click",
-    "MaterialDeck.Perm.TOKEN.CUSTOM.hint": "Allow the users to set custom on-click functions"
+    "MaterialDeck.Perm.TOKEN.CUSTOM.hint": "Allow the users to set custom on-click functions",
+    "MaterialDeck.Perm.TOKEN.NON_OWNED.label": "Non-Owned and Non-Observer Tokens",
+    "MaterialDeck.Perm.TOKEN.NON_OWNED.hint": "Allow users access to tokens with non-owned or limited permission",
+    "MaterialDeck.Perm.TOKEN.OBSERVER.label": "Observer",
+    "MaterialDeck.Perm.TOKEN.OBSERVER.hint": "Allow users access to tokens with observer permission"
 }
 

@@ -118,7 +118,7 @@ async function analyzeWSmessage(msg){
     }
     
     else if (event == 'willDisappear'){
-        streamDeck.clearContext(action,coordinates);
+        streamDeck.clearContext(action,coordinates,context);
     }
 
     else if (event == 'keyDown'){

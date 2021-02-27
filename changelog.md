@@ -1,4 +1,25 @@
 # Changelog Material Deck Module
+### v1.3.1 - 27-02-2021
+Additions:
+<ul>
+<li>Token Action & Move Action: You can now choose what token should be targeted with the action using: 'Selected Token', 'Token Name', 'Actor Name', 'Token Id' or 'Actor Id'. Added relevant user permissions to the permission configuration</li>
+<li>Token Action => On Click: Added options 'Select Token' and 'Center on Token and Select Token'</li>
+<li>Playlist Action: Added relative offset mode, with the option to display the offset target name for playlists</li>
+<li>Playlist Action => Stop All: Added option to display the name of the playlist at the current offset</li>
+</ul>
+
+Fixes:
+<ul>
+<li>Default user permissions would not be loaded if no previously saved permissions were present, resulting in MD assuming nobody has any permissions</li>
+<li>Other Actions => Control Buttons => Lighting Controls: Would create a button for ambient sound instead of lighting</li>
+<li>Token Action => Display Token Icon: It used to show the icon, even if unchecked, if no stat with default icon was selected</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.3.1 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.3.0 - 25-02-2021
 Additions:
 <ul>

@@ -7,7 +7,7 @@ export class TokenControl{
         this.wildcardOffset = 0;
     }
 
-    async update(tokenId){
+    async update(tokenId=null){
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
             const data = streamDeck.buttonContext[i];
@@ -21,14 +21,35 @@ export class TokenControl{
         const icon = settings.displayIcon ? settings.displayIcon : false;
         const background = settings.background ? settings.background : "#000000";
         let stats =  settings.stats ? settings.stats : 'none';
-        
+        const selection = settings.selection ? settings.selection : 'selected';
+        const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
+    
+        let validToken = false;
+        let token;
+        if (selection == 'selected') token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        else if (selection != 'selected' && tokenIdentifier == '') {}
+        else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
+        else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);
+        else if (selection == 'tokenId') token = canvas.tokens.children[0].children.find(p => p.id == tokenIdentifier);
+        else if (selection == 'actorId') token = canvas.tokens.children[0].children.find(p => p.actor.id == tokenIdentifier);
+
+        if (token != undefined) validToken = true;
+
         let tokenName = "";
         let txt = "";
         let iconSrc = "";
         let overlay = false;
         let statsOld;
-        if (tokenId != undefined) {
-            const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        if (validToken) {
+            if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
+            if (token.owner == false && token.observer == false && MODULE.getPermission('TOKEN','NON_OWNED') == false ) {
+                streamDeck.noPermission(context);
+                return;
+            }
+
             tokenName = token.data.name;
             if (name) txt += tokenName;
             if (name && stats != 'none') txt += "\n";
@@ -49,7 +70,7 @@ export class TokenControl{
                 stats = 'none';
             }
 
-            iconSrc = token.data.img;
+            if (icon) iconSrc = token.data.img;
 
             if (stats == 'custom'){
                 const custom = settings.custom ? settings.custom : '';
@@ -432,19 +453,38 @@ export class TokenControl{
     }
     
     async keyPress(settings){
-        if (MODULE.selectedTokenId == undefined) return;
         const tokenId = MODULE.selectedTokenId;
 
-        const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        const selection = settings.selection ? settings.selection : 'selected';
+        const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
+        
+        let token;
+        if (selection == 'selected') token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        else if (selection != 'selected' && tokenIdentifier == '') {}
+        else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
+        else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);
+        else if (selection == 'tokenId') token = canvas.tokens.children[0].children.find(p => p.id == tokenIdentifier);
+        else if (selection == 'actorId') token = canvas.tokens.children[0].children.find(p => p.actor.id == tokenIdentifier);
+
         if (token == undefined) return;
+        if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) return;
+        if (token.owner == false && token.observer == false && MODULE.getPermission('TOKEN','NON_OWNED') == false ) return;
 
         const onClick = settings.onClick ? settings.onClick : 'doNothing';
         
         if (onClick == 'doNothing')   //Do nothing
             return;
+        else if (onClick == 'select'){ //select token
+            token.control();
+        }
         else if (onClick == 'center'){ //center on token
             let location = token.getCenter(token.x,token.y); 
             canvas.animatePan(location);
+        }
+        else if (onClick == 'centerSelect'){ //center on token and select
+            const location = token.getCenter(token.x,token.y); 
+            canvas.animatePan(location);
+            token.control();
         }
         else if (onClick == 'charSheet'){ //Open character sheet
             const element = document.getElementById(token.actor.sheet.id);

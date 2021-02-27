@@ -60,11 +60,13 @@ const defaultUserPermissions = {
         VISION: [false,true,true,true],
         WILDCARD: [false,true,true,true],
         CONDITIONS: [false,true,true,true],
-        CUSTOM: [false,false,true,true]
+        CUSTOM: [false,false,true,true],
+        NON_OWNED: [false,false,true,true],
+        OBSERVER: [false,true,true,true]
     } 
 }
 
-export const registerSettings = function() {
+export const registerSettings = async function() {
     /**
      * Main settings
      */
@@ -75,7 +77,7 @@ export const registerSettings = function() {
         name: "MaterialDeck.Sett.Enable",
         scope: "client",
         config: true,
-        default: true,
+        default: false,
         type: Boolean,
         onChange: x => window.location.reload()
     });
@@ -195,6 +197,21 @@ export const registerSettings = function() {
         type: soundboardConfigForm,
         restricted: false
     });
+
+    let permissionSettings = game.settings.get(MODULE.moduleName,'userPermission');
+    if (permissionSettings == undefined || permissionSettings == null || MODULE.isEmpty(permissionSettings)) {
+        permissionSettings = {
+            enable: defaultEnable,
+            permissions: defaultUserPermissions
+        }
+    }
+    else {
+        if (permissionSettings.permissions.TOKEN.NON_OWNED == undefined) permissionSettings.permissions.TOKEN.NON_OWNED = [false,false,true,true];
+        if (permissionSettings.permissions.TOKEN.OBSERVER == undefined) permissionSettings.permissions.TOKEN.OBSERVER = [false,true,true,true];
+    }
+    game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);
+    
+
 }
 
 export class helpMenu extends FormApplication {
