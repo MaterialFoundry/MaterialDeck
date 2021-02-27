@@ -2,7 +2,7 @@
 ### v1.3.1 - 27-02-2021
 Additions:
 <ul>
-<li>Token Action & Move Action: You can now choose what token should be targeted with the action using: 'Selected Token', 'Token Name', 'Actor Name', 'Token Id' or 'Actor Id'. Added relevant user permissions to the permission configuration</li>
+<li>Token Action: You can now choose what token should be targeted with the action using: 'Selected Token', 'Token Name', 'Actor Name', 'Token Id' or 'Actor Id'. Added relevant user permissions to the permission configuration</li>
 <li>Token Action => On Click: Added options 'Select Token' and 'Center on Token and Select Token'</li>
 <li>Playlist Action: Added relative offset mode, with the option to display the offset target name for playlists</li>
 <li>Playlist Action => Stop All: Added option to display the name of the playlist at the current offset</li>
