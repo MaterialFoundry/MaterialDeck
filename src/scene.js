@@ -115,7 +115,7 @@ export class SceneControl{
             else ringColor = ringOffColor;
         }
         streamDeck.setTitle(name,context);
-        streamDeck.setIcon(context,src,background,ring,ringColor);
+        streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     keyPress(settings){

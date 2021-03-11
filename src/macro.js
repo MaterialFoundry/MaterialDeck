@@ -32,6 +32,7 @@ export class MacroControl{
         let name = "";
         let src = ""; 
         let macroId = undefined;
+        let uses = undefined;
         
         if (mode == 'macroBoard') {  //Macro board
             if ((MODULE.getPermission('MACRO','MACROBOARD') == false )) {
@@ -83,19 +84,12 @@ export class MacroControl{
             if (macro != undefined) {
                 if (displayName) name = macro.name;
                 if (displayIcon) src = macro.img;
-                if (MODULE.hotbarUses && displayUses) {
-                    const uses = await this.getUses(macro);
-                    if (uses != null){
-                        name += '\n(' + uses.available;
-                        if (uses.maximum != undefined) name += '/' + uses.maximum;
-                        name += ')';
-                    }
-                }
+                if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
             }
         }
 
         
-        streamDeck.setIcon(context,src,background,ring,ringColor);
+        streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
         streamDeck.setTitle(name,context);
     }
 
@@ -144,20 +138,14 @@ export class MacroControl{
                 }
             }
             let macro = undefined;
+            let uses = undefined;
             if (macroId != undefined) macro = game.macros._source.find(p => p._id == macroId);
             if (macro != undefined && macro != null) {
                 if (displayName) name += macro.name;
                 if (displayIcon) src += macro.img;
-                if (MODULE.hotbarUses && displayUses) {
-                    const uses = await this.getUses(macro);
-                    if (uses != null){
-                        name += '\n(' + uses.available;
-                        if (uses.maximum != undefined) name += '/' + uses.maximum;
-                        name += ')';
-                    }
-                }
+                if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
             }
-            streamDeck.setIcon(context,src,background);
+            streamDeck.setIcon(context,src,{background:background,uses:uses});
             streamDeck.setTitle(name,context);
         }
     }

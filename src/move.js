@@ -49,20 +49,33 @@ export class Move{
             else
                 url = "modules/MaterialDeck/img/move/rotateccw.png";
         }
-        streamDeck.setIcon(context,url,background);
+        streamDeck.setIcon(context,url,{background:background});
         streamDeck.setTitle('',context);
     }
 
     keyPress(settings){
         if (canvas.scene == null) return;
-        
+        if ((MODULE.getPermission('MOVE','TOKEN') == false && mode == 'selectedToken') || (MODULE.getPermission('MOVE','CANVAS') == false && mode == 'canvas')) {
+            streamDeck.noPermission(context);
+            return;
+        }
+
         const dir = settings.dir ? settings.dir : 'center';
         const mode = settings.mode ? settings.mode : 'canvas';
         const type = settings.type ? settings.type : 'move';
 
-        if ((MODULE.getPermission('MOVE','TOKEN') == false && mode == 'selectedToken') || (MODULE.getPermission('MOVE','CANVAS') == false && mode == 'canvas')) {
-            streamDeck.noPermission(context);
-            return;
+        let token;
+        if (mode == 'selectedToken') {
+            const selection = settings.selection ? settings.selection : 'selected';
+            const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
+    
+            if (selection == 'selected') token = canvas.tokens.children[0].children.find(p => p.id == MODULE.selectedTokenId);
+            else if (selection != 'selected' && tokenIdentifier == '') {}
+            else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
+            else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);
+            else if (selection == 'tokenId') token = canvas.tokens.children[0].children.find(p => p.id == tokenIdentifier);
+            else if (selection == 'actorId') token = canvas.tokens.children[0].children.find(p => p.actor.id == tokenIdentifier);
+            if (token == undefined) return;
         }
 
         if (type == 'move'){
@@ -80,15 +93,12 @@ export class Move{
             }
             else {
                 if (settings.mode == 'selectedToken')
-                    this.moveToken(MODULE.selectedTokenId,dir);
+                    this.moveToken(token,dir);
                 else    
                     this.moveCanvas(dir);
             }
         }
         else if (type == 'rotate' && mode == 'selectedToken'){
-            const token = canvas.tokens.children[0].children.find(p => p.id == MODULE.selectedTokenId);
-            if (token == undefined) return;
-
             const rotType = settings.rot ? settings.rot : 'to';
             const value = isNaN(parseInt(settings.rotValue)) ? 0 : parseInt(settings.rotValue);
 
@@ -100,9 +110,7 @@ export class Move{
         }
     }
 
-    async moveToken(tokenId,dir){
-        if (tokenId == undefined) return;
-        const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+    async moveToken(token,dir){
         const gridSize = canvas.scene.data.grid;
         let x = token.x;
         let y = token.y;

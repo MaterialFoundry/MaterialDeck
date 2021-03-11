@@ -86,7 +86,7 @@ export class OtherControls{
         }
         else if (pauseFunction == 'toggle')  //toggle
             src = 'modules/MaterialDeck/img/other/pause/playpause.png';
-        streamDeck.setIcon(context,src,background,2,ringColor,true);
+        streamDeck.setIcon(context,src,{background:background,ring:2,ringColor:ringColor,overlay:true});
         streamDeck.setTitle('',context);
     }
 
@@ -199,7 +199,7 @@ export class OtherControls{
                 }
             }
         }
-        streamDeck.setIcon(context,src,background,2,ringColor);
+        streamDeck.setIcon(context,src,{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(txt,context);
     }
 
@@ -316,7 +316,7 @@ export class OtherControls{
             txt += darkness;
         }
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,src,background);
+        streamDeck.setIcon(context,src,{background:background});
     }
 
     keyPressDarkness(settings) {
@@ -348,7 +348,7 @@ export class OtherControls{
         if (settings.displayDiceName) txt = 'Roll: ' + settings.rollDiceFormula;
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,'',background);
+        streamDeck.setIcon(context,'',{background:background});
     }
 
     keyPressRollDice(settings,context){
@@ -398,7 +398,7 @@ export class OtherControls{
         }
 
         const background = settings.background ? settings.background : '#000000';
-        const table = game.tables.entities.find(p=>p.name == name);
+        const table = game.tables.getName(name);
 
         let txt = settings.displayRollName ? table.name : '';
         let src = settings.displayRollIcon ? table.data.img : '';
@@ -415,7 +415,7 @@ export class OtherControls{
         }
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,src,background);
+        streamDeck.setIcon(context,src,{background:background});
     }
 
     keyPressRollTable(settings){
@@ -424,7 +424,7 @@ export class OtherControls{
         if (name == undefined) return;
 
         const func = settings.rolltableFunction ? settings.rolltableFunction : 'open';
-        const table = game.tables.entities.find(p=>p.name == name);
+        const table = game.tables.getName(name);
 
         if (table != undefined) {
             if (table.permission < 2 && MODULE.getPermission('OTHER','TABLES_ALL') == false ) return;
@@ -489,7 +489,7 @@ export class OtherControls{
         const icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
 
         streamDeck.setTitle(name,context);
-        streamDeck.setIcon(context,icon,background,2,ringColor);
+        streamDeck.setIcon(context,icon,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressSidebar(settings){
@@ -527,7 +527,7 @@ export class OtherControls{
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressCompendium(settings){
@@ -567,7 +567,7 @@ export class OtherControls{
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressJournal(settings){
@@ -594,7 +594,7 @@ export class OtherControls{
         }
         const background = settings.background ? settings.background : '#000000';
         streamDeck.setTitle("",context);
-        streamDeck.setIcon(context,"",background);
+        streamDeck.setIcon(context,"",{background:background});
     }
 
     keyPressChatMessage(settings){

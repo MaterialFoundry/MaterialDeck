@@ -45,7 +45,7 @@ export class SoundboardControl{
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
 
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(context,src,background,2,ringColor);
+            streamDeck.setIcon(context,src,{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'offset') { //Offset
             const ringOffColor = settings.offRing ? settings.offRing : '#000000';
@@ -57,18 +57,19 @@ export class SoundboardControl{
             else ringColor = ringOffColor;
 
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(context,"",background,2,ringColor);
+            streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'stopAll') {   //Stop all sounds
             let src = 'modules/MaterialDeck/img/playlist/stop.png';
             let soundPlaying = false;
+            const background = settings.background ? settings.background : '#000000';
             for (let i=0; i<this.activeSounds.length; i++)
                 if (this.activeSounds[i]) 
                     soundPlaying = true;
             if (soundPlaying)
-                streamDeck.setIcon(context,src,settings.background,2,'#00FF00',true);
+                streamDeck.setIcon(context,src,{background:background,ring:2,ringColor:'#00FF00',overlay:true});
             else
-                streamDeck.setIcon(context,src,settings.background,1,'#000000',true);
+                streamDeck.setIcon(context,src,{background:background,ring:1,ringColor:'#000000',overlay:true});
         }
     }
 

@@ -40,6 +40,7 @@ export class TokenControl{
         let iconSrc = "";
         let overlay = false;
         let statsOld;
+        let uses = undefined;
         if (validToken) {
             if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) {
                 streamDeck.noPermission(context);
@@ -52,7 +53,6 @@ export class TokenControl{
 
             tokenName = token.data.name;
             if (name) txt += tokenName;
-            if (name && stats != 'none') txt += "\n";
 
             const permission = token.actor?.permission;
             if (settings.combat){
@@ -71,7 +71,7 @@ export class TokenControl{
             }
 
             if (icon) iconSrc = token.data.img;
-
+            if (name && stats != 'none' && stats != 'HPbox') txt += "\n";
             if (stats == 'custom'){
                 const custom = settings.custom ? settings.custom : '';
                 let split = custom.split('[');
@@ -94,6 +94,12 @@ export class TokenControl{
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
                     txt += attributes.hp.value + "/" + attributes.hp.max;
+                }
+                else if (stats == 'HPbox') {
+                    uses = {
+                        available: attributes.hp.value,
+                        maximum: attributes.hp.max
+                    }
                 }
                 else if (stats == 'TempHP') {
                     txt += attributes.hp.temp;
@@ -135,10 +141,30 @@ export class TokenControl{
                 else if (stats == 'Init') txt += attributes.init.total;
                 else if (stats == 'PassivePerception') txt += token.actor.data.data.skills.prc.passive;
                 else if (stats == 'PassiveInvestigation') txt += token.actor.data.data.skills.inv.passive;
+                else if (stats == 'Ability') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].value;
+                }
+                else if (stats == 'AbilityMod') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].mod;
+                }
+                else if (stats == 'AbilitySave') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].save;
+                }
+                else if (stats == 'Prof') txt += token.actor.data.data.attributes.prof;
             }
+
             else if (game.system.id == 'D35E' || game.system.id == 'pf1'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                else if (stats == 'HPbox') {
+                    uses = {
+                        available: attributes.hp.value,
+                        maximum: attributes.hp.max
+                    }
+                }
                 else if (stats == 'TempHP') {
                     if (attributes.hp.temp == null) txt += '0';
                     else txt += attributes.hp.temp;
@@ -166,10 +192,29 @@ export class TokenControl{
                     txt += speed;
                 }
                 else if (stats == 'Init') txt += attributes.init.total;
+                else if (stats == 'Ability') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].value;
+                }
+                else if (stats == 'AbilityMod') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].mod;
+                }
+                else if (stats == 'AbilitySave') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].save;
+                }
+                else if (stats == 'Prof') txt += token.actor.data.data.attributes.prof;
             }
             else if (game.system.id == 'pf2e'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                else if (stats == 'HPbox') {
+                    uses = {
+                        available: attributes.hp.value,
+                        maximum: attributes.hp.max
+                    }
+                }
                 else if (stats == 'TempHP') {
                     if (attributes.hp.temp == null) txt += '0';
                     else {
@@ -194,9 +239,23 @@ export class TokenControl{
             else if (game.system.id == 'demonlord'){
                 let characteristics = token.actor.data.data.characteristics;
                 if (stats == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
+                else if (stats == 'HPbox') {
+                    uses = {
+                        available: characteristics.health.value,
+                        maximum: characteristics.health.max
+                    }
+                }
                 else if (stats == 'AC') txt += characteristics.defense;
                 else if (stats == 'Speed') txt += characteristics.speed;
                 else if (stats == 'Init') txt += token.actor.data.data.fastturn ? "FAST" : "SLOW";
+                else if (stats == 'Ability') {        
+                    const ability = settings.ability ? settings.ability : 'strength';
+                    txt += token.actor.data.data.attributes?.[ability].value;
+                }
+                else if (stats == 'AbilityMod') {        
+                    const ability = settings.ability ? settings.ability : 'strength';
+                    txt += token.actor.data.data.attributes?.[ability].modifier;
+                }
             }
             else {
                 //Other systems
@@ -448,10 +507,12 @@ export class TokenControl{
             else if (stats == 'PassiveInvestigation') 
                 iconSrc = "modules/MaterialDeck/img/black.png";
         } 
-        streamDeck.setIcon(context,iconSrc,background,ring,ringColor,overlay);
+        streamDeck.setIcon(context,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses});
         streamDeck.setTitle(txt,context);
     }
-    
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     async keyPress(settings){
         const tokenId = MODULE.selectedTokenId;
 

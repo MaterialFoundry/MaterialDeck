@@ -44,12 +44,12 @@ export class CombatTracker{
                     return;
                 }
                 else {
-                    streamDeck.setIcon(context,src,background);
+                    streamDeck.setIcon(context,src,{background:background});
                     streamDeck.setTitle(txt,context);
                 } 
             }
             else {
-                streamDeck.setIcon(context,src,background);
+                streamDeck.setIcon(context,src,{background:background});
                 streamDeck.setTitle(txt,context);
             }
         }
@@ -63,7 +63,7 @@ export class CombatTracker{
                 tokenControl.pushData(tokenId,settings,context);
             }
             else {
-                streamDeck.setIcon(context,src,background);
+                streamDeck.setIcon(context,src,{background:background});
                 streamDeck.setTitle(txt,context);
             }
         }
@@ -125,7 +125,7 @@ export class CombatTracker{
                 if (txt != "") txt += "\n";
                 if (settings.displayTurn) txt += "Turn\n"+turn;
             }
-            streamDeck.setIcon(context,src,background);
+            streamDeck.setIcon(context,src,{background:background});
             streamDeck.setTitle(txt,context);
         }
     }
@@ -164,7 +164,7 @@ export class CombatTracker{
                     src = "modules/MaterialDeck/img/combattracker/stopcombat.png";
                     background = "#FF0000";
                 }
-                streamDeck.setIcon(context,src,background);
+                streamDeck.setIcon(context,src,{background:background});
                 return;
             }
             if (game.combat.started == false) return;

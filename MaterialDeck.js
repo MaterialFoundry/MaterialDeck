@@ -85,13 +85,13 @@ async function analyzeWSmessage(msg){
     const event = data.event;
     const context = data.context;
     const coordinates = data.payload.coordinates;
-    if (coordinates == undefined) coordinates = 0;
     const settings = data.payload.settings;
 
     if (data.data == 'init'){
 
     }
     if (event == 'willAppear' || event == 'didReceiveSettings'){
+        if (coordinates == undefined) return;
         streamDeck.setScreen(action);
         streamDeck.setContext(action,context,coordinates,settings);
 
@@ -118,6 +118,7 @@ async function analyzeWSmessage(msg){
     }
     
     else if (event == 'willDisappear'){
+        if (coordinates == undefined) return;
         streamDeck.clearContext(action,coordinates,context);
     }
 
@@ -484,6 +485,16 @@ Hooks.on('ShareVision', ()=>{
 })
 
 Hooks.on('NotYourTurn', ()=>{
+    if (enableModule == false || ready == false) return;
+    externalModules.updateAll();
+})
+
+Hooks.on('pseudoclockSet', ()=>{
+    if (enableModule == false || ready == false) return;
+    externalModules.updateAll();
+})
+
+Hooks.on('about-time.clockRunningStatus', ()=>{
     if (enableModule == false || ready == false) return;
     externalModules.updateAll();
 })

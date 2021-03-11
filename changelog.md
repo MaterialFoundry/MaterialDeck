@@ -1,4 +1,32 @@
 # Changelog Material Deck Module
+## v1.3.2 - 11-03-2021
+Additions:
+<ul>
+<li>Added support for the Multi Action provided by the SD app</li>
+<li>External Modules Action => Added support for About Time</li>
+<li>Token Action => Stats: Added 'Ability Scores', 'Ability Score Modifiers', 'Ability Score Saves' (dnd5e only) and 'Proficiency Bonus'</li>
+<li>Token Action => Stats: Added 'HP (box)' option that displays a box with color that changes depending on the HP</li>
+<li>Move Action: You can now choose what token should be moved, similar to the Token Action</li>
+</ul>
+
+Fixes:
+<ul>
+<li>Playlist Action => Relative Offset: Fixed issue with displaying the target playlist name</li>
+<li>Macro Action: Fixed Hotbar Uses for Shadow of the Demonlord</li>
+</ul>
+
+Other:
+<ul>
+<li>Macro Action: Improved the way Hotbar Uses are displayed, it is now displayed in a box similar to how the module looks in Foundry</li>
+<li>Made the way images are generated more flexible to make future additions easier</li>
+<li></li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.3.2 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.3.1 - 27-02-2021
 Additions:
 <ul>
@@ -31,7 +59,7 @@ Additions:
 <li>External Modules => Added support for the 'Shared Vision' module</li>
 <li>External Modules => Added support for the 'Lock View' module</li>
 <li>External Modules => Added support for the 'Not Your Turn' module</li>
-<ul>
+</ul>
 Fixes:
 <ul>
 <li>Token Action => OnClick: Fixed conditions for pf1e and dnd3.5e</li>

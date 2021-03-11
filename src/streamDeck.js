@@ -7,7 +7,7 @@ export class StreamDeck{
         this.tokenNameContext;
         this.tokenACContext;
         this.buttonContext = [];
-        for (let i=0; i<23; i++){
+        for (let i=0; i<31; i++){
             this.buttonContext[i] = undefined;
         }
         this.playlistTrackBuffer = [];
@@ -206,18 +206,26 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(json));
     }
 
-    setIcon(context,src='',background = '#000000',ring=0,ringColor = "#000000",overlay=false){
+    setIcon(context,src='',options = {}){
         if (src == null || src == undefined) src = '';
         if (src == '') src = 'modules/MaterialDeck/img/black.png';
+        let background = options.background ? options.background : '#000000';
+        let ring = options.ring ? options.ring : 0;
+        let ringColor = options.ringColor ? options.ringColor : '#000000';
+        let overlay = options.overlay ? options.overlay : false;
+        let uses = options.uses ? options.uses : undefined;
+        let clock = options.clock ? options.clock : false;
         for (let i=0; i<32; i++){
+            if (clock != false) break;
             if (this.buttonContext[i] == undefined) continue;
             if (this.buttonContext[i].context == context) {
-                if (this.buttonContext[i].icon == src && this.buttonContext[i].ring == ring && this.buttonContext[i].ringColor == ringColor && this.buttonContext[i].background == background) 
+                if (this.buttonContext[i].icon == src && this.buttonContext[i].ring == ring && this.buttonContext[i].ringColor == ringColor && this.buttonContext[i].background == background && this.buttonContext[i].uses == uses) 
                     return;
                 this.buttonContext[i].icon = src;
                 this.buttonContext[i].ring = ring;
                 this.buttonContext[i].ringColor = ringColor;
                 this.buttonContext[i].background = background;
+                this.buttonContext[i].uses = uses;
             }
         }
         const data = {
@@ -225,9 +233,11 @@ export class StreamDeck{
             background:background,
             ring:ring,
             ringColor:ringColor,
-            overlay:overlay
+            overlay:overlay,
+            uses:uses,
+            options:options
         }
-        const imgBuffer = this.checkImageBuffer(data);
+        const imgBuffer = (clock == false) ? this.checkImageBuffer(data) : false;
         if (imgBuffer != false) {
             this.setBufferImage(context,imgBuffer,this.getImageBufferId(data))
             return;
@@ -247,7 +257,9 @@ export class StreamDeck{
             background: background,
             ring: ring,
             ringColor: ringColor,
-            overlay: overlay
+            overlay: overlay,
+            uses:uses,
+            options:options
         };
         this.getImage(msg);
     }
@@ -299,12 +311,11 @@ export class StreamDeck{
     getImage(data){
         if (data == undefined) 
             return;
-        
         const context = data.context;
         var url = data.url;
         const format = data.format;
         var background = data.background;
-    
+        const uses = data.uses;
         let BGvalid = true;
         if (background.length != 7) BGvalid = false;
         if (background[0] != '#') BGvalid = false;
@@ -328,7 +339,8 @@ export class StreamDeck{
         ctx.filter = "none";
     
         let margin = 0;
-        
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         if (data.ring != undefined && data.ring > 0){
             ctx.fillStyle = background;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -341,8 +353,7 @@ export class StreamDeck{
             }
         }
         else {
-            ctx.fillStyle = background;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
         }
         if (format == 'icon' && url != ""){
             ctx.font = '600 90px "Font Awesome 5 Free"';
@@ -400,6 +411,76 @@ export class StreamDeck{
                 yStart = 0;
             }
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
+            if (uses != undefined && (uses.available > 0 || uses.maximum != undefined)) {
+                let txt = uses.available;
+                if (uses.maximum != undefined) txt = uses.available + '/' + uses.maximum;
+                if (uses.maximum == undefined ) uses.maximum = 1;
+                ctx.beginPath();
+                ctx.lineWidth = 4;
+                let green = Math.ceil(255*(uses.available/uses.maximum));
+                let red = 255-green;
+                green = green.toString(16);
+                if (green.length == 1) green = "0"+green;
+                red = red.toString(16);
+                if (red.length == 1) red = "0"+red;
+                if (uses.available == 0) ctx.strokeStyle = "#c80000";
+                else ctx.strokeStyle = "#"+red.toString(16)+green.toString(16)+"00";
+                const rect = {height:35, paddingSides:20, paddingBottom: 4}
+                ctx.rect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*rect.paddingSides,rect.height);
+                ctx.globalAlpha = 0.5;
+                ctx.fillRect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*rect.paddingSides,rect.height);
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = "white";
+                ctx.font = "24px Arial";
+                ctx.fillText(txt, (canvas.width  - ctx.measureText(txt).width) / 2, 144-rect.height-rect.paddingBottom+25);
+                ctx.stroke();
+            }
+            
+            if (data.options.clock != undefined) {
+                if (data.options.clock != false && data.options.clock != 'none') {
+                    const hourAngle = (data.options.clock.hours+data.options.clock.minutes/60)*Math.PI/6;
+                    const minuteAngle = data.options.clock.minutes*Math.PI/30;
+
+                    ctx.translate(72,72);
+                    //Draw outer circle
+                    ctx.beginPath();
+                    ctx.lineWidth = 6;
+                    ctx.strokeStyle = "gray";
+                    ctx.arc(0,0, 50, 0, 2 * Math.PI);
+                    ctx.stroke(); 
+    
+                    //Draw hour marks
+                    ctx.fillStyle = "gray";
+                    ctx.beginPath();
+                    for (let i=0; i<12; i++) {
+                        ctx.fillRect(-2,40,4,10);
+                        const angle = 2*Math.PI/12;
+                        ctx.rotate(angle);
+                    }
+    
+    
+                    //Draw hour arm
+    
+                    ctx.rotate(Math.PI + hourAngle);
+                    ctx.rotate(0);
+                    ctx.fillRect(-4,0,8,30);
+                    ctx.stroke();
+                   // ctx.rotate 8*Math.PI/12;
+                   ctx.beginPath();
+                    ctx.rotate(-hourAngle + minuteAngle);
+                    ctx.fillStyle = "lightgray";
+                    ctx.fillRect(-2,0,4,40);
+                    ctx.rotate(2*Math.PI/12);
+                    ctx.stroke();
+    
+                    //Draw inner circle
+                    ctx.beginPath();
+                    ctx.arc(0,0, 5, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                }
+            }
+            
             var dataURL = canvas.toDataURL();
             canvas.remove();
             const nr = this.addToImageBuffer(dataURL,data);
@@ -409,7 +490,7 @@ export class StreamDeck{
     }
 
     getImageBufferId(data){
-        return data.url+data.background+data.ring+data.ringColor+data.overlay;
+        return data.url+data.background+data.ring+data.ringColor+data.overlay+data.uses?.available+data.uses?.maximum;
     }
 
     addToImageBuffer(img,data){
@@ -449,7 +530,7 @@ export class StreamDeck{
         const url = 'modules/MaterialDeck/img/black.png';
         const background = '#000000';
         const txt = showTxt ? 'no\npermission' : '';
-        this.setIcon(context,url,background);
+        this.setIcon(context,url,{background:background});
         this.setTitle(txt,context);
     }
 }

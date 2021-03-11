@@ -168,6 +168,12 @@
     "MaterialDeck.Perm.TOKEN.NON_OWNED.label": "Non-Owned and Non-Observer Tokens",
     "MaterialDeck.Perm.TOKEN.NON_OWNED.hint": "Allow users access to tokens with non-owned or limited permission",
     "MaterialDeck.Perm.TOKEN.OBSERVER.label": "Observer",
-    "MaterialDeck.Perm.TOKEN.OBSERVER.hint": "Allow users access to tokens with observer permission"
+    "MaterialDeck.Perm.TOKEN.OBSERVER.hint": "Allow users access to tokens with observer permission",
+
+    "MaterialDeck.AboutTime.First": "st",
+    "MaterialDeck.AboutTime.Second": "nd",
+    "MaterialDeck.AboutTime.Third": "rd",
+    "MaterialDeck.AboutTime.Fourth": "th",
+    "MaterialDeck.AboutTime.Of": "of"
 }
 

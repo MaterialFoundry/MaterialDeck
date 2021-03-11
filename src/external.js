@@ -30,6 +30,7 @@ export class ExternalModules{
         else if (module == 'mookAI')        this.updateMookAI(settings,context);
         else if (module == 'notYourTurn')   this.updateNotYourTurn(settings,context);
         else if (module == 'lockView')      this.updateLockView(settings,context);
+        else if (module == 'aboutTime')     this.updateAboutTime(settings,context);
     }
 
     keyPress(settings,context){
@@ -43,7 +44,7 @@ export class ExternalModules{
         else if (module == 'mookAI')        this.keyPressMookAI(settings,context);
         else if (module == 'notYourTurn')   this.keyPressNotYourTurn(settings,context);
         else if (module == 'lockView')      this.keyPressLockView(settings,context);
-        
+        else if (module == 'aboutTime')     this.keyPressAboutTime(settings,context);
     }
 
     getModuleEnable(moduleId){
@@ -124,8 +125,8 @@ export class ExternalModules{
             name = game.i18n.localize("MaterialDeck.FxMaster.Clear");
         }
 
-        if (displayIcon) streamDeck.setIcon(context,icon,background,ring,ringColor);
-        else streamDeck.setIcon(context, "", background,ring,ringColor);
+        if (displayIcon) streamDeck.setIcon(context,icon,{background:background,ring:ring,ringColor:ringColor});
+        else streamDeck.setIcon(context, "", {background:background,ring:ring,ringColor:ringColor});
         if (displayName == 0) name = ""; 
         streamDeck.setTitle(name,context);
     }
@@ -269,7 +270,7 @@ export class ExternalModules{
         if (this.gmScreenOpen) ring = 2;
         
         if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
-        streamDeck.setIcon(context,src,background,ring,ringColor);
+        streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor});
         if (settings.displayGmScreenName) txt = game.i18n.localize(`GMSCR.gmScreen.Open`); 
         streamDeck.setTitle(txt,context);
     }
@@ -295,8 +296,8 @@ export class ExternalModules{
         const ringColor = game.settings.get("trigger-happy", "enableTriggers") ? "#A600FF" : "#340057";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,"fas fa-grin-squint-tears",background,2,ringColor);
-        else streamDeck.setIcon(context,'','#000000');
+        if (displayIcon) streamDeck.setIcon(context,"fas fa-grin-squint-tears",{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,'',{background:'#000000'});
         if (displayName) txt = 'Trigger Happy';
         
         streamDeck.setTitle(txt,context);
@@ -336,8 +337,8 @@ export class ExternalModules{
         const ringColor = game.settings.get("SharedVision", "enable") ? "#A600FF" : "#340057";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,"fas fa-eye",background,2,ringColor);
-        else streamDeck.setIcon(context,'','#000000');
+        if (displayIcon) streamDeck.setIcon(context,"fas fa-eye",{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,'',{background:'#000000'});
         if (displayName) txt = 'Shared Vision';
         streamDeck.setTitle(txt,context);
     }
@@ -366,8 +367,8 @@ export class ExternalModules{
         const background = "#000000";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,"fas fa-brain",'#000000');
-        else streamDeck.setIcon(context,'','#000000');
+        if (displayIcon) streamDeck.setIcon(context,"fas fa-brain",{background:'#000000'});
+        else streamDeck.setIcon(context,'',{background:'#000000'});
         if (displayName) txt = 'Mook AI';
         streamDeck.setTitle(txt,context);
     }
@@ -408,8 +409,8 @@ export class ExternalModules{
             txt = "Block Non-Combat Movement";
             ringColor = game.settings.get('NotYourTurn','nonCombat') ?  "#A600FF": "#340057" ;
         }
-        if (displayIcon) streamDeck.setIcon(context,icon,background,2,ringColor);
-        else streamDeck.setIcon(context,'','#000000');
+        if (displayIcon) streamDeck.setIcon(context,icon,{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,'',{background:'#000000'});
         if (displayName == false) txt = '';
         streamDeck.setTitle(txt,context);
     }
@@ -431,6 +432,7 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Lock View
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     updateLockView(settings,context) {
         
         if (this.getModuleEnable("LockView") == false) return;
@@ -461,8 +463,8 @@ export class ExternalModules{
             ringColor = canvas.scene.getFlag('LockView', 'boundingBox') ?  "#A600FF": "#340057" ;
         }
         
-        if (displayIcon) streamDeck.setIcon(context,icon,background,2,ringColor);
-        else streamDeck.setIcon(context,'','#000000');
+        if (displayIcon) streamDeck.setIcon(context,icon,{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,'',{background:'#000000'});
         if (displayName == false) txt = '';
         streamDeck.setTitle(txt,context);
     }
@@ -482,6 +484,217 @@ export class ExternalModules{
         else if (mode == 'boundingBox') msg = {boundingBox:toggle};
 
         Hooks.call("setLockView",msg);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //About Time
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    updateAboutTime(settings,context) {
+        if (this.getModuleEnable("about-time") == false) return;
+        if (game.user.isGM == false) return;
+
+        const displayTime = settings.aboutTimeDisplayTime ? settings.aboutTimeDisplayTime : 'none';
+        const displayDate = settings.aboutTimeDisplayDate ? settings.aboutTimeDisplayDate : 'none';
+        const background = settings.aboutTimeBackground ? settings.aboutTimeBackground : '#000000';
+        const ringOffColor = settings.aboutTimeOffRing ? settings.aboutTimeOffRing : '#000000';
+        const ringOnColor = settings.aboutTimeOnRing ? settings.aboutTimeOnRing : '#00FF00';
+
+        let ring = 0;
+        let ringColor = '#000000';
+        let txt = '';
+        let currentTime = game.Gametime.DTNow().longDateExtended();
+        let clock = 'none';
+
+        if (displayTime == 'clock') {
+            const hours = currentTime.hour > 12 ? currentTime.hour-12 : currentTime.hour;
+            clock = {
+                hours: hours,
+                minutes: currentTime.minute
+            }
+        }
+        else if (displayTime != 'none') {
+            let hours;
+            let AMPM = "";
+            if ((displayTime == 'compact12h' || displayTime == 'full12h' || displayTime == 'hours12h') && currentTime.hour > 12) {
+                hours = currentTime.hour - 12;
+                AMPM = " PM";
+            }
+            else if ((displayTime == 'compact12h' || displayTime == 'full12h' || displayTime == 'hours12h') && currentTime.hour <= 12) {
+                hours = currentTime.hour;
+                AMPM = " AM";
+            }
+            else {
+                hours = currentTime.hour;
+            }
+            if (displayTime == 'hours24h' || displayTime == 'hours12h') txt = hours;
+            else if (displayTime == 'minutes') txt = currentTime.minute;
+            else if (displayTime == 'seconds') txt = currentTime.second;
+            else {
+                if (currentTime.minute < 10) currentTime.minute = '0' + currentTime.minute;
+                if (currentTime.second < 10) currentTime.second = '0' + currentTime.second;
+                txt += hours + ':' + currentTime.minute;
+                if (displayTime == 'full24h' || displayTime == 'full12h') txt += ':' + currentTime.second;
+            }
+            if (displayTime == 'compact12h' || displayTime == 'full12h' || displayTime == 'hours12h') txt += AMPM;
+        }
+        if (displayTime != 'none' && displayTime != 'clock' && displayDate != 'none') txt += '\n';
+
+        if (displayDate == 'day') txt += currentTime.day;
+        else if (displayDate == 'dayName') txt += currentTime.dowString;
+        else if (displayDate == 'month') txt += currentTime.month;
+        else if (displayDate == 'monthName') txt += currentTime.monthString;
+        else if (displayDate == 'year') txt += currentTime.year;
+        else if (displayDate == 'small') txt += currentTime.day + '-' + currentTime.month;
+        else if (displayDate == 'smallInv') txt += currentTime.month + '-' + currentTime.day;
+        else if (displayDate == 'full') txt += currentTime.day + '-' + currentTime.month + '-' + currentTime.year;
+        else if (displayDate == 'fullInv') txt += currentTime.month + '-' + currentTime.day + '-' + currentTime.year;
+        else if (displayDate == 'text' || displayDate == 'textDay') {
+
+            if (displayDate == 'textDay') txt += currentTime.dowString + ' ';
+            txt += currentTime.day;
+            if (currentTime.day % 10 == 1 && currentTime != 11) txt += game.i18n.localize("MaterialDeck.AboutTime.First");
+            else if (currentTime.day % 10 == 2 && currentTime != 12) txt += game.i18n.localize("MaterialDeck.AboutTime.Second");
+            else if (currentTime.day % 10 == 3 && currentTime != 13) txt += game.i18n.localize("MaterialDeck.AboutTime.Third");
+            else txt += game.i18n.localize("MaterialDeck.AboutTime.Fourth");
+            txt += ' ' + game.i18n.localize("MaterialDeck.AboutTime.Of") + ' ' + currentTime.monthString + ', ' + currentTime.year;
+        }
+
+        if (settings.aboutTimeActive) {
+            const clockRunning = game.Gametime.isRunning();
+            ringColor = clockRunning ? ringOnColor : ringOffColor;
+            ring = 2;
+        }
+        
+        streamDeck.setTitle(txt,context);
+        streamDeck.setIcon(context,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
+    }
+
+    keyPressAboutTime(settings,context) {
+        if (this.getModuleEnable("about-time") == false) return;
+        if (game.user.isGM == false) return;
+
+        const onClick = settings.aboutTimeOnClick ? settings.aboutTimeOnClick : 'none';
+        if (onClick == 'none') return;
+        else if (onClick == 'startStop') {
+            const clockRunning = game.Gametime.isRunning();
+            const startMode = settings.aboutTimeStartStopMode ? settings.aboutTimeStartStopMode : 'toggle';
+            if ((startMode == 'toggle' && clockRunning) || startMode == 'stop') game.Gametime.stopRunning();
+            else if ((startMode == 'toggle' && !clockRunning) || startMode == 'start') game.Gametime.startRunning();
+        }
+        else if (onClick == 'advance') {
+            const advanceMode = settings.aboutTimeAdvanceMode ? settings.aboutTimeAdvanceMode : 'dawn';
+            let now = Gametime.DTNow();
+            if (advanceMode == 'dawn') {
+                let newDT = now.add({
+                    days: now.hours < 7 ? 0 : 1
+                }).setAbsolute({
+                    hours: 7,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == 'noon') {
+                let newDT = now.add({
+                    days: now.hours < 12 ? 0 : 1
+                }).setAbsolute({
+                    hours: 12,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == 'dusk') {
+                let newDT = now.add({
+                    days: now.hours < 20 ? 0 : 1
+                }).setAbsolute({
+                    hours: 20,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == 'midnight') {
+                let newDT = Gametime.DTNow().add({
+                    days: 1
+                }).setAbsolute({
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == '1s') 
+                game.Gametime.advanceClock(1);
+            else if (advanceMode == '30s') 
+                game.Gametime.advanceClock(30);
+            
+            else if (advanceMode == '1m') 
+                game.Gametime.advanceTime({ minutes: 1 });
+            else if (advanceMode == '5m') 
+                game.Gametime.advanceTime({ minutes: 5 });
+            else if (advanceMode == '15m') 
+                game.Gametime.advanceTime({ minutes: 15 });
+            else if (advanceMode == '1h') 
+                game.Gametime.advanceTime({ hours: 1 });
+        }
+        else if (onClick == 'recede') {
+            const advanceMode = settings.aboutTimeAdvanceMode ? settings.aboutTimeAdvanceMode : 'dawn';
+            let now = Gametime.DTNow();
+            if (advanceMode == 'dawn') {
+                let newDT = now.add({
+                    days: now.hours < 7 ? -1 : 0
+                }).setAbsolute({
+                    hours: 7,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == 'noon') {
+                let newDT = now.add({
+                    days: now.hours < 12 ? -1 : 0
+                }).setAbsolute({
+                    hours: 12,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == 'dusk') {
+                let newDT = now.add({
+                    days: now.hours < 20 ? -1 : 0
+                }).setAbsolute({
+                    hours: 20,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == 'midnight') {
+                let newDT = Gametime.DTNow().add({
+                    days: -1
+                }).setAbsolute({
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0
+                });
+                Gametime.setAbsolute(newDT);
+            }
+            else if (advanceMode == '1s') 
+                game.Gametime.advanceClock(-1);
+            else if (advanceMode == '30s') 
+                game.Gametime.advanceClock(-30);
+            
+            else if (advanceMode == '1m') 
+                game.Gametime.advanceTime({ minutes: -1 });
+            else if (advanceMode == '5m') 
+                game.Gametime.advanceTime({ minutes: -5 });
+            else if (advanceMode == '15m') 
+                game.Gametime.advanceTime({ minutes: -15 });
+            else if (advanceMode == '1h') 
+                game.Gametime.advanceTime({ hours: -1 });
+        }
     }
 }
 

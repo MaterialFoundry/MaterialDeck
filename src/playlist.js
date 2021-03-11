@@ -24,6 +24,7 @@ export class PlaylistControl{
         }
         this.active = true;
         const mode = settings.playlistMode ? settings.playlistMode : 'playlist';
+        
         if (mode == 'playlist'){
             this.updatePlaylist(settings,context);
         }
@@ -32,10 +33,11 @@ export class PlaylistControl{
         }
         else {
             const src = 'modules/MaterialDeck/img/playlist/stop.png';
+            const background = settings.background ? settings.background : '#000000';
             const ringColor = (game.playlists.playing.length > 0) ? '#00FF00' : '#000000';
             const ring = (game.playlists.playing.length > 0) ? 2 : 1;
             const txt = settings.displayPlaylistName ? this.getPlaylist(this.playlistOffset).name : '';
-            streamDeck.setIcon(context,src,settings.background,ring,ringColor,true);
+            streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor,overlay:true});
             streamDeck.setTitle(txt,context);
         }
     }
@@ -78,11 +80,11 @@ export class PlaylistControl{
             let number = parseInt(this.playlistOffset + playlistOffset);
             const nrOfPlaylists = parseInt(game.settings.get(MODULE.moduleName,'playlists').playlistNumber);
             if (number < 0) number += nrOfPlaylists;
-            else if (number > nrOfPlaylists) number -= nrOfPlaylists;
+            else if (number >= nrOfPlaylists) number -= nrOfPlaylists;
             const targetPlaylist = this.getPlaylist(number);
             if (targetPlaylist != undefined) name = targetPlaylist.name;
         }
-        streamDeck.setIcon(context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
 
@@ -127,7 +129,7 @@ export class PlaylistControl{
         //Relative Offset
         else if (playlistType == 'relativeOffset') {
         }
-        streamDeck.setIcon(context,"",background,2,ringColor);
+        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
 
@@ -214,7 +216,7 @@ export class PlaylistControl{
                     let number = parseInt(this.playlistOffset + playlistOffset);
                     const nrOfPlaylists = parseInt(game.settings.get(MODULE.moduleName,'playlists').playlistNumber);
                     if (number < 0) number += nrOfPlaylists;
-                    else if (number > nrOfPlaylists) number -= nrOfPlaylists;
+                    else if (number >= nrOfPlaylists) number -= nrOfPlaylists;
                     this.playlistOffset = number;
                 }
                 else  {
