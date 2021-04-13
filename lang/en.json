@@ -91,6 +91,8 @@
     "MaterialDeck.Perm.MACRO.label": "Macros",
     "MaterialDeck.Perm.MACRO.HOTBAR.label": "Hotbar Macros",
     "MaterialDeck.Perm.MACRO.HOTBAR.hint": "Allow users to use hotbar macros",
+    "MaterialDeck.Perm.MACRO.BY_NAME.label": "Macro by Name",
+    "MaterialDeck.Perm.MACRO.BY_NAME.hint": "Allow users to call macros by name",
     "MaterialDeck.Perm.MACRO.MACROBOARD.label": "Macro Board",
     "MaterialDeck.Perm.MACRO.MACROBOARD.hint": "Allow users to use the macro board",
     "MaterialDeck.Perm.MACRO.MACROBOARD_CONFIGURE.label": "Configure the Macro Board",

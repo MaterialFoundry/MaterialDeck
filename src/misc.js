@@ -1,6 +1,16 @@
 import * as MODULE from "../MaterialDeck.js";
 import {macroControl,soundboard,playlistControl} from "../MaterialDeck.js";
 
+export function compatibleCore(compatibleVersion){
+    let coreVersion = game.data.version;
+    coreVersion = coreVersion.split(".");
+    compatibleVersion = compatibleVersion.split(".");
+    if (compatibleVersion[0] > coreVersion[0]) return false;
+    if (compatibleVersion[1] > coreVersion[1]) return false;
+    if (compatibleVersion[2] > coreVersion[2]) return false;
+    return true;
+}
+
 export class playlistConfigForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
@@ -17,7 +27,8 @@ export class playlistConfigForm extends FormApplication {
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.PlaylistConfig"),
             template: "./modules/MaterialDeck/templates/playlistConfig.html",
             classes: ["sheet"],
-            width: 500
+            width: 500,
+            height: "auto"
         });
     }
 
@@ -65,7 +76,7 @@ export class playlistConfigForm extends FormApplication {
         }
  
         return {
-            playlists: game.playlists.entities,
+            playlists: compatibleCore("0.8.1") ? game.playlists.contents : game.playlists.entities,
             numberOfPlaylists: numberOfPlaylists,
             playlistData: playlistData,
             playMode: playMode
@@ -171,7 +182,7 @@ export class macroConfigForm extends FormApplication {
         let furnaceEnabled = false;
         let height = 95;
         let furnace = game.modules.get("furnace");
-        if (furnace != undefined && furnace.active) {
+        if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) {
             furnaceEnabled = true;
             height += 50;
         }
@@ -222,7 +233,7 @@ export class macroConfigForm extends FormApplication {
             }
             macroData.push({dataThis: macroThis});
         }
-
+        
         return {
             height: height,
             macros: game.macros,
@@ -335,9 +346,11 @@ export class soundboardConfigForm extends FormApplication {
         let playlists = [];
         playlists.push({id:"none",name:game.i18n.localize("MaterialDeck.None")});
         playlists.push({id:"FP",name:game.i18n.localize("MaterialDeck.FilePicker")})
-        for (let i=0; i<game.playlists.entities.length; i++){
-            playlists.push({id:game.playlists.entities[i]._id,name:game.playlists.entities[i].name});
-        }
+        
+        const playlistArray = compatibleCore("0.8.1") ? game.playlists.contents : game.playlists.entities;
+        for (let playlist of playlistArray) 
+            playlists.push({id: playlist.id, name: playlist.name})
+        
         this.playlists = playlists;
 
         //Check what SD model the user is using, and set the number of rows and columns to correspond
@@ -376,20 +389,30 @@ export class soundboardConfigForm extends FormApplication {
                 else if (this.settings.selectedPlaylists[iteration] == 'FP') selectedPlaylist = 'FP';
                 else {
                     //Get the playlist
-                    const pl = game.playlists.entities.find(p => p._id == this.settings.selectedPlaylists[iteration]);
+                    const playlistArray = compatibleCore("0.8.1") ? game.playlists.contents : game.playlists.entities;
+                    let pl = playlistArray.find(p => p.id == this.settings.selectedPlaylists[iteration])
+
                     if (pl == undefined){
                         selectedPlaylist = 'none';
                         sounds = [];
                     }
                     else {
                         //Add the sound name and id to the sounds array
-                        for (let i=0; i<pl.sounds.length; i++)
-                            sounds.push({
-                                name: pl.sounds[i].name,
-                                id: pl.sounds[i]._id
-                            });
+                        if (compatibleCore("0.8.1"))
+                            for (let sound of pl.sounds.contents)
+                                sounds.push({
+                                    name: sound.name,
+                                    id: sound.id
+                                });
+                        else {
+                            for (let sound of pl.sounds)
+                                sounds.push({
+                                    name: sound.name,
+                                    id: sound._id
+                                });
+                        }        
                         //Get the playlist id
-                        selectedPlaylist = pl._id;
+                        selectedPlaylist = pl.id;
                     }  
                 }
 
@@ -489,8 +512,9 @@ export class soundboardConfigForm extends FormApplication {
                     //Show the sound selector
                     document.querySelector(`#ss${iteration}`).style='';
 
-                    const pl = game.playlists.entities.find(p => p._id == event.target.value);
-                    selectedPlaylist = pl._id;
+                    const playlistArray = compatibleCore("0.8.1") ? game.playlists.contents : game.playlists.entities;
+                    const pl = playlistArray.find(p => p.id == event.target.value)
+                    selectedPlaylist = pl.id;
 
                     //Get the sound select element
                     let SSpicker = document.getElementById(`soundSelect${iteration}`);
@@ -504,12 +528,20 @@ export class soundboardConfigForm extends FormApplication {
                     optionNone.innerHTML = game.i18n.localize("MaterialDeck.None");
                     SSpicker.appendChild(optionNone);
 
-                    for (let i=0; i<pl.sounds.length; i++){
-                        let newOption = document.createElement('option');
-                        newOption.value = pl.sounds[i]._id;
-                        newOption.innerHTML = pl.sounds[i].name;
-                        SSpicker.appendChild(newOption);
-                    }
+                    if (compatibleCore("0.8.1"))
+                        for (let sound of pl.sounds.contents) {
+                            let newOption = document.createElement('option');
+                            newOption.value = sound.id;
+                            newOption.innerHTML = sound.name;
+                            SSpicker.appendChild(newOption);
+                        } 
+                    else 
+                        for (let sound of pl.sounds) {
+                            let newOption = document.createElement('option');
+                            newOption.value = sound._id;
+                            newOption.innerHTML = sound.name;
+                            SSpicker.appendChild(newOption);
+                        }        
                 }
 
                 //Save the new playlist to this.settings, and update the settings

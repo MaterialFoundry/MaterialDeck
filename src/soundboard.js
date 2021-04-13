@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class SoundboardControl{
     constructor(){
@@ -87,7 +88,7 @@ export class SoundboardControl{
             const repeat = (playMode > 0) ? true : false;
             const play = (this.activeSounds[soundNr] == false) ? true : false;
 
-            this.playSound(soundNr,repeat,play);
+            this.prePlaySound(soundNr,repeat,play);
         }
         else if (mode == 'offset') { //Offset
             let offset = parseInt(settings.offset);
@@ -98,7 +99,7 @@ export class SoundboardControl{
         else if (mode == 'stopAll') {  //Stop All Sounds
             for (let i=0; i<64; i++) {
                 if (this.activeSounds[i] != false){
-                    this.playSound(i,false,false);
+                    this.prePlaySound(i,false,false);
                 }
             }
         }
@@ -118,10 +119,10 @@ export class SoundboardControl{
         const playMode = game.settings.get(MODULE.moduleName,'soundboardSettings').mode[soundNr];
         
         if (playMode == 2)
-            this.playSound(soundNr,false,false);
+            this.prePlaySound(soundNr,false,false);
     }
 
-    async playSound(soundNr,repeat,play){  
+    async prePlaySound(soundNr,repeat,play){  
         const soundBoardSettings = game.settings.get(MODULE.moduleName,'soundboardSettings');
         const playlistId = (soundBoardSettings.selectedPlaylists != undefined) ? soundBoardSettings.selectedPlaylists[soundNr] : undefined;
         let src;
@@ -142,7 +143,7 @@ export class SoundboardControl{
             const soundId = soundBoardSettings.sounds[soundNr];
             const sounds = game.playlists.get(playlistId).sounds;
             if (sounds == undefined) return;
-            const sound = sounds.find(p => p._id == soundId);
+            const sound = compatibleCore("0.8.1") ? sounds.find(p => p.id == soundId) : sounds.find(p => p._id == soundId);
             if (sound == undefined) return;
             src = sound.path;
         }
@@ -160,21 +161,39 @@ export class SoundboardControl{
         };
         game.socket.emit(`module.MaterialDeck`, payload);
 
-        if (play){
-            volume *= game.settings.get("core", "globalInterfaceVolume");
+        this.playSound(soundNr,src,play,repeat,volume)
+    }
 
-            let howl = new Howl({src, volume, loop: repeat, onend: (id)=>{
-                if (repeat == false){
+    async playSound(soundNr,src,play,repeat,volume){
+        if (play){
+            volume *= game.settings.get("core", "globalAmbientVolume");
+
+            if (compatibleCore("0.8.1")) {
+                let newSound = new SoundNode(src);
+                if(newSound.loaded == false) await newSound.load({autoplay:true});
+                newSound.on('end', ()=>{
+                    if (repeat == false) {
+                        this.activeSounds[soundNr] = false;
+                        this.updateAll();
+                    }
+                });
+                newSound.play({loop:repeat,volume:volume});
+                this.activeSounds[soundNr] = newSound;
+            }
+            else {
+                let howl = new Howl({src, volume, loop: repeat, onend: (id)=>{
+                    if (repeat == false){
+                        this.activeSounds[soundNr] = false;
+                        this.updateAll();
+                    }
+                },
+                onstop: ()=>{
                     this.activeSounds[soundNr] = false;
                     this.updateAll();
-                }
-            },
-            onstop: (id)=>{
-                this.activeSounds[soundNr] = false;
-                this.updateAll();
-            }});
-            howl.play();
-            this.activeSounds[soundNr] = howl;
+                }});
+                howl.play();
+                this.activeSounds[soundNr] = howl;
+            }
         }
         else {
             this.activeSounds[soundNr].stop();
@@ -182,4 +201,23 @@ export class SoundboardControl{
         }
         this.updateAll();
     }
+
+    /*
+    volumeChange(soundNr){
+        
+        let volume = game.settings.get("core", "globalAmbientVolume");
+
+        if (soundNr == 'all') {
+            for (let i=0; this.activeSounds.length; i++) {
+                volume * game.settings.get(MODULE.moduleName,'soundboardSettings').volume[i]/100;
+                volume = AudioHelper.inputToVolume(volume);
+                this.activeSounds[i].volume = volume;
+            }
+        }
+        else {
+            volume * game.settings.get(MODULE.moduleName,'soundboardSettings').volume[soundNr]/100;
+            volume = AudioHelper.inputToVolume(volume);
+        }
+    }
+    */
 }

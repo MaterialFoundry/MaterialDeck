@@ -9,6 +9,7 @@ import {SoundboardControl} from "./src/soundboard.js";
 import {OtherControls} from "./src/othercontrols.js";
 import {ExternalModules} from "./src/external.js";
 import {SceneControl} from "./src/scene.js";
+import {compatibleCore} from "./src/misc.js";
 export var streamDeck;
 export var tokenControl;
 var move;
@@ -28,6 +29,8 @@ let activeSounds = [];
 
 export let hotbarUses = false;
 export let calculateHotbarUses;
+
+
        
 //CONFIG.debug.hooks = true;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,8 +238,8 @@ export function getPermission(action,func) {
  * Attempt to open the websocket
  */
 Hooks.once('ready', async()=>{
+    registerSettings();
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
-    
     
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
@@ -251,7 +254,7 @@ Hooks.once('ready', async()=>{
 
     game.socket.on(`module.MaterialDeck`, async(payload) =>{
         //console.log(payload);
-        if (payload.msgType == "playSound") playTrack(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
+        if (payload.msgType == "playSound") soundboard.playSound(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
         else if (game.user.isGM && payload.msgType == "playPlaylist") {
             const playlist = playlistControl.getPlaylist(payload.playlistNr);
             playlistControl.playPlaylist(playlist,payload.playlistNr);
@@ -340,27 +343,6 @@ Hooks.once('ready', async()=>{
     
 });
 
-export function playTrack(soundNr,src,play,repeat,volume){
-    if (play){
-        volume *= game.settings.get("core", "globalInterfaceVolume");
-
-        let howl = new Howl({src, volume, loop: repeat, onend: (id)=>{
-            if (repeat == false){
-                activeSounds[soundNr] = false;
-            }
-        },
-        onstop: (id)=>{
-            activeSounds[soundNr] = false;
-        }});
-        howl.play();
-        activeSounds[soundNr] = howl;
-   }
-   else {
-        activeSounds[soundNr].stop();
-        activeSounds[soundNr] = false;
-   }
-}
-
 Hooks.on('updateToken',(scene,token)=>{
     if (enableModule == false || ready == false) return;
     let tokenId = token._id;
@@ -399,8 +381,16 @@ Hooks.on('updateOwnedItem',()=>{
 })
 
 Hooks.on('renderHotbar', (hotbar)=>{
+    if (compatibleCore("0.8.1")) return;
     if (enableModule == false || ready == false) return;
     if (macroControl != undefined) macroControl.hotbar(hotbar.macros);
+});
+
+Hooks.on('render', (app)=>{
+    if (enableModule == false || ready == false) return;
+    if (compatibleCore("0.8.1") == false) return;
+    if (app.id == "hotbar" && macroControl != undefined)  macroControl.hotbar(app.macros);
+    
 });
 
 Hooks.on('renderCombatTracker',()=>{
@@ -425,10 +415,27 @@ Hooks.on('pauseGame',()=>{
     otherControls.updateAll();
 });
 
-Hooks.on('renderSidebarTab',()=>{
+Hooks.on('renderSidebarTab',(app)=>{
+    const options = {
+        sidebarTab: app.tabName,
+        renderPopout: app.popOut
+    }
+    if (enableModule == false || ready == false) return;
+    if (otherControls != undefined) otherControls.updateAll(options);
+    if (sceneControl != undefined) sceneControl.updateAll();
+});
+
+Hooks.on('closeSidebarTab',(app)=>{
+    const options = {
+        sidebarTab: app.tabName,
+        renderPopout: false
+    }
+    if (otherControls != undefined) otherControls.updateAll(options);
+});
+
+Hooks.on('changeSidebarTab',()=>{
     if (enableModule == false || ready == false) return;
     if (otherControls != undefined) otherControls.updateAll();
-    if (sceneControl != undefined) sceneControl.updateAll();
 });
 
 Hooks.on('updateScene',()=>{
@@ -464,14 +471,30 @@ Hooks.on('closeCompendium',()=>{
     otherControls.updateAll();
 });
 
-Hooks.on('renderJournalSheet',()=>{
+Hooks.on('renderCompendiumBrowser',()=>{
     if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    otherControls.updateAll({renderCompendiumBrowser:true});
 });
 
-Hooks.on('closeJournalSheet',()=>{
+Hooks.on('closeCompendiumBrowser',()=>{
     if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    otherControls.updateAll({renderCompendiumBrowser:false});
+});
+
+Hooks.on('renderJournalSheet',(sheet)=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll({
+        hook:'renderJournalSheet',
+        sheet:sheet
+    });
+});
+
+Hooks.on('closeJournalSheet',(sheet)=>{
+    if (enableModule == false || ready == false) return;
+    otherControls.updateAll({
+        hook:'closeJournalSheet',
+        sheet:sheet
+    });
 });
 
 Hooks.on('gmScreenOpenClose',(html,isOpen)=>{
@@ -501,7 +524,7 @@ Hooks.on('about-time.clockRunningStatus', ()=>{
 
 Hooks.once('init', ()=>{
     //CONFIG.debug.hooks = true;
-    registerSettings(); //in ./src/settings.js
+    //registerSettings(); //in ./src/settings.js
 });
 
 Hooks.once('canvasReady',()=>{

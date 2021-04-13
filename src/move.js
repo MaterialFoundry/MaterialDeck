@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class Move{
     constructor(){
@@ -106,7 +107,9 @@ export class Move{
             if (rotType == 'by') rotationVal = token.data.rotation + value;
             else if (rotType == 'to') rotationVal = value;
             
-            token.update({rotation: rotationVal});
+            if (compatibleCore("0.8.1")) token.document.update({rotation: rotationVal});
+            else token.update({rotation: rotationVal});
+            //token.rotate(rotationVal,false)
         }
     }
 
@@ -140,7 +143,8 @@ export class Move{
             canvas.animatePan(location);
         }
         if (game.user.isGM == false && (token.can(game.user,"control") == false || token.checkCollision(token.getCenter(x, y)))) return;
-        token.update({x:x,y:y});
+        if (compatibleCore("0.8.1")) token.document.update({x:x,y:y});
+        else token.update({x:x,y:y});
     };
 
     moveCanvas(dir){

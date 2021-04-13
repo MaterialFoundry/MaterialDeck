@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class OtherControls{
     constructor(){
@@ -7,37 +8,39 @@ export class OtherControls{
         this.rollData = {};
     }
 
-    async updateAll(){
+    async updateAll(options={}){
         if (this.active == false) return;
         for (let i=0; i<32; i++){   
             const data = streamDeck.buttonContext[i];
             if (data == undefined || data.action != 'other') continue;
-            await this.update(data.settings,data.context);
+            await this.update(data.settings,data.context,options);
         }
     }
 
-    update(settings,context){
+    update(settings,context,options={}){
         this.active = true;
         const mode = settings.otherMode ? settings.otherMode : 'pause';
 
         if (mode == 'pause')    //pause
-            this.updatePause(settings,context);
+            this.updatePause(settings,context,options);
         else if (mode == 'controlButtons')    //control buttons
-            this.updateControl(settings,context);
+            this.updateControl(settings,context,options);
         else if (mode == 'darkness')   //darkness
-            this.updateDarkness(settings,context);
+            this.updateDarkness(settings,context,options);
         else if (mode == 'rollDice')    //roll dice
-            this.updateRollDice(settings,context);
+            this.updateRollDice(settings,context,options);
         else if (mode == 'rollTables')    //roll tables
-            this.updateRollTable(settings,context);
+            this.updateRollTable(settings,context,options);
         else if (mode == 'sidebarTab')    //open sidebar tab
-            this.updateSidebar(settings,context);
+            this.updateSidebar(settings,context,options);
+        else if (mode == 'compendiumBrowser')    //open compendium browser
+            this.updateCompendiumBrowser(settings,context,options);
         else if (mode == 'compendium')    //open compendium
-            this.updateCompendium(settings,context);
+            this.updateCompendium(settings,context,options);
         else if (mode == 'journal')    //open journal
-            this.updateJournal(settings,context);
+            this.updateJournal(settings,context,options);
         else if (mode == 'chatMessage')
-            this.updateChatMessage(settings,context);
+            this.updateChatMessage(settings,context,options);
     }
 
     keyPress(settings,context){
@@ -55,6 +58,8 @@ export class OtherControls{
             this.keyPressRollTable(settings);
         else if (mode == 'sidebarTab')    //sidebar
             this.keyPressSidebar(settings);
+        else if (mode == 'compendiumBrowser')    //open compendium browser
+            this.keyPressCompendiumBrowser(settings);
         else if (mode == 'compendium')    //open compendium
             this.keyPressCompendium(settings);
         else if (mode == 'journal')    //open journal
@@ -65,7 +70,7 @@ export class OtherControls{
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    updatePause(settings,context){
+    updatePause(settings,context,options={}){
         if (MODULE.getPermission('OTHER','PAUSE') == false ) {
             streamDeck.noPermission(context);
             return;
@@ -97,20 +102,20 @@ export class OtherControls{
 
         if (pauseFunction == 'pause'){ //Pause game
             if (game.paused) return; 
-            game.togglePause();
+            game.togglePause(true,true);
         }
         else if (pauseFunction == 'resume'){ //Resume game
             if (game.paused == false) return; 
-            game.togglePause();
+            game.togglePause(false,true);
         }
         else if (pauseFunction == 'toggle') { //toggle
-            game.togglePause();
+            game.togglePause(!game.paused,true);
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
     
-    updateControl(settings,context){
+    updateControl(settings,context,options={}){
         if (MODULE.getPermission('OTHER','CONTROL') == false ) {
             streamDeck.noPermission(context);
             return;
@@ -291,7 +296,7 @@ export class OtherControls{
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    updateDarkness(settings,context){
+    updateDarkness(settings,context,options={}){
         if (MODULE.getPermission('OTHER','DARKNESS') == false ) {
             streamDeck.noPermission(context);
             return;
@@ -337,7 +342,7 @@ export class OtherControls{
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    updateRollDice(settings,context){
+    updateRollDice(settings,context,options={}){
         if (MODULE.getPermission('OTHER','DICE') == false ) {
             streamDeck.noPermission(context);
             return;
@@ -389,7 +394,7 @@ export class OtherControls{
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    updateRollTable(settings,context){
+    updateRollTable(settings,context,options={}){
         const name = settings.rollTableName;
         if (name == undefined) return;
         if (MODULE.getPermission('OTHER','TABLES') == false ) {
@@ -474,17 +479,23 @@ export class OtherControls{
         return icon;
     }
     
-    updateSidebar(settings,context){
+    updateSidebar(settings,context,options={}){
         if (MODULE.getPermission('OTHER','SIDEBAR') == false ) {
             streamDeck.noPermission(context);
             return;
         }
+        const popOut = settings.sidebarPopOut ? settings.sidebarPopOut : false;
         const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
         const background = settings.background ? settings.background : '#000000';
         const collapsed = ui.sidebar._collapsed;
+        const activeTab = ui.sidebar.activeTab;
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-        const ringColor = (sidebarTab == 'collapse' && collapsed) ? ringOnColor : ringOffColor;
+        let ringColor = ringOffColor;
+        if (popOut && options.sidebarTab == sidebarTab) {
+            ringColor = options.renderPopout ? ringOnColor : ringOffColor;
+        }
+        else ringColor = (sidebarTab == 'collapse' && collapsed || (activeTab == sidebarTab)) ? ringOnColor : ringOffColor;
         const name = settings.displaySidebarName ? this.getSidebarName(sidebarTab) : '';
         const icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
 
@@ -495,26 +506,63 @@ export class OtherControls{
     keyPressSidebar(settings){
         if (MODULE.getPermission('OTHER','SIDEBAR') == false ) return;
         const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
+        const popOut = settings.sidebarPopOut ? settings.sidebarPopOut : false;
         
         if (sidebarTab == 'collapse'){
             const collapsed = ui.sidebar._collapsed;
             if (collapsed) ui.sidebar.expand();
             else if (collapsed == false) ui.sidebar.collapse();
         }
-        else ui.sidebar.activateTab(sidebarTab);
+        else if (popOut == false) ui.sidebar.activateTab(sidebarTab);
+        else {
+            const element = document.getElementById(sidebarTab+"-popout");
+            if (element == null) ui?.[sidebarTab].renderPopout();
+            else element.getElementsByClassName("close")[0].click();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    updateCompendium(settings,context){
+    updateCompendiumBrowser(settings,context,options={}){
+        let rendered = options.renderCompendiumBrowser;
+        if (rendered == undefined && game.system.id == "pf2e") rendered = (document.getElementById("app-1") != null);
+        else if (rendered == undefined) rendered = (document.getElementById("compendium-popout") != null);
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringColor = rendered ? ringOnColor : ringOffColor;
+        const txt = settings.displayCompendiumName ? name : '';
+
+        streamDeck.setTitle(txt,context);
+        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
+    }
+
+    keyPressCompendiumBrowser(settings){
+        let element = null;
+        if (game.system.id == "pf2e") element = document.getElementById("app-1")
+        else element = document.getElementById("compendium-popout");
+        const rendered = (element != null);
+
+        if (rendered) 
+            element.getElementsByClassName("close")[0].click();
+        else if (game.system.id == "pf2e")
+            document.getElementsByClassName("compendium-browser-btn")[0].click()
+        else
+            ui.compendium.renderPopout();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    updateCompendium(settings,context,options={}){
         const name = settings.compendiumName;
         if (name == undefined) return;
         if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) {
             streamDeck.noPermission(context);
             return;
         }
-
-        const compendium = game.packs.entries.find(p=>p.metadata.label == name);
+        let compendium;
+        if (compatibleCore("0.8.1"))    compendium = game.packs.contents.find(p=>p.metadata.label == name)?.apps[0];
+        else                            compendium = game.packs.entries.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
         if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) {
             streamDeck.noPermission(context);
@@ -535,16 +583,18 @@ export class OtherControls{
         if (name == undefined) return;
         if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) return;
 
-        const compendium = game.packs.entries.find(p=>p.metadata.label == name);
+        let compendium;
+        if (compatibleCore("0.8.1"))    compendium = game.packs.contents.find(p=>p.metadata.label == name)?.apps[0];
+        else                            compendium = game.packs.entries.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
         if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) return;
-        if (compendium.rendered) compendium.close();
+        else if (compendium.rendered) compendium.close();
         else compendium.render(true);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    updateJournal(settings,context){
+    updateJournal(settings,context,options={}){
         const name = settings.compendiumName;
         if (name == undefined) return;
 
@@ -559,11 +609,19 @@ export class OtherControls{
             streamDeck.noPermission(context);
             return;
         }
+        let rendered = false;
+        
+        if (options?.sheet?.title == name) {
+            if (options.hook == 'renderJournalSheet') rendered = true;
+            else if (options.hook == 'closeJournalSheet') rendered = false;
+        }
+        else 
+            if (document.getElementById("journalentry-sheet-"+journal.id) != null) rendered = true;
 
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-        const ringColor = journal.sheet.rendered ? ringOnColor : ringOffColor;
+        const ringColor = rendered ? ringOnColor : ringOffColor;
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
@@ -580,14 +638,13 @@ export class OtherControls{
         if (MODULE.getPermission('OTHER','JOURNAL') == false ) return;
         if (journal.permission < 2 && MODULE.getPermission('OTHER','JOURNAL_ALL') == false ) return;
 
-        const element = document.getElementById("journal-"+journal.id);
-        if (element == null) journal.render(true);
+        if (journal.sheet.rendered == false) journal.sheet.render(true);
         else journal.sheet.close();
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-    updateChatMessage(settings,context){
+    updateChatMessage(settings,context,options={}){
         if (MODULE.getPermission('OTHER','CHAT') == false ) {
             streamDeck.noPermission(context);
             return;

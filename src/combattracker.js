@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck, tokenControl} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class CombatTracker{
     constructor(){
@@ -28,7 +29,7 @@ export class CombatTracker{
         
         if (mode == 'combatants'){
             if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,false,"combat tracker");
                 return;
             }
             if (combat != null && combat != undefined && combat.turns.length != 0){
@@ -39,7 +40,7 @@ export class CombatTracker{
                 const combatant = initiativeOrder[nr]
 
                 if (combatant != undefined){
-                    const tokenId = combatant.tokenId;
+                    const tokenId = compatibleCore("0.8.1") ? combatant.data.tokenId : combatant.tokenId;
                     tokenControl.pushData(tokenId,settings,context,combatantState,'#cccc00');
                     return;
                 }
@@ -59,7 +60,7 @@ export class CombatTracker{
                 return;
             }
             if (combat != null && combat != undefined && combat.started){
-                const tokenId = combat.combatant.tokenId;
+                const tokenId = compatibleCore("0.8.1") ? combat.combatant.data.tokenId : combat.combatant.tokenId;
                 tokenControl.pushData(tokenId,settings,context);
             }
             else {
@@ -168,7 +169,7 @@ export class CombatTracker{
                 return;
             }
             if (game.combat.started == false) return;
-
+            
             if (ctFunction == 'nextTurn') game.combat.nextTurn();
             else if (ctFunction == 'prevTurn') game.combat.previousTurn();
             else if (ctFunction == 'nextRound') game.combat.nextRound();
@@ -185,12 +186,12 @@ export class CombatTracker{
                     if (nr == undefined || nr < 1) nr = 0;
                     const combatant = initiativeOrder[nr]
                     if (combatant == undefined) return;
-                    tokenId = combatant.tokenId;
+                    tokenId = compatibleCore("0.8.1") ? combatant.data.tokenId : combatant.tokenId;
                 }
             }
             else if (mode == 'currentCombatant') 
                 if (combat != null && combat != undefined && combat.started)
-                    tokenId = combat.combatant.tokenId;
+                    tokenId = compatibleCore("0.8.1") ? combat.combatant.data.tokenId : combat.combatant.tokenId;
                 
             let token = (canvas.tokens.children[0] != undefined) ? canvas.tokens.children[0].children.find(p => p.id == tokenId) : undefined;
             if (token == undefined) return;

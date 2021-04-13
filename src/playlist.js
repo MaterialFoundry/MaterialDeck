@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class PlaylistControl{
     constructor(){
@@ -106,10 +107,13 @@ export class PlaylistControl{
             if (isNaN(trackNr) || trackNr < 1) trackNr = 1;
             trackNr--;
             trackNr += this.trackOffset;
-
+            
             let playlist = this.getPlaylist(playlistNr);
             if (playlist != undefined){
-                let track = playlist.data.sounds[trackNr];
+                let track;
+                if (compatibleCore("0.8.1")) track = playlist.sounds.contents[trackNr];
+                else track = playlist.data.sounds[trackNr];
+
                 if (track != undefined){
                     if (track.playing) 
                         ringColor = ringOnColor;
@@ -191,7 +195,9 @@ export class PlaylistControl{
                     if (playlistMode == 'playlist')
                         this.playPlaylist(playlist,playlistNr);
                     else {
-                        let track = playlist.data.sounds[trackNr];
+                        let track;
+                        if (compatibleCore("0.8.1")) track = playlist.sounds.contents[trackNr];
+                        else track = playlist.data.sounds[trackNr];
                         if (track != undefined){
                             this.playTrack(track,playlist,playlistNr);
                         }
@@ -276,7 +282,11 @@ export class PlaylistControl{
             }
             else if (mode == 2) await playlist.stopAll();
         }
-        await playlist.updateEmbeddedEntity("PlaylistSound", {_id: track._id, playing: play});
+        
+        if (compatibleCore("0.8.1") && play) await playlist.playSound(track);
+        else if (compatibleCore("0.8.1")) await playlist.stopSound(track);
+        else await playlist.updateEmbeddedEntity("PlaylistSound", {_id: track._id, playing: play});
+        
         playlist.update({playing: play});
     }
 }

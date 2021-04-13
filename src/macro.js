@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class MacroControl{
     constructor(){
@@ -58,6 +59,11 @@ export class MacroControl{
                 ring = 0;
             }  
         }
+        else if (mode == 'name') {  //macro by name
+            const macroName = settings.macroNumber;
+            const macro = game.macros.getName(macroName);
+            macroId = macro?.id;
+        }
         else { //Macro Hotbar
             if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
                 streamDeck.noPermission(context);
@@ -71,10 +77,7 @@ export class MacroControl{
                 else 
                     macros = game.macros.apps[0].macros;
                 if (macroNumber > 9) macroNumber = 0;
-                for (let j=0; j<10; j++){
-                    if (macros[j].key == macroNumber)
-                        macroId = (macros[j].macro == null) ? undefined : macros[j].macro._id; 
-                }
+                macroId = game.macros.apps[0].macros.find(m => m.key == macroNumber).macro?.id
             }  
         }
 
@@ -87,7 +90,10 @@ export class MacroControl{
                 if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
             }
         }
-
+        else {
+            if (displayName) name = "";
+            if (displayIcon) src = "modules/MaterialDeck/img/black.png";
+        }
         
         streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
         streamDeck.setTitle(name,context);
@@ -130,12 +136,7 @@ export class MacroControl{
             }
             else {
                 if (macroNumber > 9) macroNumber = 0;
-                for (let j=0; j<10; j++){
-                    if (macros[j].key == macroNumber){
-                        if (macros[j].macro == null) macroId == undefined;
-                        else macroId = macros[j].macro._id;
-                    }  
-                }
+                macroId = game.macros.apps[0].macros.find(m => m.key == macroNumber).macro?.id
             }
             let macro = undefined;
             let uses = undefined;
@@ -154,11 +155,44 @@ export class MacroControl{
         const mode = settings.macroMode ? settings.macroMode : 'hotbar';
         let macroNumber = settings.macroNumber;
         if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 0;
+        let target = settings.target ? settings.target : undefined;
+        //const targetActor = target.actor ? undefined : target;
+        //if (targetActor != undefined) target = undefined;
+        
+        //let macroTarget = {
+        //    token: target,
+        //    actor: targetActor
+        //}
+        //console.log('target',macroTarget,mode);
         
         if (mode == 'hotbar' || mode == 'visibleHotbar' || mode == 'customHotbar'){
             if ((MODULE.getPermission('MACRO','HOTBAR') == false )) return;
             this.executeHotbar(macroNumber,mode);
         } 
+        else if (mode == 'name') {
+            if ((MODULE.getPermission('MACRO','BY_NAME') == false )) return;
+            const macroName = settings.macroNumber;
+            const macro = game.macros.getName(macroName);
+
+            if (macro == undefined) return;
+           
+            const args = settings.macroArgs ? settings.macroArgs : "";
+
+            let furnaceEnabled = false;
+            let furnace = game.modules.get("furnace");
+            if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) furnaceEnabled = true;
+            if (args == "" || args == " ") furnaceEnabled = false;
+            if (furnaceEnabled == false) macro.execute({token:target});
+            else {
+                let chatData = {
+                    user: game.user._id,
+                    speaker: ChatMessage.getSpeaker(),
+                    content: "/'" + macro.name + "' " + args
+                };
+                ChatMessage.create(chatData, {});
+            }
+
+        }
         else {
             if ((MODULE.getPermission('MACRO','MACROBOARD') == false )) return;
             if (settings.macroBoardMode == 'offset') {
@@ -182,12 +216,7 @@ export class MacroControl{
             }
             else macros = game.macros.apps[0].macros;
             if (macroNumber > 9) macroNumber = 0;
-            for (let j=0; j<10; j++){
-                if (macros[j].key == macroNumber){
-                    if (macros[j].macro == null) macroId == undefined;
-                    else macroId = macros[j].macro._id; 
-                }
-            }
+            macroId = game.macros.apps[0].macros.find(m => m.key == macroNumber).macro?.id
         }
         if (macroId == undefined) return;
         let macro = game.macros.get(macroId);
@@ -206,7 +235,7 @@ export class MacroControl{
                 const args = game.settings.get(MODULE.moduleName,'macroSettings').args;
                 let furnaceEnabled = false;
                 let furnace = game.modules.get("furnace");
-                if (furnace != undefined && furnace.active) furnaceEnabled = true;
+                if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) furnaceEnabled = true;
                 if (args == undefined || args[macroNumber] == undefined || args[macroNumber] == "") furnaceEnabled = false;
                 if (furnaceEnabled == false) macro.execute();
                 else {

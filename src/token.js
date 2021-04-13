@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
-import {streamDeck} from "../MaterialDeck.js";
+import {streamDeck, macroControl} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class TokenControl{
     constructor(){
@@ -41,6 +42,7 @@ export class TokenControl{
         let overlay = false;
         let statsOld;
         let uses = undefined;
+        let hp = undefined;
         if (validToken) {
             if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) {
                 streamDeck.noPermission(context);
@@ -93,12 +95,18 @@ export class TokenControl{
             else if (game.system.id == 'dnd5e'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
+                    uses = {
+                        available: attributes.hp.value,
+                        maximum: attributes.hp.max,
+                        heart: true
+                    };
                     txt += attributes.hp.value + "/" + attributes.hp.max;
                 }
                 else if (stats == 'HPbox') {
                     uses = {
                         available: attributes.hp.value,
-                        maximum: attributes.hp.max
+                        maximum: attributes.hp.max,
+                        heart: false
                     }
                 }
                 else if (stats == 'TempHP') {
@@ -138,7 +146,11 @@ export class TokenControl{
                     }
                     txt += speed;
                 }
-                else if (stats == 'Init') txt += attributes.init.total;
+                else if (stats == 'Init') {
+                    const value = attributes.init.total;
+                    if (value >= 0) txt += '+';
+                    txt += value;
+                }
                 else if (stats == 'PassivePerception') txt += token.actor.data.data.skills.prc.passive;
                 else if (stats == 'PassiveInvestigation') txt += token.actor.data.data.skills.inv.passive;
                 else if (stats == 'Ability') {        
@@ -147,11 +159,21 @@ export class TokenControl{
                 }
                 else if (stats == 'AbilityMod') {        
                     const ability = settings.ability ? settings.ability : 'str';
-                    txt += token.actor.data.data.abilities?.[ability].mod;
+                    const value = token.actor.data.data.abilities?.[ability].mod;
+                    if (value >= 0) txt += '+';
+                    txt += value;
                 }
-                else if (stats == 'AbilitySave') {        
-                    const ability = settings.ability ? settings.ability : 'str';
-                    txt += token.actor.data.data.abilities?.[ability].save;
+                else if (stats == 'Save') {        
+                    const ability = settings.save ? settings.save : 'str';
+                    const value = token.actor.data.data.abilities?.[ability].save;
+                    if (value >= 0) txt += '+';
+                    txt += value;
+                }
+                else if (stats == 'Skill') {
+                    const skill = settings.skill ? settings.skill : 'acr';
+                    const value = token.actor.data.data.skills?.[skill].mod;
+                    if (value >= 0) txt += '+';
+                    txt += value;
                 }
                 else if (stats == 'Prof') txt += token.actor.data.data.attributes.prof;
             }
@@ -191,18 +213,32 @@ export class TokenControl{
                     }
                     txt += speed;
                 }
-                else if (stats == 'Init') txt += attributes.init.total;
+                else if (stats == 'Init') {
+                    const value = attributes.init.total;
+                    if (value >= 0) txt += '+';
+                    txt += value;
+                }
                 else if (stats == 'Ability') {        
                     const ability = settings.ability ? settings.ability : 'str';
                     txt += token.actor.data.data.abilities?.[ability].value;
                 }
                 else if (stats == 'AbilityMod') {        
                     const ability = settings.ability ? settings.ability : 'str';
-                    txt += token.actor.data.data.abilities?.[ability].mod;
+                    const value = token.actor.data.data.abilities?.[ability].mod;
+                    if (value >= 0) txt += '+';
+                    txt += value;
                 }
-                else if (stats == 'AbilitySave') {        
-                    const ability = settings.ability ? settings.ability : 'str';
-                    txt += token.actor.data.data.abilities?.[ability].save;
+                else if (stats == 'Save') {        
+                    const ability = settings.save ? settings.save : 'fort';
+                    const value = token.actor.data.data.attributes.savingThrows?.[ability].total;
+                    if (value >= 0) txt += '+';
+                    txt += value;
+                }
+                else if (stats == 'Skill') {
+                    const skill = settings.skill ? settings.skill : 'apr';
+                    const value = token.actor.data.data.skills?.[skill].mod;
+                    if (value >= 0) txt += '+';
+                    txt += value;
                 }
                 else if (stats == 'Prof') txt += token.actor.data.data.attributes.prof;
             }
@@ -224,7 +260,7 @@ export class TokenControl{
                 }
                 else if (stats == 'AC') txt += attributes.ac.value;
                 else if (stats == 'Speed'){
-                    let speed = "Land: " + attributes.speed.value.replace('feet','') + ' feet';
+                    let speed = attributes.speed.breakdown;
                     const otherSpeeds = attributes.speed.otherSpeeds;
                     if (otherSpeeds.length > 0)
                         for (let i=0; i<otherSpeeds.length; i++)
@@ -232,8 +268,36 @@ export class TokenControl{
                     txt += speed;
                 }
                 else if (stats == 'Init') {
-                    let init = attributes.initiative.totalModifier;
-                    if (init != undefined) txt += init;
+                    const value = attributes.init.value;
+                    if (value != undefined) {
+                        if (value >= 0) txt += "+";
+                        txt += value;
+                    }
+                }
+                else if (stats == 'Ability') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    txt += token.actor.data.data.abilities?.[ability].value;
+                }
+                else if (stats == 'AbilityMod') {        
+                    const ability = settings.ability ? settings.ability : 'str';
+                    const value = token.actor.data.data.abilities?.[ability].mod;
+                    if (value >= 0) txt += '+';
+                    txt += value;
+                }
+                else if (stats == 'Save') {        
+                    let ability = settings.save ? settings.save : 'fort';
+                    if (ability == 'fort') ability = 'fortitude';
+                    else if (ability == 'ref') ability = 'reflex';
+                    else if (ability == 'will') ability = 'will';
+                    const value = token.actor.data.data.saves?.[ability].value;
+                    if (value >= 0) txt += "+";
+                    txt += value;
+                }
+                else if (stats == 'Skill') {
+                    const skill = settings.skill ? settings.skill : 'acr';
+                    const value = token.actor.data.data.skills?.[skill].totalModifier;
+                    if (value >= 0) txt += '+';
+                    txt += value;
                 }
             }
             else if (game.system.id == 'demonlord'){
@@ -250,11 +314,15 @@ export class TokenControl{
                 else if (stats == 'Init') txt += token.actor.data.data.fastturn ? "FAST" : "SLOW";
                 else if (stats == 'Ability') {        
                     const ability = settings.ability ? settings.ability : 'strength';
-                    txt += token.actor.data.data.attributes?.[ability].value;
+                    const value = token.actor.data.data.attributes?.[ability].value;
+                    if (value >=0) txt += '+';
+                    txt += value;
                 }
                 else if (stats == 'AbilityMod') {        
                     const ability = settings.ability ? settings.ability : 'strength';
-                    txt += token.actor.data.data.attributes?.[ability].modifier;
+                    const value = token.actor.data.data.attributes?.[ability].modifier;
+                    if (value >=0) txt += '+';
+                    txt += value;
                 }
             }
             else {
@@ -318,7 +386,7 @@ export class TokenControl{
                     else if (icon == false) {
                         let effect = CONFIG.statusEffects.find(e => e.id === condition);
                         iconSrc = effect.icon;
-                        let effects = token.actor.effects.entries;
+                        let effects = compatibleCore("0.8.1") ? token.actor.effects.contents : token.actor.effects.entries;
                         let active = effects.find(e => e.isTemporary === condition);
                         if (active != undefined){
                             ring = 2;
@@ -372,7 +440,7 @@ export class TokenControl{
                 if (icon == false) {
                     let effect = CONFIG.statusEffects.find(e => e.label === condition);
                     iconSrc = effect.icon;
-                    let effects = token.actor.effects.entries;
+                    let effects = compatibleCore("0.8.1") ? token.actor.effects.contents : token.actor.effects.entries;
                     let active = effects.find(e => e.isTemporary === effect.id);
                     if (active != undefined){
                         ring = 2;
@@ -495,7 +563,7 @@ export class TokenControl{
         if (icon == false){
             if (MODULE.getPermission('TOKEN','STATS') == false) stats = statsOld;
             if (stats == 'HP' || stats == 'TempHP') //HP
-                iconSrc = "modules/MaterialDeck/img/token/hp.png";
+                iconSrc = "modules/MaterialDeck/img/token/hp_empty.png";
             else if (stats == 'AC' || stats == 'ShieldHP') //AC
                 iconSrc = "modules/MaterialDeck/img/token/ac.webp";
             else if (stats == 'Speed') //Speed
@@ -507,7 +575,7 @@ export class TokenControl{
             else if (stats == 'PassiveInvestigation') 
                 iconSrc = "modules/MaterialDeck/img/black.png";
         } 
-        streamDeck.setIcon(context,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses});
+        streamDeck.setIcon(context,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
         streamDeck.setTitle(txt,context);
     }
 
@@ -606,7 +674,7 @@ export class TokenControl{
             this.update(tokenId);
             
         }
-        else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
+        else if (onClick == 'cubCondition') { //Combat Utility Belt conditions
             if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
             const condition = settings.cubConditionName;
             if (condition == undefined || condition == '') return;
@@ -696,6 +764,48 @@ export class TokenControl{
             iconSrc = images[imgNr];
             token.update({img: iconSrc})
         }
+        else if (onClick == 'macro') {  //call a macro
+            const settingsNew = {
+                target: token,
+                macroMode: settings.macroMode,
+                macroNumber: settings.macroId,
+                macroArgs: settings.macroArgs
+            }
+            macroControl.keyPress(settingsNew);
+        }
+        else if (onClick == 'roll') {   //roll skill/save/ability
+            const roll = settings.roll ? settings.roll : 'abilityCheck';
+            const ability = settings.rollAbility ? settings.rollAbility : 'str';
+            const skill = settings.rollSkill ? settings.rollSkill : 'acr';
+            const save = settings.rollSave ? settings.rollSave : 'str';
+
+            if (game.system.id == 'pf2e') {
+                if (roll == 'abilityCheck') token.actor.data.data.saves?.[ability].roll();
+                else if (roll == 'save') {
+                    let ability = save;
+                    if (ability == 'fort') ability = 'fortitude';
+                    else if (ability == 'ref') ability = 'reflex';
+                    else if (ability == 'will') ability = 'will';
+                    token.actor.data.data.saves?.[ability].roll();
+                }
+                else if (roll == 'skill') token.actor.data.data.skills?.[skill].roll();
+            }
+            if (roll == 'abilityCheck') token.actor.rollAbilityTest(ability);
+            else if (roll == 'save') {
+                if (game.system.id == 'dnd5e') token.actor.rollAbilitySave(save);
+                else token.actor.rollSavingThrow(save);
+            }
+            else if (roll == 'skill') token.actor.rollSkill(skill);
+            else if (roll == 'initiative') token.actor.rollInitiative();
+            else if (roll == 'deathSave') token.actor.rollDeathSave();
+            else if (roll == 'grapple') token.actor.rollGrapple();
+            else if (roll == 'bab') token.actor.rollBAB();
+            else if (roll == 'melee') token.actor.rollMelee();
+            else if (roll == 'ranged') token.actor.rollRanged();
+            else if (roll == 'cmb') token.actor.rollCMB();
+            else if (roll == 'attack') token.actor.rollAttack();
+            else if (roll == 'defenses') token.actor.rollDefenses();
+        }
         else if (onClick == 'custom') {//custom onClick function
             if (MODULE.getPermission('TOKEN','CUSTOM') == false ) return;
             const formula = settings.customOnClickFormula ? settings.customOnClickFormula : '';
@@ -705,19 +815,39 @@ export class TokenControl{
             let formulaArrayTemp;
             let split1 = formula.split(';');
             for (let i=0; i<split1.length; i++){
+                let macro = false;
+                let furnaceArguments = "";
                 let split2 = split1[i].split(' = ');
                 targetArrayTemp = split2[0];
                 formulaArrayTemp = split2[1];
-
                 let targetArray = this.splitCustom(targetArrayTemp);
-
                 for (let i=0; i<targetArray.length; i++){
                     if (targetArray[i][0] == '@') {
                         const dataPath = targetArray[i].split('@')[1].split('.');
                         targetArray[i] = dataPath;
+                        if (dataPath == 'macro') {
+                            macro = true;
+                        }
+                    }
+                    else if (macro) {
+                        const data = targetArray[i].split('[');
+                        if (data != undefined && data.length > 1) targetArray[i] = data[1];
+                        if (i > 1) {
+                            if (furnaceArguments != "") furnaceArguments += " ";
+                            furnaceArguments += "\"" + targetArray[i] + "\"";
+                        }
                     } 
                 }
-
+                if (macro) {
+                    const settingsNew = {
+                        target: token,
+                        macroMode: 'name',
+                        macroNumber: targetArray[1],
+                        macroArgs: furnaceArguments
+                    }
+                    macroControl.keyPress(settingsNew);
+                    continue;
+                }
                 let formulaArray = this.splitCustom(formulaArrayTemp);
 
                 let value = 0;
@@ -774,7 +904,7 @@ export class TokenControl{
                                 if (path != '') path += '.';
                                 path += targetArray[i][j];
                             }
-                            actor.update({[path]:value})
+                            await actor.update({[path]:value})
                         }
                         else {
                             let path = '';
@@ -782,9 +912,9 @@ export class TokenControl{
                                 if (path != '') path += '.';
                                 path += targetArray[i][j];
                             }
-                            actor.update({[path]:value})
+                            await actor.update({[path]:value})
                         }
-                        
+                        this.update(token.id);
                     }
                     else {
                         data = token;
@@ -793,8 +923,10 @@ export class TokenControl{
                             if (path != '') path += '.';
                             path += targetArray[i][j];
                         }
-                        token.update({[path]:value})
+                        await token.update({[path]:value})
+                        this.update(token.id);
                     }
+                    
                 }
             }
         }

@@ -1,4 +1,35 @@
 # Changelog Material Deck Module
+## v1.3.3
+Additions:
+<ul>
+<li>Other Actions => Open Sidebar Tab: Action now indicates which sidebar tab is open (only works on Foundry 0.8.x)</li>
+<li>Other Actions => Open Sidebar Tab: Added option to create an pop-out (doesn't work for the chat)</li>
+<li>Other Actions: Added option to open the pf2e compendium browser</li>
+<li>Macro Action: Can now call macros by name</li>
+<li>Token Action => On Click: Added option to call a macro. Currently the macro will be applied to the selected token</li>
+<li>Token Action => Display Stats: Added saving throws and skill modifiers for most systems</li>
+<li>Token Action => OnClick: Added 'Dice Roll' option, which allows you to roll ability checks, saving throws and other things (depending on game system)</li>
+<li>Token Action => Stats => Display HP: Made the heart icon dynamic, so the amount that the heart is filled with red depends on the relative amount of hit points of the token. 25% hp means the lower 25% of the heart is red, 50% hp means the lower 50% of the heart is red, etc</li>
+<li>Token Action => Stats => Added a '+' before all modifier stats that are bigger than 0</li>
+<li>Token Action => Custom OnClick: Added support for calling macros. For instructions, please refer to the documentation: https://github.com/CDeenen/MaterialDeck/wiki/Token-Action#custom-on-click-function</li>
+</ul>
+
+Fixes:
+<ul>
+<li>Other Actions => Pause Game: Pause is now transmitted to all connected clients</li>
+<li>Token Action => Display Stats: Fixed movement speed for pf2e</li>
+</ul>
+
+Other:
+<ul>
+<li>Should be compatible with Foundry 0.8.1. Only tested on DnD5e. Please note that any functions that rely on other modules do not work if the other modules are not compatible with 0.8.1</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.3.4 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ## v1.3.2 - 11-03-2021
 Additions:
 <ul>
@@ -59,7 +90,7 @@ Additions:
 <li>External Modules => Added support for the 'Shared Vision' module</li>
 <li>External Modules => Added support for the 'Lock View' module</li>
 <li>External Modules => Added support for the 'Not Your Turn' module</li>
-</ul>
+<ul>
 Fixes:
 <ul>
 <li>Token Action => OnClick: Fixed conditions for pf1e and dnd3.5e</li>

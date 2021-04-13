@@ -18,6 +18,7 @@ const defaultUserPermissions = {
     },
     MACRO: {
         HOTBAR: [true,true,true,true],
+        BY_NAME: [false,false,true,true],
         MACROBOARD: [false,false,true,true],
         MACROBOARD_CONFIGURE: [false,false,true,true]
     },
@@ -208,6 +209,7 @@ export const registerSettings = async function() {
     else {
         if (permissionSettings.permissions.TOKEN.NON_OWNED == undefined) permissionSettings.permissions.TOKEN.NON_OWNED = [false,false,true,true];
         if (permissionSettings.permissions.TOKEN.OBSERVER == undefined) permissionSettings.permissions.TOKEN.OBSERVER = [false,true,true,true];
+        if (permissionSettings.permissions.MACRO.BY_NAME == undefined) permissionSettings.permissions.MACRO.BY_NAME = [false,false,true,true];
     }
     game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);
     

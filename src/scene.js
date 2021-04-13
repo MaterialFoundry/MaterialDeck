@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
+import {compatibleCore} from "./misc.js";
 
 export class SceneControl{
     constructor(){
@@ -58,7 +59,7 @@ export class SceneControl{
 
             let sceneList = [];
             for (let i=0; i<ui.scenes.tree.children.length; i++){
-                const scenesInFolder = ui.scenes.tree.children[i].entities;
+                const scenesInFolder = compatibleCore("0.8.1") ? ui.scenes.tree.children[i].contents : ui.scenes.tree.children[i].entities;
                 for (let j=0; j<scenesInFolder.length; j++)
                     sceneList.push(scenesInFolder[j])
             }
@@ -151,7 +152,7 @@ export class SceneControl{
 
             let sceneList = [];
             for (let i=0; i<ui.scenes.tree.children.length; i++){
-                const scenesInFolder = ui.scenes.tree.children[i].entities;
+                const scenesInFolder = compatibleCore("0.8.1") ? ui.scenes.tree.children[i].contents : ui.scenes.tree.children[i].entities;
                 for (let j=0; j<scenesInFolder.length; j++)
                     sceneList.push(scenesInFolder[j])
             }

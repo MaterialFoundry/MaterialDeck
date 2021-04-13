@@ -355,6 +355,11 @@ export class StreamDeck{
         else {
             
         }
+        if (uses != undefined && uses.heart && (uses.available > 0 || uses.maximum != undefined)) {
+            const percentage = 102*uses.available/uses.maximum;
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(0, 121,144,-percentage);
+        }
         if (format == 'icon' && url != ""){
             ctx.font = '600 90px "Font Awesome 5 Free"';
             ctx.fillStyle = "gray";
@@ -411,7 +416,7 @@ export class StreamDeck{
                 yStart = 0;
             }
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
-            if (uses != undefined && (uses.available > 0 || uses.maximum != undefined)) {
+            if (uses != undefined && uses.heart == false && (uses.available > 0 || uses.maximum != undefined)) {
                 let txt = uses.available;
                 if (uses.maximum != undefined) txt = uses.available + '/' + uses.maximum;
                 if (uses.maximum == undefined ) uses.maximum = 1;
@@ -526,7 +531,8 @@ export class StreamDeck{
         this.imageBuffer = [];
     }
 
-    noPermission(context,showTxt=true){
+    noPermission(context,showTxt=true, origin = ""){
+        console.warn("Material Deck: User lacks permission for function "+origin);
         const url = 'modules/MaterialDeck/img/black.png';
         const background = '#000000';
         const txt = showTxt ? 'no\npermission' : '';

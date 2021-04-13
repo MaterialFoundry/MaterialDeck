@@ -26,7 +26,7 @@
                 {{#select this.playlist}}
                     <option value="">{{localize "MaterialDeck.None"}}</option>
                     {{#each ../playlists}}
-                    <option value="{{this._id}}">{{this.name}}</option>
+                    <option value="{{this.id}}">{{this.name}}</option>
                     {{/each}}
                 {{/select}}
             </select>
