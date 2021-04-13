@@ -3,7 +3,7 @@
     "title": "Material Deck",
     "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
     "version": "1.3.3",
-    "minimumSDversion": "1.3.2",
+    "minimumSDversion": "1.3.4",
     "minimumMSversion": "1.0.2",
     "author": "CDeenen",
     "esmodules": [
