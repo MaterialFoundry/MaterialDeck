@@ -1,5 +1,5 @@
 # Changelog Material Deck Module
-## v1.3.3
+### v1.3.3
 Additions:
 <ul>
 <li>Other Actions => Open Sidebar Tab: Action now indicates which sidebar tab is open (only works on Foundry 0.8.x)</li>
@@ -30,7 +30,7 @@ Other:
 Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
 SD plugin v1.3.4 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
 
-## v1.3.2 - 11-03-2021
+### v1.3.2 - 11-03-2021
 Additions:
 <ul>
 <li>Added support for the Multi Action provided by the SD app</li>
@@ -50,7 +50,6 @@ Other:
 <ul>
 <li>Macro Action: Improved the way Hotbar Uses are displayed, it is now displayed in a box similar to how the module looks in Foundry</li>
 <li>Made the way images are generated more flexible to make future additions easier</li>
-<li></li>
 </ul>
 
 <br>
@@ -90,7 +89,7 @@ Additions:
 <li>External Modules => Added support for the 'Shared Vision' module</li>
 <li>External Modules => Added support for the 'Lock View' module</li>
 <li>External Modules => Added support for the 'Not Your Turn' module</li>
-<ul>
+</ul>
 Fixes:
 <ul>
 <li>Token Action => OnClick: Fixed conditions for pf1e and dnd3.5e</li>
