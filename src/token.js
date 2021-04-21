@@ -30,7 +30,8 @@ export class TokenControl{
     
         let validToken = false;
         let token;
-        if (selection == 'selected') token = canvas.tokens.controlled[0];
+        if (tokenId != undefined && tokenId != null) token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        else if (selection == 'selected') token = canvas.tokens.controlled[0];
         else if (selection != 'selected' && tokenIdentifier == '') {}
         else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
         else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);

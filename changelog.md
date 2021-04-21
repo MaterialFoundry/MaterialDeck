@@ -1,5 +1,11 @@
 # Changelog Material Deck Module
-### v1.4.0
+### v1.4.1 - 21-04-2021
+Fixes:
+<ul>
+<li>Last update broke the combat tracker, should now be fixed</li>
+</ul>
+
+### v1.4.0 - 21-04-2021
 Additions:
 <ul>
 <li>Support for connecting multiple Stream Decks at the same time. Please note that performance decreases with each extra Stream Deck</li>
@@ -22,7 +28,8 @@ Fixes:
 Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
 SD plugin v1.4.0 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
 
-### v1.3.3
+
+### v1.3.3 - 12-04-2021
 Additions:
 <ul>
 <li>Other Actions => Open Sidebar Tab: Action now indicates which sidebar tab is open (only works on Foundry 0.8.x)</li>
