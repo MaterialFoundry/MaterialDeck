@@ -1,5 +1,5 @@
 import * as MODULE from "../MaterialDeck.js";
-import {streamDeck, macroControl} from "../MaterialDeck.js";
+import {streamDeck, macroControl, otherControls} from "../MaterialDeck.js";
 import {compatibleCore} from "./misc.js";
 
 export class TokenControl{
@@ -10,24 +10,27 @@ export class TokenControl{
 
     async update(tokenId=null){
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'token') continue;
-            await this.pushData(tokenId,data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'token') continue;
+                await this.pushData(tokenId,data.settings,data.context,device.device);
+            }
         }
     }
 
-    async pushData(tokenId,settings,context,ring=0,ringColor='#000000'){
+    async pushData(tokenId,settings,context,device,ring=0,ringColor='#000000'){
         const name = settings.displayName ? settings.displayName : false;
         const icon = settings.displayIcon ? settings.displayIcon : false;
         const background = settings.background ? settings.background : "#000000";
         let stats =  settings.stats ? settings.stats : 'none';
         const selection = settings.selection ? settings.selection : 'selected';
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
+        const prependTitle = settings.prependTitle ? settings.prependTitle : '';
     
         let validToken = false;
         let token;
-        if (selection == 'selected') token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        if (selection == 'selected') token = canvas.tokens.controlled[0];
         else if (selection != 'selected' && tokenIdentifier == '') {}
         else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
         else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);
@@ -35,7 +38,6 @@ export class TokenControl{
         else if (selection == 'actorId') token = canvas.tokens.children[0].children.find(p => p.actor.id == tokenIdentifier);
 
         if (token != undefined) validToken = true;
-
         let tokenName = "";
         let txt = "";
         let iconSrc = "";
@@ -45,16 +47,17 @@ export class TokenControl{
         let hp = undefined;
         if (validToken) {
             if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             if (token.owner == false && token.observer == false && MODULE.getPermission('TOKEN','NON_OWNED') == false ) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
 
             tokenName = token.data.name;
             if (name) txt += tokenName;
+            else txt += prependTitle;
 
             const permission = token.actor?.permission;
             if (settings.combat){
@@ -95,11 +98,14 @@ export class TokenControl{
             else if (game.system.id == 'dnd5e'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
-                    uses = {
-                        available: attributes.hp.value,
-                        maximum: attributes.hp.max,
-                        heart: true
-                    };
+                    if (!icon) {
+                        uses = {
+                            available: attributes.hp.value,
+                            maximum: attributes.hp.max,
+                            heart: "#FF0000"
+                        };
+                    }
+                    
                     txt += attributes.hp.value + "/" + attributes.hp.max;
                 }
                 else if (stats == 'HPbox') {
@@ -110,9 +116,17 @@ export class TokenControl{
                     }
                 }
                 else if (stats == 'TempHP') {
-                    txt += attributes.hp.temp;
-                    if (attributes.hp.tempmax != null)
-                    txt += "/" + attributes.hp.tempmax;
+                    const val = (attributes.hp.temp == null) ? 0 : attributes.hp.temp;
+                    const max = (attributes.hp.tempmax == null) ? 0 : attributes.hp.tempmax
+                    if (!icon) {
+                        uses = {
+                            available: (attributes.hp.temp == null) ? 0 : attributes.hp.temp,
+                            maximum: (max == 0) ? 1 : attributes.hp.tempmax,
+                            heart: "#00FF00"
+                        };
+                    }
+                    txt += val;
+                    if (max != 0) txt += "/" + max;
                 }
                 else if (stats == 'AC') txt += attributes.ac.value;
                 else if (stats == 'Speed'){
@@ -175,12 +189,25 @@ export class TokenControl{
                     if (value >= 0) txt += '+';
                     txt += value;
                 }
-                else if (stats == 'Prof') txt += token.actor.data.data.attributes.prof;
+                else if (stats == 'Prof') {
+                    const value = token.actor.data.data.attributes.prof;
+                    if (value >= 0) txt += '+';
+                    txt += value;
+                }
             }
 
             else if (game.system.id == 'D35E' || game.system.id == 'pf1'){
                 let attributes = token.actor.data.data.attributes;
-                if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                if (stats == 'HP') {
+                    if (!icon) {
+                        uses = {
+                            available: attributes.hp.value,
+                            maximum: attributes.hp.max,
+                            heart: true
+                        };
+                    }
+                    txt += attributes.hp.value + "/" + attributes.hp.max;
+                }
                 else if (stats == 'HPbox') {
                     uses = {
                         available: attributes.hp.value,
@@ -244,7 +271,17 @@ export class TokenControl{
             }
             else if (game.system.id == 'pf2e'){
                 let attributes = token.actor.data.data.attributes;
-                if (stats == 'HP') txt += attributes.hp.value + "/" + attributes.hp.max;
+                if (stats == 'HP') {
+                    if (!icon) {
+                        uses = {
+                            available: attributes.hp.value,
+                            maximum: attributes.hp.max,
+                            heart: true
+                        };
+                    }
+                    
+                    txt += attributes.hp.value + "/" + attributes.hp.max;
+                }
                 else if (stats == 'HPbox') {
                     uses = {
                         available: attributes.hp.value,
@@ -302,7 +339,17 @@ export class TokenControl{
             }
             else if (game.system.id == 'demonlord'){
                 let characteristics = token.actor.data.data.characteristics;
-                if (stats == 'HP') txt += characteristics.health.value + "/" + characteristics.health.max;
+                if (stats == 'HP') {
+                    if (!icon) {
+                        uses = {
+                            available: attributes.hp.value,
+                            maximum: attributes.hp.max,
+                            heart: true
+                        };
+                    }
+                    
+                    characteristics.health.value + "/" + characteristics.health.max;
+                }
                 else if (stats == 'HPbox') {
                     uses = {
                         available: characteristics.health.value,
@@ -335,7 +382,7 @@ export class TokenControl{
 
             if (settings.onClick == 'visibility') { //toggle visibility
                 if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 ring = 1;
@@ -350,7 +397,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'combatState') { //toggle combat state
                 if (MODULE.getPermission('TOKEN','COMBAT') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 ring = 1;
@@ -375,7 +422,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'condition') { //toggle condition
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 ring = 1;
@@ -430,7 +477,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 ring = 1;
@@ -450,7 +497,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'wildcard') { //wildcard images
                 if (MODULE.getPermission('TOKEN','WILDCARD') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 if (icon == false) return;
@@ -490,7 +537,7 @@ export class TokenControl{
             iconSrc += "";
             if (settings.onClick == 'visibility') { //toggle visibility
                 if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 if (icon == false) {
@@ -501,7 +548,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'combatState') { //toggle combat state
                 if (MODULE.getPermission('TOKEN','COMBAT') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 if (icon == false) {
@@ -519,7 +566,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'condition') { //toggle condition
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 if (game.system.id == 'dnd5e' || game.system.id == 'D35E' || game.system.id == 'pf1'){
@@ -548,7 +595,7 @@ export class TokenControl{
             }
             else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
-                    streamDeck.noPermission(context);
+                    streamDeck.noPermission(context,device);
                     return;
                 }
                 const condition = settings.cubConditionName;
@@ -560,22 +607,47 @@ export class TokenControl{
                 overlay = true;
             }
         }
+
         if (icon == false){
             if (MODULE.getPermission('TOKEN','STATS') == false) stats = statsOld;
-            if (stats == 'HP' || stats == 'TempHP') //HP
+            if (stats == 'HP') //HP
                 iconSrc = "modules/MaterialDeck/img/token/hp_empty.png";
+            if (stats == 'TempHP') //Temp HP
+                iconSrc = "modules/MaterialDeck/img/token/temp_hp_empty.png";
             else if (stats == 'AC' || stats == 'ShieldHP') //AC
                 iconSrc = "modules/MaterialDeck/img/token/ac.webp";
             else if (stats == 'Speed') //Speed
                 iconSrc = "modules/MaterialDeck/img/token/speed.webp";
             else if (stats == 'Init') //Initiative
                 iconSrc = "modules/MaterialDeck/img/token/init.png";
-            else if (stats == 'PassivePerception') 
-                iconSrc = "modules/MaterialDeck/img/black.png";
-            else if (stats == 'PassiveInvestigation') 
-                iconSrc = "modules/MaterialDeck/img/black.png";
+            else if (stats == 'PassivePerception') {
+                iconSrc = "modules/MaterialDeck/img/token/skills/prc.png";
+                overlay = true;
+                ring = 1;
+            }
+            else if (stats == 'PassiveInvestigation') {
+                iconSrc = "modules/MaterialDeck/img/token/skills/inv.png";
+                overlay = true;
+                ring = 1;
+            }
+            else if (stats == 'Ability' || stats == 'AbilityMod' || stats == 'Save') {
+                overlay = true;
+                ring = 1;
+                let ability = (stats == 'Save') ? settings.save : settings.ability;
+                if (ability == undefined) ability = 'str';
+                if (ability == 'con') iconSrc = "modules/MaterialDeck/img/token/abilities/cons.png";
+                else iconSrc = "modules/MaterialDeck/img/token/abilities/" + ability + ".png";
+            }
+            else if (stats == 'Skill') {
+                overlay = true;
+                ring = 1;
+                let skill = settings.skill;
+                if (skill == undefined) skill = 'acr';
+                else iconSrc = "modules/MaterialDeck/img/token/skills/" + skill + ".png";
+            }
+                
         } 
-        streamDeck.setIcon(context,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
+        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
         streamDeck.setTitle(txt,context);
     }
 
@@ -774,37 +846,45 @@ export class TokenControl{
             macroControl.keyPress(settingsNew);
         }
         else if (onClick == 'roll') {   //roll skill/save/ability
-            const roll = settings.roll ? settings.roll : 'abilityCheck';
+            const roll = settings.roll ? settings.roll : 'ability';
             const ability = settings.rollAbility ? settings.rollAbility : 'str';
             const skill = settings.rollSkill ? settings.rollSkill : 'acr';
             const save = settings.rollSave ? settings.rollSave : 'str';
+            const rollOptions = otherControls.rollOption ? otherControls.rollOption : 'dialog';
+            const options = {
+                fastForward: (otherControls.rollOption != 'dialog'),
+                advantage: (otherControls.rollOption == 'advantage'),
+                disadvantage: (otherControls.rollOption == 'disadvantage')
+            }
 
             if (game.system.id == 'pf2e') {
-                if (roll == 'abilityCheck') token.actor.data.data.saves?.[ability].roll();
+                if (roll == 'ability') token.actor.data.data.saves?.[ability].roll(options);
                 else if (roll == 'save') {
                     let ability = save;
                     if (ability == 'fort') ability = 'fortitude';
                     else if (ability == 'ref') ability = 'reflex';
                     else if (ability == 'will') ability = 'will';
-                    token.actor.data.data.saves?.[ability].roll();
+                    token.actor.data.data.saves?.[ability].roll(options);
                 }
-                else if (roll == 'skill') token.actor.data.data.skills?.[skill].roll();
+                else if (roll == 'skill') token.actor.data.data.skills?.[skill].roll(options);
             }
-            if (roll == 'abilityCheck') token.actor.rollAbilityTest(ability);
+            if (roll == 'ability') token.actor.rollAbilityTest(ability,options);
             else if (roll == 'save') {
-                if (game.system.id == 'dnd5e') token.actor.rollAbilitySave(save);
-                else token.actor.rollSavingThrow(save);
+                if (game.system.id == 'dnd5e') token.actor.rollAbilitySave(save,options);
+                else token.actor.rollSavingThrow(save,options);
             }
-            else if (roll == 'skill') token.actor.rollSkill(skill);
-            else if (roll == 'initiative') token.actor.rollInitiative();
-            else if (roll == 'deathSave') token.actor.rollDeathSave();
-            else if (roll == 'grapple') token.actor.rollGrapple();
-            else if (roll == 'bab') token.actor.rollBAB();
-            else if (roll == 'melee') token.actor.rollMelee();
-            else if (roll == 'ranged') token.actor.rollRanged();
-            else if (roll == 'cmb') token.actor.rollCMB();
-            else if (roll == 'attack') token.actor.rollAttack();
-            else if (roll == 'defenses') token.actor.rollDefenses();
+            else if (roll == 'skill') token.actor.rollSkill(skill,options);
+            else if (roll == 'initiative') token.actor.rollInitiative(options);
+            else if (roll == 'deathSave') token.actor.rollDeathSave(options);
+            else if (roll == 'grapple') token.actor.rollGrapple(options);
+            else if (roll == 'bab') token.actor.rollBAB(options);
+            else if (roll == 'melee') token.actor.rollMelee(options);
+            else if (roll == 'ranged') token.actor.rollRanged(options);
+            else if (roll == 'cmb') token.actor.rollCMB(options);
+            else if (roll == 'attack') token.actor.rollAttack(options);
+            else if (roll == 'defenses') token.actor.rollDefenses(options);
+            
+            if (otherControls.rollOption != 'dialog') otherControls.setRollOption('normal');
         }
         else if (onClick == 'custom') {//custom onClick function
             if (MODULE.getPermission('TOKEN','CUSTOM') == false ) return;

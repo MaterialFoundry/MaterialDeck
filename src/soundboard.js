@@ -13,16 +13,18 @@ export class SoundboardControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'soundboard') continue;
-            await this.update(data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'soundboard') continue;
+                await this.update(data.settings,data.context,device.device);
+            }
         }
     }
 
-    update(settings,context){
+    update(settings,context,device){
         if (MODULE.getPermission('SOUNDBOARD','PLAY') == false ) {
-            streamDeck.noPermission(context);
+            streamDeck.noPermission(context,device);
             return;
         }
         this.active = true;
@@ -46,7 +48,7 @@ export class SoundboardControl{
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
 
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(context,src,{background:background,ring:2,ringColor:ringColor});
+            streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'offset') { //Offset
             const ringOffColor = settings.offRing ? settings.offRing : '#000000';
@@ -58,7 +60,7 @@ export class SoundboardControl{
             else ringColor = ringOffColor;
 
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
+            streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'stopAll') {   //Stop all sounds
             let src = 'modules/MaterialDeck/img/playlist/stop.png';
@@ -68,9 +70,9 @@ export class SoundboardControl{
                 if (this.activeSounds[i]) 
                     soundPlaying = true;
             if (soundPlaying)
-                streamDeck.setIcon(context,src,{background:background,ring:2,ringColor:'#00FF00',overlay:true});
+                streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:'#00FF00',overlay:true});
             else
-                streamDeck.setIcon(context,src,{background:background,ring:1,ringColor:'#000000',overlay:true});
+                streamDeck.setIcon(context,device,src,{background:background,ring:1,ringColor:'#000000',overlay:true});
         }
     }
 

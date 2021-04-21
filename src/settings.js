@@ -117,6 +117,17 @@ export const registerSettings = async function() {
         
     });
 
+    game.settings.register(MODULE.moduleName, 'imageBrightness', {
+        name: "MaterialDeck.Sett.ImageBrightness",
+        hint: "MaterialDeck.Sett.ImageBrightnessHint",
+        default: 50,
+        type: Number,
+        scope: 'client',
+        range: { min: 0, max: 100, step: 1 },
+        config: true
+        
+    });
+
     //Create the Help button
     game.settings.registerMenu(MODULE.moduleName, 'helpMenu',{
         name: "MaterialDeck.Sett.Help",

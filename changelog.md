@@ -1,5 +1,29 @@
 # Changelog Material Deck Module
-## v1.3.3
+### v1.4.0
+Additions:
+<ul>
+<li>Support for connecting multiple Stream Decks at the same time. Please note that performance decreases with each extra Stream Deck</li>
+<li>Other Actions: Added 'Token Roll Options'. This can toggle token rolls between showing a dialog and skipping the dialog and rolling normally or with advantage or disadvantage</li>
+<li>If the SD plugin version you're using is outdated, you now get a pop-up to notify you of this and direct you to the download page</li>
+<li>Added a module setting to set how dark the default white images should be. Can be lowered for improved readability of the text</li>
+<li>Token Action => Stats: Added option to prepend text to the title, so you can set the stat to, for example, strength, and put 'STR: ' in the prepend textbox to display, for example, 'STR: +2'</li>
+</ul>
+
+Fixes:
+<ul>
+<li>Token Action => Skill Roll: Setting wasn't saved in SD app</li>
+<li>Token Action => Roll Ability: Rolling ability checks was broken for some systems</li>
+<li>Token Action => Stats => Display HP: Read overlay indicating HP in the heart icon was also drawn when 'Display Token Icon' was enabled</li>
+<li>Token Action => Stats: Added default images for all dnd5e abilities, saves and skills</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.4.0 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
+
+### v1.3.3
 Additions:
 <ul>
 <li>Other Actions => Open Sidebar Tab: Action now indicates which sidebar tab is open (only works on Foundry 0.8.x)</li>
@@ -30,7 +54,7 @@ Other:
 Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
 SD plugin v1.3.4 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
 
-## v1.3.2 - 11-03-2021
+### v1.3.2 - 11-03-2021
 Additions:
 <ul>
 <li>Added support for the Multi Action provided by the SD app</li>
@@ -50,7 +74,6 @@ Other:
 <ul>
 <li>Macro Action: Improved the way Hotbar Uses are displayed, it is now displayed in a box similar to how the module looks in Foundry</li>
 <li>Made the way images are generated more flexible to make future additions easier</li>
-<li></li>
 </ul>
 
 <br>
@@ -90,7 +113,7 @@ Additions:
 <li>External Modules => Added support for the 'Shared Vision' module</li>
 <li>External Modules => Added support for the 'Lock View' module</li>
 <li>External Modules => Added support for the 'Not Your Turn' module</li>
-<ul>
+</ul>
 Fixes:
 <ul>
 <li>Token Action => OnClick: Fixed conditions for pf1e and dnd3.5e</li>

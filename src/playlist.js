@@ -11,26 +11,28 @@ export class PlaylistControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'playlist') continue;
-            await this.update(data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'playlist') continue;
+                await this.update(data.settings,data.context,device.device);
+            }
         }
     }
 
-    update(settings,context){
+    update(settings,context,device){
         if (MODULE.getPermission('PLAYLIST','PLAY') == false ) {
-            streamDeck.noPermission(context);
+            streamDeck.noPermission(context,device);
             return;
         }
         this.active = true;
         const mode = settings.playlistMode ? settings.playlistMode : 'playlist';
         
         if (mode == 'playlist'){
-            this.updatePlaylist(settings,context);
+            this.updatePlaylist(settings,context,device);
         }
         else if (mode == 'track'){
-            this.updateTrack(settings,context);
+            this.updateTrack(settings,context,device);
         }
         else {
             const src = 'modules/MaterialDeck/img/playlist/stop.png';
@@ -38,12 +40,12 @@ export class PlaylistControl{
             const ringColor = (game.playlists.playing.length > 0) ? '#00FF00' : '#000000';
             const ring = (game.playlists.playing.length > 0) ? 2 : 1;
             const txt = settings.displayPlaylistName ? this.getPlaylist(this.playlistOffset).name : '';
-            streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor,overlay:true});
+            streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay:true});
             streamDeck.setTitle(txt,context);
         }
     }
 
-    updatePlaylist(settings,context){
+    updatePlaylist(settings,context,device){
         let name = "";
         let ringColor = "#000000"
         const background = settings.background ? settings.background : '#000000';
@@ -85,11 +87,11 @@ export class PlaylistControl{
             const targetPlaylist = this.getPlaylist(number);
             if (targetPlaylist != undefined) name = targetPlaylist.name;
         }
-        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
+        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
 
-    updateTrack(settings,context){
+    updateTrack(settings,context,device){
         let name = "";
         let ringColor = "#000000"
         const background = settings.background ? settings.background : '#000000';
@@ -133,7 +135,7 @@ export class PlaylistControl{
         //Relative Offset
         else if (playlistType == 'relativeOffset') {
         }
-        streamDeck.setIcon(context,"",{background:background,ring:2,ringColor:ringColor});
+        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
 
@@ -171,7 +173,7 @@ export class PlaylistControl{
         else return undefined;
     }
 
-    keyPress(settings,context){
+    keyPress(settings,context,device){
         if (MODULE.getPermission('PLAYLIST','PLAY') == false ) return;
         let playlistNr = settings.playlistNr;
         if (playlistNr == undefined || playlistNr < 1) playlistNr = 1;

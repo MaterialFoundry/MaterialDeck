@@ -1,0 +1,19 @@
+All images licenced under CC BY 3.0. Grabbed from game-icons.net
+acr.png: https://game-icons.net/1x1/delapouite/contortionist.html
+ani.png: https://game-icons.net/1x1/delapouite/cavalry.html
+arc.png: https://game-icons.net/1x1/delapouite/spell-book.html
+ath.png: https://game-icons.net/1x1/lorc/muscle-up.html
+dec.png: https://game-icons.net/1x1/delapouite/convince.html
+his.png: https://game-icons.net/1x1/delapouite/backward-time.html
+ins.png: https://game-icons.net/1x1/lorc/light-bulb.html
+itm.png: https://game-icons.net/1x1/lorc/one-eyed.html
+inv.png: https://game-icons.net/1x1/lorc/magnifying-glass.html
+med.png: https://game-icons.net/1x1/delapouite/first-aid-kit.html
+nat.png: https://game-icons.net/1x1/delapouite/forest.html
+prc.png: https://game-icons.net/1x1/lorc/semi-closed-eye.html
+prf.png: https://game-icons.net/1x1/lorc/sing.html
+per.png: https://game-icons.net/1x1/delapouite/public-speaker.html
+rel.png: https://game-icons.net/1x1/lorc/holy-grail.html
+slt.png: https://game-icons.net/1x1/lorc/snatch.html
+ste.png: https://game-icons.net/1x1/lorc/cloak-dagger.html
+sur.png: https://game-icons.net/1x1/delapouite/pyre.html

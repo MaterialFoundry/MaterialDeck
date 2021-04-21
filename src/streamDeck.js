@@ -7,9 +7,7 @@ export class StreamDeck{
         this.tokenNameContext;
         this.tokenACContext;
         this.buttonContext = [];
-        for (let i=0; i<31; i++){
-            this.buttonContext[i] = undefined;
-        }
+        
         this.playlistTrackBuffer = [];
         this.playlistSelector = 0;
         this.trackSelector = 0;
@@ -36,19 +34,39 @@ export class StreamDeck{
        
     }
 
-    setContext(action,context,coordinates = {column:0,row:0},settings){
+    setContext(device,size,iteration,action,context,coordinates = {column:0,row:0},settings){
+        if (this.buttonContext[iteration] == undefined) {
+            const deckSize = size.columns*size.rows;
+            let buttons = [];
+            for (let i=0; i<deckSize; i++){
+                buttons[i] = undefined;
+            }
+            this.buttonContext[iteration] = {
+                device: device,
+                size: size,
+                buttons: buttons
+            }
+        }
+
         const data = {
             context: context,
             action: action,
             settings: settings
         }
-        let num = coordinates.column + coordinates.row*8;
-        this.buttonContext[num] = data;
+
+        const num = coordinates.column + coordinates.row*size.columns;
+        this.buttonContext[iteration].buttons[num] = data;
     }
 
-    clearContext(action,coordinates = {column:0,row:0}){
-        let num = coordinates.column + coordinates.row*8;
-        this.buttonContext[num] = undefined;
+    clearContext(device,action,coordinates = {column:0,row:0}){
+        for (let d of this.buttonContext) {
+            if (d.device == device) {
+                const num = coordinates.column + coordinates.row*d.size.columns;
+                d.buttons[num] = undefined;
+                return;
+            }
+        }
+
         if (this.getActive(action) == false){
             if (action == 'token') MODULE.tokenControl.active = false; 
             else if (action == 'macro') MODULE.macroControl.active = false; 
@@ -127,7 +145,9 @@ export class StreamDeck{
                 newTxtArray[counter] = txtNewPart;
                 counter++;
             }
+            if (counter == 1 && newTxtArray[0] == "") counter = 0;
         }
+        
         for (let i=0; i<counter; i++){
             if (txtNew.length > 0)
                 txtNew += "\n";
@@ -177,11 +197,12 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(msg));
     }
 
-    setImage(image,context,nr,id){
+    setImage(image,context,device,nr,id){
         var json = {
             target: "SD",
             event: "setImage",
             context: context,
+            device: device,
             payload: {
                 nr: nr,
                 id: id,
@@ -192,11 +213,12 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(json));
     }
 
-    setBufferImage(context,nr,id){
+    setBufferImage(context,device,nr,id){
         var json = {
             target: "SD",
             event: "setBufferImage",
             context: context,
+            device: device,
             payload: {
                 nr: nr,
                 id: id,
@@ -206,7 +228,7 @@ export class StreamDeck{
         MODULE.sendWS(JSON.stringify(json));
     }
 
-    setIcon(context,src='',options = {}){
+    setIcon(context,device,src='',options = {}){
         if (src == null || src == undefined) src = '';
         if (src == '') src = 'modules/MaterialDeck/img/black.png';
         let background = options.background ? options.background : '#000000';
@@ -215,19 +237,27 @@ export class StreamDeck{
         let overlay = options.overlay ? options.overlay : false;
         let uses = options.uses ? options.uses : undefined;
         let clock = options.clock ? options.clock : false;
-        for (let i=0; i<32; i++){
-            if (clock != false) break;
-            if (this.buttonContext[i] == undefined) continue;
-            if (this.buttonContext[i].context == context) {
-                if (this.buttonContext[i].icon == src && this.buttonContext[i].ring == ring && this.buttonContext[i].ringColor == ringColor && this.buttonContext[i].background == background && this.buttonContext[i].uses == uses) 
-                    return;
-                this.buttonContext[i].icon = src;
-                this.buttonContext[i].ring = ring;
-                this.buttonContext[i].ringColor = ringColor;
-                this.buttonContext[i].background = background;
-                this.buttonContext[i].uses = uses;
+        
+        //if (src != 'modules/MaterialDeck/img/black.png')
+        for (let d of this.buttonContext) {
+            if (d.device == device) {
+                for (let i=0; i<d.buttons.length; i++){
+                    if (clock != false) break;
+                    if (d.buttons[i] == undefined) continue;
+                    if (d.buttons[i].context == context) {
+                        if (d.buttons[i].icon == src && d.buttons[i].ring == ring && d.buttons[i].ringColor == ringColor && d.buttons[i].background == background && d.buttons[i].uses == uses) 
+                            return;
+                        d.buttons[i].icon = src;
+                        d.buttons[i].ring = ring;
+                        d.buttons[i].ringColor = ringColor;
+                        d.buttons[i].background = background;
+                        d.buttons[i].uses = uses;
+                    }
+                }
+                break;
             }
         }
+
         const data = {
             url: src,
             background:background,
@@ -235,11 +265,12 @@ export class StreamDeck{
             ringColor:ringColor,
             overlay:overlay,
             uses:uses,
-            options:options
+            options:options,
+            devide:device
         }
         const imgBuffer = (clock == false) ? this.checkImageBuffer(data) : false;
         if (imgBuffer != false) {
-            this.setBufferImage(context,imgBuffer,this.getImageBufferId(data))
+            this.setBufferImage(context,device,imgBuffer,this.getImageBufferId(data))
             return;
         }
         
@@ -252,6 +283,7 @@ export class StreamDeck{
             target: "SD",
             event: 'setIcon',
             context: context,
+            device: device,
             url: src,
             format: format,
             background: background,
@@ -312,6 +344,7 @@ export class StreamDeck{
         if (data == undefined) 
             return;
         const context = data.context;
+        const device = data.device;
         var url = data.url;
         const format = data.format;
         var background = data.background;
@@ -355,14 +388,14 @@ export class StreamDeck{
         else {
             
         }
-        if (uses != undefined && uses.heart && (uses.available > 0 || uses.maximum != undefined)) {
+        if (uses != undefined && uses.heart != false && (uses.available > 0 || uses.maximum != undefined)) {
             const percentage = 102*uses.available/uses.maximum;
-            ctx.fillStyle = "#FF0000";
+            ctx.fillStyle = uses.heart;
             ctx.fillRect(0, 121,144,-percentage);
         }
         if (format == 'icon' && url != ""){
             ctx.font = '600 90px "Font Awesome 5 Free"';
-            ctx.fillStyle = "gray";
+            ctx.fillStyle = "#545454";
             var elm = document.createElement('i');
             elm.className = url;
             elm.style.display = 'none';
@@ -384,7 +417,8 @@ export class StreamDeck{
         img.setAttribute('crossorigin', 'anonymous');
         img.onload = () => {
             if (format == 'color') ctx.filter = "opacity(0)";
-            if (data.overlay) ctx.filter = "brightness(60%)";
+            
+            if (data.overlay == true) ctx.filter = "brightness(" + game.settings.get(MODULE.moduleName,'imageBrightness') + "%)";
             //ctx.filter = "brightness(0) saturate(100%) invert(38%) sepia(62%) saturate(2063%) hue-rotate(209deg) brightness(90%) contrast(95%)";
             var imageAspectRatio = img.width / img.height;
             var canvasAspectRatio = canvas.width / canvas.height;
@@ -489,7 +523,7 @@ export class StreamDeck{
             var dataURL = canvas.toDataURL();
             canvas.remove();
             const nr = this.addToImageBuffer(dataURL,data);
-            this.setImage(dataURL,data.context,nr,this.getImageBufferId(data));
+            this.setImage(dataURL,data.context,device,nr,this.getImageBufferId(data));
         };
         img.src = resImageURL;
     }
@@ -531,12 +565,12 @@ export class StreamDeck{
         this.imageBuffer = [];
     }
 
-    noPermission(context,showTxt=true, origin = ""){
+    noPermission(context,device,showTxt=true, origin = ""){
         console.warn("Material Deck: User lacks permission for function "+origin);
         const url = 'modules/MaterialDeck/img/black.png';
         const background = '#000000';
         const txt = showTxt ? 'no\npermission' : '';
-        this.setIcon(context,url,{background:background});
+        this.setIcon(context,device,url,{background:background});
         this.setTitle(txt,context);
     }
 }

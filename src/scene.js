@@ -11,14 +11,16 @@ export class SceneControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'scene') continue;
-            await this.update(data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'scene') continue;
+                await this.update(data.settings,data.context,device.device);
+            }
         }
     }
 
-    update(settings,context){
+    update(settings,context,device){
         if (canvas.scene == null) return;
         this.active = true;
         const func = settings.sceneFunction ? settings.sceneFunction : 'visible';
@@ -32,7 +34,7 @@ export class SceneControl{
         let name = "";
         if (func == 'visible') { //visible scenes
             if (MODULE.getPermission('SCENE','VISIBLE') == false ) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             let nr = parseInt(settings.sceneNr);
@@ -50,7 +52,7 @@ export class SceneControl{
         }
         else if (func == 'dir') {   //from directory
             if (MODULE.getPermission('SCENE','DIRECTORY') == false ) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             let nr = parseInt(settings.sceneNr);
@@ -85,7 +87,7 @@ export class SceneControl{
         }
         else if (func == 'any') {   //by name
             if (MODULE.getPermission('SCENE','NAME') == false ) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             if (settings.sceneName == undefined || settings.sceneName == '') return;
@@ -100,7 +102,7 @@ export class SceneControl{
         }
         else if (func == 'active'){
             if (MODULE.getPermission('SCENE','ACTIVE') == false ) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             const scene = game.scenes.active;
@@ -116,7 +118,7 @@ export class SceneControl{
             else ringColor = ringOffColor;
         }
         streamDeck.setTitle(name,context);
-        streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor});
+        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     keyPress(settings){

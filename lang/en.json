@@ -21,6 +21,8 @@
     "MaterialDeck.Sett.ServerAddrHint": "The IP address and port of Material Server. The default value will work for 99% of people, only change this if you know what you're doing. Must follow the format [ip_address]:[port], for example: 'localhost:3001' or '192.168.1.1:4000'.",
     "MaterialDeck.Sett.ImageBuffer": "Image Cache Size",
     "MaterialDeck.Sett.ImageBufferHint": "Sets the amount of images to store in the image cache. The image cache will locally store all images sent to the Stream Deck. This improves the update speed, but increases memory usage.",
+    "MaterialDeck.Sett.ImageBrightness": "Image Brightness",
+    "MaterialDeck.Sett.ImageBrightnessHint": "Sets the brightness of the default white images. If the Image Cache Size is bigger than 0, perform a refresh for instant results.",
 
     "MaterialDeck.PL.Unrestricted": "Unrestricted",
     "MaterialDeck.PL.OneTrackPlaylist": "One track per playlist",

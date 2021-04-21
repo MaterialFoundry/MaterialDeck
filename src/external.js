@@ -12,39 +12,41 @@ export class ExternalModules{
             this.gmScreenOpen = data.gmScreen.isOpen;
         }
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'external') continue;
-            await this.update(data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'external') continue;
+                await this.update(data.settings,data.context,device.device);
+            }
         }
     }
 
-    update(settings,context){
+    update(settings,context,device){
         this.active = true;
         const module = settings.module ? settings.module : 'fxmaster';
 
-        if (module == 'fxmaster')           this.updateFxMaster(settings,context);
-        else if (module == 'gmscreen')      this.updateGMScreen(settings,context);
-        else if (module == 'triggerHappy')  this.updateTriggerHappy(settings,context);
-        else if (module == 'sharedVision')  this.updateSharedVision(settings,context);
-        else if (module == 'mookAI')        this.updateMookAI(settings,context);
-        else if (module == 'notYourTurn')   this.updateNotYourTurn(settings,context);
-        else if (module == 'lockView')      this.updateLockView(settings,context);
-        else if (module == 'aboutTime')     this.updateAboutTime(settings,context);
+        if (module == 'fxmaster')           this.updateFxMaster(settings,context,device);
+        else if (module == 'gmscreen')      this.updateGMScreen(settings,context,device);
+        else if (module == 'triggerHappy')  this.updateTriggerHappy(settings,context,device);
+        else if (module == 'sharedVision')  this.updateSharedVision(settings,context,device);
+        else if (module == 'mookAI')        this.updateMookAI(settings,context,device);
+        else if (module == 'notYourTurn')   this.updateNotYourTurn(settings,context,device);
+        else if (module == 'lockView')      this.updateLockView(settings,context,device);
+        else if (module == 'aboutTime')     this.updateAboutTime(settings,context,device);
     }
 
-    keyPress(settings,context){
+    keyPress(settings,context,device){
         if (this.active == false) return;
         const module = settings.module ? settings.module : 'fxmaster';
 
-        if (module == 'fxmaster')           this.keyPressFxMaster(settings,context);
-        else if (module == 'gmscreen')      this.keyPressGMScreen(settings,context);
-        else if (module == 'triggerHappy')  this.keyPressTriggerHappy(settings,context);
-        else if (module == 'sharedVision')  this.keyPressSharedVision(settings,context);
-        else if (module == 'mookAI')        this.keyPressMookAI(settings,context);
-        else if (module == 'notYourTurn')   this.keyPressNotYourTurn(settings,context);
-        else if (module == 'lockView')      this.keyPressLockView(settings,context);
-        else if (module == 'aboutTime')     this.keyPressAboutTime(settings,context);
+        if (module == 'fxmaster')           this.keyPressFxMaster(settings,context,device);
+        else if (module == 'gmscreen')      this.keyPressGMScreen(settings,context,device);
+        else if (module == 'triggerHappy')  this.keyPressTriggerHappy(settings,context,device);
+        else if (module == 'sharedVision')  this.keyPressSharedVision(settings,context,device);
+        else if (module == 'mookAI')        this.keyPressMookAI(settings,context,device);
+        else if (module == 'notYourTurn')   this.keyPressNotYourTurn(settings,context,device);
+        else if (module == 'lockView')      this.keyPressLockView(settings,context,device);
+        else if (module == 'aboutTime')     this.keyPressAboutTime(settings,context,device);
     }
 
     getModuleEnable(moduleId){
@@ -56,7 +58,7 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //FxMaster
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateFxMaster(settings,context){
+    updateFxMaster(settings,context,device){
         if (game.user.isGM == false) return;
         const fxmaster = game.modules.get("fxmaster");
         if (fxmaster == undefined || fxmaster.active == false) return;
@@ -125,8 +127,8 @@ export class ExternalModules{
             name = game.i18n.localize("MaterialDeck.FxMaster.Clear");
         }
 
-        if (displayIcon) streamDeck.setIcon(context,icon,{background:background,ring:ring,ringColor:ringColor});
-        else streamDeck.setIcon(context, "", {background:background,ring:ring,ringColor:ringColor});
+        if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:ring,ringColor:ringColor});
+        else streamDeck.setIcon(context,device, "", {background:background,ring:ring,ringColor:ringColor});
         if (displayName == 0) name = ""; 
         streamDeck.setTitle(name,context);
     }
@@ -140,7 +142,7 @@ export class ExternalModules{
         } : null;
       }
 
-    keyPressFxMaster(settings,context){
+    keyPressFxMaster(settings,context,device){
         if (game.user.isGM == false) return;
         const fxmaster = game.modules.get("fxmaster");
         if (fxmaster == undefined || fxmaster.active == false) return;
@@ -257,7 +259,7 @@ export class ExternalModules{
     //GM Screen
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    updateGMScreen(settings,context){
+    updateGMScreen(settings,context,device){
         if (this.getModuleEnable("gm-screen") == false) return;
         if (game.user.isGM == false) return;
 
@@ -270,12 +272,12 @@ export class ExternalModules{
         if (this.gmScreenOpen) ring = 2;
         
         if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
-        streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor});
+        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
         if (settings.displayGmScreenName) txt = game.i18n.localize(`GMSCR.gmScreen.Open`); 
         streamDeck.setTitle(txt,context);
     }
 
-    keyPressGMScreen(settings,context){
+    keyPressGMScreen(settings,context,device){
         if (this.getModuleEnable("gm-screen") == false) return;
         if (game.user.isGM == false) return;
         window['gm-screen'].toggleGmScreenVisibility();
@@ -285,7 +287,7 @@ export class ExternalModules{
     //Trigger Happy
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    updateTriggerHappy(settings,context) {
+    updateTriggerHappy(settings,context,device) {
         if (this.getModuleEnable("trigger-happy") == false) return;
         if (game.user.isGM == false) return;
         
@@ -296,14 +298,14 @@ export class ExternalModules{
         const ringColor = game.settings.get("trigger-happy", "enableTriggers") ? "#A600FF" : "#340057";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,"fas fa-grin-squint-tears",{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,'',{background:'#000000'});
+        if (displayIcon) streamDeck.setIcon(context,device,"fas fa-grin-squint-tears",{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Trigger Happy';
         
         streamDeck.setTitle(txt,context);
     }
 
-    keyPressTriggerHappy(settings,context){
+    keyPressTriggerHappy(settings,context,device){
         if (this.getModuleEnable("trigger-happy") == false) return;
         if (game.user.isGM == false) return;
         const mode = settings.triggerHappyMode ? settings.triggerHappyMode : 'toggle';
@@ -326,7 +328,7 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Shared Vision
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateSharedVision(settings,context) {
+    updateSharedVision(settings,context,device) {
         if (this.getModuleEnable("SharedVision") == false) return;
         if (game.user.isGM == false) return;
         
@@ -337,13 +339,13 @@ export class ExternalModules{
         const ringColor = game.settings.get("SharedVision", "enable") ? "#A600FF" : "#340057";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,"fas fa-eye",{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,'',{background:'#000000'});
+        if (displayIcon) streamDeck.setIcon(context,device,"fas fa-eye",{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Shared Vision';
         streamDeck.setTitle(txt,context);
     }
 
-    keyPressSharedVision(settings,context) {
+    keyPressSharedVision(settings,context,device) {
         if (this.getModuleEnable("SharedVision") == false) return;
         if (game.user.isGM == false) return;
 
@@ -357,7 +359,7 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Mook AI
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateMookAI(settings,context) {
+    updateMookAI(settings,context,device) {
         if (this.getModuleEnable("mookAI") == false) return;
         if (game.user.isGM == false) return;
         
@@ -367,13 +369,13 @@ export class ExternalModules{
         const background = "#000000";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,"fas fa-brain",{background:'#000000'});
-        else streamDeck.setIcon(context,'',{background:'#000000'});
+        if (displayIcon) streamDeck.setIcon(context,device,"fas fa-brain",{background:'#000000'});
+        else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Mook AI';
         streamDeck.setTitle(txt,context);
     }
 
-    async keyPressMookAI(settings,context) {
+    async keyPressMookAI(settings,context,device) {
         if (this.getModuleEnable("mookAI") == false) return;
         if (game.user.isGM == false) return;
         
@@ -385,7 +387,7 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Not Your Turn!
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateNotYourTurn(settings,context) {
+    updateNotYourTurn(settings,context,device) {
         
         if (this.getModuleEnable("NotYourTurn") == false) return;
         if (game.user.isGM == false) return;
@@ -409,13 +411,13 @@ export class ExternalModules{
             txt = "Block Non-Combat Movement";
             ringColor = game.settings.get('NotYourTurn','nonCombat') ?  "#A600FF": "#340057" ;
         }
-        if (displayIcon) streamDeck.setIcon(context,icon,{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,'',{background:'#000000'});
+        if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
         streamDeck.setTitle(txt,context);
     }
 
-    async keyPressNotYourTurn(settings,context) {
+    async keyPressNotYourTurn(settings,context,device) {
         if (this.getModuleEnable("NotYourTurn") == false) return;
         if (game.user.isGM == false) return;
 
@@ -433,7 +435,7 @@ export class ExternalModules{
     //Lock View
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    updateLockView(settings,context) {
+    updateLockView(settings,context,device) {
         
         if (this.getModuleEnable("LockView") == false) return;
         if (game.user.isGM == false) return;
@@ -463,13 +465,13 @@ export class ExternalModules{
             ringColor = canvas.scene.getFlag('LockView', 'boundingBox') ?  "#A600FF": "#340057" ;
         }
         
-        if (displayIcon) streamDeck.setIcon(context,icon,{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,'',{background:'#000000'});
+        if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
         streamDeck.setTitle(txt,context);
     }
 
-    async keyPressLockView(settings,context) {
+    async keyPressLockView(settings,context,device) {
         if (this.getModuleEnable("LockView") == false) return;
         if (game.user.isGM == false) return;
 
@@ -489,7 +491,7 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //About Time
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateAboutTime(settings,context) {
+    updateAboutTime(settings,context,device) {
         if (this.getModuleEnable("about-time") == false) return;
         if (game.user.isGM == false) return;
 
@@ -566,10 +568,10 @@ export class ExternalModules{
         }
         
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
+        streamDeck.setIcon(context,device,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
     }
 
-    keyPressAboutTime(settings,context) {
+    keyPressAboutTime(settings,context,device) {
         if (this.getModuleEnable("about-time") == false) return;
         if (game.user.isGM == false) return;
 

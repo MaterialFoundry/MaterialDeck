@@ -72,14 +72,28 @@ async function analyzeWSmessage(msg){
     }
 
     if (data.type == "version" && data.source == "SD") {
-        /*
-        console.log(data);
         const minimumSDversion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
         const minimumMSversion = game.modules.get("MaterialDeck").data.minimumMSversion;
-        console.log('SD',minimumSDversion,data.version)
-        if (data.version < minimumSDversion) console.log('SD: nope')
-        else console.log('SD: yes');
-        */
+
+        if (data.version < minimumSDversion) {
+            let d = new Dialog({
+                title: "Material Deck: Update Needed",
+                content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is outdated.<br>Update to v" + minimumSDversion + " or newer.</p>",
+                buttons: {
+                 download: {
+                  icon: '<i class="fas fa-download"></i>',
+                  label: "Update",
+                  callback: () => window.open("https://github.com/CDeenen/MaterialDeck_SD/releases")
+                 },
+                 ignore: {
+                  icon: '<i class="fas fa-times"></i>',
+                  label: "Ignore"
+                 }
+                },
+                default: "download"
+            });
+            d.render(true);
+        }
     }
 
     if (data == undefined || data.payload == undefined) return;
@@ -89,6 +103,8 @@ async function analyzeWSmessage(msg){
     const context = data.context;
     const coordinates = data.payload.coordinates;
     const settings = data.payload.settings;
+    const device = data.device;
+    
 
     if (data.data == 'init'){
 
@@ -96,33 +112,33 @@ async function analyzeWSmessage(msg){
     if (event == 'willAppear' || event == 'didReceiveSettings'){
         if (coordinates == undefined) return;
         streamDeck.setScreen(action);
-        streamDeck.setContext(action,context,coordinates,settings);
+        await streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings);
 
         if (action == 'token'){
             tokenControl.active = true;
-            tokenControl.update(selectedTokenId);
+            tokenControl.update(device,selectedTokenId,device);
         }  
         else if (action == 'move')
-            move.update(settings,context);
+            move.update(settings,context,device);
         else if (action == 'macro')
-            macroControl.update(settings,context);
+            macroControl.update(settings,context,device);
         else if (action == 'combattracker')
-            combatTracker.update(settings,context);
+            combatTracker.update(settings,context,device);
         else if (action == 'playlist')
-            playlistControl.update(settings,context);
+            playlistControl.update(settings,context,device);
         else if (action == 'soundboard')
-            soundboard.update(settings,context); 
+            soundboard.update(settings,context,device); 
         else if (action == 'other')
-            otherControls.update(settings,context);
+            otherControls.update(settings,context,device);
         else if (action == 'external')
-            externalModules.update(settings,context);
+            externalModules.update(settings,context,device);
         else if (action == 'scene')
-            sceneControl.update(settings,context);
+            sceneControl.update(settings,context,device);
     }
     
     else if (event == 'willDisappear'){
         if (coordinates == undefined) return;
-        streamDeck.clearContext(action,coordinates,context);
+        streamDeck.clearContext(device,action,coordinates,context);
     }
 
     else if (event == 'keyDown'){
@@ -133,15 +149,15 @@ async function analyzeWSmessage(msg){
         else if (action == 'macro')
             macroControl.keyPress(settings);
         else if (action == 'combattracker')
-            combatTracker.keyPress(settings,context);
+            combatTracker.keyPress(settings,context,device);
         else if (action == 'playlist')
-            playlistControl.keyPress(settings,context);
+            playlistControl.keyPress(settings,context,device);
         else if (action == 'soundboard')
             soundboard.keyPressDown(settings);
         else if (action == 'other')
-            otherControls.keyPress(settings,context);
+            otherControls.keyPress(settings,context,device);
         else if (action == 'external')
-            externalModules.keyPress(settings,context);
+            externalModules.keyPress(settings,context,device);
         else if (action == 'scene')
             sceneControl.keyPress(settings);
     }

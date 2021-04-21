@@ -1,0 +1,7 @@
+All images licenced under CC BY 3.0. Grabbed from game-icons.net
+str.png: https://game-icons.net/1x1/delapouite/weight-lifting-up.html
+dex.png: https://game-icons.net/1x1/darkzaitzev/acrobatic.html
+cons.png: https://game-icons.net/1x1/zeromancer/heart-plus.html
+int.png: https://game-icons.net/1x1/lorc/bookmarklet.html
+wis.png: https://game-icons.net/1x1/delapouite/wisdom.html
+cha.png: https://game-icons.net/1x1/lorc/icicles-aura.html

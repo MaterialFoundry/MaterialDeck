@@ -7,13 +7,13 @@ export class Move{
         this.active = false;
     }
 
-    update(settings,context){
+    update(settings,context,device){
         const background = settings.background ? settings.background : '#000000';
         const mode = settings.mode ? settings.mode : 'canvas';
         const type = settings.type ? settings.type : 'move';
 
         if ((MODULE.getPermission('MOVE','TOKEN') == false && mode == 'selectedToken') || (MODULE.getPermission('MOVE','CANVAS') == false && mode == 'canvas')) {
-            streamDeck.noPermission(context);
+            streamDeck.noPermission(context,device);
             return;
         }
 
@@ -50,14 +50,14 @@ export class Move{
             else
                 url = "modules/MaterialDeck/img/move/rotateccw.png";
         }
-        streamDeck.setIcon(context,url,{background:background});
+        streamDeck.setIcon(context,device,url,{background:background,overlay:true});
         streamDeck.setTitle('',context);
     }
 
     keyPress(settings){
         if (canvas.scene == null) return;
         if ((MODULE.getPermission('MOVE','TOKEN') == false && mode == 'selectedToken') || (MODULE.getPermission('MOVE','CANVAS') == false && mode == 'canvas')) {
-            streamDeck.noPermission(context);
+            streamDeck.noPermission(context,device);
             return;
         }
 

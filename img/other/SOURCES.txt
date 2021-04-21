@@ -1,2 +1,3 @@
 other.png: Made using https://www.elgato.com/en/gaming/keycreator
 cogs.png: Edited from https://fontawesome.com/icons/cogs?style=solid
+d20.png: Edited from https://game-icons.net/1x1/delapouite/dice-twenty-faces-twenty.html

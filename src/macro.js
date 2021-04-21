@@ -10,14 +10,16 @@ export class MacroControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'macro') continue;
-            await this.update(data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'macro') continue;
+                await this.update(data.settings,data.context,device.device);
+            }
         }
     }
 
-    async update(settings,context){
+    async update(settings,context,device){
         this.active = true;
         const mode = settings.macroMode ? settings.macroMode : 'hotbar';
         const displayName = settings.displayName ? settings.displayName : false;
@@ -37,7 +39,7 @@ export class MacroControl{
         
         if (mode == 'macroBoard') {  //Macro board
             if ((MODULE.getPermission('MACRO','MACROBOARD') == false )) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             if (settings.macroBoardMode == 'offset') {  //Offset
@@ -66,7 +68,7 @@ export class MacroControl{
         }
         else { //Macro Hotbar
             if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             if (mode == 'hotbar') macroId = game.user.data.hotbar[macroNumber];
@@ -95,7 +97,7 @@ export class MacroControl{
             if (displayIcon) src = "modules/MaterialDeck/img/black.png";
         }
         
-        streamDeck.setIcon(context,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
+        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
         streamDeck.setTitle(name,context);
     }
 
@@ -121,7 +123,7 @@ export class MacroControl{
             if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 1;
 
             if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             } 
 
@@ -146,7 +148,7 @@ export class MacroControl{
                 if (displayIcon) src += macro.img;
                 if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
             }
-            streamDeck.setIcon(context,src,{background:background,uses:uses});
+            streamDeck.setIcon(context,device,src,{background:background,uses:uses});
             streamDeck.setTitle(name,context);
         }
     }
@@ -156,14 +158,6 @@ export class MacroControl{
         let macroNumber = settings.macroNumber;
         if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 0;
         let target = settings.target ? settings.target : undefined;
-        //const targetActor = target.actor ? undefined : target;
-        //if (targetActor != undefined) target = undefined;
-        
-        //let macroTarget = {
-        //    token: target,
-        //    actor: targetActor
-        //}
-        //console.log('target',macroTarget,mode);
         
         if (mode == 'hotbar' || mode == 'visibleHotbar' || mode == 'customHotbar'){
             if ((MODULE.getPermission('MACRO','HOTBAR') == false )) return;

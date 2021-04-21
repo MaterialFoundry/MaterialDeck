@@ -10,14 +10,16 @@ export class CombatTracker{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let i=0; i<32; i++){   
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'combattracker') continue;
-            await this.update(data.settings,data.context);
+        for (let device of streamDeck.buttonContext) {
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'combattracker') continue;
+                await this.update(data.settings,data.context,device.device);
+            }
         }
     }
 
-    update(settings,context){
+    update(settings,context,device){
         this.active = true;
         const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
         const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
@@ -29,7 +31,7 @@ export class CombatTracker{
         
         if (mode == 'combatants'){
             if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                streamDeck.noPermission(context,false,"combat tracker");
+                streamDeck.noPermission(context,device,device,false,"combat tracker");
                 return;
             }
             if (combat != null && combat != undefined && combat.turns.length != 0){
@@ -41,45 +43,45 @@ export class CombatTracker{
 
                 if (combatant != undefined){
                     const tokenId = compatibleCore("0.8.1") ? combatant.data.tokenId : combatant.tokenId;
-                    tokenControl.pushData(tokenId,settings,context,combatantState,'#cccc00');
+                    tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00');
                     return;
                 }
                 else {
-                    streamDeck.setIcon(context,src,{background:background});
+                    streamDeck.setIcon(context,device,src,{background:background});
                     streamDeck.setTitle(txt,context);
                 } 
             }
             else {
-                streamDeck.setIcon(context,src,{background:background});
+                streamDeck.setIcon(context,device,src,{background:background});
                 streamDeck.setTitle(txt,context);
             }
         }
         else if (mode == 'currentCombatant'){
             if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device,device);
                 return;
             }
             if (combat != null && combat != undefined && combat.started){
                 const tokenId = compatibleCore("0.8.1") ? combat.combatant.data.tokenId : combat.combatant.tokenId;
-                tokenControl.pushData(tokenId,settings,context);
+                tokenControl.pushData(tokenId,settings,context,device);
             }
             else {
-                streamDeck.setIcon(context,src,{background:background});
+                streamDeck.setIcon(context,device,src,{background:background});
                 streamDeck.setTitle(txt,context);
             }
         }
         else if (mode == 'function'){
 
             if (ctFunction == 'turnDisplay' && MODULE.getPermission('COMBAT','TURN_DISPLAY') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'endTurn' && MODULE.getPermission('COMBAT','END_TURN') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && MODULE.getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
 
@@ -126,12 +128,12 @@ export class CombatTracker{
                 if (txt != "") txt += "\n";
                 if (settings.displayTurn) txt += "Turn\n"+turn;
             }
-            streamDeck.setIcon(context,src,{background:background});
+            streamDeck.setIcon(context,device,src,{background:background});
             streamDeck.setTitle(txt,context);
         }
     }
 
-    keyPress(settings,context){
+    keyPress(settings,context,device){
         const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
         const combat = game.combat;
 
@@ -140,15 +142,15 @@ export class CombatTracker{
             const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
 
             if (ctFunction == 'turnDisplay' && MODULE.getPermission('COMBAT','TURN_DISPLAY') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'endTurn' && MODULE.getPermission('COMBAT','END_TURN') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && MODULE.getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                streamDeck.noPermission(context);
+                streamDeck.noPermission(context,device);
                 return;
             }
 
@@ -157,15 +159,10 @@ export class CombatTracker{
                 let background;
                 if (game.combat.started){
                     game.combat.endCombat();
-                    src = "modules/MaterialDeck/img/combattracker/startcombat.png";
-                    background = "#000000";
                 }
                 else {
                     game.combat.startCombat();
-                    src = "modules/MaterialDeck/img/combattracker/stopcombat.png";
-                    background = "#FF0000";
                 }
-                streamDeck.setIcon(context,src,{background:background});
                 return;
             }
             if (game.combat.started == false) return;
