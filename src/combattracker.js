@@ -28,6 +28,7 @@ export class CombatTracker{
         let txt = "";
         let background = "#000000";
         settings.combat = true;
+        settings.icon = settings.displayIcon ? 'tokenIcon' : 'none';
         
         if (mode == 'combatants'){
             if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {

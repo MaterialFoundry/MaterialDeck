@@ -21,7 +21,7 @@ export class TokenControl{
 
     async pushData(tokenId,settings,context,device,ring=0,ringColor='#000000'){
         const name = settings.displayName ? settings.displayName : false;
-        const icon = settings.displayIcon ? settings.displayIcon : false;
+        const icon = settings.icon ? settings.icon : 'none';
         const background = settings.background ? settings.background : "#000000";
         let stats =  settings.stats ? settings.stats : 'none';
         const selection = settings.selection ? settings.selection : 'selected';
@@ -30,7 +30,10 @@ export class TokenControl{
     
         let validToken = false;
         let token;
-        if (tokenId != undefined && tokenId != null) token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        if (settings.combatTrackerMode) {
+            const mode = settings.combatTrackerMode;
+            token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        }
         else if (selection == 'selected') token = canvas.tokens.controlled[0];
         else if (selection != 'selected' && tokenIdentifier == '') {}
         else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
@@ -76,7 +79,8 @@ export class TokenControl{
                 stats = 'none';
             }
 
-            if (icon) iconSrc = token.data.img;
+            if (icon == 'tokenIcon') iconSrc = token.data.img;
+            else if (icon == 'actorIcon') iconSrc = token.actor.data.img;
             if (name && stats != 'none' && stats != 'HPbox') txt += "\n";
             if (stats == 'custom'){
                 const custom = settings.custom ? settings.custom : '';
@@ -99,7 +103,7 @@ export class TokenControl{
             else if (game.system.id == 'dnd5e'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
-                    if (!icon) {
+                    if (icon == 'stats') {
                         uses = {
                             available: attributes.hp.value,
                             maximum: attributes.hp.max,
@@ -119,7 +123,7 @@ export class TokenControl{
                 else if (stats == 'TempHP') {
                     const val = (attributes.hp.temp == null) ? 0 : attributes.hp.temp;
                     const max = (attributes.hp.tempmax == null) ? 0 : attributes.hp.tempmax
-                    if (!icon) {
+                    if (icon == 'stats') {
                         uses = {
                             available: (attributes.hp.temp == null) ? 0 : attributes.hp.temp,
                             maximum: (max == 0) ? 1 : attributes.hp.tempmax,
@@ -186,7 +190,7 @@ export class TokenControl{
                 }
                 else if (stats == 'Skill') {
                     const skill = settings.skill ? settings.skill : 'acr';
-                    const value = token.actor.data.data.skills?.[skill].mod;
+                    const value = token.actor.data.data.skills?.[skill].total;
                     if (value >= 0) txt += '+';
                     txt += value;
                 }
@@ -200,7 +204,7 @@ export class TokenControl{
             else if (game.system.id == 'D35E' || game.system.id == 'pf1'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
-                    if (!icon) {
+                    if (icon == 'stats') {
                         uses = {
                             available: attributes.hp.value,
                             maximum: attributes.hp.max,
@@ -273,7 +277,7 @@ export class TokenControl{
             else if (game.system.id == 'pf2e'){
                 let attributes = token.actor.data.data.attributes;
                 if (stats == 'HP') {
-                    if (!icon) {
+                    if (icon == 'stats') {
                         uses = {
                             available: attributes.hp.value,
                             maximum: attributes.hp.max,
@@ -341,7 +345,7 @@ export class TokenControl{
             else if (game.system.id == 'demonlord'){
                 let characteristics = token.actor.data.data.characteristics;
                 if (stats == 'HP') {
-                    if (!icon) {
+                    if (icon == 'stats') {
                         uses = {
                             available: attributes.hp.value,
                             maximum: attributes.hp.max,
@@ -391,7 +395,7 @@ export class TokenControl{
                     ring = 2;
                     ringColor = "#FF7B00";
                 }
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = window.CONFIG.controlIcons.visibility;
                     overlay = true;
                 }
@@ -406,7 +410,7 @@ export class TokenControl{
                     ring = 2;
                     ringColor = "#FF7B00";
                 }
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = window.CONFIG.controlIcons.combat;
                     overlay = true;
                 }
@@ -417,7 +421,7 @@ export class TokenControl{
                     ring = 2;
                     ringColor = "#FF7B00";
                 }
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = "fas fa-bullseye";
                 }
             }
@@ -429,9 +433,9 @@ export class TokenControl{
                 ring = 1;
                 if (game.system.id == 'dnd5e' || game.system.id == 'D35E' || game.system.id == 'pf1'){
                     const condition = settings.condition ? settings.condition : 'removeAll';
-                    if (condition == 'removeAll' && icon == false)
+                    if (condition == 'removeAll' && icon == 'stats')
                         iconSrc = window.CONFIG.controlIcons.effects;
-                    else if (icon == false) {
+                    else if (icon == 'stats') {
                         let effect = CONFIG.statusEffects.find(e => e.id === condition);
                         iconSrc = effect.icon;
                         let effects = compatibleCore("0.8.1") ? token.actor.effects.contents : token.actor.effects.entries;
@@ -444,9 +448,9 @@ export class TokenControl{
                 }
                 else if (game.system.id == 'pf2e') {
                     const condition = settings.condition ? settings.condition : 'removeAll';
-                    if (condition == 'removeAll' && icon == false)
+                    if (condition == 'removeAll' && icon == 'stats')
                         iconSrc = window.CONFIG.controlIcons.effects;
-                    else if (icon == false) {
+                    else if (icon == 'stats') {
                         let effects = token.data.effects;
                         for (let i=0; i<effects.length; i++){
                             if (this.pf2eCondition(condition) == effects[i]){
@@ -459,9 +463,9 @@ export class TokenControl{
                 }
                 else if (game.system.id == 'demonlord'){
                     const condition = settings.condition ? settings.condition : 'removeAll';
-                    if (condition == 'removeAll' && icon == false)
+                    if (condition == 'removeAll' && icon == 'stats')
                         iconSrc = window.CONFIG.controlIcons.effects;
-                    else if (icon == false) {
+                    else if (icon == 'stats') {
                         let effect = CONFIG.statusEffects.find(e => e.id === condition);
                         iconSrc = effect.icon;
                         let effects = token.actor.effects.entries;
@@ -485,7 +489,7 @@ export class TokenControl{
                 overlay = true;
                 const condition = settings.cubConditionName;
                 if (condition == undefined || condition == '') return;
-                if (icon == false) {
+                if (icon == 'stats') {
                     let effect = CONFIG.statusEffects.find(e => e.label === condition);
                     iconSrc = effect.icon;
                     let effects = compatibleCore("0.8.1") ? token.actor.effects.contents : token.actor.effects.entries;
@@ -501,7 +505,7 @@ export class TokenControl{
                     streamDeck.noPermission(context,device);
                     return;
                 }
-                if (icon == false) return;
+                if (icon != 'stats') return;
                 const method = settings.wildcardMethod ? settings.wildcardMethod : 'iterate';
                 let value = parseInt(settings.wildcardValue);
                 if (isNaN(value)) value = 1;
@@ -541,7 +545,7 @@ export class TokenControl{
                     streamDeck.noPermission(context,device);
                     return;
                 }
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = window.CONFIG.controlIcons.visibility;
                     ring = 2;
                     overlay = true;
@@ -552,14 +556,14 @@ export class TokenControl{
                     streamDeck.noPermission(context,device);
                     return;
                 }
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = window.CONFIG.controlIcons.combat;
                     ring = 2;
                     overlay = true;
                 }
             }
             else if (settings.onClick == 'target') { //target token
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = "fas fa-bullseye";
                     ring = 2;
                     overlay = true;
@@ -574,21 +578,21 @@ export class TokenControl{
                     const condition = settings.condition ? settings.condition : 'removeAll';
                     if (condition == 'removeAll' && icon == false)
                         iconSrc = window.CONFIG.controlIcons.effects;
-                    else if (icon == false) 
+                    else if (icon == 'stats') 
                         iconSrc = CONFIG.statusEffects.find(e => e.id === condition).icon;
                 }
                 else if (game.system.id == 'pf2e') {
                     const condition = settings.condition ? settings.condition : 'removeAll';
-                    if (condition == 'removeAll' && icon == false)
+                    if (condition == 'removeAll' && icon == 'stats')
                         iconSrc = window.CONFIG.controlIcons.effects;
-                    else if (icon == false) 
+                    else if (icon == 'stats') 
                         iconSrc = this.pf2eCondition(condition);
                 }
                 else if (game.system.id == 'demonlord'){
                     const condition = settings.condition ? settings.condition : 'removeAll';
-                    if (condition == 'removeAll' && icon == false)
+                    if (condition == 'removeAll' && icon == 'stats')
                         iconSrc = window.CONFIG.controlIcons.effects;
-                    else if (icon == false) 
+                    else if (icon == 'stats') 
                         iconSrc = CONFIG.statusEffects.find(e => e.id === condition).icon;
                 }
                 ring = 1;
@@ -601,7 +605,7 @@ export class TokenControl{
                 }
                 const condition = settings.cubConditionName;
                 if (condition == undefined || condition == '') return;
-                if (icon == false) {
+                if (icon == 'stats') {
                     iconSrc = CONFIG.statusEffects.find(e => e.label === condition).icon;
                 }
                 ring = 1;
@@ -609,7 +613,7 @@ export class TokenControl{
             }
         }
 
-        if (icon == false){
+        if (icon == 'stats'){
             if (MODULE.getPermission('TOKEN','STATS') == false) stats = statsOld;
             if (stats == 'HP') //HP
                 iconSrc = "modules/MaterialDeck/img/token/hp_empty.png";
@@ -851,12 +855,17 @@ export class TokenControl{
             const ability = settings.rollAbility ? settings.rollAbility : 'str';
             const skill = settings.rollSkill ? settings.rollSkill : 'acr';
             const save = settings.rollSave ? settings.rollSave : 'str';
-            const rollOptions = otherControls.rollOption ? otherControls.rollOption : 'dialog';
-            const options = {
-                fastForward: (otherControls.rollOption != 'dialog'),
-                advantage: (otherControls.rollOption == 'advantage'),
-                disadvantage: (otherControls.rollOption == 'disadvantage')
-            }
+            const rollMode = settings.rollMode ? settings.rollMode : 'default';
+            let options;
+            if (rollMode == 'default')
+                options = {
+                    fastForward: (otherControls.rollOption != 'dialog'),
+                    advantage: (otherControls.rollOption == 'advantage'),
+                    disadvantage: (otherControls.rollOption == 'disadvantage')
+                }
+            else if (rollMode == 'normal') options = {fastForward:true}
+            else if (rollMode == 'advantage') options = {fastForward:true,advantage:true}
+            else if (rollMode == 'disadvantage') options = {fastForward:true,disadvantage:true}
 
             if (game.system.id == 'pf2e') {
                 if (roll == 'ability') token.actor.data.data.saves?.[ability].roll(options);

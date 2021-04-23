@@ -51,6 +51,7 @@ export class MacroControl{
                 
                 ringColor = (macroOffset == parseInt(this.offset)) ? ringOnColor : ringOffColor;
                 ring = 2;
+                src = "modules/MaterialDeck/img/transparant.png";
             }
             else { //Execute macro
                 macroNumber += this.offset - 1;

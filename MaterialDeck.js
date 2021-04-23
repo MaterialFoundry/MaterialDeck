@@ -30,7 +30,7 @@ let activeSounds = [];
 export let hotbarUses = false;
 export let calculateHotbarUses;
 
-
+let controlTokenTimer;
        
 //CONFIG.debug.hooks = true;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ async function analyzeWSmessage(msg){
 
         if (action == 'token'){
             tokenControl.active = true;
-            tokenControl.update(device,selectedTokenId,device);
+            tokenControl.pushData(selectedTokenId,settings,context,device);
         }  
         else if (action == 'move')
             move.update(settings,context,device);
@@ -353,17 +353,13 @@ Hooks.once('ready', async()=>{
     }
 
     const hotbarUsesTemp = game.modules.get("illandril-hotbar-uses");
-    if (hotbarUsesTemp != undefined) {
-        hotbarUses = true;
-    }
-    
+    if (hotbarUsesTemp != undefined) hotbarUses = true;
 });
 
 Hooks.on('updateToken',(scene,token)=>{
     if (enableModule == false || ready == false) return;
     let tokenId = token._id;
-    if (tokenId == selectedTokenId)
-        tokenControl.update(selectedTokenId);
+    if (tokenId == selectedTokenId) tokenControl.update(selectedTokenId);
     if (macroControl != undefined) macroControl.updateAll();
 });
 
@@ -373,8 +369,10 @@ Hooks.on('updateActor',(scene,actor)=>{
     for (let i=0; i<children.length; i++){
         if (children[i].actor.id == actor._id){
             let tokenId = children[i].id;
-            if (tokenId == selectedTokenId)
+            if (tokenId == selectedTokenId) {
                 tokenControl.update(selectedTokenId);
+            }
+                
         }
     }
     if (macroControl != undefined) macroControl.updateAll();
@@ -384,11 +382,17 @@ Hooks.on('controlToken',(token,controlled)=>{
     if (enableModule == false || ready == false) return;
     if (controlled) {
         selectedTokenId = token.data._id;
+        tokenControl.update(selectedTokenId);
+        if (controlTokenTimer != undefined) {
+            clearTimeout(controlTokenTimer);
+            controlTokenTimer = undefined;
+        }
     }
     else {
+        controlTokenTimer = setTimeout(function(){tokenControl.update(selectedTokenId);},10)
         selectedTokenId = undefined;
     }
-    tokenControl.update(selectedTokenId);
+    
     if (macroControl != undefined) macroControl.updateAll();
 });
 

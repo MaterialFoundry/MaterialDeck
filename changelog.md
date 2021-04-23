@@ -1,8 +1,38 @@
 # Changelog Material Deck Module
+### v1.4.2 - 23-04-2021
+Fixes:
+<ul>
+<li>Last update I fixed the combat tracker, but this broke something in the Token Action (if you had a token selected, it would sometimes assumed you didn't have it selected), both should now work</li>
+<li>Token Action: Plugin wouldn't save text boxes (such as 'Prepend Title' or 'Custom') if they were empty</li>
+<li>Token Action: Improved performance, especially when 'Token' is set to 'Selected Token', and you're selecting a new token while you had another token selected<li>
+<li>Token Action => Stats => Skill Modifier: (dnd5e) Would only display the modifier, now it displays the total value (so with proficiency, if applicable)</li>
+<li>Combat Tracker => Mode: Function => Function: Would not always properly load the 'Turn Display' options</li>
+<li>Playlist Action: Background color would not show, and 'Off Color' wouldn't work for 'Offset'</li>
+<li>Macro Action => Macro Board => Offset: Background color would not show</li>
+<li>Scene Action => Offset: Background color would not show</li>
+</ul>
+
+Additions:
+<ul>
+<li>Token Action: Changed the way how you can select what icon will be displayed. Instead of a true/false, there is now a selection box where you can select between 'None', 'Token Icon', 'Actor Icon' and 'Default', where the last one will display the default icon, for example the selected stat to display, the condition, etc</li>
+<li>Token Action => Stats & On Click => Custom: Textbox now automatically resizes to fit the content</li>
+<li>Token Action => On Click => Dice Roll: Added 'Roll Mode' option, where you can set to roll as 'default' (displays dialog), 'normal', 'advantage' or 'disadvantage'. All options, except for 'default', will ignore the previously added 'Token Roll Options' in 'Other Actions'</li>
+</ul>
+
+Other:
+<ul>
+<li>Big code cleanup of the SD plugin</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.4.2 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.4.1 - 21-04-2021
 Fixes:
 <ul>
-<li>Last update broke the combat tracker, should now be fixed</li>
+<li>Previous update broke the combat tracker, should now be fixed</li>
 </ul>
 
 ### v1.4.0 - 21-04-2021

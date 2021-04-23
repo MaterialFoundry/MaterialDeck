@@ -114,8 +114,8 @@ export class SceneControl{
         else if (func == 'offset'){
             let offset = parseInt(settings.sceneOffset);
             if (isNaN(offset)) offset = 0;
-            if (offset == this.sceneOffset) ringColor = ringOnColor;
-            else ringColor = ringOffColor;
+            ringColor = (offset == this.sceneOffset) ? ringOnColor : ringOffColor;
+            src = "modules/MaterialDeck/img/transparant.png";
         }
         streamDeck.setTitle(name,context);
         streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});

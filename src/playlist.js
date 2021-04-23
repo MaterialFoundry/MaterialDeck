@@ -52,6 +52,7 @@ export class PlaylistControl{
         const ringOffColor = settings.offRing ? settings.offRing : '#FF0000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const playlistType = settings.playlistType ? settings.playlistType : 'playStop';
+        let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
         if (playlistType == 'playStop'){
@@ -74,7 +75,7 @@ export class PlaylistControl{
         else if (playlistType == 'offset') {
             let playlistOffset = parseInt(settings.offset);
             if (isNaN(playlistOffset)) playlistOffset = 0;
-            if (playlistOffset == this.playlistOffset) ringColor = ringOnColor;
+            ringColor = (playlistOffset == this.playlistOffset) ? ringOnColor : ringOffColor;
         }
         //Relative Offset
         else if (playlistType == 'relativeOffset') {
@@ -87,7 +88,7 @@ export class PlaylistControl{
             const targetPlaylist = this.getPlaylist(number);
             if (targetPlaylist != undefined) name = targetPlaylist.name;
         }
-        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
+        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
 
@@ -98,6 +99,7 @@ export class PlaylistControl{
         const ringOffColor = settings.offRing ? settings.offRing : '#FF0000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const playlistType = settings.playlistType ? settings.playlistType : 'playStop';
+        let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
         if (playlistType == 'playStop'){
@@ -130,12 +132,12 @@ export class PlaylistControl{
         else if (playlistType == 'offset') {
             let trackOffset = parseInt(settings.offset);
             if (isNaN(trackOffset)) trackOffset = 0;
-            if (trackOffset == this.trackOffset) ringColor = ringOnColor;
+            ringColor = (trackOffset == this.trackOffset) ? ringOnColor : ringOffColor;
         }
         //Relative Offset
         else if (playlistType == 'relativeOffset') {
         }
-        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
+        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
 
