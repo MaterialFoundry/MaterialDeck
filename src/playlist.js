@@ -12,6 +12,7 @@ export class PlaylistControl{
     async updateAll(){
         if (this.active == false) return;
         for (let device of streamDeck.buttonContext) {
+            if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
                 if (data == undefined || data.action != 'playlist') continue;

@@ -1,4 +1,23 @@
 # Changelog Material Deck Module
+### v1.4.3 - 05-05-2021
+Fixes:
+<ul>
+<li>Fixed issue where the module would break if multiple Stream Decks were configured in the Stream Deck application, but not all of them had MD actions assigned to them</li>
+<li>In the User Permission Configuration, the Scene Directory hint wasn't displayed properly</li>
+<li>Got rid of warnings that popped up on initialization when using MD as a player</li>
+<li>Fixed issue where the soundboard and macro board could not be configured by players, if it hadn't first been configured by a GM</li>
+</ul>
+
+Other
+<ul>
+<li>Added compatibility for Foundry 0.8.2. Some functions no longer work in 0.8.1 (they still do in 0.7.9)</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.4.2 (unchanged): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.4.2 - 23-04-2021
 Fixes:
 <ul>

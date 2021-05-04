@@ -98,7 +98,7 @@
     "MaterialDeck.Perm.MACRO.MACROBOARD.label": "Macro Board",
     "MaterialDeck.Perm.MACRO.MACROBOARD.hint": "Allow users to use the macro board",
     "MaterialDeck.Perm.MACRO.MACROBOARD_CONFIGURE.label": "Configure the Macro Board",
-    "MaterialDeck.Perm.MACRO.MACROBOARD_CONFIGURE.hint": "Allow users to configure the macro board",
+    "MaterialDeck.Perm.MACRO.MACROBOARD_CONFIGURE.hint": "Allow users to configure the macro board. To allow users to pick icons using the filepicker, enable 'Browse File Explorer' for that user in the core Permission Configuration",
 
     "MaterialDeck.Perm.MOVE.label": "Move",
     "MaterialDeck.Perm.MOVE.TOKEN.label": "Token",
@@ -144,7 +144,7 @@
     "MaterialDeck.Perm.SCENE.ACTIVE.label": "Active Scene",
     "MaterialDeck.Perm.SCENE.ACTIVE.hint": "Allow users to view the active scene",
     "MaterialDeck.Perm.SCENE.DIRECTORY.label": "Scene Directory",
-    "MaterialDeck.Perm.SCENE.DIRECTOR.hint": "Allow users to view and control scenes from the scene directory",
+    "MaterialDeck.Perm.SCENE.DIRECTORY.hint": "Allow users to view and control scenes from the scene directory",
     "MaterialDeck.Perm.SCENE.NAME.label": "Scene by Name",
     "MaterialDeck.Perm.SCENE.NAME.hint": "Allow users to view and control any scene by name",
 
@@ -152,7 +152,7 @@
     "MaterialDeck.Perm.SOUNDBOARD.PLAY.label": "Enable",
     "MaterialDeck.Perm.SOUNDBOARD.PLAY.hint": "Allow users to play sounds from the soundboard",
     "MaterialDeck.Perm.SOUNDBOARD.CONFIGURE.label": "Configure",
-    "MaterialDeck.Perm.SOUNDBOARD.CONFIGURE.hint": "Allow users to configure the soundboard",
+    "MaterialDeck.Perm.SOUNDBOARD.CONFIGURE.hint": "Allow users to configure the soundboard. To allow users to pick files and icons using the filepicker, enable 'Browse File Explorer' for that user in the core Permission Configuration",
 
     "MaterialDeck.Perm.TOKEN.label": "Token",
     "MaterialDeck.Perm.TOKEN.STATS.label": "Display Stats",

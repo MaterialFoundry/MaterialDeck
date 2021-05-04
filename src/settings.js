@@ -222,7 +222,8 @@ export const registerSettings = async function() {
         if (permissionSettings.permissions.TOKEN.OBSERVER == undefined) permissionSettings.permissions.TOKEN.OBSERVER = [false,true,true,true];
         if (permissionSettings.permissions.MACRO.BY_NAME == undefined) permissionSettings.permissions.MACRO.BY_NAME = [false,false,true,true];
     }
-    game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);
+    if (game.user.isGM)
+        game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);
     
 
 }

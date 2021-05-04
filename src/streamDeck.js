@@ -35,6 +35,7 @@ export class StreamDeck{
     }
 
     setContext(device,size,iteration,action,context,coordinates = {column:0,row:0},settings){
+        if (device == undefined) return;
         if (this.buttonContext[iteration] == undefined) {
             const deckSize = size.columns*size.rows;
             let buttons = [];

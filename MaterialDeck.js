@@ -22,7 +22,6 @@ export var externalModules;
 export var sceneControl;
 
 export const moduleName = "MaterialDeck";
-export var selectedTokenId;
 
 let ready = false;
 let activeSounds = [];
@@ -116,7 +115,7 @@ async function analyzeWSmessage(msg){
 
         if (action == 'token'){
             tokenControl.active = true;
-            tokenControl.pushData(selectedTokenId,settings,context,device);
+            tokenControl.pushData(canvas.tokens.controlled[0]?.id,settings,context,device);
         }  
         else if (action == 'move')
             move.update(settings,context,device);
@@ -317,6 +316,43 @@ Hooks.once('ready', async()=>{
     for (let i=0; i<64; i++)
         activeSounds[i] = false;
 
+    if (game.user.isGM) {
+        let soundBoardSettings = game.settings.get(moduleName,'soundboardSettings');
+        let macroSettings = game.settings.get(moduleName, 'macroSettings');
+        let array = [];
+        for (let i=0; i<64; i++) array[i] = "";
+        let arrayVolume = [];
+        for (let i=0; i<64; i++) arrayVolume[i] = "50";
+        let arrayZero = [];
+        for (let i=0; i<64; i++) arrayZero[i] = "0";
+    
+        if (macroSettings.color == undefined){
+            game.settings.set(moduleName,'macroSettings',{
+                macros: array,
+                color: arrayZero
+            });
+        }
+    
+        const settings = {
+            playlist: "",
+            sounds: array,
+            colorOn: arrayZero,
+            colorOff: arrayZero,
+            mode: arrayZero,
+            toggle: arrayZero,
+            volume: arrayVolume
+        };
+        if (soundBoardSettings.colorOff == undefined){
+            game.settings.set(moduleName,'soundboardSettings',settings);
+        }
+    }
+
+
+
+
+
+
+
     if (enableModule == false) return;
     if (getPermission('ENABLE') == false) {
         ready = true;
@@ -325,33 +361,6 @@ Hooks.once('ready', async()=>{
 
     startWebsocket();
 
-    let soundBoardSettings = game.settings.get(moduleName,'soundboardSettings');
-    let macroSettings = game.settings.get(moduleName, 'macroSettings');
-    let array = [];
-    for (let i=0; i<64; i++) array[i] = "";
-    let arrayVolume = [];
-    for (let i=0; i<64; i++) arrayVolume[i] = "50";
-    let arrayZero = [];
-    for (let i=0; i<64; i++) arrayZero[i] = "0";
-
-    if (macroSettings.color == undefined){
-        game.settings.set(moduleName,'macroSettings',{
-            macros: array,
-            color: arrayZero
-        });
-    }
-    if (soundBoardSettings.colorOff == undefined){
-        game.settings.set(moduleName,'soundboardSettings',{
-            playlist: "",
-            sounds: array,
-            colorOn: arrayZero,
-            colorOff: arrayZero,
-            mode: arrayZero,
-            toggle: arrayZero,
-            volume: arrayVolume
-        });
-    }
-
     const hotbarUsesTemp = game.modules.get("illandril-hotbar-uses");
     if (hotbarUsesTemp != undefined) hotbarUses = true;
 });
@@ -359,7 +368,7 @@ Hooks.once('ready', async()=>{
 Hooks.on('updateToken',(scene,token)=>{
     if (enableModule == false || ready == false) return;
     let tokenId = token._id;
-    if (tokenId == selectedTokenId) tokenControl.update(selectedTokenId);
+    if (tokenId == canvas.tokens.controlled[0]?.id) tokenControl.update(canvas.tokens.controlled[0]?.id);
     if (macroControl != undefined) macroControl.updateAll();
 });
 
@@ -369,8 +378,8 @@ Hooks.on('updateActor',(scene,actor)=>{
     for (let i=0; i<children.length; i++){
         if (children[i].actor.id == actor._id){
             let tokenId = children[i].id;
-            if (tokenId == selectedTokenId) {
-                tokenControl.update(selectedTokenId);
+            if (tokenId == canvas.tokens.controlled[0]?.id) {
+                tokenControl.update(canvas.tokens.controlled[0]?.id);
             }
                 
         }
@@ -381,16 +390,14 @@ Hooks.on('updateActor',(scene,actor)=>{
 Hooks.on('controlToken',(token,controlled)=>{
     if (enableModule == false || ready == false) return;
     if (controlled) {
-        selectedTokenId = token.data._id;
-        tokenControl.update(selectedTokenId);
+        tokenControl.update(token.data._id);
         if (controlTokenTimer != undefined) {
             clearTimeout(controlTokenTimer);
             controlTokenTimer = undefined;
         }
     }
     else {
-        controlTokenTimer = setTimeout(function(){tokenControl.update(selectedTokenId);},10)
-        selectedTokenId = undefined;
+        controlTokenTimer = setTimeout(function(){tokenControl.update(canvas.tokens.controlled[0]?.id);},10)
     }
     
     if (macroControl != undefined) macroControl.updateAll();
@@ -401,7 +408,6 @@ Hooks.on('updateOwnedItem',()=>{
 })
 
 Hooks.on('renderHotbar', (hotbar)=>{
-    if (compatibleCore("0.8.1")) return;
     if (enableModule == false || ready == false) return;
     if (macroControl != undefined) macroControl.hotbar(hotbar.macros);
 });
@@ -416,7 +422,7 @@ Hooks.on('render', (app)=>{
 Hooks.on('renderCombatTracker',()=>{
     if (enableModule == false || ready == false) return;
     if (combatTracker != undefined) combatTracker.updateAll();
-    if (tokenControl != undefined) tokenControl.update(selectedTokenId);
+    if (tokenControl != undefined) tokenControl.update(canvas.tokens.controlled[0]?.id);
 });
 
 Hooks.on('renderPlaylistDirectory', (playlistDirectory)=>{
@@ -473,7 +479,7 @@ Hooks.on('renderSceneControls',()=>{
 
 Hooks.on('targetToken',(user,token,targeted)=>{
     if (enableModule == false || ready == false) return;
-    if (token.id == selectedTokenId) tokenControl.update(selectedTokenId);
+    if (token.id == canvas.tokens.controlled[0]?.id) tokenControl.update(canvas.tokens.controlled[0]?.id);
 });
 
 Hooks.on('sidebarCollapse',()=>{

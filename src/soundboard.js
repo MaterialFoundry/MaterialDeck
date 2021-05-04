@@ -14,6 +14,7 @@ export class SoundboardControl{
     async updateAll(){
         if (this.active == false) return;
         for (let device of streamDeck.buttonContext) {
+            if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
                 if (data == undefined || data.action != 'soundboard') continue;
@@ -171,7 +172,7 @@ export class SoundboardControl{
             volume *= game.settings.get("core", "globalAmbientVolume");
 
             if (compatibleCore("0.8.1")) {
-                let newSound = new SoundNode(src);
+                let newSound = new Sound(src);
                 if(newSound.loaded == false) await newSound.load({autoplay:true});
                 newSound.on('end', ()=>{
                     if (repeat == false) {

@@ -17,10 +17,11 @@ export class OtherControls{
     async updateAll(options={}){
         if (this.active == false) return;
         for (let device of streamDeck.buttonContext) {
+            if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
                 if (data == undefined || data.action != 'other') continue;
-                await this.update(data.settings,data.context,device.device);
+                await this.update(data.settings,data.context,device.device,options);
             }
         }
     }
@@ -240,7 +241,16 @@ export class OtherControls{
                 }
                 ui.controls.activeControl = selectedControl.name;
                 selectedControl.activeTool = selectedControl.activeTool;
-                canvas.getLayer(selectedControl.layer).activate();
+                if (compatibleCore("0.8.2")) {
+                    for (let layer of canvas.layers) {
+                        if (layer.options == undefined) continue;
+                        if (layer.options.name == selectedControl.layer) {
+                            layer.activate();
+                            break;
+                        }
+                    }
+                }
+                else canvas.getLayer(selectedControl.layer).activate();
             }
         }
         else if (control == 'dispTools'){  //displayed tools
@@ -281,7 +291,16 @@ export class OtherControls{
                 if (tool == 'open'){  //open category
                     ui.controls.activeControl = control;
                     selectedControl.activeTool = selectedControl.activeTool;
-                    canvas.getLayer(selectedControl.layer).activate();
+                    if (compatibleCore("0.8.2")) {
+                        for (let layer of canvas.layers) {
+                            if (layer.options == undefined) continue;
+                            if (layer.options.name == selectedControl.layer) {
+                                layer.activate();
+                                break;
+                            }
+                        }
+                    }
+                    else canvas.getLayer(selectedControl.layer).activate();
                 }
                 else {
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
@@ -291,7 +310,16 @@ export class OtherControls{
                             return;
                         }
                         ui.controls.activeControl = control;
-                        canvas.getLayer(selectedControl.layer).activate();
+                        if (compatibleCore("0.8.2")) {
+                            for (let layer of canvas.layers) {
+                                if (layer.options == undefined) continue;
+                                if (layer.options.name == selectedControl.layer) {
+                                    layer.activate();
+                                    break;
+                                }
+                            }
+                        }
+                        else canvas.getLayer(selectedControl.layer).activate();
                         if (selectedTool.toggle) {
                             selectedTool.active = !selectedTool.active;
                             selectedTool.onClick(selectedTool.active);
@@ -378,7 +406,7 @@ export class OtherControls{
         let actor;
         let tokenControlled = false;
 
-        if (MODULE.selectedTokenId != undefined) actor = canvas.tokens.children[0].children.find(p => p.id == MODULE.selectedTokenId).actor;
+        if (canvas.tokens.controlled[0] != undefined) actor = canvas.tokens.controlled[0].actor;
         if (actor != undefined) tokenControlled = true;
 
         let r;
@@ -418,6 +446,7 @@ export class OtherControls{
 
         const background = settings.background ? settings.background : '#000000';
         const table = game.tables.getName(name);
+        if (table == undefined) return;
 
         let txt = settings.displayRollName ? table.name : '';
         let src = settings.displayRollIcon ? table.data.img : '';
@@ -509,7 +538,7 @@ export class OtherControls{
         if (popOut && options.sidebarTab == sidebarTab) {
             ringColor = options.renderPopout ? ringOnColor : ringOffColor;
         }
-        else ringColor = (sidebarTab == 'collapse' && collapsed || (activeTab == sidebarTab)) ? ringOnColor : ringOffColor;
+        else if (popOut == false) ringColor = (sidebarTab == 'collapse' && collapsed || (activeTab == sidebarTab)) ? ringOnColor : ringOffColor;
         const name = settings.displaySidebarName ? this.getSidebarName(sidebarTab) : '';
         const icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
 

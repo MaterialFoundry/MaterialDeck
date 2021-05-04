@@ -11,6 +11,7 @@ export class TokenControl{
     async update(tokenId=null){
         if (this.active == false) return;
         for (let device of streamDeck.buttonContext) {
+            if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
                 if (data == undefined || data.action != 'token') continue;
@@ -649,8 +650,7 @@ export class TokenControl{
                 let skill = settings.skill;
                 if (skill == undefined) skill = 'acr';
                 else iconSrc = "modules/MaterialDeck/img/token/skills/" + skill + ".png";
-            }
-                
+            }     
         } 
         streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
         streamDeck.setTitle(txt,context);
@@ -659,13 +659,13 @@ export class TokenControl{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     async keyPress(settings){
-        const tokenId = MODULE.selectedTokenId;
+        const tokenId = canvas.tokens.controlled[0]?.id;
 
         const selection = settings.selection ? settings.selection : 'selected';
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
         
         let token;
-        if (selection == 'selected') token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
+        if (selection == 'selected') token = canvas.tokens.controlled[0];
         else if (selection != 'selected' && tokenIdentifier == '') {}
         else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
         else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);
@@ -834,7 +834,7 @@ export class TokenControl{
             }
             else if (method == 'offset'){
                 this.wildcardOffset = value;
-                this.update(MODULE.selectedTokenId);
+                this.update(canvas.tokens.controlled[0]?.id);
             }
             else return;
 

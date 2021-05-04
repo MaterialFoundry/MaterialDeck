@@ -70,7 +70,7 @@ export class Move{
             const selection = settings.selection ? settings.selection : 'selected';
             const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
     
-            if (selection == 'selected') token = canvas.tokens.children[0].children.find(p => p.id == MODULE.selectedTokenId);
+            if (selection == 'selected') token = canvas.tokens.controlled[0];
             else if (selection != 'selected' && tokenIdentifier == '') {}
             else if (selection == 'tokenName') token = canvas.tokens.children[0].children.find(p => p.name == tokenIdentifier);
             else if (selection == 'actorName') token = canvas.tokens.children[0].children.find(p => p.actor.name == tokenIdentifier);

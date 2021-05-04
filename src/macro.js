@@ -11,6 +11,7 @@ export class MacroControl{
     async updateAll(){
         if (this.active == false) return;
         for (let device of streamDeck.buttonContext) {
+            if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
                 if (data == undefined || data.action != 'macro') continue;
@@ -109,48 +110,51 @@ export class MacroControl{
         return uses;
     }
 
-    async hotbar(macros){
-        for (let i=0; i<32; i++){ 
-            const data = streamDeck.buttonContext[i];
-            if (data == undefined || data.action != 'macro' || data.settings.macroMode == 'macroBoard') continue;
+    async hotbar(){
+        for (let device of streamDeck.buttonContext) {
+            if (device?.buttons == undefined) continue;
+            for (let i=0; i<device.buttons.length; i++){   
+                const data = device.buttons[i];
+                if (data == undefined || data.action != 'macro' || data.settings.macroMode == 'macroBoard') continue;
             
-            const context = data.context;
-            const mode = data.settings.macroMode ? data.settings.macroMode : 'hotbar';
-            const displayName = data.settings.displayName ? data.settings.displayName : false;
-            const displayIcon = data.settings.displayIcon ? data.settings.displayIcon : false;
-            const displayUses = data.settings.displayUses ? data.settings.displayUses : false;
-            let background = data.settings.background ? data.settings.background : '#000000';
-            let macroNumber = data.settings.macroNumber;
-            if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 1;
+                const context = data.context;
+                const mode = data.settings.macroMode ? data.settings.macroMode : 'hotbar';
+                const displayName = data.settings.displayName ? data.settings.displayName : false;
+                const displayIcon = data.settings.displayIcon ? data.settings.displayIcon : false;
+                const displayUses = data.settings.displayUses ? data.settings.displayUses : false;
+                let background = data.settings.background ? data.settings.background : '#000000';
+                let macroNumber = data.settings.macroNumber;
+                if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 1;
 
-            if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
-                streamDeck.noPermission(context,device);
-                return;
-            } 
+                if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
+                    streamDeck.noPermission(context,device);
+                    return;
+                } 
 
-            let src = "";
-            let name = "";
+                let src = "";
+                let name = "";
 
-            if (mode == 'Macro Board') continue;
-            
-            let macroId;
-            if (mode == 'hotbar'){
-                macroId = game.user.data.hotbar[macroNumber];
+                if (mode == 'Macro Board') continue;
+                
+                let macroId;
+                if (mode == 'hotbar'){
+                    macroId = game.user.data.hotbar[macroNumber];
+                }
+                else {
+                    if (macroNumber > 9) macroNumber = 0;
+                    macroId = game.macros.apps[0].macros.find(m => m.key == macroNumber).macro?.id
+                }
+                let macro = undefined;
+                let uses = undefined;
+                if (macroId != undefined) macro = game.macros._source.find(p => p._id == macroId);
+                if (macro != undefined && macro != null) {
+                    if (displayName) name += macro.name;
+                    if (displayIcon) src += macro.img;
+                    if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
+                }
+                streamDeck.setIcon(context,device,src,{background:background,uses:uses});
+                streamDeck.setTitle(name,context);
             }
-            else {
-                if (macroNumber > 9) macroNumber = 0;
-                macroId = game.macros.apps[0].macros.find(m => m.key == macroNumber).macro?.id
-            }
-            let macro = undefined;
-            let uses = undefined;
-            if (macroId != undefined) macro = game.macros._source.find(p => p._id == macroId);
-            if (macro != undefined && macro != null) {
-                if (displayName) name += macro.name;
-                if (displayIcon) src += macro.img;
-                if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
-            }
-            streamDeck.setIcon(context,device,src,{background:background,uses:uses});
-            streamDeck.setTitle(name,context);
         }
     }
    

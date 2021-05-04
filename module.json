@@ -1,25 +1,40 @@
 {
-    "name": "MaterialDeck",
-    "title": "Material Deck",
-    "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
-    "version": "1.4.2",
-    "minimumSDversion": "1.4.2",
-    "minimumMSversion": "1.0.2",
-    "author": "CDeenen",
-    "esmodules": [
-      "./MaterialDeck.js"
-    ],
-    "socket": true,
-    "minimumCoreVersion": "0.7.5",
-    "compatibleCoreVersion": "0.8.1",
-    "languages": [
-      {
-        "lang": "en",
-        "name": "English",
-        "path": "lang/en.json"
-      }
-    ],
-    "url": "https://github.com/CDeenen/MaterialDeck",
-    "manifest": "https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json",
-    "download": "https://github.com/CDeenen/MaterialDeck/archive/Master.zip"
-  }
+  "name": "MaterialDeck",
+  "title": "Material Deck",
+  "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
+  "version": "1.4.3",
+  "minimumSDversion": "1.4.2",
+  "minimumMSversion": "1.0.2",
+  "author": "CDeenen",
+  "authors": {
+    "name": "CDeenen",
+    "email": "cdeenen@outlook.com",
+    "discord": "Cris#6864",
+    "patreon": "MaterialFoundry",
+    "reddit": "CDeenen123"
+  },
+  
+  "esmodules": [
+    "./MaterialDeck.js"
+  ],
+  "socket": true,
+  "minimumCoreVersion": "0.7.5",
+  "compatibleCoreVersion": "0.8.2",
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "media": [
+    {
+      "type": "icon",
+      "url": "https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/img/MaterialFoundry512x512.png"
+    }
+  ],
+  "manifestPlusVersion": "1.1.0",
+  "url": "https://github.com/CDeenen/MaterialDeck",
+  "manifest": "https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json",
+  "download": "https://github.com/CDeenen/MaterialDeck/archive/Master.zip"
+}
