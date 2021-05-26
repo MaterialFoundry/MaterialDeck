@@ -32,6 +32,8 @@ export class OtherControls{
 
         if (mode == 'pause')    //pause
             this.updatePause(settings,context,device,options);
+        else if (mode == 'move')     //move canvas
+            this.updateMove(settings,context,device,options);
         else if (mode == 'controlButtons')    //control buttons
             this.updateControl(settings,context,device,options);
         else if (mode == 'darkness')   //darkness
@@ -59,6 +61,8 @@ export class OtherControls{
 
         if (mode == 'pause')     //pause
             this.keyPressPause(settings);
+        else if (mode == 'move')     //move canvas
+            this.keyPressMove(settings);
         else if (mode == 'controlButtons')    //control buttons
             this.keyPressControl(settings);
         else if (mode == 'darkness')    //darkness controll
@@ -123,6 +127,87 @@ export class OtherControls{
         }
         else if (pauseFunction == 'toggle') { //toggle
             game.togglePause(!game.paused,true);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    updateMove(settings,context,device,options={}){
+        let url = '';
+        const dir = settings.dir ? settings.dir : 'center';
+        const background = settings.background ? settings.background : '#000000';
+        if (dir == 'center')  //center
+            url = "modules/MaterialDeck/img/move/center.png";
+        else if (dir == 'up') //up
+            url = "modules/MaterialDeck/img/move/up.png";
+        else if (dir == 'down') //down
+            url = "modules/MaterialDeck/img/move/down.png";
+        else if (dir == 'right') //right
+            url = "modules/MaterialDeck/img/move/right.png";
+        else if (dir == 'left') //left
+            url = "modules/MaterialDeck/img/move/left.png";
+        else if (dir == 'upRight') 
+            url = "modules/MaterialDeck/img/move/upright.png";
+        else if (dir == 'upLeft') 
+            url = "modules/MaterialDeck/img/move/upleft.png";
+        else if (dir == 'downRight') 
+            url = "modules/MaterialDeck/img/move/downright.png";
+        else if (dir == 'downLeft') 
+            url = "modules/MaterialDeck/img/move/downleft.png";
+        else if (dir == 'zoomIn') 
+            url = "modules/MaterialDeck/img/move/zoomin.png";
+        else if (dir ==  'zoomOut') 
+            url = "modules/MaterialDeck/img/move/zoomout.png";
+        
+        streamDeck.setIcon(context,device,url,{background:background,overlay:true});
+        streamDeck.setTitle('',context);
+    }
+
+    keyPressMove(settings){
+        if (canvas.scene == null) return;
+        const dir = settings.dir ? settings.dir : 'center';
+        if (dir ==  'zoomIn') {//zoom in
+            let viewPosition = canvas.scene._viewPosition;
+            viewPosition.scale = viewPosition.scale*1.05;
+            viewPosition.duration = 100;
+            canvas.animatePan(viewPosition);
+        }
+        else if (dir == 'zoomOut') {//zoom out
+            let viewPosition = canvas.scene._viewPosition;
+            viewPosition.scale = viewPosition.scale*0.95;
+            viewPosition.duration = 100;
+            canvas.animatePan(viewPosition);
+        }
+        else {
+            let viewPosition = canvas.scene._viewPosition;
+            const gridSize = canvas.scene.data.grid;
+            viewPosition.duration = 100;
+            
+            if (dir == 'up') viewPosition.y -= gridSize;
+            else if (dir == 'down') viewPosition.y += gridSize;
+            else if (dir == 'right') viewPosition.x += gridSize;
+            else if (dir == 'left') viewPosition.x -= gridSize;
+            else if (dir == 'upRight') {
+                viewPosition.x += gridSize;
+                viewPosition.y -= gridSize;
+            }
+            else if (dir == 'upLeft') {
+                viewPosition.x -= gridSize;
+                viewPosition.y -= gridSize;
+            }
+            else if (dir == 'downRight') {
+                viewPosition.x += gridSize;
+                viewPosition.y += gridSize;
+            }
+            else if (dir == 'downLeft') {
+                viewPosition.x -= gridSize;
+                viewPosition.y += gridSize;
+            }
+            else if (dir == 'center') {
+                viewPosition.x = (canvas.dimensions.sceneWidth+window.innerWidth)/2;
+                viewPosition.y = (canvas.dimensions.sceneHeight+window.innerHeight)/2;
+            }
+            canvas.animatePan(viewPosition);
         }
     }
 
@@ -603,18 +688,17 @@ export class OtherControls{
             streamDeck.noPermission(context,device);
             return;
         }
-        let compendium;
-        if (compatibleCore("0.8.1"))    compendium = game.packs.contents.find(p=>p.metadata.label == name)?.apps[0];
-        else                            compendium = game.packs.entries.find(p=>p.metadata.label == name);
+        const compendium = game.packs.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
         if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) {
             streamDeck.noPermission(context,device);
             return;
         }
+        const rendered = compatibleCore("0.8.5") ? compendium.apps[0].rendered : compendium.rendered;
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-        const ringColor = compendium.rendered ? ringOnColor : ringOffColor;
+        const ringColor = rendered ? ringOnColor : ringOffColor;
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
@@ -626,12 +710,11 @@ export class OtherControls{
         if (name == undefined) return;
         if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) return;
 
-        let compendium;
-        if (compatibleCore("0.8.1"))    compendium = game.packs.contents.find(p=>p.metadata.label == name)?.apps[0];
-        else                            compendium = game.packs.entries.find(p=>p.metadata.label == name);
+        const compendium = game.packs.find(p=>p.metadata.label == name);
+        const rendered = compatibleCore("0.8.5") ? compendium.apps[0].rendered : compendium.rendered;
         if (compendium == undefined) return;
         if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) return;
-        else if (compendium.rendered) compendium.close();
+        else if (rendered) compatibleCore("0.8.5") ? compendium.apps[0].close() : compendium.close();
         else compendium.render(true);
     }
 

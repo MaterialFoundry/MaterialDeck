@@ -1,5 +1,5 @@
 import * as MODULE from "../MaterialDeck.js";
-import { playlistConfigForm, macroConfigForm, soundboardConfigForm } from "./misc.js";
+import { playlistConfigForm, macroConfigForm, soundboardConfigForm, downloadUtility } from "./misc.js";
 
 let userPermissions = {};
 const defaultEnable = [true,true,true,true];
@@ -21,10 +21,6 @@ const defaultUserPermissions = {
         BY_NAME: [false,false,true,true],
         MACROBOARD: [false,false,true,true],
         MACROBOARD_CONFIGURE: [false,false,true,true]
-    },
-    MOVE: {
-        TOKEN: [true,true,true,true],
-        CANVAS: [true,true,true,true]
     },
     OTHER: {
         PAUSE: [false,false,true,true],
@@ -83,16 +79,6 @@ export const registerSettings = async function() {
         onChange: x => window.location.reload()
     });
 
-    game.settings.register(MODULE.moduleName,'streamDeckModel', {
-        name: "MaterialDeck.Sett.Model",
-        hint: "MaterialDeck.Sett.Model_Hint",
-        scope: "client",
-        config: true,
-        type:Number,
-        default:1,
-        choices:["MaterialDeck.Sett.Model_Mini","MaterialDeck.Sett.Model_Normal","MaterialDeck.Sett.Model_XL"],
-    });
-
     /**
      * Sets the ip address of the server
      */
@@ -128,6 +114,17 @@ export const registerSettings = async function() {
         
     });
 
+    game.settings.register(MODULE.moduleName, 'nrOfConnMessages', {
+        name: "MaterialDeck.Sett.NrOfConnMessages",
+        hint: "MaterialDeck.Sett.NrOfConnMessagesHint",
+        default: 5,
+        type: Number,
+        scope: 'client',
+        range: { min: 0, max: 100, step: 1 },
+        config: true
+        
+    });
+
     //Create the Help button
     game.settings.registerMenu(MODULE.moduleName, 'helpMenu',{
         name: "MaterialDeck.Sett.Help",
@@ -148,6 +145,13 @@ export const registerSettings = async function() {
         scope: "world",
         type: Object,
         config: false
+    });
+
+    game.settings.registerMenu(MODULE.moduleName, 'downloadUtility',{
+        name: "MaterialDeck.DownloadUtility.Title",
+        label: "MaterialDeck.DownloadUtility.Title",
+        type: downloadUtility,
+        restricted: false
     });
 
     /**
@@ -223,10 +227,10 @@ export const registerSettings = async function() {
         if (permissionSettings.permissions.MACRO.BY_NAME == undefined) permissionSettings.permissions.MACRO.BY_NAME = [false,false,true,true];
     }
     if (game.user.isGM)
-        game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);
-    
-
+        game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);      
 }
+
+
 
 export class helpMenu extends FormApplication {
     constructor(data, options) {
@@ -302,11 +306,7 @@ export class helpMenu extends FormApplication {
         }
 
         const actions = Object.entries(duplicate(settings.permissions)).reduce((arr, e) => {
-            //const perm = e[1];
-
             const perms = Object.entries(duplicate(e[1])).reduce((arr, p) => {
-                //const perm = e[1];
-                
                 let perm = {};
                 perm.roles = [p[1][0],p[1][1],p[1][2],p[1][3]]
                 perm.id = p[0];
@@ -324,8 +324,10 @@ export class helpMenu extends FormApplication {
             arr.push(cat);
             return arr;
           }, []);
-
-        const current = await game.settings.get("core", "permissions");
+        for (let i=0; i<actions.length; i++) {
+            if (actions[i].id == 'MOVE')
+                actions.splice(i,1);
+        }
         return {
           roles: Object.keys(CONST.USER_ROLES).reduce((obj, r) => {
             if ( r === "NONE" ) return obj;
@@ -348,7 +350,7 @@ export class helpMenu extends FormApplication {
         settings.enable = permissions.ENABLE;
         delete permissions.ENABLE;
         settings.permissions = permissions;
-        game.settings.set(MODULE.moduleName,'userPermission',settings);
+       // game.settings.set(MODULE.moduleName,'userPermission',settings);
     }
   
     async activateListeners(html) {

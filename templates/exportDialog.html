@@ -1,0 +1,12 @@
+<form autocomplete="off" onsubmit="event.preventDefault()">
+    <p>{{content}}</p>
+
+    <div class="form-group"> 
+        <label>{{localize "MaterialDeck.Filename"}}: </label>
+        <input type="text" name="name" value="{{name}}" id="name" style="width:100%;" >
+    </div>
+
+    <button type="submit" name="submit">
+        <i></i>{{localize "MaterialDeck.Export"}}
+    </button>
+</form>

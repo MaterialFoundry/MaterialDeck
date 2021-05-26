@@ -389,7 +389,7 @@ export class StreamDeck{
         else {
             
         }
-        if (uses != undefined && uses.heart != false && (uses.available > 0 || uses.maximum != undefined)) {
+        if (uses != undefined && uses.heart != undefined && (uses.available > 0 || uses.maximum != undefined)) {
             const percentage = 102*uses.available/uses.maximum;
             ctx.fillStyle = uses.heart;
             ctx.fillRect(0, 121,144,-percentage);
@@ -411,7 +411,7 @@ export class StreamDeck{
             ctx.fillText(content[1], horOffset, vertOffset);
         }
 
-        if (format != 'jpg' && format != 'jpeg' && format != 'png' && format != 'webm' && format != 'webp' && format != 'gif' && format != 'svg') url = "modules/MaterialDeck/img/transparant.png";
+        if (format != 'jpg' && format != 'jpeg' && format != 'png' && format != 'PNG' && format != 'webm' && format != 'webp' && format != 'gif' && format != 'svg') url = "modules/MaterialDeck/img/transparant.png";
         //if (url == "") url = "modules/MaterialDeck/img/transparant.png"
         let resImageURL = url;
         let img = new Image();
@@ -451,10 +451,13 @@ export class StreamDeck{
                 yStart = 0;
             }
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
-            if (uses != undefined && uses.heart == false && (uses.available > 0 || uses.maximum != undefined)) {
-                let txt = uses.available;
-                if (uses.maximum != undefined) txt = uses.available + '/' + uses.maximum;
-                if (uses.maximum == undefined ) uses.maximum = 1;
+            if (uses != undefined && uses.heart == undefined) {
+                let txt = '';
+                if (uses.available != undefined) {
+                    txt = uses.available;
+                    if (uses.maximum != undefined) txt = uses.available + '/' + uses.maximum;
+                    if (uses.maximum == undefined ) uses.maximum = 1;
+                }
                 ctx.beginPath();
                 ctx.lineWidth = 4;
                 let green = Math.ceil(255*(uses.available/uses.maximum));

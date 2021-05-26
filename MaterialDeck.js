@@ -1,7 +1,6 @@
 import {registerSettings} from "./src/settings.js";
 import {StreamDeck} from "./src/streamDeck.js";
 import {TokenControl} from "./src/token.js";
-import {Move} from "./src/move.js";
 import {MacroControl} from "./src/macro.js";
 import {CombatTracker} from "./src/combattracker.js";
 import {PlaylistControl} from "./src/playlist.js";
@@ -9,10 +8,10 @@ import {SoundboardControl} from "./src/soundboard.js";
 import {OtherControls} from "./src/othercontrols.js";
 import {ExternalModules} from "./src/external.js";
 import {SceneControl} from "./src/scene.js";
-import {compatibleCore} from "./src/misc.js";
+import {downloadUtility, compatibleCore} from "./src/misc.js";
+import {TokenHelper} from "./src/systems/tokenHelper.js";
 export var streamDeck;
 export var tokenControl;
-var move;
 export var macroControl;
 export var combatTracker;
 export var playlistControl;
@@ -20,16 +19,19 @@ export var soundboard;
 export var otherControls;
 export var externalModules;
 export var sceneControl;
+export var tokenHelper;
 
 export const moduleName = "MaterialDeck";
 
 let ready = false;
-let activeSounds = [];
 
 export let hotbarUses = false;
 export let calculateHotbarUses;
 
 let controlTokenTimer;
+
+export let sdVersion;
+export let msVersion;
        
 //CONFIG.debug.hooks = true;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,18 +73,28 @@ async function analyzeWSmessage(msg){
     }
 
     if (data.type == "version" && data.source == "SD") {
-        const minimumSDversion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
-        const minimumMSversion = game.modules.get("MaterialDeck").data.minimumMSversion;
+        let minimumSDversion;
+        let minimumMSversion;
+        if (compatibleCore("0.8.5")) {
+            minimumSDversion = game.modules.get("MaterialDeck").data.flags.minimumSDversion.replace('v','');
+            minimumMSversion = game.modules.get("MaterialDeck").data.flags.minimumMSversion;
+        }
+        else {
+            minimumSDversion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
+            minimumMSversion = game.modules.get("MaterialDeck").data.minimumMSversion;
+        }
+        
+        sdVersion = data.version;
 
         if (data.version < minimumSDversion) {
             let d = new Dialog({
                 title: "Material Deck: Update Needed",
-                content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is outdated.<br>Update to v" + minimumSDversion + " or newer.</p>",
+                content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is incompatible with this verion of the module.<br>Update to v" + minimumSDversion + " or newer.</p>",
                 buttons: {
                  download: {
                   icon: '<i class="fas fa-download"></i>',
-                  label: "Update",
-                  callback: () => window.open("https://github.com/CDeenen/MaterialDeck_SD/releases")
+                  label: "Download Utility",
+                  callback: () => new downloadUtility()
                  },
                  ignore: {
                   icon: '<i class="fas fa-times"></i>',
@@ -117,8 +129,6 @@ async function analyzeWSmessage(msg){
             tokenControl.active = true;
             tokenControl.pushData(canvas.tokens.controlled[0]?.id,settings,context,device);
         }  
-        else if (action == 'move')
-            move.update(settings,context,device);
         else if (action == 'macro')
             macroControl.update(settings,context,device);
         else if (action == 'combattracker')
@@ -143,8 +153,6 @@ async function analyzeWSmessage(msg){
     else if (event == 'keyDown'){
         if (action == 'token')
             tokenControl.keyPress(settings);
-        else if (action == 'move')
-            move.keyPress(settings);
         else if (action == 'macro')
             macroControl.keyPress(settings);
         else if (action == 'combattracker')
@@ -189,6 +197,7 @@ function startWebsocket() {
     }
 
     ws.onopen = function() {
+        messageCount = 0;
         WSconnected = true;
         ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+address);
         wsOpen = true;
@@ -210,13 +219,23 @@ function startWebsocket() {
     clearInterval(wsInterval);
     wsInterval = setInterval(resetWS, 10000);
 }
-
+let messageCount = 0;
 /**
  * Try to reset the websocket if a connection is lost
  */
 function resetWS(){
-    if (wsOpen) ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
-    else ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail"));
+    const maxMessages = game.settings.get(moduleName, 'nrOfConnMessages');
+    if (maxMessages == 0 || maxMessages > messageCount) {
+        messageCount++;
+        const countString = maxMessages == 0 ? "" : " (" + messageCount + "/" + maxMessages + ")";
+        if (wsOpen) {
+            ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
+            wsOpen = false;
+            messageCount = 0;
+        }
+        else ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + countString);
+    }
+    
     WSconnected = false;
     startWebsocket();
 }
@@ -255,17 +274,19 @@ export function getPermission(action,func) {
 Hooks.once('ready', async()=>{
     registerSettings();
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
+
+    
     
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
     tokenControl = new TokenControl();
-    move = new Move();
     macroControl = new MacroControl();
     combatTracker = new CombatTracker();
     playlistControl = new PlaylistControl();
     otherControls = new OtherControls();
     externalModules = new ExternalModules();
     sceneControl = new SceneControl();
+    tokenHelper = new TokenHelper();
 
     game.socket.on(`module.MaterialDeck`, async(payload) =>{
         //console.log(payload);
@@ -312,9 +333,6 @@ Hooks.once('ready', async()=>{
             playlistControl.updateAll();
             
     });
-
-    for (let i=0; i<64; i++)
-        activeSounds[i] = false;
 
     if (game.user.isGM) {
         let soundBoardSettings = game.settings.get(moduleName,'soundboardSettings');
@@ -423,6 +441,11 @@ Hooks.on('renderCombatTracker',()=>{
     if (enableModule == false || ready == false) return;
     if (combatTracker != undefined) combatTracker.updateAll();
     if (tokenControl != undefined) tokenControl.update(canvas.tokens.controlled[0]?.id);
+});
+
+Hooks.on('renderActorSheet',()=>{
+    if (enableModule == false || ready == false) return;
+    if (tokenControl != undefined) tokenControl.update();
 });
 
 Hooks.on('renderPlaylistDirectory', (playlistDirectory)=>{

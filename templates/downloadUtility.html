@@ -1,0 +1,94 @@
+<form autocomplete="off" onsubmit="event.preventDefault()">
+    <style>
+        .columnLabel {
+            width:25%;
+            text-align: left;
+        }
+        .columnVersion {
+            width:15%;
+            text-align: left;
+        }
+        .columnOS {
+            width:15%;
+        }
+        .columnButton {
+            width:15%;
+        }
+        .btn {
+            width:100%;
+        }
+    </style>
+    
+    <h2>{{localize "MaterialDeck.DownloadUtility.Plugin"}}</h2>
+
+    <table style="width:100%; min-width:400px">
+        <tr>
+          <th class='columnLabel'></th>
+          <th class='columnVersion'>{{localize "MaterialDeck.DownloadUtility.Current"}}</th>
+          <th class='columnVersion'>{{localize "MaterialDeck.DownloadUtility.Minimum"}}</th>
+          <th class='columnVersion'>{{localize "MaterialDeck.DownloadUtility.Latest"}}</th>
+          <th class='columnOS'>{{localize "MaterialDeck.DownloadUtility.OS"}}</th>
+          <th class='columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
+        </tr>
+
+        <tr>
+          <td class='columnLabel'>{{localize "MaterialDeck.DownloadUtility.SDplugin"}}</td>
+          <td class='columnVersion'>{{localSdVersion}}</td>
+          <td class='columnVersion'>{{minimumSdVersion}}</td>
+          <td class='columnVersion' id='masterSdVersion'>{{masterSdVersion}}</td>
+          <td class='columnOS'></td>
+          <td class='columnButton'>
+            <button type="button" class='btn' id='downloadSd' {{#if sdDlDisable}}disabled{{/if}}>
+                <i class="fas fa-download"></i>
+            </button>
+          </td>
+        </tr>
+
+        <tr>
+          <td class='columnLabel'>{{localize "MaterialDeck.DownloadUtility.MSserver"}}</td>
+          <td class='columnVersion'>{{localMsVersion}}</td>
+          <td class='columnVersion'>{{minimumMsVersion}}</td>
+          <td class='columnVersion' id='masterMsVersion'>{{masterMsVersion}}</td>
+          <td class='columnOS'>
+            <select id="os" default="" {{#if msDlDisable}}disabled{{/if}}>
+                <option value="win">{{localize "MaterialDeck.DownloadUtility.Windows"}}</option>
+                <option value="macos">{{localize "MaterialDeck.DownloadUtility.Macos"}}</option>
+                <option value="linux">{{localize "MaterialDeck.DownloadUtility.Linux"}}</option>
+                <option value="source">{{localize "MaterialDeck.DownloadUtility.Source"}}</option>
+            </select>
+          </td>
+          <td class='columnButton'>
+            <button type="button" class='btn' id='downloadMs' {{#if msDlDisable}}disabled{{/if}}>
+                <i class="fas fa-download"></i>
+            </button>
+          </td>
+        </tr>
+      </table> 
+      <br>
+      <h2>{{localize "MaterialDeck.DownloadUtility.Profiles"}}</h2>
+
+      <table style="width:100%; min-width:400px">
+        <tr>
+          <th style='text-align: left;'>{{localize "MaterialDeck.DownloadUtility.Name"}}</th>
+          <th class='columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
+        </tr>
+        <div id='profileContents'>
+          {{#each profiles as |p|}}
+            <tr>
+              <td>{{p.label}}</td>
+              <td class='columnButton'>
+                <button type="button" class='btn' id='dlProfile-{{p.id}}' name='downloadProfile' {{#if ../profileDlDisable}}disabled{{/if}}>
+                    <i class="fas fa-download"></i>
+                </button>
+              </td>
+            </tr>
+          {{/each}}
+        </div>
+      </table> 
+      
+      <button type="button" id='refresh'>
+        <i class="fas fa-redo"></i>
+        {{localize "MaterialDeck.DownloadUtility.Refresh"}}
+    </button>
+
+</form>
