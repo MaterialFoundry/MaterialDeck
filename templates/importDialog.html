@@ -1,0 +1,13 @@
+<form autocomplete="off" onsubmit="event.preventDefault()">
+    <p>{{content}}</p>
+    <p><b>{{ localize "MaterialDeck.ImportDialog.Warning" }}</b></p>
+
+    <div class="form-group upload-file">
+        <label><i class="fas fa-upload fa-fw"></i> {{ localize "FILES.Upload" }}</label>
+        <input type="file" name="upload" id="uploadJson">
+    </div>
+
+    <button type="submit" name="submit">
+        <i></i>{{localize "MaterialDeck.Import"}}
+    </button>
+</form>

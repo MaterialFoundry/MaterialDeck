@@ -17,22 +17,35 @@
         <a href="https://github.com/CDeenen/MaterialDeck/releases">Module</a><br>
         <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Stream Deck</a><br>
         <a href="https://github.com/CDeenen/MaterialServer/releases">Server</a><br>
+        You can use the download utility in the module settings to download the Stream Deck plugin, Stream Deck profiles and Material Server.
 
         <h1>Getting Started</h1>
         Besides installing this module, you also need to install and run some other things.
 
         <h2>Installing the Stream Deck Software and Plugin</h2>
+        YOu have to download and install the <a href="https://www.elgato.com/en/gaming/downloads">Stream Deck software</a>. 
+        You then need to install the plugin. There is a delay between when the plugin get's updated and the update being pushed in the store. 
+        If you try to install the plugin right after an update, you might not have the latest version. Manual installation is better in that case.
+        <br>
+        <h3>Stream Deck Store</h3>
         <ol>
-            <li>Download and install the <a href="https://www.elgato.com/en/gaming/downloads">Stream Deck software</a></li>
-            <li>Download the latest plugin file (com.cdeenen.materialdeck.streamDeckPlugin) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
+            <li>Open the Stream Deck application</li>
+            <li>Press 'More Actions' in the lower right</li>
+            <li>Search (top right) or scroll to find Material Deck</li>
+            <li>Press the 'Install' button</li>
+        </ol>
+
+        <h3>Manually</h3>
+        <ol>
+            <li>Download the latest plugin file using the download utility in the module settings, or download it (com.cdeenen.materialdeck.streamDeckPlugin) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
             <li>Double-click the file, this should open the Stream Deck software</li>
             <li>Press 'Install' in the pop-up</li>
         </ol>
 
-        <h2>Installing the Stream Deck Profile (optional)</h2>
+        <h2>Installing a Stream Deck Profile (optional)</h2>
         You can create your own profile, but it is recommended to start with one of the pre-made profiles. Currently, there is a profile for the normal and XL Stream Deck variants.
         <ol>
-            <li>Download the latest profile (ending with .streamDeckProfile) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
+            <li>Download the latest plugin file using the download utility in the module settings, or download one (ending with .streamDeckProfile) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
             <li>Double-click the file, this should load the profile into the Stream Deck software</li>
         </ol>
 
@@ -55,6 +68,8 @@
         There are four buttons at the top:
         <ul>
             <li>Help</li>
+            <li>User Permission Configuration</li>
+            <li>Download Utility</li>
             <li>Playlist Configuration</li>
             <li>Macro Configuration</li>
             <li>Soundboard Configuration</li>
@@ -63,10 +78,7 @@
         <br>
         Below the buttons you will find the following settings:
         <ul>
-            <li><b>Enable Module</b> - Ticking this box enabled the module</li>
-            <li><b>Stream Deck Model</b> - Select the model of your Stream Deck. This is optional, as it only changes the amount of macros and sounds that 
-                you can assign in the macro and soundboard configuration screens. If you have a smaller Stream Deck, you might not want to 
-                have a screen filled with 64 macros, since you probably won't use that many (you can, if you want to, though)</li>
+            <li><b>Enable Module</b> - Ticking this box enabled the module for the client</li>
             <li><b>Material Server Address</b> - Fill in the address of Material Server (usually if you run it on the same computer as 
                 you're using for Foundry, this can be localhost:3001). This is not necessarily the IP address of Foundry! It is the IP 
                 address of the computer that's running Material Server. The default value will work for 99% of people, only change it if 
@@ -75,6 +87,7 @@
                 This improves the update speed, but increases memory usage.</li>
             <li><b>Image Brightness</b> - Sets the brightness of the default white images for better readibility of the text. If Image Cache Size is large, it'll take a while for 
                 the new brightness setting to be applied. A refresh will give instantaneous results.</li>
+            <li><b>Number of Connection Warnings</b> - Sets the number of times you will get a warning when Material Deck cannot connect to Material Server. Will be unlimited if set to 0.</li>
         </ul>
 
         <BR CLEAR="right" />
@@ -86,6 +99,17 @@
         <br>
         To save the settings, press the 'Save Configuration' button at the lower left, or to set the settings back to the default values, press 'Reset Defaults' in the lower right.<br>
         <br>
+
+        <BR CLEAR="right" />
+
+        <h2>Download Utility</h2>
+        <img src="modules/MaterialDeck/wiki/img/DownloadUtility.png" align="right" HSPACE="5" width="350">
+        The download utility allows you to easily check the current version of the Stream Deck plugin and Material Server, and gives you the option to download the latest version.<br>
+        Please note that the current version of Material Server is at the moment not supported.<br>
+        <br>
+        At the bottom you can also download the default profiles from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Github</a><div class=""></div><br>
+        <br>
+        The refresh button at the bottom refreshes the page in case there was a connection issue.
 
         <BR CLEAR="right" />
 
@@ -119,10 +143,11 @@
         <b>Note:</b> While you can assign the same playlist to multiple playlists in this configuration screen, only the play method of the first instance will be applied.
 
         <h2>Macro Configuration</h2>
-        The Macro Configuration screen is to configure the macro board for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro action</a>.<br>
+        The Macro Configuration screen is to configure the macroboard for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro action</a>.<br>
         <br>
-        The screen is divided into a number of boxes, each labeled 'Macro #', where each represents a single macro and its settings. The number of macros you can see 
-        depends on what Stream Deck model you've set up in the module configuration.<br>
+        The screen is divided into 32 boxes, each labeled 'Macro #', where each represents a single macro and its settings. This screen will be refered to as a page.
+        By pressing the arrows at the top right and top left, you can go to the next or previous page. There is no limit to the amount of pages you can add, but if you 
+        have a lot of pages, at some point you might notice some performance issues.<br>
         <br>
         For each macro there are 3 options: 
         <ul>
@@ -134,13 +159,25 @@
             <li><b>Background</b> - Color picker to set the background color of the Stream Deck button</li>
         </ul>
 
+        <br>
+        At the bottom you have the following buttons:
+        <ul>
+            <li><b>Clear Page</b> - Clears all the macros on the current page. Please note that this is irreversible.</li>
+            <li><b>Clear All</b> - Clears all the macros. Please note that this is irreversible.</li>
+            <li><b>Import</b> - Import the macroboard from a file. This will override your current macroboard, and is irreversible.</li>
+            <li><b>Export</b> - Export your macroboard to a file.</li>
+        </ul>
+        When importing and exporting, you only import/export the metadata, not the actual macros. This means that you need to have the same macros in both the source and target Foundry client,
+        or you might run into issues.
+
         <img src="modules/MaterialDeck/wiki/img/MacroConfig.png" align="center" HSPACE="5" width="100%">
 
         <h2>Soundboard Configuration</h2>
         The Soundboard Configuration screen is used to configure the soundboard for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Soundboard-Action">Soundboard action</a>.<br>
         <br>
-        Similar to the Macro Configuration screen, the screen is divided into a number of boxes, each labeled 'Sound #', where each represents a single sound and its settings. 
-        The number of sounds you can see depends on what Stream Deck model you've set up in the module configuration.<br>
+        Similar to the Macro Configuration screen, the screen is divided into boxes, each labeled 'Sound #', where each represents a single sound and its settings. This screen will be refered to as a page.
+        By pressing the arrows at the top right and top left, you can go to the next or previous page. There is no limit to the amount of pages you can add, but if you 
+        have a lot of pages, at some point you might notice some performance issues.<br>
         <br>
         For each sound there are multiple options:
         <ul>
@@ -166,6 +203,17 @@
             <li><b>Volume</b> - The playback volume of the sound. The final playback volume is also determined by the Interface Volume slider in Foundry's 'Audio Playlists' tab.</li>
         </ul>
 
+        <br>
+        At the bottom you have the following buttons:
+        <ul>
+            <li><b>Clear Page</b> - Clears all the sounds on the current page. Please note that this is irreversible.</li>
+            <li><b>Clear All</b> - Clears all the sounds. Please note that this is irreversible.</li>
+            <li><b>Import</b> - Import the soundboard from a file. This will override your current soundboard, and is irreversible.</li>
+            <li><b>Export</b> - Export your soundboard to a file.</li>
+        </ul>
+        When importing and exporting, you only import/export the metadata, not the actual audio files. This means that you need to have the same audio files in the same relative location in both the source and target Foundry client,
+        or you might run into issues.
+
         <img src="modules/MaterialDeck/wiki/img/SoundboardConfig.png" align="center" HSPACE="5" width="100%">
 
         <h1>Customization</h1>
@@ -183,17 +231,12 @@
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Combat-Tracker-Action">Combat Tracker Action</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/External-Modules">External Modules</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro Action</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Move-Action">Move Action</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Other-Actions">Other Actions</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Playlist-Action">Playlist Action</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Scene-Action">Scene Action</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Soundboard-Action">Soundboard Action</a></li>
             <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Token-Action">Token Action</a></li>
         </ul>
-
-        <h1>Software Versions & Module Incompatibilities</h1>
-        <b>Foundry VTT:</b> Tested on 0.7.9<br>
-        <b>Module Incompatibilities:</b> None known.<br>
 
         <h1>Feedback</h1>
         If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.

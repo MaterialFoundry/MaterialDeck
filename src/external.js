@@ -1,4 +1,3 @@
-import * as MODULE from "../MaterialDeck.js";
 import {streamDeck} from "../MaterialDeck.js";
 
 export class ExternalModules{

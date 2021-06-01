@@ -6,7 +6,24 @@
             max-width: 166px;
             height: 300px;
         }
+
+        .navigation {
+            flex:1;
+        }
     </style>
+
+    <div class="navigation" style="width:100%; display:flex; flex-direction:row;">
+        <button type="button" class="navigation" id="navPrev" {{prevDisabled}}>
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <p style="flex:15; text-align:center; padding: 0px 0; font-size: 20px"><b>
+            {{localize "MaterialDeck.Sounds"}}: {{soundRange}} {{localize "MaterialDeck.Of"}} {{totalSounds}}
+        </b></p>
+        <button type="button" class="navigation" id="navNext">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+    <hr>
     
     {{#each soundData}}
         <div class="form-group" style="width:100%">
@@ -87,4 +104,20 @@
             {{/each}}
         </div>
     {{/each}}
+    <hr>
+    <div class="navigation" style="width:100%; display:flex; flex-direction:row;">
+        <button type="button" class="navigation" id="clearPage">
+            <i></i>{{localize "MaterialDeck.ClearPage"}}
+        </button>
+        <button type="button" class="navigation" id="clearAll">
+            <i></i>{{localize "MaterialDeck.ClearAll"}}
+        </button>
+        <p style="flex:15;"></p>
+        <button type="button" class="navigation" id="import">
+            <i></i>{{localize "MaterialDeck.Import"}}
+        </button>
+        <button type="button" class="navigation" id="export">
+            <i></i>{{localize "MaterialDeck.Export"}}
+        </button>
+    </div>
 </form>

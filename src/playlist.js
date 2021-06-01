@@ -63,6 +63,7 @@ export class PlaylistControl{
             playlistNr += this.playlistOffset;
 
             let playlist = this.getPlaylist(playlistNr);
+            
             if (playlist != undefined){
                 if (playlist.playing) 
                     ringColor = ringOnColor;
@@ -115,10 +116,7 @@ export class PlaylistControl{
             
             let playlist = this.getPlaylist(playlistNr);
             if (playlist != undefined){
-                let track;
-                if (compatibleCore("0.8.1")) track = playlist.sounds.contents[trackNr];
-                else track = playlist.data.sounds[trackNr];
-
+                const track = compatibleCore("0.8.1") ? playlist.sounds.contents[trackNr] : playlist.sounds[trackNr];
                 if (track != undefined){
                     if (track.playing) 
                         ringColor = ringOnColor;
@@ -200,9 +198,7 @@ export class PlaylistControl{
                     if (playlistMode == 'playlist')
                         this.playPlaylist(playlist,playlistNr);
                     else {
-                        let track;
-                        if (compatibleCore("0.8.1")) track = playlist.sounds.contents[trackNr];
-                        else track = playlist.data.sounds[trackNr];
+                        const track = compatibleCore("0.8.1") ? playlist.sounds.contents[trackNr] : playlist.sounds[trackNr];
                         if (track != undefined){
                             this.playTrack(track,playlist,playlistNr);
                         }

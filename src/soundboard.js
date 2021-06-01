@@ -7,8 +7,6 @@ export class SoundboardControl{
         this.active = false;
         this.offset = 0;
         this.activeSounds = [];
-        for (let i=0; i<64; i++)
-            this.activeSounds[i] = false;
     }
 
     async updateAll(){
@@ -43,7 +41,7 @@ export class SoundboardControl{
             soundNr += this.offset;
 
             let soundboardSettings = game.settings.get(MODULE.moduleName, 'soundboardSettings');
-            ringColor = (this.activeSounds[soundNr]==false) ? soundboardSettings.colorOff[soundNr] : soundboardSettings.colorOn[soundNr];
+            ringColor = (this.activeSounds[soundNr]==undefined) ? soundboardSettings.colorOff[soundNr] : soundboardSettings.colorOn[soundNr];
 
             if (settings.displayName && soundboardSettings.name != undefined) txt = soundboardSettings.name[soundNr];
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
@@ -89,7 +87,7 @@ export class SoundboardControl{
 
             const playMode = game.settings.get(MODULE.moduleName,'soundboardSettings').mode[soundNr];
             const repeat = (playMode > 0) ? true : false;
-            const play = (this.activeSounds[soundNr] == false) ? true : false;
+            const play = (this.activeSounds[soundNr] == undefined) ? true : false;
 
             this.prePlaySound(soundNr,repeat,play);
         }
@@ -100,8 +98,8 @@ export class SoundboardControl{
             this.updateAll();
         }
         else if (mode == 'stopAll') {  //Stop All Sounds
-            for (let i=0; i<64; i++) {
-                if (this.activeSounds[i] != false){
+            for (let i=0; i<this.activeSounds.length; i++) {
+                if (this.activeSounds[i] != undefined){
                     this.prePlaySound(i,false,false);
                 }
             }
@@ -176,7 +174,7 @@ export class SoundboardControl{
                 if(newSound.loaded == false) await newSound.load({autoplay:true});
                 newSound.on('end', ()=>{
                     if (repeat == false) {
-                        this.activeSounds[soundNr] = false;
+                        this.activeSounds[soundNr] = undefined;
                         this.updateAll();
                     }
                 });
@@ -186,12 +184,12 @@ export class SoundboardControl{
             else {
                 let howl = new Howl({src, volume, loop: repeat, onend: (id)=>{
                     if (repeat == false){
-                        this.activeSounds[soundNr] = false;
+                        this.activeSounds[soundNr] = undefined;
                         this.updateAll();
                     }
                 },
                 onstop: ()=>{
-                    this.activeSounds[soundNr] = false;
+                    this.activeSounds[soundNr] = undefined;
                     this.updateAll();
                 }});
                 howl.play();
@@ -199,28 +197,9 @@ export class SoundboardControl{
             }
         }
         else {
-            this.activeSounds[soundNr].stop();
-            this.activeSounds[soundNr] = false;
+            if (this.activeSounds[soundNr] != undefined) this.activeSounds[soundNr].stop();
+            this.activeSounds[soundNr] = undefined;
         }
         this.updateAll();
     }
-
-    /*
-    volumeChange(soundNr){
-        
-        let volume = game.settings.get("core", "globalAmbientVolume");
-
-        if (soundNr == 'all') {
-            for (let i=0; this.activeSounds.length; i++) {
-                volume * game.settings.get(MODULE.moduleName,'soundboardSettings').volume[i]/100;
-                volume = AudioHelper.inputToVolume(volume);
-                this.activeSounds[i].volume = volume;
-            }
-        }
-        else {
-            volume * game.settings.get(MODULE.moduleName,'soundboardSettings').volume[soundNr]/100;
-            volume = AudioHelper.inputToVolume(volume);
-        }
-    }
-    */
 }

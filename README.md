@@ -31,11 +31,6 @@ The functions are categorized into actions. Here is a list of the available acti
     <li>Toggle token visibility, combat state, conditions</li>
   </ul>
   <li>Move Action: Move selected token or the canvas</li>
-  <ul>
-    <li>Move token (in a specified direction)</li>
-    <li>Move canvas (in a specified direction)</li>
-    <li>Zoom canvas in/out</li>
-  </ul>
   <li>Macro Actions: Execute macros</li>
   <ul>
     <li>Execute macro from hotbar</li>
@@ -71,7 +66,7 @@ Instructions and more info can be found in the <a href="https://github.com/CDeen
 Module manifest: https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> Tested on 0.7.9<br>
+<b>Foundry VTT:</b> Tested on 0.7.9 - 0.8.5<br>
 <b>Module Incompatibilities:</b> None known.<br>
 
 ## Feedback

@@ -1,4 +1,36 @@
 # Changelog Material Deck Module
+### v1.4.4 - 26-05-2021
+Fixes:
+<ul>
+<li>Some small fixes to make the module compatible with Foundry 0.8.5</li>
+</ul>
+
+Additions:
+<ul>
+<li>Token Action => Added 'Page-Wide Token' option. All buttons on the current page (where the page is the collection of buttons that are shown) that have this enabled will use the same token</li>
+<li>Token Action => On Click: Added 'Set Page-Wide Token' option, so you can configure buttons to set the page-wide token by pressing a button</li>
+<li>Token Action: Added a 'Mode' select box. Setting it to 'Token' is the same as pre v1.4.4. New are the inventory, features and spellbook options that can be used to auto-populate buttons with items, features and spells.</li>
+<li>Added a 'Clear Page' and 'Clear All' button to the soundboard and macroboard configuration</li>
+<li>Added import and export buttons to the soundboard and macroboard configuration (only imports/exports metadata, not the actual audio files or the macros)</li>
+<li>The number of connection error messages you will get is now configurable in the module settings</li>
+<li>Added a download utility to the module settings, so you can easily version-check with the SD plugin and Material Server, download them and download profiles</li>
+<li>Added Japanese localization (thanks BrotherSharper and Asami). All of the new features have not yet been translated</li>
+</ul>
+
+Other:
+<ul>
+<li><b>(Breaking)</b> The Move Action has been removed. Moving tokens is not in the Token Action (it's an on click setting) and moving the canvas is in the Other Actions.</li>
+<li>Major change to the soundboard and macroboard configuration. It is now displayed as pages of 16 sounds or 32 macros each, you can browse through the pages using the arrow keys at the top.</li>
+<li>There is no longer a limit to the amount of sounds/macros you can assign to the soundboard/macroboard, but please note that at some point you might experience performance issues if there's too many sounds/macros.</li>
+<li>Removed the 'Stream Deck Model' module setting, since it's not that useful</li>
+<li>Token Action has been revamped to make it clearer and easier to implement new game systems</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.4.4 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.4.3 - 05-05-2021
 Fixes:
 <ul>

@@ -1,4 +1,4 @@
-import * as MODULE from "../MaterialDeck.js";
+import {sdVersion, msVersion, moduleName, getPermission, enableModule} from "../MaterialDeck.js";
 import {macroControl,soundboard,playlistControl} from "../MaterialDeck.js";
 
 export function compatibleCore(compatibleVersion){
@@ -36,12 +36,12 @@ export class playlistConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
-        if (MODULE.getPermission('PLAYLIST','CONFIGURE') == false ) {
+        if (getPermission('PLAYLIST','CONFIGURE') == false ) {
             ui.notifications.warn(game.i18n.localize("MaterialDeck.Notifications.Playlist.NoPermission"));
             return;
         }
         //Get the playlist settings
-        let settings = game.settings.get(MODULE.moduleName,'playlists');
+        let settings = game.settings.get(moduleName,'playlists');
 
         //Get values from the settings, and check if they are defined
         let selectedPlaylists = settings.selectedPlaylist;
@@ -125,8 +125,8 @@ export class playlistConfigForm extends FormApplication {
 
     async updateSettings(settings,render){
         if (game.user.isGM) {
-            await game.settings.set(MODULE.moduleName,'playlists', settings);
-            if (MODULE.enableModule) playlistControl.updateAll();
+            await game.settings.set(moduleName,'playlists', settings);
+            if (enableModule) playlistControl.updateAll();
             if (render) this.render();
         }
         else {
@@ -146,6 +146,7 @@ export class macroConfigForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
         this.data = data;
+        this.page = 0;
     }
 
     /**
@@ -164,14 +165,14 @@ export class macroConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
-        if (MODULE.getPermission('MACRO','MACROBOARD_CONFIGURE') == false ) {
+        if (getPermission('MACRO','MACROBOARD_CONFIGURE') == false ) {
             ui.notifications.warn(game.i18n.localize("MaterialDeck.Notifications.Macroboard.NoPermission"));
             return;
         }
         //Get the settings
-        var selectedMacros = game.settings.get(MODULE.moduleName,'macroSettings').macros;
-        var color = game.settings.get(MODULE.moduleName,'macroSettings').color;
-        var args = game.settings.get(MODULE.moduleName,'macroSettings').args;
+        var selectedMacros = game.settings.get(moduleName,'macroSettings').macros;
+        var color = game.settings.get(moduleName,'macroSettings').color;
+        var args = game.settings.get(moduleName,'macroSettings').args;
 
         //Check if the settings are defined
         if (selectedMacros == undefined) selectedMacros = [];
@@ -187,28 +188,12 @@ export class macroConfigForm extends FormApplication {
             height += 50;
         }
 
-        //Check what SD model the user is using, and set the number of rows and columns to correspond
-        let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
-        let iMax,jMax;
-        if (streamDeckModel == 0){
-            jMax = 6;
-            iMax = 3;
-        }
-        else if (streamDeckModel == 1){
-            jMax = 6;
-            iMax = 5;
-        }
-        else {
-            jMax = 8;
-            iMax = 8;
-        }
-
-        let iteration = 0;
+        let iteration = this.page*32;
         let macroData = [];
-        for (let j=0; j<jMax; j++){
+        for (let j=0; j<4; j++){
             let macroThis = [];
       
-            for (let i=0; i<iMax; i++){
+            for (let i=0; i<8; i++){
                 let colorData = color[iteration];
                 if (colorData != undefined){
                     let colorCorrect = true;
@@ -233,13 +218,15 @@ export class macroConfigForm extends FormApplication {
             }
             macroData.push({dataThis: macroThis});
         }
-        
         return {
             height: height,
             macros: game.macros,
             selectedMacros: selectedMacros,
             macroData: macroData,
-            furnace: furnaceEnabled
+            furnace: furnaceEnabled,
+            macroRange: `${this.page*32 + 1} - ${this.page*32 + 32}`,
+            prevDisabled: this.page == 0 ? 'disabled' : '',
+            totalMacros: Math.max(Math.ceil(selectedMacros.length/32)*32, this.page*32 + 32)
         } 
     }
 
@@ -254,27 +241,118 @@ export class macroConfigForm extends FormApplication {
 
     activateListeners(html) {
         super.activateListeners(html); 
+        const navNext = html.find("button[id='navNext']");
+        const navPrev = html.find("button[id='navPrev']");
+        const clearAll = html.find("button[id='clearAll']");
+        const clearPage = html.find("button[id='clearPage']");
+        const importBtn = html.find("button[id='import']");
+        const exportBtn = html.find("button[id='export']");
         const macro = html.find("select[name='macros']");
         const args = html.find("input[name='args']");
         const color = html.find("input[name='colorPicker']");
 
+        importBtn.on('click', async(event) => {
+            let importDialog = new importConfigForm();
+            importDialog.setData('macroboard',this)
+            importDialog.render(true);
+        });
+
+        exportBtn.on('click', async(event) => {
+            const settings = game.settings.get(moduleName,'macroSettings');
+            let exportDialog = new exportConfigForm();
+            exportDialog.setData(settings,'macroboard')
+            exportDialog.render(true);
+        });
+
+        navNext.on('click',async (event) => {
+            this.page++;
+            this.render(true);
+        });
+
+        navPrev.on('click',async (event) => {
+            const settings = game.settings.get(moduleName,'macroSettings');
+            this.page--;
+            if (this.page < 0) this.page = 0;
+            else {
+                const totalMacros = Math.ceil(settings.macros.length/32)*32;
+                if ((this.page + 2)*32 == totalMacros) {
+                    let pageEmpty = this.getPageEmpty(totalMacros-32);
+                    if (pageEmpty) {
+                        await this.clearPage(totalMacros-32,true)
+                    }
+                }
+            }
+            this.render(true);
+        });
+
+        clearAll.on('click',async (event) => {
+            const parent = this;
+
+            let d = new Dialog({
+                title: game.i18n.localize("MaterialDeck.ClearAll"),
+                content: game.i18n.localize("MaterialDeck.ClearAll_Content"),
+                buttons: {
+                    continue: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: game.i18n.localize("MaterialDeck.Continue"),
+                    callback: async () => {
+                        this.page = 0;
+                        await parent.clearAllSettings();
+                        parent.render(true);
+                    }
+                    },
+                    cancel: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("MaterialDeck.Cancel")
+                    }
+                },
+                default: "cancel"
+            });
+            d.render(true);
+        })
+
+        clearPage.on('click',(event) => {
+            const parent = this;
+
+            let d = new Dialog({
+                title: game.i18n.localize("MaterialDeck.ClearPage"),
+                content: game.i18n.localize("MaterialDeck.ClearPage_Content"),
+                buttons: {
+                    continue: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: game.i18n.localize("MaterialDeck.Continue"),
+                    callback: async () => {
+                        await parent.clearPage(parent.page*32)
+                        parent.render(true);
+                    }
+                    },
+                    cancel: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("MaterialDeck.Cancel")
+                    }
+                },
+                default: "cancel"
+            });
+            d.render(true);
+        })
+
         macro.on("change", event => {
             let id = event.target.id.replace('macros','');
-            let settings = game.settings.get(MODULE.moduleName,'macroSettings');
+            let settings = game.settings.get(moduleName,'macroSettings');
             settings.macros[id-1]=event.target.value;
             this.updateSettings(settings);
         });
 
         args.on("change", event => {
             let id = event.target.id.replace('args','');
-            let settings = game.settings.get(MODULE.moduleName,'macroSettings');
+            let settings = game.settings.get(moduleName,'macroSettings');
             settings.args[id-1]=event.target.value;
             this.updateSettings(settings);
         });
 
         color.on("change", event => {
             let id = event.target.id.replace('colorpicker','');
-            let settings = game.settings.get(MODULE.moduleName,'macroSettings');
+            let settings = game.settings.get(moduleName,'macroSettings');
             settings.color[id-1]=event.target.value;
             this.updateSettings(settings);
         });
@@ -282,8 +360,8 @@ export class macroConfigForm extends FormApplication {
 
     async updateSettings(settings){
         if (game.user.isGM) {
-            await game.settings.set(MODULE.moduleName,'macroSettings',settings);
-            if (MODULE.enableModule) macroControl.updateAll();
+            await game.settings.set(moduleName,'macroSettings',settings);
+            if (enableModule) macroControl.updateAll();
         }
         else {
             const payload = {
@@ -293,6 +371,49 @@ export class macroConfigForm extends FormApplication {
             game.socket.emit(`module.MaterialDeck`, payload);
         }
     }
+
+    getPageEmpty(pageStart) {
+        const settings = game.settings.get(moduleName,'macroSettings');
+        let pageEmpty = true;
+        for (let i=pageStart; i<pageStart+32; i++) {
+            if (settings.macros[i] != undefined && settings.macros[i] != null && settings.macros[i] != "") {
+                pageEmpty = false;
+                break;
+            }
+        }
+        return pageEmpty;
+    }
+
+    async clearPage(pageStart,remove=false) {
+        const settings = game.settings.get(moduleName,'macroSettings');
+        if (remove) {
+            await settings.macros.splice(pageStart,32);
+            await settings.color.splice(pageStart,32);
+            if (settings.args != undefined) await settings.args.splice(pageStart,32);
+        }
+        else {
+            for (let i=pageStart; i<pageStart+32; i++) {
+                settings.macros[i] = null;
+                settings.color[i] = "0";
+                if (settings.args != undefined) settings.args[i] = null;
+            }
+        }
+        await this.updateSettings(settings);
+    }
+
+    async clearAllSettings() {
+        let settings = {
+            macros: [],
+            color: [],
+            args: []
+        };
+        for (let i=0; i<32; i++) {
+            settings.macros[i] = null;
+            settings.color[i] = "0";
+            settings.args[i] = null;
+        }
+        await this.updateSettings(settings);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,9 +422,8 @@ export class soundboardConfigForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
         this.playlists = [];
-        this.iMax;
-        this.jMax;
         this.settings = {};
+        this.page = 0;
     }
 
     /**
@@ -315,7 +435,7 @@ export class soundboardConfigForm extends FormApplication {
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.SoundboardConfig"),
             template: "./modules/MaterialDeck/templates/soundboardConfig.html",
             classes: ["sheet"],
-            height: 720
+            height: "auto"
         });
     }
 
@@ -323,13 +443,13 @@ export class soundboardConfigForm extends FormApplication {
      * Provide data to the template
      */
     getData() {
-        if (MODULE.getPermission('SOUNDBOARD','CONFIGURE') == false ) {
+        if (getPermission('SOUNDBOARD','CONFIGURE') == false ) {
             ui.notifications.warn(game.i18n.localize("MaterialDeck.Notifications.Soundboard.NoPermission"));
             return;
         }
 
         //Get the settings
-        this.settings = game.settings.get(MODULE.moduleName,'soundboardSettings');
+        this.settings = game.settings.get(moduleName,'soundboardSettings');
 
         //Check if all settings are defined
         if (this.settings.sounds == undefined) this.settings.sounds = [];
@@ -353,29 +473,13 @@ export class soundboardConfigForm extends FormApplication {
         
         this.playlists = playlists;
 
-        //Check what SD model the user is using, and set the number of rows and columns to correspond
-        let streamDeckModel = game.settings.get(MODULE.moduleName,'streamDeckModel');
-       
-        if (streamDeckModel == 0){
-            this.jMax = 6;
-            this.iMax = 3;
-        }
-        else if (streamDeckModel == 1){
-            this.jMax = 6;
-            this.iMax = 5;
-        }
-        else {
-            this.jMax = 8;
-            this.iMax = 8;
-        }
-
-        let iteration = 0;  //Sound number
+        let iteration = this.page*16;  //Sound number
         let soundData = []; //Stores all the data for each sound
 
-        //Fill soundData. soundData is an array the size of jMax (nr of rows), with each array element containing an array the size of iMax (nr of columns)
-        for (let j=0; j<this.jMax; j++){
+        //Fill soundData
+        for (let j=0; j<2; j++){
             let soundsThis = [];    //Stores row data
-            for (let i=0; i<this.iMax; i++){
+            for (let i=0; i<8; i++){
                 //Each iteration gets the data for each sound
 
                 //If the volume is undefined for this sound, define it and set it to its default value
@@ -453,7 +557,10 @@ export class soundboardConfigForm extends FormApplication {
 
         return {
             soundData: soundData,
-            playlists
+            playlists,
+            soundRange: `${this.page*16 + 1} - ${this.page*16 + 16}`,
+            prevDisabled: this.page == 0 ? 'disabled' : '',
+            totalSounds: this.settings.volume.length
         } 
     }
 
@@ -468,6 +575,12 @@ export class soundboardConfigForm extends FormApplication {
 
     async activateListeners(html) {
         super.activateListeners(html);
+        const navNext = html.find("button[id='navNext']");
+        const navPrev = html.find("button[id='navPrev']");
+        const clearAll = html.find("button[id='clearAll']");
+        const clearPage = html.find("button[id='clearPage']");
+        const importBtn = html.find("button[id='import']");
+        const exportBtn = html.find("button[id='export']");
         const nameField = html.find("input[name='namebox']");
         const playlistSelect = html.find("select[name='playlist']");
         const soundSelect = html.find("select[name='sounds']");
@@ -477,6 +590,89 @@ export class soundboardConfigForm extends FormApplication {
         const offCP = html.find("input[name='colorOff']");
         const playMode = html.find("select[name='mode']");
         const volume = html.find("input[name='volume']");
+
+        importBtn.on('click', async(event) => {
+            let importDialog = new importConfigForm();
+            importDialog.setData('soundboard',this)
+            importDialog.render(true);
+        });
+
+        exportBtn.on('click', async(event) => {
+            const settings = game.settings.get(moduleName,'soundboardSettings');
+            let exportDialog = new exportConfigForm();
+            exportDialog.setData(settings,'soundboard')
+            exportDialog.render(true);
+        });
+
+        navNext.on('click',async (event) => {
+            this.page++;
+            this.render(true);
+        });
+        navPrev.on('click',async (event) => {
+            this.page--;
+            if (this.page < 0) this.page = 0;
+            else {
+                const totalSounds = this.settings.volume.length;
+                if ((this.page + 2)*16 == totalSounds) {
+                    let pageEmpty = this.getPageEmpty(totalSounds-16);
+                    if (pageEmpty) {
+                        await this.clearPage(totalSounds-16,true)
+                    }
+                }
+            }
+            this.render(true);
+        });
+
+        clearAll.on('click',async (event) => {
+            const parent = this;
+
+            let d = new Dialog({
+                title: game.i18n.localize("MaterialDeck.ClearAll"),
+                content: game.i18n.localize("MaterialDeck.ClearAll_Content"),
+                buttons: {
+                    continue: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: game.i18n.localize("MaterialDeck.Continue"),
+                    callback: async () => {
+                        this.page = 0;
+                        await parent.clearAllSettings();
+                        parent.render(true);
+                    }
+                    },
+                    cancel: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("MaterialDeck.Cancel")
+                    }
+                },
+                default: "cancel"
+            });
+            d.render(true);
+        })
+
+        clearPage.on('click',(event) => {
+            const parent = this;
+
+            let d = new Dialog({
+                title: game.i18n.localize("MaterialDeck.ClearPage"),
+                content: game.i18n.localize("MaterialDeck.ClearPage_Content"),
+                buttons: {
+                    continue: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: game.i18n.localize("MaterialDeck.Continue"),
+                    callback: async () => {
+                        await parent.clearPage(parent.page*16)
+                        parent.render(true);
+                    }
+                    },
+                    cancel: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: game.i18n.localize("MaterialDeck.Cancel")
+                    }
+                },
+                default: "cancel"
+            });
+            d.render(true);
+        })
 
         nameField.on("change",event => {
             let id = event.target.id.replace('name','')-1;
@@ -595,8 +791,8 @@ export class soundboardConfigForm extends FormApplication {
     
     async updateSettings(settings){
         if (game.user.isGM) {
-            await game.settings.set(MODULE.moduleName,'soundboardSettings',settings);
-            if (MODULE.enableModule) soundboard.updateAll();
+            await game.settings.set(moduleName,'soundboardSettings',settings);
+            if (enableModule) soundboard.updateAll();
         }
         else {
             const payload = {
@@ -606,4 +802,375 @@ export class soundboardConfigForm extends FormApplication {
             game.socket.emit(`module.MaterialDeck`, payload);
         }
     }
+
+    getPageEmpty(pageStart) {
+        let pageEmpty = true;
+        for (let i=pageStart; i<pageStart+16; i++) {
+            const name = this.settings.name[i];
+            const playlist = this.settings.selectedPlaylists[i];
+            const sound = this.settings.sounds[i];
+            if ((name != "" && name != null) || playlist != undefined || sound != undefined) {
+                pageEmpty = false;
+                break;
+            }
+        }
+        return pageEmpty;
+    }
+
+    async clearPage(pageStart,remove=false) {
+        if (remove) {
+            await this.settings.sounds.splice(pageStart,16);
+            await this.settings.colorOn.splice(pageStart,16);
+            await this.settings.colorOff.splice(pageStart,16);
+            await this.settings.mode.splice(pageStart,16);
+            await this.settings.img.splice(pageStart,16);
+            await this.settings.volume.splice(pageStart,16);
+            await this.settings.name.splice(pageStart,16);
+            await this.settings.selectedPlaylists.splice(pageStart,16);
+            await this.settings.src.splice(pageStart,16);
+            await this.settings.sounds.splice(pageStart,16);
+        }
+        else {
+            for (let i=pageStart; i<pageStart+16; i++) {
+                this.settings.sounds[i] = null;
+                this.settings.colorOn[i] = null;
+                this.settings.colorOff[i] = null;
+                this.settings.mode[i] = null;
+                this.settings.img[i] = null;
+                this.settings.volume[i] = null;
+                this.settings.name[i] = null;
+                this.settings.selectedPlaylists[i] = null;
+                this.settings.src[i] = null;
+                this.settings.sounds[i] = null;
+            }
+        }
+        
+        await this.updateSettings(this.settings);
+    }
+
+    async clearAllSettings() {
+        let array = [];
+        for (let i=0; i<16; i++) array[i] = "";
+        let arrayVolume = [];
+        for (let i=0; i<16; i++) arrayVolume[i] = "50";
+        let arrayZero = [];
+        for (let i=0; i<16; i++) arrayZero[i] = "0";
+    
+        const settings = {
+            playlist: "",
+            sounds: array,
+            colorOn: arrayZero,
+            colorOff: arrayZero,
+            mode: arrayZero,
+            toggle: arrayZero,
+            volume: arrayVolume
+        };
+        await this.updateSettings(settings);
+    }
+}
+
+export class exportConfigForm extends FormApplication {
+    constructor(data, options) {
+        super(data, options);
+        this.data = {};
+        this.name = "";
+        this.source = "";
+    }
+
+    /**
+     * Default Options for this FormApplication
+     */
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "MD_Export",
+            title: "Material Deck: " + game.i18n.localize("MaterialDeck.ExportDialog.Title"),
+            template: "./modules/MaterialDeck/templates/exportDialog.html",
+            width: 500,
+            height: "auto"
+        });
+    }
+
+    setData(data,source) {
+        this.data = data;
+        this.source = source;
+        this.name = source;
+    }
+
+    /**
+     * Provide data to the template
+     */
+    getData() {
+        return {
+            source: this.source,
+            name: this.name,
+            content: this.source == "soundboard" ? game.i18n.localize("MaterialDeck.ExportDialog.SoundboardContent") : game.i18n.localize("MaterialDeck.ExportDialog.MacroboardContent")
+        } 
+    }
+
+    /**
+     * Update on form submit
+     * @param {*} event 
+     * @param {*} formData 
+     */
+    async _updateObject(event, formData) {
+        this.download(this.data,formData.name)
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+    }
+
+    download(data,name) {
+        let dataStr = JSON.stringify(data);
+        let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        let exportFileDefaultName = `${name}.json`;
+        let linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    }
+}
+
+export class importConfigForm extends FormApplication {
+    constructor(data, options) {
+        super(data, options);
+        this.data = {};
+        this.name = "";
+        this.source = "";
+        this.parent;
+    }
+
+    /**
+     * Default Options for this FormApplication
+     */
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "MD_Import",
+            title: "Material Deck: " + game.i18n.localize("MaterialDeck.ImportDialog.Title"),
+            template: "./modules/MaterialDeck/templates/importDialog.html",
+            width: 500,
+            height: "auto"
+        });
+    }
+
+    setData(source,parent) {
+        this.source = source;
+        this.name = source;
+        this.parent = parent;
+    }
+
+    /**
+     * Provide data to the template
+     */
+    getData() {
+        return {
+            source: this.source,
+            name: this.name,
+            content: this.source == "soundboard" ? game.i18n.localize("MaterialDeck.ImportDialog.SoundboardContent") : game.i18n.localize("MaterialDeck.ImportDialog.MacroboardContent")
+        } 
+    }
+
+    /**
+     * Update on form submit
+     * @param {*} event 
+     * @param {*} formData 
+     */
+    async _updateObject(event, formData) {
+        await this.parent.updateSettings(this.data);
+        this.parent.render(true);
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        const upload = html.find("input[id='uploadJson']");
+
+        upload.on('change',(event) => {
+            event.preventDefault();
+            this.readJsonFile(event.target.files[0]); 
+        })
+    }
+
+    readJsonFile(jsonFile) {
+        var reader = new FileReader(); 
+        reader.addEventListener('load', (loadEvent) => { 
+          try { 
+            let json = JSON.parse(loadEvent.target.result); 
+            this.data = json;
+          } catch (error) { 
+            console.error(error); 
+          } 
+        }); 
+        reader.readAsText(jsonFile); 
+    } 
+
+
+}
+
+export class downloadUtility extends FormApplication {
+    constructor(data, options) {
+        super(data, options);
+        this.localSDversion = sdVersion;
+        this.masterSDversion;
+        this.localMSversion = msVersion;
+        this.masterMSversion;
+        this.releaseAssets = [];
+        this.profiles = [];
+
+        let parent = this;
+        setTimeout(function(){
+            parent.checkForUpdate('SD');
+            parent.checkForUpdate('MS');
+            parent.getReleaseData();
+        },100)
+    }
+
+    /**
+     * Default Options for this FormApplication
+     */
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "MD_DownloadUtility",
+            title: "Material Deck: " + game.i18n.localize("MaterialDeck.DownloadUtility.Title"),
+            template: "./modules/MaterialDeck/templates/downloadUtility.html",
+            width: 500,
+            height: "auto"
+        });
+    }
+
+    /**
+     * Provide data to the template
+     */
+    getData() {
+        let dlDisabled = true;
+
+        this.profiles = [];
+        let iteration = 0;
+        for (let asset of this.releaseAssets) {
+            let split = asset.name.split('.');
+            if (split[split.length-1] == 'streamDeckProfile') {
+                this.profiles.push({id: iteration, label:split[0], url:asset.browser_download_url});
+                iteration++;
+                dlDisabled = false;
+            }
+        }
+        if (this.localMSversion == undefined) this.localMSversion = 'unknown';
+        
+        return {
+            minimumSdVersion: game.modules.get("MaterialDeck").data.minimumSDversion.replace('v',''),
+            localSdVersion: this.localSDversion,
+            masterSdVersion: this.masterSDversion,
+            sdDlDisable: this.masterSDversion == undefined,
+            minimumMsVersion: game.modules.get("MaterialDeck").data.minimumMSversion.replace('v',''),
+            localMsVersion: this.localMSversion,
+            masterMsVersion: this.masterMSversion,
+            msDlDisable: this.masterMSversion == undefined,
+            profiles: this.profiles,
+            profileDlDisable: dlDisabled
+        } 
+    }
+
+    /**
+     * Update on form submit
+     * @param {*} event 
+     * @param {*} formData 
+     */
+    async _updateObject(event, formData) {
+   
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        const downloadSd = html.find("button[id='downloadSd']");
+        const downloadMs = html.find("button[id='downloadMs']");
+        const downloadProfile = html.find("button[name='downloadProfile']")
+        const refresh = html.find("button[id='refresh']");
+
+        downloadSd.on('click', () => {
+            const version = document.getElementById('masterSdVersion').innerHTML;
+            if (version == '' || version == undefined || version == 'Error') return;
+            const url = `https://github.com/CDeenen/MaterialDeck_SD/releases/download/v${version}/com.cdeenen.materialdeck.streamDeckPlugin`;
+            this.downloadURI(url,'com.cdeenen.materialdeck.streamDeckPlugin')
+        })
+        downloadMs.on('click', () => {
+            const version = document.getElementById('masterMsVersion').innerHTML;
+            const os = document.getElementById('os').value;
+            if (version == '' || version == undefined || version == 'Error') return;
+            let name = `MaterialServer-${os}.zip`;
+            let url;
+            if (os == 'source') url = `https://github.com/CDeenen/MaterialServer/archive/refs/tags/v${version}.zip`;
+            else url = `https://github.com/CDeenen/MaterialServer/releases/download/v${version}/${name}`;
+            this.downloadURI(url,name)
+        })
+        downloadProfile.on('click',(event) => {
+            let id = event.currentTarget.id.replace('dlProfile-','');
+            this.downloadURI(this.profiles[id].url,`${this.profiles[id].label}.streamDeckProfile`);
+        })
+        refresh.on('click', () => {
+            document.getElementById('masterSdVersion').value = 'Getting data';
+            this.checkForUpdate('SD');
+            document.getElementById('masterMsVersion').value = 'Getting data';
+            this.checkForUpdate('MS');
+            this.getReleaseData();
+        })
+    }
+
+    downloadURI(uri, name) {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      getReleaseData() {
+        let parent = this;
+        const url = 'https://api.github.com/repos/CDeenen/MaterialDeck_SD/releases/latest';
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.send(null);
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                var type = request.getResponseHeader('Content-Type');
+                const data = JSON.parse(request.responseText);
+                parent.releaseAssets = data.assets;
+                parent.render(true);
+                if (type.indexOf("text") !== 1) {
+    
+                    return;
+                }
+            }
+        }
+        request.onerror = function () {
+        }
+    }
+
+    checkForUpdate(reqType) {
+        let parent = this;
+        let url;
+        if (reqType == 'SD') url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck_SD/master/Plugin/com.cdeenen.materialdeck.sdPlugin/manifest.json';
+        else if (reqType == 'MS') url = 'https://raw.githubusercontent.com/CDeenen/MaterialServer/master/src/Windows/package.json';
+        const elementId = reqType == 'SD' ? 'masterSdVersion' : 'masterMsVersion';
+
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.send(null);
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && request.status === 200) {
+                var type = request.getResponseHeader('Content-Type');
+                if (type.indexOf("text") !== 1) {
+                    if (reqType == 'SD') parent.masterSDversion = JSON.parse(request.responseText).Version;
+                    else if (reqType == 'MS') parent.masterMSversion = JSON.parse(request.responseText).version;
+                    parent.render(true);
+                    return;
+                }
+                
+            }
+        }
+        request.onerror = function () {
+            document.getElementById(elementId).innerHTML = 'Error';
+        }
+    }     
 }
