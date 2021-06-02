@@ -1,6 +1,6 @@
 import {compatibleCore} from "../misc.js";
 
-export class wfrp4{
+export class wfrp4e {
     constructor(){
         
     }
@@ -26,7 +26,7 @@ export class wfrp4{
     }
 
     getSpeed(token) {
-        return;
+        return token.actor.data.data.details.move.value;
     }
 
     getInitiative(token) {
