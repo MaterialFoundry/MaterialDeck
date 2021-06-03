@@ -106,9 +106,13 @@ export class wfrp4e {
      * Items
      */
     getItems(token,itemType) {
+
         if (itemType == undefined) itemType = 'any';
         const allItems = token.actor.items;
-        if (itemType == 'any') return allItems.filter(i => i.type == 'item');
+        console.log("allitems: "+ allItems);
+        if (itemType == 'any') return allItems.filter(i => i.type == "weapon" ||
+                                                           i.type == "armour" || 
+                                                           i.type == "ammunition" ); // i.type == 'item');
     }
 
     getItemUses(item) {
