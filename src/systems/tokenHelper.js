@@ -186,6 +186,12 @@ export class TokenHelper{
         return this.system.getProficiency(token);
     }
 
+    /* WFRP 4E */
+    getFate(token) {
+        return this.system.getFate(token)
+    }
+
+
     /**
      * Conditions
      */

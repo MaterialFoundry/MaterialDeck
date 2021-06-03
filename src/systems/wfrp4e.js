@@ -5,12 +5,21 @@ export class wfrp4e {
         
     }
 
-    getHP(token) {
+    getFate(token) {
+        return token.actor.data.data.status.fate.value
+    }
+
+    getWounds(token) {
         const wounds =  token.actor.data.data.status.wounds
         return {
             value: wounds.value,
             max: wounds.max
         } 
+        
+    }
+
+    getHP(token) {
+        return this.getWounds(token);
     }
 
     getTempHP(token) {

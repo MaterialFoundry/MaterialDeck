@@ -69,6 +69,9 @@ Module manifest: https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/m
 <b>Foundry VTT:</b> Tested on 0.7.9 - 0.8.5<br>
 <b>Module Incompatibilities:</b> None known.<br>
 
+## Developer Guide
+See the [developer guide](./DEVGUIDE.md) for a guide on how to add new systems to `MaterialDeck`.
+
 ## Feedback
 If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
 
