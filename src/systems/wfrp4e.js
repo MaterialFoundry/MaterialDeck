@@ -104,16 +104,27 @@ export class wfrp4e {
 
     /**
      * Items
-     */
+    
     getItems(token,itemType) {
 
         if (itemType == undefined) itemType = 'any';
         const allItems = token.actor.items;
         console.log("allitems: "+ allItems);
-        if (itemType == 'any') return allItems.filter(i => i.type == "weapon" ||
-                                                           i.type == "armour" || 
-                                                           i.type == "ammunition" ); // i.type == 'item');
+        if (itemType == 'any') return allItems.filter(i => i.type == itemType);
+    }  */
+
+    getItems(token,itemType) {
+        if (itemType == undefined) itemType = 'any';
+        const allItems = token.actor.items;
+        if (itemType == 'any') return allItems.filter(i => i.type == 'weapon' || 
+        i.type == 'ammunition' || 
+        i.type == 'armour' || 
+        i.type == 'trapping');
+        else {
+            return allItems.filter(i => i.type == itemType);
+        }
     }
+
 
     getItemUses(item) {
         return {available: item.data.data.quantity};
