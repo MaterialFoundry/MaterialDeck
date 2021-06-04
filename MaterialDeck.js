@@ -57,7 +57,7 @@ let WSconnected = false;
 async function analyzeWSmessage(msg){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
-    console.log("Received",data);
+//    console.log("Received",data);
 
     if (data.type == "connected" && data.data == "SD"){
         const msg = {

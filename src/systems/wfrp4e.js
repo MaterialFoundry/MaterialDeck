@@ -127,7 +127,13 @@ export class wfrp4e {
 
 
     getItemUses(item) {
-        return {available: item.data.data.quantity};
+        console.log("getItemUses(" , item , ")")
+        if ( item.type == 'ammunition') {
+            return {available: item.data.data.quantity.value};
+        }
+        else {
+            return {};
+        }
     }
 
     /**

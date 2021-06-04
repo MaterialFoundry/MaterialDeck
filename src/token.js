@@ -741,7 +741,15 @@ export class TokenControl{
             items = this.sortItems(items);
 
             const item = items[itemNr];
-            if (item != undefined) item.roll();
+            if (item != undefined) {
+                if (game.system.id == 'wfrp4e') {
+                    console.log("rolling wfrp4e item macro")
+                    game.wfrp4e.utility.rollItemMacro(item.name, item.type, false);
+                }
+                else {
+                    item.roll();
+                }
+            }
             
         }
     }
