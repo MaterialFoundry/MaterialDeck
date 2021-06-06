@@ -22,6 +22,10 @@ export class wfrp4e {
         return this.getWounds(token);
     }
 
+    rollItem(item) {
+        return Gamepad.wfrp4e.utility.rollItemMacro(item.name, item.type, false);
+    }
+
     getTempHP(token) {
         return;
     }
