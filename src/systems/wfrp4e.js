@@ -132,7 +132,7 @@ export class wfrp4e {
             return {available: item.data.data.quantity.value};
         }
         else {
-            return {};
+            return;
         }
     }
 
