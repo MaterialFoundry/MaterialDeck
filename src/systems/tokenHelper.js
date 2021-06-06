@@ -238,4 +238,8 @@ export class TokenHelper{
     getSpellUses(token,level,item) {
         return this.system.getSpellUses(token,level,item);
     }
+
+    rollItem(item) {
+        return this.system.rollItem(item);
+    }
 }

@@ -739,7 +739,9 @@ export class TokenControl{
             items = this.sortItems(items);
 
             const item = items[itemNr];
-            if (item != undefined) item.roll();
+            if (item != undefined) {
+                tokenHelper.rollItem(item);
+            }
             
         }
     }
