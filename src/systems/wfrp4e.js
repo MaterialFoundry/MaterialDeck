@@ -23,7 +23,7 @@ export class wfrp4e {
     }
 
     rollItem(item) {
-        return Gamepad.wfrp4e.utility.rollItemMacro(item.name, item.type, false);
+        return game.wfrp4e.utility.rollItemMacro(item.name, item.type, false);
     }
 
     getTempHP(token) {
