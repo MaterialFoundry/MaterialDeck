@@ -18,6 +18,27 @@ export class wfrp4e {
         
     }
 
+
+    getAbility(token, abilityName) {
+        return this.getCharacteristics(token, abilityName); 
+    }
+
+    getCharacteristics(token, characteristicName) {
+        console.log("getCharacteristics(", token, ", ", characteristicName);  // TODO: feature-wfrp4 remove
+        if (characteristicName == undefined ) characteristicName = `AG`;
+        const characteristic = token.actor.data.data.characteristics[characteristicName.toLowerCase()]
+        console.log(characteristic);
+        const val = characteristic.value;
+        return (val >= 0) ? `+${val}` : val;
+    }
+
+    getFeatures(token,featureType) {
+        if (featureType == undefined) featureType = 'any';
+        const allItems = token.actor.items;
+        if (featureType == 'any') return allItems.filter(i => i.type == 'skill' || i.type == 'talent' || i.type == "career" || i.type == 'trait');
+        else return allItems.filter(i => i.type == featureType);
+    }
+    
     getHP(token) {
         return this.getWounds(token);
     }
@@ -57,10 +78,6 @@ export class wfrp4e {
     getPassiveInvestigation(token) {
         return;
     }
-
-    getAbility(token, ability) {
-        return;
-    } 
 
     getAbilityModifier(token, ability) {
         return;
@@ -103,7 +120,18 @@ export class wfrp4e {
      * Roll
      */
      roll(token,roll,options,ability,skill,save) {
-        return;
+        console.log("roll(", token, roll, options, ability, skill, save, ")");
+        // if (roll == undefined) roll = 'ability';
+        if (ability == undefined) ability = 'ag';
+        // if (skill == undefined) skill = 'acr';
+        // if (save == undefined) save = 'str';
+
+        // if (roll == 'ability') token.actor.rollAbilityTest(ability,options);
+        // else if (roll == 'save') token.actor.rollAbilitySave(save,options);
+        // else if (roll == 'skill') token.actor.rollSkill(skill,options);
+        // else if (roll == 'initiative') token.actor.rollInitiative(options);
+        // else if (roll == 'deathSave') token.actor.rollDeathSave(options);
+        return game.wfrp4e.utility.rollItemMacro(ability, "characteristic", false);
     }
 
     /**
