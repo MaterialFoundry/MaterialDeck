@@ -192,4 +192,8 @@ export class pf2e{
             maximum: spellbook.data.data.slots?.[`slot${level}`].max
         }
     }
+
+    rollItem(item) {
+        return item.roll()
+    }
 }

@@ -130,4 +130,8 @@ export class demonlord{
     getSpellUses(token,level,item) {
         return;
     }
+
+    rollItem(item) {
+        return item.roll()
+    }
 }

@@ -195,4 +195,8 @@ export class dnd35e{
             maximum: item.maxCharges
         }
     }
+
+    rollItem(item) {
+        return item.roll()
+    }
 }

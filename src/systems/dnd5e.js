@@ -198,4 +198,8 @@ export class dnd5e{
             maximum: token.actor.data.data.spells?.[`spell${level}`].max
         }
     }
+
+    rollItem(item) {
+        return item.roll()
+    }
 }
