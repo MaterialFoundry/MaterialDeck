@@ -35,8 +35,13 @@ export class wfrp4e {
     getFeatures(token,featureType) {
         if (featureType == undefined) featureType = 'any';
         const allItems = token.actor.items;
+        console.log(allItems);
         if (featureType == 'any') return allItems.filter(i => i.type == 'skill' || i.type == 'talent' || i.type == "career" || i.type == 'trait');
-        else return allItems.filter(i => i.type == featureType);
+        return allItems.filter(i => i.type == featureType);
+    }
+
+    getFeatureUses(item) {
+        return {available: `+${item.data.data.total.value}`};
     }
     
     getHP(token) {

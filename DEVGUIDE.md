@@ -36,7 +36,7 @@ In propertyinspector/js/common.js starting at line 1274 there's various function
 To enable logging on the streamdeck, [follow these instructions](https://developer.elgato.com/documentation/stream-deck/sdk/create-your-own-plugin/) from Elgato.
 
 ## Property discovery
-In a Foundry client browser instance, if you go to the dev console, you can browser your tokens via the `canvas.tokens` path, for exmaple `canvas.tokens.children[0].children[0].actor.items`.
+In a Foundry client browser instance, if you go to the dev console, you can browser your tokens via the `canvas.tokens` path, for example `canvas.tokens.children[0].children[0].actor.data`.
 
 ## Module Deployment
 If you make changes to files in this project, you'll need to copy the changed files to your Foundry install folder, probably found here: `C:\Users\$USER\AppData\Local\FoundryVTT\Data\modules\MaterialDeck`.
