@@ -106,6 +106,18 @@ export class TokenControl{
                         };
                         
                 }
+                if (stats == 'CriticalWounds') { /* WFRP4e */
+                    const criticalWounds = tokenHelper.getCriticalWounds(token);
+                    txt += criticalWounds.value + "/" + criticalWounds.max;
+                    
+                    if (icon == 'stats')
+                        uses = {
+                            available: criticalWounds.value,
+                            maximum: criticalWounds.max,
+                            heart: "#FF0000"
+                        };
+                        
+                }
                 else if (stats == 'HPbox') {
                     const hp = tokenHelper.getHP(token);
                     uses = {
@@ -135,7 +147,12 @@ export class TokenControl{
                 else if (stats == 'Save') txt += tokenHelper.getAbilitySave(token, settings.save);
                 else if (stats == 'Skill') txt += tokenHelper.getSkill(token, settings.skill);
                 else if (stats == 'Prof') txt += tokenHelper.getProficiency(token);
-                else if (stats == 'Fate') txt += tokenHelper.getFate(token)
+                else if (stats == 'Fate') txt += tokenHelper.getFate(token) /* WFRP4e */
+                else if (stats == 'Fortune') txt += tokenHelper.getFortune(token) /* WFRP4e */
+                else if (stats == 'Corruption') txt += tokenHelper.getCorruption(token) /* WFRP4e */
+                else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
+                else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
+                else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
 
                 
                 if (settings.onClick == 'visibility') { //toggle visibility

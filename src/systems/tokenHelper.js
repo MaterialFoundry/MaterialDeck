@@ -191,6 +191,35 @@ export class TokenHelper{
         return this.system.getFate(token)
     }
 
+    /* WFRP 4E */
+    getFortune(token) {
+        return this.system.getFortune(token)
+    }
+    
+    /* WFRP 4E */
+    getCriticalWounds(token) {
+        return this.system.getCriticalWounds(token)
+    }
+
+    /* WFRP 4E */
+    getCorruption(token) {
+        return this.system.getCorruption(token)
+    }
+
+    /* WFRP 4E */
+    getAdvantage(token) {
+        return this.system.getAdvantage(token)
+    }
+
+    /* WFRP 4E */
+    getResolve(token) {
+        return this.system.getResolve(token)
+    }
+
+    /* WFRP 4E */
+    getResilience(token) {
+        return this.system.getResilience(token)
+    }
 
     /**
      * Conditions

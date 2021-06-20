@@ -22,18 +22,14 @@ It's possible to debug on the Stream Deck, so you can do `console.log`. Just fol
 When you go to the debugging page, there should be multiple options. With the property inspector open, you should connect to the one with property inspector in its name. If you go to to propertyinspector/js/common.js, near the top there's the debugEn variable. Set it to true, and you should get tons of messages, especially if you change any settings.
 In the module, in MaterialDeck.js, at line 60, there's //console.log("Received",data);. If you uncomment that, it'll log everything that's send from the SD to the module. Might be helpful for debugging.
 
-## Verify the below
-
-For getStats, getRolls you cannot change value
-
-For the others, it depends on the system. For example:
-in 5e, to get the appraise skill modifier, you do token.actor.data.data.skills?.[skill].total where 'skill' is 'apr'. So in the plugin, you have to set the value to 'apr'.
 
 ## Streamdeck
-On the SD side: The plugin in windows is located at AppData/Roaming/Elgato/StreamDeck/Plugins/com.cdeenen.materialdeck.sdPlugin
-In propertyinspector/js/common.js starting at line 1274 there's various functions that are used to get the relevant options to show up in the SD plugin. Each array element has a value and a name, you should keep the value the same, but the name can be whatever you like. I think you'll be able to figure out how to add stuff for wfrp by looking at the others.
 
 To enable logging on the streamdeck, [follow these instructions](https://developer.elgato.com/documentation/stream-deck/sdk/create-your-own-plugin/) from Elgato.
+
+The plugin in Windows is located at (Windows) `AppData/Roaming/Elgato/StreamDeck/Plugins/com.cdeenen.materialdeck.sdPlugin`
+In `propertyinspector/js/common.js::getStats()` there are various functions that are used to get the relevant options to show up in the SD plugin. Each array element has a value and a name, you should keep the value the same, but the name can be whatever you like. I think you'll be able to figure out how to add stuff for wfrp by looking at the others.
+
 
 ## Property discovery
 In a Foundry client browser instance, if you go to the dev console, you can browser your tokens via the `canvas.tokens` path, for example `canvas.tokens.children[0].children[0].actor.data`.

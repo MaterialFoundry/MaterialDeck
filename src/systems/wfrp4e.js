@@ -9,6 +9,11 @@ export class wfrp4e {
         return token.actor.data.data.status.fate.value
     }
 
+    getFortune(token) {
+        return token.actor.data.data.status.fortune.value
+    }
+
+
     getWounds(token) {
         const wounds =  token.actor.data.data.status.wounds
         return {
@@ -18,16 +23,37 @@ export class wfrp4e {
         
     }
 
+    getCriticalWounds(token) {
+        const criticalWounds = token.actor.data.data.status.criticalWounds
+        return {
+            value: criticalWounds.value,
+            max: criticalWounds.max
+        } 
+    }
+
+    getCorruption(token) {
+        return token.actor.data.data.status.corruption.value
+    }
+
+    getAdvantage(token) {
+        return token.actor.data.data.status.advantage.value
+    }
+
+    getResolve(token) {
+        return token.actor.data.data.status.resolve.value
+    }
+
+    getResilience(token) {
+        return token.actor.data.data.status.resilience.value
+    }
 
     getAbility(token, abilityName) {
         return this.getCharacteristics(token, abilityName); 
     }
 
     getCharacteristics(token, characteristicName) {
-        console.log("getCharacteristics(", token, ", ", characteristicName);  // TODO: feature-wfrp4 remove
         if (characteristicName == undefined ) characteristicName = `AG`;
         const characteristic = token.actor.data.data.characteristics[characteristicName.toLowerCase()]
-        console.log(characteristic);
         const val = characteristic.value;
         return (val >= 0) ? `+${val}` : val;
     }
@@ -35,9 +61,16 @@ export class wfrp4e {
     getFeatures(token,featureType) {
         if (featureType == undefined) featureType = 'any';
         const allItems = token.actor.items;
-        console.log(allItems);
         if (featureType == 'any') return allItems.filter(i => i.type == 'skill' || i.type == 'talent' || i.type == "career" || i.type == 'trait');
         return allItems.filter(i => i.type == featureType);
+    }
+    getSpells(token,spellType) {
+        const allItems = token.actor.items;
+        return allItems.filter(i => i.type == 'spell')
+    }
+
+    getSpellUses(token,level,item) {
+        return;
     }
 
     getFeatureUses(item) {
@@ -52,61 +85,10 @@ export class wfrp4e {
         return game.wfrp4e.utility.rollItemMacro(item.name, item.type, false);
     }
 
-    getTempHP(token) {
-        return;
-    }
-
-    getAC(token) {
-        return;
-    }
-
-    getShieldHP(token) {
-        return;
-    }
-
     getSpeed(token) {
         return token.actor.data.data.details.move.value;
     }
 
-    getInitiative(token) {
-        return;
-    }
-
-    toggleInitiative(token) {
-        return;
-    }
-
-    getPassivePerception(token) {
-        return;
-    }
-
-    getPassiveInvestigation(token) {
-        return;
-    }
-
-    getAbilityModifier(token, ability) {
-        return;
-    }
-
-    getAbilitySave(token, ability) {
-        return;
-    }
-
-    getSkill(token, skill) {
-        return;
-    }
-
-    getProficiency(token) {
-        return;
-    }
-
-    getConditionIcon(condition) {
-        return;
-    }
-
-    getConditionActive(token,condition) {
-        return;
-    }
 
     async toggleCondition(token,condition) {
         if (condition == undefined) condition = 'removeAll';
@@ -121,34 +103,13 @@ export class wfrp4e {
         return true;
     }
 
-    /**
-     * Roll
-     */
-     roll(token,roll,options,ability,skill,save) {
-        console.log("roll(", token, roll, options, ability, skill, save, ")");
-        // if (roll == undefined) roll = 'ability';
+    roll(token,roll,options,ability,skill,save) {
+        //console.log("roll(", token, roll, options, ability, skill, save, ")");
         if (ability == undefined) ability = 'ag';
-        // if (skill == undefined) skill = 'acr';
-        // if (save == undefined) save = 'str';
-
-        // if (roll == 'ability') token.actor.rollAbilityTest(ability,options);
-        // else if (roll == 'save') token.actor.rollAbilitySave(save,options);
-        // else if (roll == 'skill') token.actor.rollSkill(skill,options);
-        // else if (roll == 'initiative') token.actor.rollInitiative(options);
-        // else if (roll == 'deathSave') token.actor.rollDeathSave(options);
         return game.wfrp4e.utility.rollItemMacro(ability, "characteristic", false);
     }
 
-    /**
-     * Items
-    
-    getItems(token,itemType) {
 
-        if (itemType == undefined) itemType = 'any';
-        const allItems = token.actor.items;
-        console.log("allitems: "+ allItems);
-        if (itemType == 'any') return allItems.filter(i => i.type == itemType);
-    }  */
 
     getItems(token,itemType) {
         if (itemType == undefined) itemType = 'any';
@@ -173,14 +134,39 @@ export class wfrp4e {
         }
     }
 
-    /**
-     * Spells
-     */
-     getSpells(token,level) {
+    
+    /* this is all cargo-culted in and some of it could be deleted once the interface is resolved
+       to not be the superset of all possible systems 
+    */ 
+
+    getAC(token) {
         return;
     }
 
-    getSpellUses(token,level,item) {
+    getShieldHP(token) {
         return;
     }
+
+    getInitiative(token) {
+        return;
+    }
+
+    toggleInitiative(token) {
+        return;
+    }
+
+
+    getConditionIcon(condition) {
+        return;
+    }
+
+    getConditionActive(token,condition) {
+        return;
+    }
+
+    getTempHP(token) {
+        return;
+    }
+
+
 }
