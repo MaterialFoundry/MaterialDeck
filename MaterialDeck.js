@@ -57,7 +57,7 @@ let WSconnected = false;
 async function analyzeWSmessage(msg){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
-    //console.log("Received",data);
+//    console.log("Received",data);
 
     if (data.type == "connected" && data.data == "SD"){
         const msg = {
@@ -390,7 +390,7 @@ Hooks.on('updateToken',(scene,token)=>{
     if (macroControl != undefined) macroControl.updateAll();
 });
 
-Hooks.on('updateActor',(scene,actor)=>{
+Hooks.on('updateActor',(actor)=>{
     if (enableModule == false || ready == false) return;
     let children = canvas.tokens.children[0].children;
     for (let i=0; i<children.length; i++){
