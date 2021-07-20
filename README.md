@@ -69,6 +69,9 @@ Module manifest: https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/m
 <b>Foundry VTT:</b> Tested on 0.7.9 - 0.8.5<br>
 <b>Module Incompatibilities:</b> None known.<br>
 
+## Developer Guide
+See the [developer guide](./DEVGUIDE.md) for a guide on how to add new systems to `MaterialDeck`.
+
 ## Feedback
 If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
 
@@ -78,6 +81,7 @@ If you have any suggestions or bugs to report, feel free to create an issue, con
 Special thanks to Asmodeus#7588 who made this module possible by generously donating a Stream Deck XL
 <br>
 Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>, and feel free to join the Material Foundry <a href="https://discord.gg/3hd4G6TkmA">Discord</a> server.
+
 
 ## Abandonment
 Abandoned modules are a (potential) problem for Foundry, because users and/or other modules might rely on abandoned modules, which might break in future Foundry updates.<br>

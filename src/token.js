@@ -94,7 +94,7 @@ export class TokenControl{
                         }
                 }
                 
-                if (stats == 'HP') {
+                if (stats == 'HP' || stats == 'Wounds') {
                     const hp = tokenHelper.getHP(token);
                     txt += hp.value + "/" + hp.max;
                     
@@ -102,6 +102,18 @@ export class TokenControl{
                         uses = {
                             available: hp.value,
                             maximum: hp.max,
+                            heart: "#FF0000"
+                        };
+                        
+                }
+                if (stats == 'CriticalWounds') { /* WFRP4e */
+                    const criticalWounds = tokenHelper.getCriticalWounds(token);
+                    txt += criticalWounds.value + "/" + criticalWounds.max;
+                    
+                    if (icon == 'stats')
+                        uses = {
+                            available: criticalWounds.value,
+                            maximum: criticalWounds.max,
                             heart: "#FF0000"
                         };
                         
@@ -135,6 +147,13 @@ export class TokenControl{
                 else if (stats == 'Save') txt += tokenHelper.getAbilitySave(token, settings.save);
                 else if (stats == 'Skill') txt += tokenHelper.getSkill(token, settings.skill);
                 else if (stats == 'Prof') txt += tokenHelper.getProficiency(token);
+                else if (stats == 'Fate') txt += tokenHelper.getFate(token) /* WFRP4e */
+                else if (stats == 'Fortune') txt += tokenHelper.getFortune(token) /* WFRP4e */
+                else if (stats == 'Corruption') txt += tokenHelper.getCorruption(token) /* WFRP4e */
+                else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
+                else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
+                else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
+
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
@@ -739,7 +758,9 @@ export class TokenControl{
             items = this.sortItems(items);
 
             const item = items[itemNr];
-            if (item != undefined) item.roll();
+            if (item != undefined) {
+                tokenHelper.rollItem(item);
+            }
             
         }
     }

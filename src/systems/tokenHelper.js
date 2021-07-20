@@ -2,6 +2,7 @@ import {dnd5e} from "./dnd5e.js"
 import {dnd35e} from "./dnd35e.js"
 import {pf2e} from "./pf2e.js"
 import {demonlord} from "./demonlord.js";
+import {wfrp4e} from "./wfrp4e.js"
 import {compatibleCore} from "../misc.js";
 
 export class TokenHelper{
@@ -14,6 +15,7 @@ export class TokenHelper{
         if (game.system.id == 'D35E' || game.system.id == 'pf1') this.system = new dnd35e();
         else if (game.system.id == 'pf2e') this.system = new pf2e();
         else if (game.system.id == 'demonlord') this.system = new demonlord();
+        else if (game.system.id == 'wfrp4e') this.system = new wfrp4e();
         else this.system = new dnd5e();     //default to dnd5e
     }
 
@@ -184,6 +186,41 @@ export class TokenHelper{
         return this.system.getProficiency(token);
     }
 
+    /* WFRP 4E */
+    getFate(token) {
+        return this.system.getFate(token)
+    }
+
+    /* WFRP 4E */
+    getFortune(token) {
+        return this.system.getFortune(token)
+    }
+    
+    /* WFRP 4E */
+    getCriticalWounds(token) {
+        return this.system.getCriticalWounds(token)
+    }
+
+    /* WFRP 4E */
+    getCorruption(token) {
+        return this.system.getCorruption(token)
+    }
+
+    /* WFRP 4E */
+    getAdvantage(token) {
+        return this.system.getAdvantage(token)
+    }
+
+    /* WFRP 4E */
+    getResolve(token) {
+        return this.system.getResolve(token)
+    }
+
+    /* WFRP 4E */
+    getResilience(token) {
+        return this.system.getResilience(token)
+    }
+
     /**
      * Conditions
      */
@@ -237,5 +274,9 @@ export class TokenHelper{
 
     getSpellUses(token,level,item) {
         return this.system.getSpellUses(token,level,item);
+    }
+
+    rollItem(item) {
+        return this.system.rollItem(item);
     }
 }
