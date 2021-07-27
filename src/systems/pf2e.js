@@ -1,4 +1,5 @@
 import {compatibleCore} from "../misc.js";
+import {otherControls} from "../../MaterialDeck.js";
 
 export class pf2e{
     constructor(){
@@ -102,6 +103,27 @@ export class pf2e{
         return this.getCondition(token,condition) != undefined;
     }
 
+    getValuedCondition(token,condition) {
+        const effect = this.getCondition(token, condition);
+        if (effect != undefined && effect?.data.value != null) return effect;
+    }
+
+    async modifyValuedCondition(token,condition,delta) {
+        const effect = this.getValuedCondition(token,condition);
+        if (effect == undefined) {
+            if (delta > 0) {
+                const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
+                const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
+                // newCondition.data.sources.hud = !0,
+                await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
+            }
+        } else {
+            const currentValue = effect.value;
+            console.log(`Current Value: ${currentValue}`);
+            await game.pf2e.ConditionManager.updateConditionValue(effect, token, currentValue+delta);            
+        }
+    }
+
     async toggleCondition(token,condition) {
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll'){
@@ -113,7 +135,7 @@ export class pf2e{
             if (effect == undefined) {
                 const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
                 const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
-                newCondition.data.sources.hud = !0,
+                // newCondition.data.sources.hud = !0,
                 await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
             }
             else {
@@ -162,6 +184,7 @@ export class pf2e{
      */
      getFeatures(token,featureType) {
         if (featureType == undefined) featureType = 'any';
+        if (featureType == 'action') return this.getActions(token);
         const allItems = token.actor.items;
         if (featureType == 'any') return allItems.filter(i => i.type == 'class' || i.type == 'feat')
         else return allItems.filter(i => i.type == featureType)
@@ -193,7 +216,20 @@ export class pf2e{
         }
     }
 
+    /**
+     * Actions
+     */
+    getActions(token) {
+        const allActions = token.actor.data.data.actions;
+        return allActions.filter(a=>a.type==='strike');
+    }
+
     rollItem(item) {
+        let variant = 0;
+        if (otherControls.rollOption == 'map1') variant = 1;
+        if (otherControls.rollOption == 'map2') variant = 2;
+        if(item.type==='strike') return item.variants[variant].roll({event});
+        if(item.type==='weapon') return item.parent.data.data.actions.find(a=>a.name===item.name).variants[variant].roll({event});
         return item.roll()
     }
 }

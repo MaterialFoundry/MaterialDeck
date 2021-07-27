@@ -452,11 +452,16 @@ export class StreamDeck{
             }
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
             if (uses != undefined && uses.heart == undefined) {
+                
                 let txt = '';
+                let noMaxUses = false;
                 if (uses.available != undefined) {
                     txt = uses.available;
                     if (uses.maximum != undefined) txt = uses.available + '/' + uses.maximum;
-                    if (uses.maximum == undefined ) uses.maximum = 1;
+                    if (uses.maximum == undefined ) {
+                        uses.maximum = 1;
+                        noMaxUses = true;
+                    }
                 }
                 ctx.beginPath();
                 ctx.lineWidth = 4;
@@ -466,7 +471,8 @@ export class StreamDeck{
                 if (green.length == 1) green = "0"+green;
                 red = red.toString(16);
                 if (red.length == 1) red = "0"+red;
-                if (uses.available == 0) ctx.strokeStyle = "#c80000";
+                if (noMaxUses) ctx.strokeStyle = "#c000000";
+                else if (uses.available == 0) ctx.strokeStyle = "#c80000";
                 else ctx.strokeStyle = "#"+red.toString(16)+green.toString(16)+"00";
                 const rect = {height:35, paddingSides:20, paddingBottom: 4}
                 ctx.rect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*rect.paddingSides,rect.height);

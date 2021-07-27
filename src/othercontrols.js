@@ -54,6 +54,8 @@ export class OtherControls{
             this.updateChatMessage(settings,context,device,options);
         else if (mode == 'rollOptions')
             this.updateRollOptions(settings,context,device,options);
+        else if (mode == 'rollMode')
+            this.updateRollMode(settings,context,device,options);
     }
 
     keyPress(settings,context,device){
@@ -83,6 +85,8 @@ export class OtherControls{
             this.keyPressChatMessage(settings);
         else if (mode == 'rollOptions')
             this.keyPressRollOptions(settings);
+        else if (mode == 'rollMode')
+            this.keyPressRollMode(settings);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -811,5 +815,24 @@ export class OtherControls{
             this.rollOption = rollOption;
             this.updateAll();
         }
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+    updateRollMode(settings,context,device,options={}){
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const iconSrc = "modules/MaterialDeck/img/other/d20.png";
+        const rollMode = settings.rollMode ? settings.rollMode : 'roll';
+        const ringColor = (rollMode == game.settings.get('core','rollMode')) ? ringOnColor : ringOffColor;
+        streamDeck.setTitle("",context);
+        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay:true});
+    }
+
+    async keyPressRollMode(settings){
+        const rollMode = settings.rollMode ? settings.rollMode : 'roll';
+        await game.settings.set('core','rollMode',rollMode);
+        this.updateAll();
     }
 }

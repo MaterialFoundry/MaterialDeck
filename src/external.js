@@ -1,9 +1,44 @@
 import {streamDeck} from "../MaterialDeck.js";
 
 export class ExternalModules{
+    soundscapeSettings = {
+        channels: [],
+        master: {
+            mute: false,
+            volume: 1,
+            playing: false,
+            name: 'Master'
+        },
+        soundboard: [],
+        soundboardVolume: 1,
+        playing: false
+    }
     constructor(){
         this.active = false;
         this.gmScreenOpen = false;
+
+        let channelData = [];
+        let soundboardData = [];
+        for (let i=0; i<8; i++) {
+            channelData.push({
+                volume: 1,
+                mute: false,
+                solo: false,
+                link: false,
+                playing: false,
+                pan: 1,
+                name: ''
+            })
+        }
+        for (let i=0; i<25; i++) {
+            soundboardData.push({
+                active: false,
+                name: '',
+                icon: ''
+            })
+        }
+        this.soundscapeSettings.channels = channelData;
+        this.soundscapeSettings.soundboard = soundboardData;
     }
 
     async updateAll(data={}){
@@ -33,6 +68,7 @@ export class ExternalModules{
         else if (module == 'notYourTurn')   this.updateNotYourTurn(settings,context,device);
         else if (module == 'lockView')      this.updateLockView(settings,context,device);
         else if (module == 'aboutTime')     this.updateAboutTime(settings,context,device);
+        else if (module == 'soundscape')    this.updateSoundscape(settings,context,device);
     }
 
     keyPress(settings,context,device){
@@ -47,6 +83,7 @@ export class ExternalModules{
         else if (module == 'notYourTurn')   this.keyPressNotYourTurn(settings,context,device);
         else if (module == 'lockView')      this.keyPressLockView(settings,context,device);
         else if (module == 'aboutTime')     this.keyPressAboutTime(settings,context,device);
+        else if (module == 'soundscape')    this.keyPressSoundscape(settings,context,device);
     }
 
     getModuleEnable(moduleId){
@@ -697,6 +734,327 @@ export class ExternalModules{
             else if (advanceMode == '1h') 
                 game.Gametime.advanceTime({ hours: -1 });
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Soundscape
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    updateSoundscape(settings,context,device) {
+        
+        if (this.getModuleEnable("soundscape") == false) return;
+        if (game.user.isGM == false) return;
+
+        const target = settings.soundscapeTarget ? settings.soundscapeTarget : 'mixer';
+        let channel = settings.soundscapeChannel ? settings.soundscapeChannel : 1;
+        
+        let background = '#000000';
+        let ring = 0;
+        let ringColor = '#000000';
+
+        let txt = '';
+        let src = 'modules/MaterialDeck/img/transparant.png';
+        let name = '';
+
+        if (target == 'mixer') {
+            let mode = settings.soundscapeMixerMode ? settings.soundscapeMixerMode : 'startStopAll';
+            const displayName = settings.soundscapeMixerName;
+            const displayChannel = settings.soundscapeDisplayMixerChannel;
+
+            if (mode == 'startStopAll') {
+                channel = 'master';
+                mode = 'startStop';
+            }
+
+            if (channel == 'Master') channel = 'master';
+
+            let channelSettings;
+            if (channel == 'master') {
+                channelSettings = this.soundscapeSettings.master;
+                channelSettings.playing = this.soundscapeSettings.playing;
+                channelSettings.name = 'Master';
+            }
+            else channelSettings = this.soundscapeSettings.channels[channel-1];
+            if (displayChannel && channel == 'master') txt += 'Master';
+            else if (displayChannel) txt += channel;
+
+            if (mode == 'startStop') {
+                if (displayChannel) txt += '\n';
+                if (channelSettings.playing) {
+                    src = "fas fa-stop";
+                    ringColor = '#00ff00';
+                }
+                else {
+                    src = "fas fa-play";
+                    ringColor = '#006600';
+                }
+                ring=2;
+                
+            }
+            else if (mode == 'mute') {
+                if (displayChannel) txt += '\n';
+                txt += 'M';
+                if (displayName) txt += '\n';
+                ring=2;
+                ringColor = '#ff0000';
+                background = channelSettings.mute ? '#ff0000' : '#660000'
+            }
+            else if (mode == 'solo') {
+                if (channel == 'master') return;
+                if (displayChannel) txt += '\n';
+                txt += 'S';
+                if (displayName) txt += '\n';
+                ring=2;
+                ringColor = '#ffff00';
+                background = channelSettings.solo ? '#ffff00' : '#666600'
+            }
+            else if (mode == 'link') {
+                if (channel == 'master') return;
+                if (displayChannel) txt += '\n';
+                txt += 'L';
+                if (displayName) txt += '\n';
+                ring=2;
+                ringColor = '#00ffff';
+                background = channelSettings.link ? '#00ffff' : '#000066'
+            }
+            else if (displayName && displayChannel) txt += '\n';
+
+            if (displayName) txt += channelSettings.name;
+
+            if (mode == 'volume') {
+                const displayValue = settings.soundscapeDisplayMixerValue;
+                const volume = Math.floor(channelSettings.volume*100);
+                if (displayValue && (displayName || displayChannel)) txt += '\n';
+                if (displayValue) txt += volume;
+            }
+            
+        }
+        else if (target == 'soundboard') {
+            const displayName = settings.soundscapeSoundboardName;
+            const displayIcon = settings.soundscapeSoundboardIcon;
+            const displayChannel = settings.soundscapeDisplayChannel;
+            const displayValue = settings.soundscapeSoundboardValue;
+            const mode = settings.soundscapeSoundboardMode ? settings.soundscapeSoundboardMode : 'play';
+
+            if (mode == 'play') {
+                channel -= 1;
+                let sound = this.soundscapeSettings.soundboard[channel];
+
+                if (displayChannel) txt += channel+1;
+                if (displayChannel && displayName) txt += '\n';
+                if (displayName) txt += sound.name;
+                if (displayIcon) src = sound.icon;
+            }
+            else if (mode == 'volume') {
+                const volume = Math.floor(this.soundscapeSettings.soundboardVolume*100);
+                if (displayValue) txt += volume;
+            }
+            else if (mode == 'stop') {
+                src = 'modules/MaterialDeck/img/playlist/stop.png';
+            }
+        }
+       
+        streamDeck.setTitle(txt,context);
+        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+    }
+
+    async keyPressSoundscape(settings,context,device) {
+        if (this.getModuleEnable("soundscape") == false) return;
+        if (game.user.isGM == false) return;
+
+        const target = settings.soundscapeTarget ? settings.soundscapeTarget : 'mixer';
+        let channel = settings.soundscapeChannel ? settings.soundscapeChannel : 1;
+
+        if (target == 'mixer') {
+            const mode = settings.soundscapeMixerMode ? settings.soundscapeMixerMode : 'startStopAll';
+
+            if (mode == 'startStopAll') {
+                const playing = !this.soundscapeSettings.playing;
+                if (playing) {
+                    Hooks.call('setSoundscape',{"msgType":"start","channelNr":undefined});
+                    return;
+                }
+                else {
+                    Hooks.call('setSoundscape',{"msgType":"stop","channelNr":undefined});
+                    return;
+                }
+            }
+
+            if (channel == 'Master') channel = 'master';
+
+            let channelSettings;
+            if (channel == 'master') {
+                channelSettings = this.soundscapeSettings.master;
+                channelSettings.playing = this.soundscapeSettings.playing;
+            }
+            else channelSettings = this.soundscapeSettings.channels[channel-1];
+
+            let mute, solo, link, playing;
+            let setChannel = false;
+
+            if (mode == 'startStop') {
+                setChannel = true;
+                playing = !channelSettings.playing;
+                if (channel == 'master' && playing) {
+                    Hooks.call('setSoundscape',{"msgType":"stop"});
+                    return;
+                }
+                else if (channel == 'master') {
+                    Hooks.call('setSoundscape',{"msgType":"start"});
+                    return;
+                }
+            }
+            else if (mode == 'mute') {
+                setChannel = true;
+                mute = !channelSettings.mute;
+            }
+            else if (mode == 'solo') {
+                if (channel == 'master') return;
+                setChannel = true;
+                solo = !channelSettings.solo;
+            }
+            else if (mode == 'link') {
+                if (channel == 'master') return;
+                setChannel = true;
+                link = !channelSettings.link;
+            }
+            if (setChannel) {
+                const channelNr = channel == 'master' ? 'master' : channel-1;
+                const payload = {
+                    "msgType": "setChannel",
+                    "channelNr": channelNr,
+                    mute,
+                    solo,
+                    link,
+                    playing
+                };
+                Hooks.call('setSoundscape',payload);
+                return;
+            }
+
+            if (mode == 'volume') {
+                const volumeMode = settings.soundscapeMixerValueMode ? settings.soundscapeMixerValueMode : 'incrementDecrement';
+                const value = parseInt(settings.soundscapeMixerValue);
+                if (isNaN(value) == false) {
+                    let volume = channelSettings.volume*100;
+                    
+                    if (volumeMode == 'set') 
+                        volume = value;
+                    else
+                        volume += value;
+                    
+                    volume = Math.floor(volume*100)/10000;
+                    const channelNr = channel == 'master' ? 'master' : channel-1;
+                    const payload = {
+                        "msgType": "setVolume",
+                        "channelNr": channelNr,
+                        volume
+                    };
+                    Hooks.call('setSoundscape',payload);
+                }
+            }
+
+
+        }
+        else if (target == 'soundboard') {
+            const mode = settings.soundscapeSoundboardMode ? settings.soundscapeSoundboardMode : 'play';
+
+            if (mode == 'play') {
+                channel -= 1;
+                const payload = {
+                    "msgType": "playSoundboard",
+                    channelNr: channel
+                };
+                Hooks.call('setSoundscape',payload);
+            }
+            else if (mode == 'volume') {
+                const volumeMode = settings.soundscapeSoundboardValueMode ? settings.soundscapeSoundboardValueMode : 'incrementDecrement';
+                const value = parseInt(settings.soundscapeSoundboardValue);
+                if (isNaN(value) == false) {
+                    let volume = this.soundscapeSettings.soundboardVolume*100;
+                    
+                    if (volumeMode == 'set') 
+                        volume = value;
+                    else
+                        volume += value;
+                    
+                    volume = Math.floor(volume*100)/10000;
+                    const payload = {
+                        "msgType": "setSoundboardVolume",
+                        volume
+                    };
+                    Hooks.call('setSoundscape',payload);
+                }
+            }
+            else if (mode == 'stop') {
+                const payload = {
+                    "msgType": "stopSoundboard"
+                };
+                Hooks.call('setSoundscape',payload);
+            }
+        }
+    }
+
+    newSoundscapeData(data) {
+        let channel;
+        if (data.channel != undefined) channel = data.channel;
+        else if (data.channelNr != undefined) channel = data.channelNr;
+
+        let channelSettings = channel == 'master' ? this.soundscapeSettings.master : this.soundscapeSettings.channels[channel]
+        if (data.msgType == 'soundConfig') {
+            
+            let newChannelSettings = {
+                volume: data.data.settings.volume,
+                mute: data.data.settings.mute,
+                solo: data.data.settings.solo,
+                link: data.data.settings.link,
+                playing: false,
+                pan: data.data.settings.pan,
+                name: data.data.settings.name
+            };
+            this.soundscapeSettings.channels[channel] = newChannelSettings;
+        }
+        else if (data.msgType == 'setMute') channelSettings.mute = data.mute;
+        else if (data.msgType == 'setSolo') channelSettings.solo = data.solo;
+        else if (data.msgType == 'setLink') channelSettings.link = data.link;
+        else if (data.msgType == 'setVolume') {
+            if (channel >= 100) return;
+            channelSettings.volume = data.volume;
+        }
+        else if (data.msgType == 'start') {
+            this.soundscapeSettings.playing = true;
+            this.soundscapeSettings.master.playing = true;
+            if (data.channel == undefined) for (let i=0; i<8; i++) this.soundscapeSettings.channels[i].playing = true;
+            else this.soundscapeSettings.channels[data.channel].playing = true;
+        }
+        else if (data.msgType == 'stop') {
+            
+            if (data.channel == undefined) {
+                for (let i=0; i<8; i++) this.soundscapeSettings.channels[i].playing = false;
+                this.soundscapeSettings.playing = false;
+            }
+            else {
+                this.soundscapeSettings.channels[data.channel].playing = false;
+                let check = 0;
+                for (let i=0; i<8; i++) if (this.soundscapeSettings.channels[data.channel].playing) check++;
+                if (check == 0) this.soundscapeSettings.playing = false;
+            }
+        }
+        else if (data.msgType == 'sbSoundConfig') {
+            
+            const channel = data.channel - 100;
+            let active = true;
+            if (data.data.soundArray == undefined) active = false;
+            this.soundscapeSettings.soundboard[channel] = {
+                active,
+                name: data.data.name,
+                icon: data.data.imageSrc
+            };
+        }
+        else if (data.msgType == 'setSoundboardVolume')
+            this.soundscapeSettings.soundboardVolume = data.volume;
+
+        this.updateAll();
     }
 }
 

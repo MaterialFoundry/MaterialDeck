@@ -210,6 +210,21 @@ export class TokenControl{
                         }
                     }  
                 }
+                else if (settings.onClick == 'valuedCondition') { //modify valued condition
+                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
+                        streamDeck.noPermission(context,device);
+                        return;
+                    }
+                    ring = 1;
+                    overlay = true;
+                    if (icon == 'stats') {
+                        iconSrc = tokenHelper.getConditionIcon(settings.valuedCondition);
+                        if (tokenHelper.getValuedCondition(token,settings.valuedCondition)) {
+                            ring = 2;
+                            ringColor = "#FF7B00";
+                        }
+                    }  
+                }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                     if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
@@ -336,6 +351,15 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'condition') { //toggle condition
+                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
+                        streamDeck.noPermission(context,device);
+                        return;
+                    }
+                    ring = 1;
+                    overlay = true;
+                    if (icon == 'stats') iconSrc = tokenHelper.getConditionIcon(settings.condition);
+                }
+                else if (settings.onClick == 'valuedCondition') { //modify condition value
                     if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
@@ -505,6 +529,11 @@ export class TokenControl{
             else if (onClick == 'condition') {    //Toggle condition
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
                 await tokenHelper.toggleCondition(token,settings.condition);
+                this.update(tokenId);
+            }
+            else if (onClick == 'valuedCondition') {    //Modify Valued condition
+                if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
+                await tokenHelper.modifyValuedCondition(token,settings.valuedCondition,settings.valuedConditionDelta);
                 this.update(tokenId);
             }
             else if (onClick == 'cubCondition') { //Combat Utility Belt conditions

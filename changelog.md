@@ -1,4 +1,28 @@
 # Changelog Material Deck Module
+### v1.4.5 - 27-07-2021
+Fixes:
+<ul>
+<li>Combat Tracker Action => Turn Display: If only 'Display Round' was enabled, the vertical alignment would be off. This has been fixed.</li>
+<li>WebSocket client no longer creates duplicate connections</li>
+<li>Token Action => If 'Display Uses/Quantity' is enabled for an item that has no maximum uses/quantity, the uses/quantity border is now consistently black.</li>
+<li>Update dialog that appears if the SD plugin needs to be updated now only appears once</li>
+</ul>
+
+Additions:
+<ul>
+<li>External Modules: Added support for the Soundscape module. Requires Soundscape v1.0.3</li>
+<li>Macro Action => Advanced Macros is now supported for calling macros with arguments</li>
+<li>Combat Tracker Action => Function: Added option to select the combatant after changing the turn</li>
+<li>Other Actions => Added 'Set Roll Mode' which sets the roll mode for all rolls to public, private gm, blind gm or self roll</li>
+<li>Added support for wfrp4e (thanks to sozin#8622 & eccobold#3541)</li>
+<li>Added DEVGUIDE.md to help developers add support for new systems (thanks to sozin#8622 & eccobold#3541)</li>
+</ul>
+
+<br>
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2 (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.4.5 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.4.4 - 26-05-2021
 Fixes:
 <ul>

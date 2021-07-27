@@ -183,7 +183,8 @@ export class macroConfigForm extends FormApplication {
         let furnaceEnabled = false;
         let height = 95;
         let furnace = game.modules.get("furnace");
-        if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) {
+        let advancedMacros = game.modules.get("advanced-macros");
+        if ((furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) || (advancedMacros != undefined && advancedMacros.active)) {
             furnaceEnabled = true;
             height += 50;
         }
@@ -1056,12 +1057,23 @@ export class downloadUtility extends FormApplication {
         }
         if (this.localMSversion == undefined) this.localMSversion = 'unknown';
         
+        let minimumSdVersion;
+        let minimumMsVersion;
+        if (compatibleCore("0.8.5")) {
+            minimumSdVersion = game.modules.get("MaterialDeck").data.flags.minimumSDversion.replace('v','');
+            minimumMsVersion = game.modules.get("MaterialDeck").data.flags.minimumMSversion;
+        }
+        else {
+            minimumSdVersion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
+            minimumMsVersion = game.modules.get("MaterialDeck").data.minimumMSversion;
+        }
+        
         return {
-            minimumSdVersion: game.modules.get("MaterialDeck").data.minimumSDversion.replace('v',''),
+            minimumSdVersion,
             localSdVersion: this.localSDversion,
             masterSdVersion: this.masterSDversion,
             sdDlDisable: this.masterSDversion == undefined,
-            minimumMsVersion: game.modules.get("MaterialDeck").data.minimumMSversion.replace('v',''),
+            minimumMsVersion,
             localMsVersion: this.localMSversion,
             masterMsVersion: this.masterMSversion,
             msDlDisable: this.masterMSversion == undefined,

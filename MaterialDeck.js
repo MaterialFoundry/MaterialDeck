@@ -32,6 +32,8 @@ let controlTokenTimer;
 
 export let sdVersion;
 export let msVersion;
+
+let updateDialog;
        
 //CONFIG.debug.hooks = true;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,8 +88,8 @@ async function analyzeWSmessage(msg){
         
         sdVersion = data.version;
 
-        if (data.version < minimumSDversion) {
-            let d = new Dialog({
+        if (data.version < minimumSDversion && updateDialog == undefined) {
+            updateDialog = new Dialog({
                 title: "Material Deck: Update Needed",
                 content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is incompatible with this verion of the module.<br>Update to v" + minimumSDversion + " or newer.</p>",
                 buttons: {
@@ -103,7 +105,7 @@ async function analyzeWSmessage(msg){
                 },
                 default: "download"
             });
-            d.render(true);
+            updateDialog.render(true);
         }
     }
 
@@ -225,19 +227,22 @@ let messageCount = 0;
  */
 function resetWS(){
     const maxMessages = game.settings.get(moduleName, 'nrOfConnMessages');
-    if (maxMessages == 0 || maxMessages > messageCount) {
-        messageCount++;
-        const countString = maxMessages == 0 ? "" : " (" + messageCount + "/" + maxMessages + ")";
-        if (wsOpen) {
-            ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
-            wsOpen = false;
-            messageCount = 0;
-        }
-        else ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + countString);
+    if (wsOpen) {
+        ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
+        wsOpen = false;
+        messageCount = 0;
+        WSconnected = false;
+        startWebsocket();
     }
-    
-    WSconnected = false;
-    startWebsocket();
+    else if (ws.readyState == 3){
+        if (maxMessages == 0 || maxMessages > messageCount) {
+            messageCount++;
+            const countString = maxMessages == 0 ? "" : " (" + messageCount + "/" + maxMessages + ")";
+            ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + countString);
+        }
+        WSconnected = false;
+        startWebsocket();
+    }
 }
 
 export function sendWS(txt){
@@ -275,8 +280,6 @@ Hooks.once('ready', async()=>{
     registerSettings();
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
 
-    
-    
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
     tokenControl = new TokenControl();
@@ -364,12 +367,6 @@ Hooks.once('ready', async()=>{
             game.settings.set(moduleName,'soundboardSettings',settings);
         }
     }
-
-
-
-
-
-
 
     if (enableModule == false) return;
     if (getPermission('ENABLE') == false) {
@@ -472,6 +469,10 @@ Hooks.on('renderSidebarTab',(app)=>{
     if (enableModule == false || ready == false) return;
     if (otherControls != undefined) otherControls.updateAll(options);
     if (sceneControl != undefined) sceneControl.updateAll();
+    if (document.getElementsByClassName("roll-type-select")[0] != undefined)
+        document.getElementsByClassName("roll-type-select")[0].addEventListener('change',function(){
+            if (otherControls != undefined) otherControls.updateAll(options);
+        })
 });
 
 Hooks.on('closeSidebarTab',(app)=>{
@@ -578,4 +579,8 @@ Hooks.once('init', ()=>{
 
 Hooks.once('canvasReady',()=>{
     ready = true;
+});
+
+Hooks.on("soundscape", (data) => {
+    externalModules.newSoundscapeData(data);
 });
