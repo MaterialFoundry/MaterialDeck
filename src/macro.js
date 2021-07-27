@@ -180,7 +180,12 @@ export class MacroControl{
             let furnaceEnabled = false;
             let furnace = game.modules.get("furnace");
             if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) furnaceEnabled = true;
+
+            let advancedMacros = game.modules.get("advanced-macros");
+            if (advancedMacros != undefined && advancedMacros.active) furnaceEnabled = true;
+
             if (args == "" || args == " ") furnaceEnabled = false;
+
             if (furnaceEnabled == false) macro.execute({token:target});
             else {
                 let chatData = {
@@ -235,7 +240,12 @@ export class MacroControl{
                 let furnaceEnabled = false;
                 let furnace = game.modules.get("furnace");
                 if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) furnaceEnabled = true;
+
+                let advancedMacros = game.modules.get("advanced-macros");
+                if (advancedMacros != undefined && advancedMacros.active) furnaceEnabled = true;
+
                 if (args == undefined || args[macroNumber] == undefined || args[macroNumber] == "") furnaceEnabled = false;
+                
                 if (furnaceEnabled == false) macro.execute();
                 else {
                     let chatData = {

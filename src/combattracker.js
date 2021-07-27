@@ -127,16 +127,18 @@ export class CombatTracker{
                     turn = combat.turn+1;
                 }
                 if (settings.displayRound) txt += "Round\n"+round;
-                if (txt != "") txt += "\n";
+                if (settings.displayRound && settings.displayTurn) txt += "\n";
                 if (settings.displayTurn) txt += "Turn\n"+turn;
             }
+
             streamDeck.setIcon(context,device,src,{background:background});
             streamDeck.setTitle(txt,context);
         }
     }
 
-    keyPress(settings,context,device){
+    async keyPress(settings,context,device){
         const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
+        const selectCombatant = settings.selectCombatant ? settings.selectCombatant : false;
         const combat = game.combat;
 
         if (mode == 'function'){
@@ -169,11 +171,17 @@ export class CombatTracker{
             }
             if (game.combat.started == false) return;
             
-            if (ctFunction == 'nextTurn') game.combat.nextTurn();
-            else if (ctFunction == 'prevTurn') game.combat.previousTurn();
-            else if (ctFunction == 'nextRound') game.combat.nextRound();
-            else if (ctFunction == 'prevRound') game.combat.previousRound();
-            else if (ctFunction == 'endTurn' && game.combat.combatant.owner) game.combat.nextTurn();
+            if (ctFunction == 'nextTurn') await game.combat.nextTurn();
+            else if (ctFunction == 'prevTurn') await game.combat.previousTurn();
+            else if (ctFunction == 'nextRound') await game.combat.nextRound();
+            else if (ctFunction == 'prevRound') await game.combat.previousRound();
+            else if (ctFunction == 'endTurn' && game.combat.combatant.owner) await game.combat.nextTurn();
+            
+            if (selectCombatant) {
+                const token = canvas.tokens.placeables.filter(token => token.id == game.combat.combatant.token.id)[0];
+                if (token.can(game.userId,"control")) token.control();
+            }
+            
         }
         else {
             const onClick = settings.onClick ? settings.onClick : 'doNothing';
