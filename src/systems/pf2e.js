@@ -103,25 +103,33 @@ export class pf2e{
         return this.getCondition(token,condition) != undefined;
     }
 
-    getValuedCondition(token,condition) {
+    getConditionValue(token,condition) {
         const effect = this.getCondition(token, condition);
-        if (effect != undefined && effect?.data.value != null) return effect;
+        if (effect != undefined && effect?.value != null) return effect;
     }
 
-    async modifyValuedCondition(token,condition,delta) {
-        const effect = this.getValuedCondition(token,condition);
-        if (effect == undefined) {
-            if (delta > 0) {
-                const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
-                const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
-                // newCondition.data.sources.hud = !0,
-                await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
-            }
+    async modifyConditionValue(token,condition,delta) {
+        if (condition == undefined) condition = 'removeAll';
+        if (condition == 'removeAll'){
+            for( let effect of token.actor.items.filter(i => i.type == 'condition'))
+                await effect.delete();
         } else {
-            const currentValue = effect.value;
-            console.log(`Current Value: ${currentValue}`);
-            await game.pf2e.ConditionManager.updateConditionValue(effect, token, currentValue+delta);            
+            const effect = this.getConditionValue(token,condition);
+            if (effect == undefined) {
+                if (delta > 0) {
+                    const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
+                    const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
+                    await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
+                }
+            } else {
+                try {
+                    await game.pf2e.ConditionManager.updateConditionValue(effect.id, token, effect.value+delta);                                
+                } catch (error) {
+                    //Do nothing. updateConditionValue will have an error about 'documentData is not iterable' when called from an NPC token. 
+                }
+            }
         }
+        return true;
     }
 
     async toggleCondition(token,condition) {

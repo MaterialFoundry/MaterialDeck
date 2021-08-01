@@ -242,13 +242,13 @@ export class TokenHelper{
     }
 
     /* PF2E */
-    getValuedCondition(token,condition) {
-        return this.system.getValuedCondition(token,condition);
+    getConditionValue(token,condition) {
+        return this.system.getConditionValue(token,condition);
     }
 
     /* PF2E */
-    modifyValuedCondition(token,condition,delta) {
-        return this.system.modifyValuedCondition(token,condition,delta);
+    modifyConditionValue(token,condition,delta) {
+        return this.system.modifyConditionValue(token,condition,delta);
     }
 
     /**

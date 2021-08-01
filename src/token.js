@@ -153,7 +153,12 @@ export class TokenControl{
                 else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
                 else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
                 else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
-
+                else if (stats == 'Condition') {
+                    const valuedCondition = tokenHelper.getConditionValue(token, settings.condition);
+                    if (valuedCondition != undefined) {
+                        txt += valuedCondition?.value;
+                    }
+                }
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
@@ -195,7 +200,7 @@ export class TokenControl{
                         iconSrc = "fas fa-bullseye";
                     }
                 }
-                else if (settings.onClick == 'condition') { //toggle condition
+                else if (settings.onClick == 'condition') { //handle condition
                     if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
@@ -205,21 +210,6 @@ export class TokenControl{
                     if (icon == 'stats') {
                         iconSrc = tokenHelper.getConditionIcon(settings.condition);
                         if (tokenHelper.getConditionActive(token,settings.condition)) {
-                            ring = 2;
-                            ringColor = "#FF7B00";
-                        }
-                    }  
-                }
-                else if (settings.onClick == 'valuedCondition') { //modify valued condition
-                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
-                        streamDeck.noPermission(context,device);
-                        return;
-                    }
-                    ring = 1;
-                    overlay = true;
-                    if (icon == 'stats') {
-                        iconSrc = tokenHelper.getConditionIcon(settings.valuedCondition);
-                        if (tokenHelper.getValuedCondition(token,settings.valuedCondition)) {
                             ring = 2;
                             ringColor = "#FF7B00";
                         }
@@ -351,15 +341,6 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'condition') { //toggle condition
-                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
-                        streamDeck.noPermission(context,device);
-                        return;
-                    }
-                    ring = 1;
-                    overlay = true;
-                    if (icon == 'stats') iconSrc = tokenHelper.getConditionIcon(settings.condition);
-                }
-                else if (settings.onClick == 'valuedCondition') { //modify condition value
                     if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
@@ -526,15 +507,23 @@ export class TokenControl{
             else if (onClick == 'target') {    //Target token
                 token.setTarget(!token.isTargeted,{releaseOthers:false});
             }
-            else if (onClick == 'condition') {    //Toggle condition
+            else if (onClick == 'condition') {    //Handle condition
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
-                await tokenHelper.toggleCondition(token,settings.condition);
-                this.update(tokenId);
-            }
-            else if (onClick == 'valuedCondition') {    //Modify Valued condition
-                if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
-                await tokenHelper.modifyValuedCondition(token,settings.valuedCondition,settings.valuedConditionDelta);
-                this.update(tokenId);
+                const func = settings.conditionFunction ? settings.conditionFunction : 'toggle';
+
+                if (func == 'toggle'){ //toggle
+                    await tokenHelper.toggleCondition(token,settings.condition);
+                    this.update(tokenId);
+                }
+                else if (func == 'increase'){ //increase
+                    await tokenHelper.modifyConditionValue(token, settings.condition, +1)
+                    this.update(tokenId);
+                }
+                else if (func == 'decrease'){ //decrease
+                    await tokenHelper.modifyConditionValue(token, settings.condition, -1)
+                    this.update(tokenId);
+                }
+
             }
             else if (onClick == 'cubCondition') { //Combat Utility Belt conditions
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
