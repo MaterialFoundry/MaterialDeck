@@ -153,7 +153,7 @@ export class TokenControl{
                 else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
                 else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
                 else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
-                else if (stats == 'Condition') {
+                else if (stats == 'Condition') { /* PF2E */
                     const valuedCondition = tokenHelper.getConditionValue(token, settings.condition);
                     if (valuedCondition != undefined) {
                         txt += valuedCondition?.value;
@@ -290,9 +290,7 @@ export class TokenControl{
                 }
                 else if (mode == 'features') {
                     items = tokenHelper.getFeatures(token,settings.featureType);
-                    if (items != undefined && items[0]?.data?.sort != undefined) { //TODO: Handle Strikes as a separate entity so this hack is not needed... also icons dont work
-                        items = this.sortItems(items);
-                    }
+                    items = this.sortItems(items);
                     item = items[itemNr];
                     if (item != undefined && displayUses) uses = tokenHelper.getFeatureUses(item);
                 }
