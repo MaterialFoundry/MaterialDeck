@@ -180,6 +180,7 @@ export class pf2e{
         if (itemType == undefined) itemType = 'any';
         const allItems = token.actor.items;
         if (itemType == 'any') return allItems.filter(i => i.type == 'weapon' || i.type == 'equipment' || i.type == 'consumable' || i.type == 'loot' || i.type == 'container');
+        if (itemType == 'weapon') return allItems.filter(i => i.type == 'weapon' || i.type == 'melee')  //Include melee actions for NPCs without equipment
         else return allItems.filter(i => i.type == itemType);
     }
 
@@ -192,9 +193,8 @@ export class pf2e{
      */
      getFeatures(token,featureType) {
         if (featureType == undefined) featureType = 'any';
-        if (featureType == 'action') return this.getActions(token);
         const allItems = token.actor.items;
-        if (featureType == 'any') return allItems.filter(i => i.type == 'class' || i.type == 'feat')
+        if (featureType == 'any') return allItems.filter(i => i.type == 'class' || i.type == 'feat' || i.type == 'melee' || i.type == 'action')
         else return allItems.filter(i => i.type == featureType)
     }
 
@@ -210,12 +210,13 @@ export class pf2e{
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        else return allItems.filter(i => i.type == 'spell' && i.data.data.level.value == level)
+        if (level == '0') return allItems.filter(i => i.type == 'spell' && i.isCantrip == true)
+        else return allItems.filter(i => i.type == 'spell' && i.level == level && i.isCantrip == false)
     }
 
     getSpellUses(token,level,item) {
-        if (level == undefined) level = 'any';
-        if (item.data.data.level.value == 0) return;
+        if (level == undefined || level == 'any') level = item.level;
+        if (item.isCantrip == true) return;
         const spellbook = token.actor.items.filter(i => i.data.type === 'spellcastingEntry')[0];
         if (spellbook == undefined) return;
         return {
@@ -236,8 +237,8 @@ export class pf2e{
         let variant = 0;
         if (otherControls.rollOption == 'map1') variant = 1;
         if (otherControls.rollOption == 'map2') variant = 2;
-        if(item.type==='strike') return item.variants[variant].roll({event});
-        if(item.type==='weapon') return item.parent.data.data.actions.find(a=>a.name===item.name).variants[variant].roll({event});
-        return item.roll()
+        if (item.type==='strike') return item.variants[variant].roll({event});
+        if (item.type==='weapon' || item.type==='melee') return item.parent.data.data.actions.find(a=>a.name===item.name).variants[variant].roll({event});
+        return game.pf2e.rollItemMacro(item.id);
     }
 }
