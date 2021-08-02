@@ -290,7 +290,9 @@ export class TokenControl{
                 }
                 else if (mode == 'features') {
                     items = tokenHelper.getFeatures(token,settings.featureType);
-                    items = this.sortItems(items);
+                    if (items != undefined && items[0]?.data?.sort != undefined) { //TODO: Handle Strikes as a separate entity so this hack is not needed... also icons dont work
+                        items = this.sortItems(items);
+                    }
                     item = items[itemNr];
                     if (item != undefined && displayUses) uses = tokenHelper.getFeatureUses(item);
                 }

@@ -143,7 +143,7 @@ export class pf2e{
             if (effect == undefined) {
                 const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
                 const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
-                // newCondition.data.sources.hud = !0,
+                newCondition.data.sources.hud = !0,
                 await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
             }
             else {
@@ -194,7 +194,21 @@ export class pf2e{
      getFeatures(token,featureType) {
         if (featureType == undefined) featureType = 'any';
         const allItems = token.actor.items;
-        if (featureType == 'any') return allItems.filter(i => i.type == 'class' || i.type == 'feat' || i.type == 'melee' || i.type == 'action')
+        if (featureType == 'any') return allItems.filter(i => i.type == 'ancestry' || i.type == 'background' || i.type == 'class' || i.type == 'feat' || i.type == 'action');
+        if (featureType == 'action-any') return allItems.filter(i => i.type == 'action');
+        if (featureType == 'action-def') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'defensive');
+        if (featureType == 'action-int') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'interaction');
+        if (featureType == 'action-off') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'offensive');
+        if (featureType == 'strike') { //Strikes are not in the actor.items collection
+            let actions = token.actor.data.data.actions.filter(a=>a.type == 'strike');
+            for (let a of actions) {
+                a.img = a.imageUrl;
+                a.data = {
+                    sort: 1
+                };
+            }
+            return actions;
+        }
         else return allItems.filter(i => i.type == featureType)
     }
 
@@ -223,14 +237,6 @@ export class pf2e{
             available: spellbook.data.data.slots?.[`slot${level}`].value,
             maximum: spellbook.data.data.slots?.[`slot${level}`].max
         }
-    }
-
-    /**
-     * Actions
-     */
-    getActions(token) {
-        const allActions = token.actor.data.data.actions;
-        return allActions.filter(a=>a.type==='strike');
     }
 
     rollItem(item) {

@@ -221,11 +221,6 @@ export class TokenHelper{
         return this.system.getResilience(token)
     }
 
-    // /* PF2E */
-    // getStrikes(token) {
-    //     return this.system.getStrikes(token);
-    // }
-
     /**
      * Conditions
      */
