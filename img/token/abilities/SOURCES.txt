@@ -5,3 +5,6 @@ cons.png: https://game-icons.net/1x1/zeromancer/heart-plus.html
 int.png: https://game-icons.net/1x1/lorc/bookmarklet.html
 wis.png: https://game-icons.net/1x1/delapouite/wisdom.html
 cha.png: https://game-icons.net/1x1/lorc/icicles-aura.html
+fort.png: https://game-icons.net/1x1/delapouite/rock-golem.html
+ref.png: https://game-icons.net/1x1/lorc/dodging.html
+will.png: https://game-icons.net/1x1/lorc/meditation.html

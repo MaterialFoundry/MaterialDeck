@@ -153,6 +153,7 @@ export class TokenControl{
                 else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
                 else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
                 else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
+                else if (stats == 'Perception') txt += tokenHelper.getPerception(token) /* PF2E */
                 else if (stats == 'Condition') { /* PF2E */
                     const valuedCondition = tokenHelper.getConditionValue(token, settings.condition);
                     if (valuedCondition != undefined) {

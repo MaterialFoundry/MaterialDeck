@@ -221,6 +221,11 @@ export class TokenHelper{
         return this.system.getResilience(token)
     }
 
+    /* PF2E */
+    getPerception(token) {
+        return this.system.getPerception(token)
+    }
+
     /**
      * Conditions
      */

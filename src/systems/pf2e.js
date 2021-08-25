@@ -31,17 +31,23 @@ export class pf2e{
     }
 
     getSpeed(token) {
-        let speed = token.actor.data.data.attributes.speed.breakdown;
+        let speed = `${token.actor.data.data.attributes.speed.total}'`;
         const otherSpeeds = token.actor.data.data.attributes.speed.otherSpeeds;
         if (otherSpeeds.length > 0)
-            for (let i=0; i<otherSpeeds.length; i++)
-                speed += `\n${otherSpeeds[i].type}: ${otherSpeeds[i].value}`;    
+            for (let os of otherSpeeds) 
+                 speed += `\n${os.type} ${os.total}'`;    
         return speed;
     }
 
     getInitiative(token) {
-        let initiative = token.actor.data.data.attributes.init.value;
-        return (initiative >= 0) ? `+${initiative}` : initiative;
+        let initiativeModifier = token.actor.data.data.attributes?.initiative.totalModifier;
+        let initiativeAbility = token.actor.data.data.attributes?.initiative.ability;
+        if (initiativeModifier > 0) {
+            initiativeModifier = `+${initiativeModifier}`;
+        } else {
+            initiativeModifier = this.getPerception(token); //NPCs won't have a valid Initiative value, so default to use Perception
+        } 
+        return (initiativeAbility != '') ? `(${initiativeAbility}): ${initiativeModifier}` : `(perception): ${initiativeModifier}`;
     }
 
     toggleInitiative(token) {
@@ -54,6 +60,11 @@ export class pf2e{
 
     getPassiveInvestigation(token) {
         return;
+    }
+
+    getPerception(token) {
+        let perception = token.actor.data.data.attributes?.perception.totalModifier;
+        return (perception >= 0) ? `+${perception}` : perception;
     }
 
     getAbility(token, ability) {
@@ -78,8 +89,22 @@ export class pf2e{
 
     getSkill(token, skill) {
         if (skill == undefined) skill = 'acr';
+        if (skill.startsWith('lor')) {
+            const index = parseInt(skill.split('_')[1])-1;
+            const loreSkills = this.getLoreSkills(token);
+            if (loreSkills.length > index) {
+                return `${loreSkills[index].name}: +${loreSkills[index].totalModifier}`;
+            } else {
+                return '';
+            }
+        }
         const val = token.actor.data.data.skills?.[skill].totalModifier;
         return (val >= 0) ? `+${val}` : val;
+    }
+
+    getLoreSkills(token) {
+        const skills = token.actor.data.data.skills;
+        return Object.keys(skills).map(key => skills[key]).filter(s => s.lore == true);
     }
 
     getProficiency(token) {
@@ -157,20 +182,33 @@ export class pf2e{
      * Roll
      */
      roll(token,roll,options,ability,skill,save) {
-        if (roll == undefined) roll = 'ability';
+        if (roll == undefined) roll = 'skill';
         if (ability == undefined) ability = 'str';
         if (skill == undefined) skill = 'acr';
         if (save == undefined) save = 'fort';
-
-        if (roll == 'ability') token.actor.data.data.abilities?.[ability].roll(options);
+        if (roll == 'perception') token.actor.data.data.attributes.perception.roll(options);
+        if (roll == 'initiative') token.actor.rollInitiative(options);
+        if (roll == 'ability') token.actor.rollAbility(options, ability);
         else if (roll == 'save') {
             let ability = save;
             if (ability == 'fort') ability = 'fortitude';
             else if (ability == 'ref') ability = 'reflex';
             else if (ability == 'will') ability = 'will';
-            token.actor.data.data.saves?.[ability].roll(options);
+            token.actor.rollSave(options, ability);
         }
-        else if (roll == 'skill') token.actor.data.data.skills?.[skill].roll(options);
+        else if (roll == 'skill') {
+            if (skill.startsWith('lor')) {
+                const index = parseInt(skill.split('_')[1])-1;
+                const loreSkills = this.getLoreSkills(token);
+                if (loreSkills.length > index) {
+                    let loreSkill = loreSkills[index];
+                    skill = loreSkill.shortform == undefined? loreSkills[index].expanded : loreSkills[index].shortform;
+                } else {
+                    return;
+                }
+            }  
+            token.actor.data.data.skills?.[skill].roll(options);
+        }
     }
 
     /**
