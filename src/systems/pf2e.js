@@ -113,7 +113,7 @@ export class pf2e{
 
     getCondition(token,condition) {
         if (condition == undefined || condition == 'removeAll') return undefined;
-        const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
+        const Condition = this.getConditionName(condition);
         const effects = token.actor.items.filter(i => i.type == 'condition');
         return effects.find(e => e.name === Condition);
     }
@@ -142,7 +142,7 @@ export class pf2e{
             const effect = this.getConditionValue(token,condition);
             if (effect == undefined) {
                 if (delta > 0) {
-                    const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
+                    const Condition = this.getConditionName(condition);
                     const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
                     await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
                 }
@@ -157,6 +157,12 @@ export class pf2e{
         return true;
     }
 
+    getConditionName(condition) {
+        if ("flatFooted" == condition) {
+            return 'Flat-Footed'; //An inconsistency has been introduced on the PF2E system. The icon is still using 'flatFooted' as the name, but the condition in the manager has been renamed to 'Flat-Footed'
+        } else return condition.charAt(0).toUpperCase() + condition.slice(1);
+    }
+
     async toggleCondition(token,condition) {
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll'){
@@ -166,7 +172,7 @@ export class pf2e{
         else {
             const effect = this.getCondition(token,condition);
             if (effect == undefined) {
-                const Condition = condition.charAt(0).toUpperCase() + condition.slice(1);
+                const Condition = this.getConditionName(condition);
                 const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
                 newCondition.data.sources.hud = !0,
                 await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
