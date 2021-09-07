@@ -1,4 +1,21 @@
 # Changelog Material Deck Module
+### v1.4.6 - 07-09-2021
+Fixes:
+<ul>
+<li>Token Action => Move token: If the user is not the GM, tokens can no longer move if game is paused, and they can no longer move through walls</li>
+<li>Modifications made in the Property Inspector now immediately get saved, instead of when user deselects the setting (changed 'onchange' to 'oninput' event)</li>
+</ul>
+
+Additions:
+<ul>
+<li>Playlist Action: Added a 'Pause All' option</li>
+</ul>
+
+Other:
+<ul>
+<li>PF2E compatibility updated (thanks @kyamsil)</li>
+</ul>
+
 ### v1.4.5 - 27-07-2021
 Fixes:
 <ul>

@@ -80,7 +80,8 @@ export class TokenHelper{
             let location = token.getCenter(x,y); 
             canvas.animatePan(location);
         }
-        if (game.user.isGM == false && game.paused == true && (token.can(game.user,"control") == false || token.checkCollision(token.getCenter(x, y)))) return;
+        if (game.user.isGM == false && game.paused) return;
+        if (game.user.isGM == false && (token.can(game.user,"control") == false || token.checkCollision(token.getCenter(x, y)))) return;
         if (compatibleCore("0.8.1")) token.document.update({x:x,y:y});
         else token.update({x:x,y:y});
     };

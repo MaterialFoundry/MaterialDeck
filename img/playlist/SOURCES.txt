@@ -1,2 +1,3 @@
 play.png: Edited from https://fontawesome.com/icons/play?style=solid
 stop.png: Edited from https://fontawesome.com/icons/stop?style=solid
+pause.png: Edited from https://fontawesome.com/v5.15/icons/pause?style=solid

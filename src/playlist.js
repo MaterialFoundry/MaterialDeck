@@ -36,7 +36,7 @@ export class PlaylistControl{
             this.updateTrack(settings,context,device);
         }
         else {
-            const src = 'modules/MaterialDeck/img/playlist/stop.png';
+            const src = mode == 'stopAll' ? 'modules/MaterialDeck/img/playlist/stop.png' : 'modules/MaterialDeck/img/playlist/pause.png';
             const background = settings.background ? settings.background : '#000000';
             const ringColor = (game.playlists.playing.length > 0) ? '#00FF00' : '#000000';
             const ring = (game.playlists.playing.length > 0) ? 2 : 1;
@@ -167,6 +167,27 @@ export class PlaylistControl{
         }
     }
 
+    pauseAll(){
+        if (game.user.isGM == false) {
+            const payload = {
+                "msgType": "pauseAllPlaylists"
+            };
+            game.socket.emit(`module.MaterialDeck`, payload);
+            return;
+        }
+
+        /*
+        let playing = game.playlists.playing;
+        for (let i=0; i<playing.length; i++){
+            for (let sound of playing[i].sounds.contents) {
+                if (sound.playing) sound.sound.pause();
+            }
+        }
+        */
+        for (let elmnt of document.getElementsByClassName('sound-control pause'))
+            elmnt.click();
+    }
+
     getPlaylist(num){
         let selectedPlaylists = game.settings.get(MODULE.moduleName,'playlists').selectedPlaylist;
         if (selectedPlaylists != undefined) 
@@ -190,6 +211,9 @@ export class PlaylistControl{
         
         if (playlistMode == 'stopAll') {
             this.stopAll(true);
+        } 
+        else if (playlistMode == 'pauseAll') {
+            this.pauseAll();
         } 
         else {
             if (playlistType == 'playStop') {
