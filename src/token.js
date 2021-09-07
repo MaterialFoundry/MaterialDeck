@@ -153,7 +153,13 @@ export class TokenControl{
                 else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
                 else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
                 else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
-
+                else if (stats == 'Perception') txt += tokenHelper.getPerception(token) /* PF2E */
+                else if (stats == 'Condition') { /* PF2E */
+                    const valuedCondition = tokenHelper.getConditionValue(token, settings.condition);
+                    if (valuedCondition != undefined) {
+                        txt += valuedCondition?.value;
+                    }
+                }
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
@@ -195,7 +201,7 @@ export class TokenControl{
                         iconSrc = "fas fa-bullseye";
                     }
                 }
-                else if (settings.onClick == 'condition') { //toggle condition
+                else if (settings.onClick == 'condition') { //handle condition
                     if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
@@ -502,10 +508,23 @@ export class TokenControl{
             else if (onClick == 'target') {    //Target token
                 token.setTarget(!token.isTargeted,{releaseOthers:false});
             }
-            else if (onClick == 'condition') {    //Toggle condition
+            else if (onClick == 'condition') {    //Handle condition
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
-                await tokenHelper.toggleCondition(token,settings.condition);
-                this.update(tokenId);
+                const func = settings.conditionFunction ? settings.conditionFunction : 'toggle';
+
+                if (func == 'toggle'){ //toggle
+                    await tokenHelper.toggleCondition(token,settings.condition);
+                    this.update(tokenId);
+                }
+                else if (func == 'increase'){ //increase
+                    await tokenHelper.modifyConditionValue(token, settings.condition, +1)
+                    this.update(tokenId);
+                }
+                else if (func == 'decrease'){ //decrease
+                    await tokenHelper.modifyConditionValue(token, settings.condition, -1)
+                    this.update(tokenId);
+                }
+
             }
             else if (onClick == 'cubCondition') { //Combat Utility Belt conditions
                 if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;

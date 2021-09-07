@@ -221,6 +221,11 @@ export class TokenHelper{
         return this.system.getResilience(token)
     }
 
+    /* PF2E */
+    getPerception(token) {
+        return this.system.getPerception(token)
+    }
+
     /**
      * Conditions
      */
@@ -234,6 +239,16 @@ export class TokenHelper{
 
     toggleCondition(token,condition) {
         return this.system.toggleCondition(token,condition);
+    }
+
+    /* PF2E */
+    getConditionValue(token,condition) {
+        return this.system.getConditionValue(token,condition);
+    }
+
+    /* PF2E */
+    modifyConditionValue(token,condition,delta) {
+        return this.system.modifyConditionValue(token,condition,delta);
     }
 
     /**
