@@ -3,7 +3,9 @@ import {dnd35e} from "./dnd35e.js"
 import {pf2e} from "./pf2e.js"
 import {demonlord} from "./demonlord.js";
 import {wfrp4e} from "./wfrp4e.js"
+import {forbiddenlands} from "./forbidden-lands.js"
 import {compatibleCore} from "../misc.js";
+
 
 export class TokenHelper{
     constructor(){
@@ -16,6 +18,7 @@ export class TokenHelper{
         else if (game.system.id == 'pf2e') this.system = new pf2e();
         else if (game.system.id == 'demonlord') this.system = new demonlord();
         else if (game.system.id == 'wfrp4e') this.system = new wfrp4e();
+        else if (game.system.id == 'forbidden-lands') this.system = new forbiddenlands();
         else this.system = new dnd5e();     //default to dnd5e
     }
 
