@@ -6,10 +6,44 @@ export class forbiddenlands{
     }
 
     getHP(token) {
-        const hp = token.actor.data.data.attributes.attribute.strength;
+        const hp = token.actor.data.data.attribute.strength;
         return {
             value: hp.value,
             max: hp.max
+        }
+    }
+
+
+    getAgility(token) {
+        const agility = token.actor.data.data.attribute.agility;
+        return {
+            value: agility.value,
+            max: agility.max
+        }
+    }
+
+
+    getWits(token) {
+        const wits = token.actor.data.data.attribute.wits;
+        return {
+            value: wits.value,
+            max: wits.max
+        }
+    }
+
+    getEmpathy(token) {
+        const empathy = token.actor.data.data.attribute.empathy;
+        return {
+            value: empathy.value,
+            max: empathy.max
+        }
+    }
+
+    getWillPower(token) {
+        const wp = token.actor.data.data.bio.willpower;
+        return {
+            value: wp.value,
+            max: wp.max
         }
     }
 
@@ -38,37 +72,6 @@ export class forbiddenlands{
 
     getSpeed(token) {
         return 1;
-        const movement = token.actor.data.data.attributes.movement;
-        let speed = "";
-        if (movement != undefined){
-            if (movement.burrow > 0) speed += `${game.i18n.localize("DND5E.MovementBurrow")}: ${movement.burrow + movement.units}`;
-            if (movement.climb > 0) {
-                if (speed.length > 0) speed += '\n';
-                speed += `${game.i18n.localize("DND5E.MovementClimb")}: ${movement.climb + movement.units}`;
-            }
-            if (movement.fly > 0) {
-                if (speed.length > 0) speed += '\n';
-                speed += `${game.i18n.localize("DND5E.MovementFly")}: ${movement.fly + movement.units}`;
-            }
-            if (movement.hover > 0) {
-                if (speed.length > 0) speed += '\n';
-                speed += `${game.i18n.localize("DND5E.MovementHover")}: ${movement.hover + movement.units}`;
-            }
-            if (movement.swim > 0) {
-                if (speed.length > 0) speed += '\n';
-                speed += `${game.i18n.localize("DND5E.MovementSwim")}: ${movement.swim + movement.units}`;
-            }
-            if (movement.walk > 0) {
-                if (speed.length > 0) speed += '\n';
-                speed += `${game.i18n.localize("DND5E.MovementWalk")}: ${movement.walk + movement.units}`;
-            }
-        }
-        else {
-            const spd = token.actor.data.data.attributes.speed;
-            speed = spd.value;
-            if (spd.special.length > 0) speed + "\n" + spd.special;
-        }
-        return speed;
     }
 
     getInitiative(token) {
@@ -93,7 +96,7 @@ export class forbiddenlands{
 
     getAbility(token, ability) {
         if (ability == undefined) ability = 'strength';
-        return token.actor.data.data.attributes.attribute?.[ability].value;
+        return token.actor.data.data.attribute?.[ability].value;
     } 
 
     getAbilityModifier(token, ability) {
@@ -106,8 +109,9 @@ export class forbiddenlands{
 
     getSkill(token, skill) {
         if (skill == undefined) skill = 'might';
-        const val = token.actor.data.data.skills.skill?.[skill].value;
-        return (val >= 0) ? `+${val}` : val;
+        let skillComp = token.actor.sheet.getSkill(skill);
+        const val = skillComp.skill.value + skillComp.attribute.value;
+        return game.i18n.localize(skillComp.skill.label)+`-${val}`;
     }
 
     getProficiency(token) {
@@ -149,11 +153,15 @@ export class forbiddenlands{
         if (skill == undefined) skill = 'might';
         if (save == undefined) save = 'strength';
 
-        if (roll == 'ability') token.actor.rollAbilityTest(ability,options);
-        else if (roll == 'save') token.actor.rollAbilitySave(save,options);
-        else if (roll == 'skill') token.actor.rollSkill(skill,options);
-        else if (roll == 'initiative') token.actor.rollInitiative(options);
-        else if (roll == 'deathSave') token.actor.rollDeathSave(options);
+        if (roll == 'ability') token.actor.sheet.rollAttribute(ability);
+        else if (roll == 'save') token.actor.sheet.rollAttribute(save);
+        else if (roll == 'skill') token.actor.sheet.rollSkill(skill);
+        else if (roll == 'rollFood') token.actor.sheet.rollConsumable('food');
+        else if (roll == 'rollWater') token.actor.sheet.rollConsumable('water');
+        else if (roll == 'rollArrows') token.actor.sheet.rollConsumable('arrows');
+        else if (roll == 'rollTorches') token.actor.sheet.rollConsumable('torches');
+        else if (roll == 'rollArmor') token.actor.sheet.rollArmor();
+        //else if (roll == 'initiative') token.actor.rollInitiative(options);
     }
 
     /**
@@ -167,7 +175,8 @@ export class forbiddenlands{
     }
 
     getItemUses(item) {
-        return {available: item.data.data.quantity};
+        return {available: item.data.data.bonus.value,
+            maximum: item.data.data.bonus.max};
     }
 
     /**
@@ -176,7 +185,7 @@ export class forbiddenlands{
     getFeatures(token,featureType) {
         if (featureType == undefined) featureType = 'any';
         const allItems = token.actor.items;
-        if (featureType == 'any') return allItems.filter(i => i.type == 'class' || i.type == 'feat')
+        if (featureType == 'any') return allItems.filter(i => i.type == 'talent')
         else return allItems.filter(i => i.type == featureType)
     }
 
@@ -208,6 +217,14 @@ export class forbiddenlands{
     }
 
     rollItem(item) {
-        return item.roll()
+        const sheet = item.actor.sheet;
+        if (item.type === "armor")
+        return sheet.rollSpecificArmor(item.id);
+        else if (item.type === "weapon")
+        return sheet.rollGear(item.id);
+        else if (item.type === "spell")
+        return sheet.rollSpell(item.id);
+        else
+        return item.sendToChat();
     }
 }

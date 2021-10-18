@@ -106,6 +106,59 @@ export class TokenControl{
                         };
                         
                 }
+
+                if (stats == 'Agility') { /* forbidden-lands */
+                    const wits = tokenHelper.getAgility(token);
+                    txt += wits.value + "/" + wits.max;
+                    
+                    if (icon == 'stats')
+                        uses = {
+                            available: wits.value,
+                            maximum: wits.max,
+                            heart: "#FF0000"
+                        };
+                        
+                }
+
+                if (stats == 'Wits') { /* forbidden-lands */
+                    const wits = tokenHelper.getWits(token);
+                    txt += wits.value + "/" + wits.max;
+                    
+                    if (icon == 'stats')
+                        uses = {
+                            available: wits.value,
+                            maximum: wits.max,
+                            heart: "#FF0000"
+                        };
+                        
+                }
+
+                if (stats == 'Empathy') { /* forbidden-lands */
+                    const wits = tokenHelper.getEmpathy(token);
+                    txt += wits.value + "/" + wits.max;
+                    
+                    if (icon == 'stats')
+                        uses = {
+                            available: wits.value,
+                            maximum: wits.max,
+                            heart: "#FF0000"
+                        };
+                        
+                }
+
+                if (stats == 'WillPower') { /* forbidden-lands */
+                    const wits = tokenHelper.getWillPower(token);
+                    txt += wits.value + "/" + wits.max;
+                    
+                    if (icon == 'stats')
+                        uses = {
+                            available: wits.value,
+                            maximum: wits.max,
+                            heart: "#FF0000"
+                        };
+                        
+                }
+
                 if (stats == 'CriticalWounds') { /* WFRP4e */
                     const criticalWounds = tokenHelper.getCriticalWounds(token);
                     txt += criticalWounds.value + "/" + criticalWounds.max;

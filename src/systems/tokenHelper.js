@@ -230,6 +230,26 @@ export class TokenHelper{
         return this.system.getPerception(token)
     }
 
+    /* forbidden-lands */
+    getAgility(token) {
+        return this.system.getAgility(token)
+    }    
+
+    /* forbidden-lands */
+    getWits(token) {
+        return this.system.getWits(token)
+    }
+
+    /* forbidden-lands */
+    getEmpathy(token) {
+        return this.system.getEmpathy(token)
+    }
+     /* forbidden-lands */
+     getWillPower(token) {
+        return this.system.getWillPower(token)
+    }
+    
+
     /**
      * Conditions
      */
