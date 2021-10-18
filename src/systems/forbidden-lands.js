@@ -161,6 +161,7 @@ export class forbiddenlands{
         else if (roll == 'rollArrows') token.actor.sheet.rollConsumable('arrows');
         else if (roll == 'rollTorches') token.actor.sheet.rollConsumable('torches');
         else if (roll == 'rollArmor') token.actor.sheet.rollArmor();
+        else if (roll == 'monsterAttack') token.actor.sheet.rollAttack();
         //else if (roll == 'initiative') token.actor.rollInitiative(options);
     }
 
@@ -170,11 +171,17 @@ export class forbiddenlands{
     getItems(token,itemType) {
         if (itemType == undefined) itemType = 'any';
         const allItems = token.actor.items;
-        if (itemType == 'any') return allItems.filter(i => i.type == 'weapon' || i.type == 'equipment' || i.type == 'consumable' || i.type == 'loot' || i.type == 'container');
-        else return allItems.filter(i => i.type == itemType);
+        if (itemType == 'any') return allItems.filter(i => i.type == 'weapon' || i.type == 'armor' || i.type == 'gear' || i.type == 'rawMaterial');
+        else if (token.actor.type == 'monster' && itemType == 'weapon')
+        {
+            return allItems.filter(i => i.type == 'monsterAttack');
+        }
+        return allItems.filter(i => i.type == itemType);
     }
 
     getItemUses(item) {
+        if (item.type == 'monsterAttack') return;
+        if (item.type == 'rawMaterial') return {available: item.data.data.quantity};
         return {available: item.data.data.bonus.value,
             maximum: item.data.data.bonus.max};
     }
@@ -224,7 +231,8 @@ export class forbiddenlands{
         return sheet.rollGear(item.id);
         else if (item.type === "spell")
         return sheet.rollSpell(item.id);
-        else
+        else if (item.type === "monsterAttack")
+        sheet.rollSpecificAttack(item.id);
         return item.sendToChat();
     }
 }
