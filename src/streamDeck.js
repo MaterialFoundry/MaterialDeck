@@ -61,7 +61,7 @@ export class StreamDeck{
 
     clearContext(device,action,coordinates = {column:0,row:0}){
         for (let d of this.buttonContext) {
-            if (d.device == device) {
+            if (d?.device == device) {
                 const num = coordinates.column + coordinates.row*d.size.columns;
                 d.buttons[num] = undefined;
                 return;
@@ -241,7 +241,7 @@ export class StreamDeck{
         
         //if (src != 'modules/MaterialDeck/img/black.png')
         for (let d of this.buttonContext) {
-            if (d.device == device) {
+            if (d?.device == device) {
                 for (let i=0; i<d.buttons.length; i++){
                     if (clock != false) break;
                     if (d.buttons[i] == undefined) continue;
