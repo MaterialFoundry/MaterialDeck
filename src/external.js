@@ -317,7 +317,7 @@ export class ExternalModules{
     keyPressGMScreen(settings,context,device){
         if (this.getModuleEnable("gm-screen") == false) return;
         if (game.user.isGM == false) return;
-        window['gm-screen'].toggleGmScreenVisibility();
+        game.modules.get('gm-screen')?.api?.toggleGmScreenVisibility?.();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
