@@ -34,7 +34,26 @@ export class StreamDeck{
        
     }
 
-    setContext(device,size,iteration,action,context,coordinates = {column:0,row:0},settings){
+    //getButtonContext
+
+    newDevice(iteration,device) {
+        if (this.buttonContext[iteration] == undefined) {
+            const deckSize = device.size.columns*device.size.rows;
+            let buttons = [];
+            for (let i=0; i<deckSize; i++){
+                buttons[i] = undefined;
+            }
+            this.buttonContext[iteration] = {
+                device: device.id,
+                name: device.name,
+                type: device.type,
+                size: size,
+                buttons: buttons
+            }
+        }
+    }
+
+    setContext(device,size,iteration,action,context,coordinates = {column:0,row:0},settings, name, type){
         if (device == undefined) return;
         if (this.buttonContext[iteration] == undefined) {
             const deckSize = size.columns*size.rows;
@@ -44,6 +63,8 @@ export class StreamDeck{
             }
             this.buttonContext[iteration] = {
                 device: device,
+                name: name,
+                type: type,
                 size: size,
                 buttons: buttons
             }
@@ -357,15 +378,13 @@ export class StreamDeck{
             if(isNaN(parseInt(background[i],16)))
                 BGvalid = false;
         if (BGvalid == false) background = '#000000';
-
-        let canvas;
-        if (canvas == null || canvas == undefined){
-            canvas = document.createElement('canvas');
-            canvas.width="144";
-            canvas.height="144";
-            canvas.style="background-color:transparent;visibility:hidden";
-            document.getElementById('sdCanvasBox').appendChild(canvas); // adds the canvas to #someBox
-        }
+        
+        let canvas = document.createElement('canvas');
+        canvas.width="144";
+        canvas.height="144";
+        canvas.style="background-color:transparent;visibility:hidden;display:none";
+        document.getElementById('sdCanvasBox').appendChild(canvas); // adds the canvas to #someBox
+      
         this.counter++;
         if (this.counter > 31) this.counter = 0;
     
@@ -413,6 +432,7 @@ export class StreamDeck{
 
         if (format != 'jpg' && format != 'jpeg' && format != 'png' && format != 'PNG' && format != 'webm' && format != 'webp' && format != 'gif' && format != 'svg') url = "modules/MaterialDeck/img/transparant.png";
         //if (url == "") url = "modules/MaterialDeck/img/transparant.png"
+        
         let resImageURL = url;
         let img = new Image();
         img.setAttribute('crossorigin', 'anonymous');

@@ -1,5 +1,5 @@
 import * as MODULE from "../MaterialDeck.js";
-import { playlistConfigForm, macroConfigForm, soundboardConfigForm, downloadUtility } from "./misc.js";
+import { playlistConfigForm, macroConfigForm, soundboardConfigForm, downloadUtility, deviceConfig } from "./misc.js";
 
 let userPermissions = {};
 const defaultEnable = [true,true,true,true];
@@ -133,6 +133,27 @@ export const registerSettings = async function() {
         restricted: false
     });
 
+    game.settings.registerMenu(MODULE.moduleName, 'downloadUtility',{
+        name: "MaterialDeck.DownloadUtility.Title",
+        label: "MaterialDeck.DownloadUtility.Title",
+        type: downloadUtility,
+        restricted: false
+    });
+
+    game.settings.registerMenu(MODULE.moduleName, 'deviceConfig',{
+        name: "MaterialDeck.DeviceConfig.Title",
+        label: "MaterialDeck.DeviceConfig.Title",
+        type: deviceConfig,
+        restricted: false
+    });
+
+    game.settings.register(MODULE.moduleName, 'devices', {
+        name: "devices",
+        scope: "client",
+        type: Object,
+        config: false
+    });
+
     game.settings.registerMenu(MODULE.moduleName, 'permissionConfig',{
         name: "MaterialDeck.Sett.Permission",
         label: "MaterialDeck.Sett.Permission",
@@ -145,13 +166,6 @@ export const registerSettings = async function() {
         scope: "world",
         type: Object,
         config: false
-    });
-
-    game.settings.registerMenu(MODULE.moduleName, 'downloadUtility',{
-        name: "MaterialDeck.DownloadUtility.Title",
-        label: "MaterialDeck.DownloadUtility.Title",
-        type: downloadUtility,
-        restricted: false
     });
 
     /**

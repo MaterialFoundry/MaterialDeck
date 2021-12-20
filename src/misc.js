@@ -1,15 +1,17 @@
-import {sdVersion, msVersion, moduleName, getPermission, enableModule} from "../MaterialDeck.js";
+import {sdVersion, msVersion, moduleName, getPermission, enableModule, streamDeck} from "../MaterialDeck.js";
 import {macroControl,soundboard,playlistControl} from "../MaterialDeck.js";
 
 export function compatibleCore(compatibleVersion){
-    let coreVersion = game.data.version;
+    let coreVersion = game.version == undefined ? game.data.version : `0.${game.version}`;
     coreVersion = coreVersion.split(".");
     compatibleVersion = compatibleVersion.split(".");
     if (compatibleVersion[0] > coreVersion[0]) return false;
+    if (compatibleVersion[0] < coreVersion[0]) return true;
     if (compatibleVersion[1] > coreVersion[1]) return false;
+    if (compatibleVersion[1] < coreVersion[1]) return true;
     if (compatibleVersion[2] > coreVersion[2]) return false;
     return true;
-}
+  }
 
 export class playlistConfigForm extends FormApplication {
     constructor(data, options) {
@@ -1185,4 +1187,88 @@ export class downloadUtility extends FormApplication {
             document.getElementById(elementId).innerHTML = 'Error';
         }
     }     
+}
+
+export class deviceConfig extends FormApplication {
+    constructor(data, options) {
+        super(data, options);
+
+        this.devices = [];
+    }
+
+    /**
+     * Default Options for this FormApplication
+     */
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            id: "MD_DeviceConfig",
+            title: "Material Deck: " + game.i18n.localize("MaterialDeck.DeviceConfig.Title"),
+            template: "./modules/MaterialDeck/templates/deviceConfig.html",
+            width: 500,
+            height: "auto"
+        });
+    }
+
+    /**
+     * Provide data to the template
+     */
+    getData() {
+        this.devices = [];
+        const dConfig = game.settings.get(moduleName, 'devices');
+
+        for (let d of streamDeck.buttonContext) {
+            let type;
+            if (d.type == 0) type = 'Stream Deck';
+            else if (d.type == 1) type = 'Stream Deck Mini';
+            else if (d.type == 2) type = 'Stream Deck XL';
+            else if (d.type == 3) type = 'Stream Deck Mobile';
+            else if (d.type == 4) type = 'Corsair G Keys';
+
+            const name = d.name;
+            const id = d.device;
+            let enable;
+            if (dConfig?.[id] == undefined) enable = true;
+            else enable = dConfig?.[id].enable;
+
+            const device = {
+                id,
+                name,
+                type,
+                en: enable
+            }
+            this.devices.push(device);
+        }
+        
+        return {
+            devices: this.devices
+        } 
+    }
+
+    /**
+     * Update on form submit
+     * @param {*} event 
+     * @param {*} formData 
+     */
+    async _updateObject(event, formData) {
+   
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        html.find("input[name='enable']").on('change', (event) => {
+            const id = event.currentTarget.id;
+            for (let d of this.devices) {
+                if (d.id == id) {
+                    let dConfig = game.settings.get(moduleName, 'devices');
+                    delete dConfig[id];
+                    dConfig[id] = {enable: event.currentTarget.checked}
+                    
+                    game.settings.set(moduleName, 'devices', dConfig);
+                }
+            }
+        })
+    }
+
+    
 }

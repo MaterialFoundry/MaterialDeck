@@ -125,7 +125,7 @@ export class wfrp4e {
 
 
     getItemUses(item) {
-        console.log("getItemUses(" , item , ")")
+        //console.log("getItemUses(" , item , ")")
         if ( item.type == 'ammunition') {
             return {available: item.data.data.quantity.value};
         }

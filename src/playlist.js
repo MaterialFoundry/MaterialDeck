@@ -229,6 +229,12 @@ export class PlaylistControl{
                     }
                 }
             }
+            else if (playlistType == 'playNext') {
+                this.getPlaylist(playlistNr).playNext();
+            }
+            else if (playlistType == 'playPrev') {
+                this.getPlaylist(playlistNr).playNext(null,{direction:-1});
+            }
             else if (playlistType == 'offset'){
                 if (playlistMode == 'playlist') {
                     this.playlistOffset = parseInt(settings.offset);

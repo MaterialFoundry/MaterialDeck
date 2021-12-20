@@ -1,4 +1,21 @@
 # Changelog Material Deck Module
+### v1.4.7 - 20-12-2021
+Fixes:
+<ul>
+<li>External Modules => GM Screen: Changed to new api (thanks to akrigline)</li>
+<li>Fixed an issue where SDs would not iterate properly, causing errors (thanks to InnerGI)</li>
+<li>Fixed support for FXMaster. Requires FXMaster v2.0.0 or later (not officially released yet)</li>
+</ul>
+
+Additions:
+<ul>
+<li>Added compatibility for Foundry V0.9</li>
+<li>Added Forbidden Lands system (thanks to JackDCondon)</li>
+<li>Other Controls => Control Buttons: Added offset for 'Displayed Controls' and 'Displayed Tools'</li>
+<li>Added 'Device Configuration' to the module settings. You can use this to configure specific SD devices to not connect to a client</li>
+<li>Playlist Action => Added option to play next or previous track</li>
+</ul>
+
 ### v1.4.6 - 07-09-2021
 Fixes:
 <ul>

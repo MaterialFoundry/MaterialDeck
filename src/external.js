@@ -111,38 +111,20 @@ export class ExternalModules{
         let name = '';
         if (type == 'weatherControls') {
             const effect = (settings.weatherEffect == undefined) ? 'leaves' : settings.weatherEffect;
-            name = CONFIG.weatherEffects[effect].label;
-            icon = CONFIG.weatherEffects[effect].icon;
-            ring = this.findWeatherEffect(effect) != undefined ? 2 : 1;
+            name = CONFIG.fxmaster.weather[effect].label;
+            icon = CONFIG.fxmaster.weather[effect].icon;
+            ring = canvas.scene.getFlag("fxmaster", "effects")?.[`core_${effect}`] ? 2 : 1;
             ringColor = ring < 2 ? '#000000' : "#00ff00";
-        }
-        else if (type == 'colorize') {
-            background = (settings.fxMasterColorizeColor == undefined) ? '#000000' : settings.fxMasterColorizeColor;
-            icon = "fas fa-palette";
-            name = game.i18n.localize("MaterialDeck.FxMaster.Colorize");
-            const filters = canvas.scene.getFlag("fxmaster", "filters");
-            ring = 2;
-            if (filters == undefined || filters['core_color'] == undefined) {
-                ringColor = "#000000";
-            }
-            else {
-                const colors = filters['core_color'].options;
-                let red = Math.ceil(colors.red*255).toString(16);
-                if (red.length == 1) red = '0' + red;
-                let green = Math.ceil(colors.green*255).toString(16);
-                if (green.length == 1) green = '0' + green;
-                let blue = Math.ceil(colors.blue*255).toString(16);
-                if (blue.length == 1) blue = '0' + blue;
-                ringColor = "#" + red + green + blue;
-            }
         }
         else if (type == 'filters') {
             const filter = (settings.fxMasterFilter == undefined) ? 'underwater' : settings.fxMasterFilter;
             name = CONFIG.fxmaster.filters[filter].label;
             background = "#340057";
             if (displayIcon){
-                if (filter == 'underwater') icon = "fas fa-water";
+                if (filter == 'lightning') icon = "fas fa-bolt";
+                else if (filter == 'underwater') icon = "fas fa-water";
                 else if (filter == 'predator') icon = "fas fa-wave-square";
+                else if (filter == 'color') icon = "fas fa-palette";
                 else if (filter == 'oldfilm') icon = "fas fa-film";
                 else if (filter == 'bloom') icon = "fas fa-ghost";
             }
@@ -158,6 +140,7 @@ export class ExternalModules{
                     }
                 }
             }
+            if (filter == 'color') background = settings.fxMasterFilterColor ? settings.fxMasterFilterColor : '#ffffff';
         }
         else if (type == 'clear'){
             icon = "fas fa-trash";
@@ -170,15 +153,6 @@ export class ExternalModules{
         streamDeck.setTitle(name,context);
     }
 
-    hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-          red: parseInt(result[1], 16)/256,
-          green: parseInt(result[2], 16)/256,
-          blue: parseInt(result[3], 16)/256
-        } : null;
-      }
-
     keyPressFxMaster(settings,context,device){
         if (game.user.isGM == false) return;
         const fxmaster = game.modules.get("fxmaster");
@@ -188,108 +162,68 @@ export class ExternalModules{
 
         if (type == 'weatherControls') {
             const effect = (settings.weatherEffect == undefined) ? 'leaves' : settings.weatherEffect;
-            let exists = false;
-            let newEffects = {};
-            let effects = canvas.scene.getFlag("fxmaster", "effects");
-            if (effects != undefined){
-                const weatherIds = Object.keys(effects);
-                for (let i=0; i<weatherIds.length; i++){
-                    const weather = effects[weatherIds[i]].type;
-                    if (weather === effect) {
-                        exists = true;
-                        continue;
-                    } 
-                    newEffects[weatherIds[i]] = effects[weatherIds[i]]; 
-                }
+
+            const options = {
+                density: (settings.densitySlider == undefined) ? 0.25 : settings.densitySlider,
+                speed: (settings.speedSlider == undefined) ? 1 : settings.speedSlider,
+                direction: (settings.directionSlider == undefined) ? 15 : settings.directionSlider,
+                scale: (settings.scaleSlider == undefined) ? 1 : settings.scaleSlider,
+                color: (settings.fxMasterWeatherColor == undefined) ? "#000000" : settings.fxMasterWeatherColor,
+                applyColor: (settings.fxWeatherEnColor == undefined) ? false : settings.fxWeatherEnColor
             }
 
-            const density = (settings.densitySlider == undefined) ? 50 : settings.densitySlider;
-            const speed = (settings.speedSlider == undefined) ? 50 : settings.speedSlider;
-            const direction = (settings.directionSlider == undefined) ? 50 : settings.directionSlider;
-            const scale = (settings.scaleSlider == undefined) ? 50 : settings.scaleSlider;
-            const color = (settings.fxMasterWeatherColor == undefined) ? "#000000" : settings.fxMasterWeatherColor;
-            const applyColor = (settings.fxWeatherEnColor == undefined) ? false : settings.fxWeatherEnColor;
-            
-            if (exists == false) {
-                newEffects[randomID()] = {
-                    type: effect,
-                    options: {
-                        density: density,
-                        speed: speed,
-                        scale: scale,
-                        tint: color,
-                        direction: direction,
-                        apply_tint: applyColor
-                    }
-                };
-            }
-            canvas.scene.unsetFlag("fxmaster", "effects").then(() => {
-                canvas.scene.setFlag("fxmaster", "effects", newEffects);
-            });
-            
-        }
-        else if (type == 'colorize') {
-            const color = (settings.fxMasterColorizeColor == undefined) ? '#000000' : settings.fxMasterColorizeColor;
-            const filters = canvas.scene.getFlag("fxmaster", "filters");
-            let newFilters = {};
-            if (filters != undefined){
-                const filterObjects = Object.keys(filters);
-                for (let i=0; i<filterObjects.length; i++){
-                    if (filterObjects[i] == 'core_color'){
-                        //continue;
-                    }
-                    newFilters[filterObjects[i]] = filters[filterObjects[i]]; 
-                }
-            }
-            newFilters['core_color'] = {
-                type : 'color',
-                options: this.hexToRgb(color)
-            };
-            
-            canvas.scene.unsetFlag("fxmaster", "filters").then(() => {
-                canvas.scene.setFlag("fxmaster", "filters", newFilters);
-            });
+            Hooks.call("fxmaster.switchWeather", {
+                name: `core_${effect}`,
+                type: effect,
+                options,
+              });
 
         }
         else if (type == 'filters') {
             const filter = (settings.fxMasterFilter == undefined) ? 'underwater' : settings.fxMasterFilter;
-            const filters = canvas.scene.getFlag("fxmaster", "filters");
-            let newFilters = {};
-            let exists = false;
-            if (filters != undefined){
-                const filterObjects = Object.keys(filters);
-                for (let i=0; i<filterObjects.length; i++){
-                    if (filterObjects[i] == 'core_'+filter){
-                        exists = true;
-                        continue;
-                    }
-                    newFilters[filterObjects[i]] = filters[filterObjects[i]]; 
+
+            let options = {color: {value:"#000000", apply:false}};
+            if (filter == 'lightning') {
+                options.period = settings.fxMasterFilterPeriod ? parseFloat(settings.fxMasterFilterPeriod) : 500;
+                options.duration = settings.fxMasterFilterDuration ? parseFloat(settings.fxMasterFilterDuration) : 300;
+                options.brightness = settings.fxMasterFilterBrightness ? parseFloat(settings.fxMasterFilterBrightness) : 1.3;
+            }
+            else if (filter == 'underwater') {
+                options.speed = settings.fxMasterFilterSpeed ? parseFloat(settings.fxMasterFilterSpeed) : 0.3;
+                options.scale = settings.fxMasterFilterScale ? parseFloat(settings.fxMasterFilterScale) : 4;
+            }
+            else if (filter == 'predator') {
+                options.noise = settings.fxMasterFilterNoise ? parseFloat(settings.fxMasterFilterNoise) : 4;
+                options.speed = settings.fxMasterFilterSpeed ? parseFloat(settings.fxMasterFilterSpeed)*0.1 : 0.03;
+            }
+            
+            else if (filter == 'bloom') {
+                options.blur = settings.fxMasterFilterBlur ? parseFloat(settings.fxMasterFilterBlur) : 1;
+                options.bloom = settings.fxMasterFilterBloom ? parseFloat(settings.fxMasterFilterBloom) : 0.1;
+                options.threshold = settings.fxMasterFilterThreshold ? parseFloat(settings.fxMasterFilterThreshold) : 0.5;
+            }
+            else if (filter == 'oldfilm') {
+                options.sepia = settings.fxMasterFilterSepia ? parseFloat(settings.fxMasterFilterSepia) : 0.3;
+                options.noise = settings.fxMasterFilterNoise ? parseFloat(settings.fxMasterFilterNoise) : 4;
+            }
+
+            if (filter == 'color') {
+                options.color = {
+                    apply: settings.fxMasterFilterTint ? settings.fxMasterFilterTint : false,
+                    value: settings.fxMasterFilterColor ? settings.fxMasterFilterColor : '#ffffff'
                 }
-                
+                options.saturation = settings.fxMasterFilterSaturation ? parseFloat(settings.fxMasterFilterSaturation) : 1;
+                options.contrast = settings.fxMasterFilterContrast ? parseFloat(settings.fxMasterFilterContrast) : 1;
+                options.brightness = settings.fxMasterFilterBrightness ? parseFloat(settings.fxMasterFilterBrightness) : 1;
+                options.Gamma = settings.fxMasterFilterGamma ? parseFloat(settings.fxMasterFilterGamma) : 1;
             }
-            if (exists == false) {
-                newFilters['core_'+filter] = {type : filter};
-            }
-            canvas.scene.unsetFlag("fxmaster", "filters").then(() => {
-                canvas.scene.setFlag("fxmaster", "filters", newFilters);
-            });
+
+            FXMASTER.filters.switch(`core_${filter}`, filter, options);
         }
         else if (type == 'clear'){
             canvas.scene.unsetFlag("fxmaster", "filters");
             canvas.scene.unsetFlag("fxmaster", "effects");
         }
-    }
-
-    findWeatherEffect(effect){
-        const effects = canvas.scene.getFlag("fxmaster", "effects");
-        if (effects == undefined) return undefined;
-
-        const weatherIds = Object.keys(effects);
-        for (let i = 0; i < weatherIds.length; ++i) {
-            const weather = effects[weatherIds[i]].type;
-            if (weather === effect) return weatherIds[i];
-        }
-        return undefined;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////

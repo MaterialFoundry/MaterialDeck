@@ -7,6 +7,8 @@ export class OtherControls{
         this.active = false;
         this.rollData = {};
         this.rollOption = 'dialog';
+        this.controlsOffset = 0;
+        this.toolsOffset = 0;
     }
 
     setRollOption(option) {
@@ -225,7 +227,9 @@ export class OtherControls{
         const control = settings.control ? settings.control : 'dispControls';
         const tool = settings.tool ?  settings.tool : 'open';
         let background = settings.background ? settings.background : '#000000';
-        let ringColor = '#000000'
+        let ringColor = '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         let txt = "";
         let src = "";
         const activeControl = ui.controls.activeControl;
@@ -235,6 +239,7 @@ export class OtherControls{
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
+            controlNr += this.controlsOffset;
 
             const selectedControl = ui.controls.controls[controlNr];
             
@@ -255,6 +260,7 @@ export class OtherControls{
             let controlNr = parseInt(settings.controlNr);
             if (isNaN(controlNr)) controlNr = 1;
             controlNr--;
+            controlNr += this.toolsOffset;
 
             const selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
             if (selectedControl != undefined){
@@ -274,6 +280,18 @@ export class OtherControls{
                         ringColor = "#FF7B00";
                 }  
             }
+        }
+        else if (control == 'controlsOffset') {
+            const display = settings.controlsOffsetDisplay ? settings.controlsOffsetDisplay : false;
+            const offsetType = settings.controlsOffsetType ? settings.controlsOffsetType : 'absoluteOffset';
+            if (display) txt = `${this.controlsOffset}`;
+            if (offsetType == 'absoluteOffset') ringColor = (this.controlsOffset == settings.controlsOffset) ? ringOnColor : ringOffColor;
+        }
+        else if (control == 'toolsOffset') {
+            const display = settings.controlsOffsetDisplay ? settings.controlsOffsetDisplay : false;
+            const offsetType = settings.controlsOffsetType ? settings.controlsOffsetType : 'absoluteOffset';
+            if (display) txt = `${this.toolsOffset}`;
+            if (offsetType == 'absoluteOffset') ringColor = (this.toolsOffset == settings.controlsOffset) ? ringOnColor : ringOffColor;
         }
         else {  // specific control/tool
             const selectedControl = ui.controls.controls.find(c => c.name == control);
@@ -369,6 +387,16 @@ export class OtherControls{
                         selectedControl.activeTool = selectedTool.name;
                 }  
             }
+        }
+        else if (control == 'controlsOffset') {
+            const offsetType = settings.controlsOffsetType ? settings.controlsOffsetType : 'absoluteOffset';
+            if (offsetType == 'absoluteOffset') this.controlsOffset = parseInt(settings.controlsOffset);
+            else if (offsetType == 'relativeOffset') this.controlsOffset += parseInt(settings.controlsOffset);
+        }
+        else if (control == 'toolsOffset') {
+            const offsetType = settings.controlsOffsetType ? settings.controlsOffsetType : 'absoluteOffset';
+            if (offsetType == 'absoluteOffset') this.toolsOffset = parseInt(settings.controlsOffset);
+            else if (offsetType == 'relativeOffset') this.toolsOffset += parseInt(settings.controlsOffset);
         }
         else {  //select control
             const selectedControl = ui.controls.controls.find(c => c.name == control);
@@ -588,6 +616,7 @@ export class OtherControls{
         else if (nr == 'items') name = game.i18n.localize("SIDEBAR.TabItems");
         else if (nr == 'journal') name = game.i18n.localize("SIDEBAR.TabJournal");
         else if (nr == 'tables') name = game.i18n.localize("SIDEBAR.TabTables");
+        else if (nr == 'cards') name = game.i18n.localize("SIDEBAR.TabCards");
         else if (nr == 'playlists') name = game.i18n.localize("SIDEBAR.TabPlaylists");
         else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
         else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
@@ -600,10 +629,11 @@ export class OtherControls{
         if (nr == 'chat') icon = window.CONFIG.ChatMessage.sidebarIcon;
         else if (nr == 'combat') icon = window.CONFIG.Combat.sidebarIcon;
         else if (nr == 'scenes') icon = window.CONFIG.Scene.sidebarIcon;
-        else if (nr == 'actors') icon = window.CONFIG.Actor.sidebarIcon;
+        else if (nr == 'actors') icon = "fas fa-users";
         else if (nr == 'items') icon = window.CONFIG.Item.sidebarIcon;
         else if (nr == 'journal') icon = window.CONFIG.JournalEntry.sidebarIcon;
         else if (nr == 'tables') icon = window.CONFIG.RollTable.sidebarIcon;
+        else if (nr == 'cards') icon = "fas fa-id-badge";
         else if (nr == 'playlists') icon = window.CONFIG.Playlist.sidebarIcon;
         else if (nr == 'compendium') icon = "fas fa-atlas";
         else if (nr == 'settings') icon = "fas fa-cogs";

@@ -59,7 +59,7 @@ let WSconnected = false;
 async function analyzeWSmessage(msg){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
-//    console.log("Received",data);
+    //console.log("Received",data);
 
     if (data.type == "connected" && data.data == "SD"){
         const msg = {
@@ -109,15 +109,20 @@ async function analyzeWSmessage(msg){
         }
     }
 
+    if (data.type == 'newDevice') {
+        streamDeck.newDevice(data.iteration,data.device);
+        return;
+    }
+
     if (data == undefined || data.payload == undefined) return;
-    //console.log("Received",data);
     const action = data.action;
     const event = data.event;
     const context = data.context;
     const coordinates = data.payload.coordinates;
     const settings = data.payload.settings;
     const device = data.device;
-    
+    const name = data.deviceName;
+    const type = data.deviceType;
 
     if (data.data == 'init'){
 
@@ -125,7 +130,9 @@ async function analyzeWSmessage(msg){
     if (event == 'willAppear' || event == 'didReceiveSettings'){
         if (coordinates == undefined) return;
         streamDeck.setScreen(action);
-        await streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings);
+        await streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings,name,type);
+
+        if (game.settings.get(moduleName, 'devices')?.[device]?.enable == false) return;
 
         if (action == 'token'){
             tokenControl.active = true;
@@ -153,6 +160,8 @@ async function analyzeWSmessage(msg){
     }
 
     else if (event == 'keyDown'){
+        if (game.settings.get(moduleName, 'devices')?.[device]?.enable == false) return;
+
         if (action == 'token')
             tokenControl.keyPress(settings);
         else if (action == 'macro')
@@ -172,6 +181,8 @@ async function analyzeWSmessage(msg){
     }
 
     else if (event == 'keyUp'){
+        if (game.settings.get(moduleName, 'devices')?.[device]?.enable == false) return;
+
         if (action == 'soundboard'){
             soundboard.keyPressUp(settings);
         }

@@ -1,5 +1,6 @@
 import * as MODULE from "../MaterialDeck.js";
 import {streamDeck, macroControl, otherControls, tokenHelper} from "../MaterialDeck.js";
+import { compatibleCore } from "./misc.js";
 
 export class TokenControl{
     constructor(){
@@ -625,7 +626,8 @@ export class TokenControl{
                     animation.speed = animationSpeed;
                 }
                 data.lightAnimation = animation;
-                token.update(data);
+                if (compatibleCore('0.8.1')) token.document.update(data);
+                else token.update(data);
             }
             else if (onClick == 'initiative'){
                 tokenHelper.toggleInitiative(token);
@@ -663,7 +665,8 @@ export class TokenControl{
                 else return;
 
                 iconSrc = images[imgNr];
-                token.update({img: iconSrc})
+                if (compatibleCore('0.8.1')) token.document.update({img: iconSrc});
+                else token.update({img: iconSrc})
             }
             else if (onClick == 'macro') {  //call a macro
                 const settingsNew = {
@@ -806,7 +809,8 @@ export class TokenControl{
                                 if (path != '') path += '.';
                                 path += targetArray[i][j];
                             }
-                            await token.update({[path]:value})
+                            if (compatibleCore('0.8.1')) await token.document.update({[path]:value});
+                            else await token.update({[path]:value})
                             this.update(token.id);
                         }
                         
