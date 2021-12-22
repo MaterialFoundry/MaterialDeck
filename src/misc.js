@@ -1214,7 +1214,11 @@ export class deviceConfig extends FormApplication {
      */
     getData() {
         this.devices = [];
-        const dConfig = game.settings.get(moduleName, 'devices');
+        let dConfig = game.settings.get(moduleName, 'devices');
+        if (Object.prototype.toString.call(game.settings.get('MaterialDeck', 'devices')) === "[object String]") {
+            dConfig = {};
+            game.settings.set(moduleName, 'devices', dConfig);
+        }
 
         for (let d of streamDeck.buttonContext) {
             let type;
@@ -1263,7 +1267,6 @@ export class deviceConfig extends FormApplication {
                     let dConfig = game.settings.get(moduleName, 'devices');
                     delete dConfig[id];
                     dConfig[id] = {enable: event.currentTarget.checked}
-                    
                     game.settings.set(moduleName, 'devices', dConfig);
                 }
             }

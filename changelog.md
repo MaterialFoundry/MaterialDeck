@@ -1,4 +1,11 @@
 # Changelog Material Deck Module
+### v1.4.8 - 22-12-2021
+Fixes:
+<ul>
+<li>'Device Configuration' would not save its settings properly</li>
+</ul>
+
+
 ### v1.4.7 - 20-12-2021
 Fixes:
 <ul>
