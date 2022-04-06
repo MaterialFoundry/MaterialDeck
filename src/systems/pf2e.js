@@ -142,9 +142,7 @@ export class pf2e{
             const effect = this.getConditionValue(token,condition);
             if (effect == undefined) {
                 if (delta > 0) {
-                    const Condition = this.getConditionName(condition);
-                    const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
-                    await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
+                    await game.pf2e.ConditionManager.addConditionToToken(condition, token);
                 }
             } else {
                 try {
@@ -166,19 +164,16 @@ export class pf2e{
     async toggleCondition(token,condition) {
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll'){
-            for( let effect of token.actor.items.filter(i => i.type == 'condition'))
-                await effect.delete();
+            for( let existing of token.actor.items.filter(i => i.type == 'condition'))
+                await game.pf2e.ConditionManager.removeConditionFromToken(existing.data._id, token);
         }
         else {
             const effect = this.getCondition(token,condition);
             if (effect == undefined) {
-                const Condition = this.getConditionName(condition);
-                const newCondition = game.pf2e.ConditionManager.getCondition(Condition);
-                newCondition.data.sources.hud = !0,
-                await game.pf2e.ConditionManager.addConditionToToken(newCondition, token);
+                await game.pf2e.ConditionManager.addConditionToToken(condition, token);
             }
             else {
-                effect.delete();
+                await game.pf2e.ConditionManager.removeConditionFromToken(effect.data._id, token);
             }
         }
         return true;
@@ -188,19 +183,25 @@ export class pf2e{
      * Roll
      */
      roll(token,roll,options,ability,skill,save) {
+        options.skipDialog = true;
         if (roll == undefined) roll = 'skill';
         if (ability == undefined) ability = 'str';
         if (skill == undefined) skill = 'acr';
         if (save == undefined) save = 'fort';
-        if (roll == 'perception') token.actor.data.data.attributes.perception.roll(options);
+        if (roll == 'perception') {
+            let checkModifier = new game.pf2e.CheckModifier(`Perception Check`, token.actor.perception);
+            game.pf2e.Check.roll(checkModifier, {type:"perception-check", actor: token.actor, skipDialog: true}, null);
+        }
         if (roll == 'initiative') token.actor.rollInitiative(options);
-        if (roll == 'ability') token.actor.rollAbility(options, ability);
+        if (roll == 'ability') return; //Ability Checks are not supported in pf2e
         else if (roll == 'save') {
             let ability = save;
             if (ability == 'fort') ability = 'fortitude';
             else if (ability == 'ref') ability = 'reflex';
             else if (ability == 'will') ability = 'will';
-            token.actor.rollSave(options, ability);
+            let abilityName = ability.charAt(0).toUpperCase() + ability.slice(1);
+            let checkModifier = new game.pf2e.CheckModifier(`${abilityName} Check`, token.actor.saves?.[ability]);
+            game.pf2e.Check.roll(checkModifier, {type:"saving-throw", actor: token.actor, skipDialog: true}, null);
         }
         else if (roll == 'skill') {
             if (skill.startsWith('lor')) {
@@ -212,8 +213,12 @@ export class pf2e{
                 } else {
                     return;
                 }
-            }  
-            token.actor.data.data.skills?.[skill].roll(options);
+            }
+            let skillName = token.actor.data.data.skills?.[skill].name;
+            skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
+            let checkModifier = new game.pf2e.CheckModifier(`${skillName} Check`, token.actor.skills?.[skill]);
+        
+            game.pf2e.Check.roll(checkModifier, {type:"skill-check", actor: token.actor, skipDialog: true}, null); 
         }
     }
 
