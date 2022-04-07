@@ -215,7 +215,7 @@ export class pf2e{
             this.checkRoll(`Perception Check`, token.actor.perception, 'perception-check', token.actor);
         }
         if (roll == 'initiative') {
-            this.checkRoll(token.actor.attributes?.initiative?.label, token.actor.attributes?.initiative, 'initiative', token.actor);
+            token.actor.rollInitiative({createCombatants:true, initiativeOptions: {skipDialog: true}});
         }
             
         if (roll == 'ability') return; //Ability Checks are not supported in pf2e
