@@ -1,38 +1,48 @@
 import {compatibleCore} from "../misc.js";
 import {otherControls} from "../../MaterialDeck.js";
 
+const limitedSheets = ['loot', 'vehicle'];
+
 export class pf2e{
+
     constructor(){
         
     }
 
     getHP(token) {
-        const hp = token.actor.data.data.attributes.hp;
+        const hp = token.actor.attributes?.hp;
         return {
-            value: hp.value,
-            max: hp.max
+            value: (hp?.value == null) ? 0 : hp.value,
+            max: (hp?.max == null) ? 0 : hp.max
         }
     }
 
     getTempHP(token) {
-        const hp = token.actor.data.data.attributes.hp;
+        const hp = token.actor.attributes?.hp;
         return {
-            value: (hp.temp == null) ? 0 : hp.temp,
-            max: (hp.tempmax == null) ? 0 : hp.tempmax
+            value: (hp?.temp == null) ? 0 : hp.temp,
+            max: (hp?.tempmax == null) ? 0 : hp.tempmax
         }
     }
 
     getAC(token) {
-        return token.actor.data.data.attributes.ac.value;
+        const ac = token.actor.attributes?.ac;
+        return (ac?.value == null) ? 10 : ac?.value;
     }
 
     getShieldHP(token) {
-        return token.actor.data.data.attributes.shield.value;
+        const shieldhp = token.actor.attributes.shield
+        return (shieldhp?.value == null) ? 0 : shieldhp?.value;
     }
 
     getSpeed(token) {
-        let speed = `${token.actor.data.data.attributes.speed.total}'`;
-        const otherSpeeds = token.actor.data.data.attributes.speed.otherSpeeds;
+        if (this.isLimitedSheet(token.actor) || token.actor.type == 'hazard') {
+            if (token.actor.type == 'vehicle') {
+                return token.actor.data.data.details.speed;
+            } else return '';
+        }
+        let speed = `${token.actor.attributes.speed?.total}'`;
+        const otherSpeeds = token.actor.attributes.speed?.otherSpeeds;
         if (otherSpeeds.length > 0)
             for (let os of otherSpeeds) 
                  speed += `\n${os.type} ${os.total}'`;    
@@ -40,14 +50,20 @@ export class pf2e{
     }
 
     getInitiative(token) {
-        let initiativeModifier = token.actor.data.data.attributes?.initiative.totalModifier;
-        let initiativeAbility = token.actor.data.data.attributes?.initiative.ability;
+        if (this.isLimitedSheet(token.actor) || token.actor.type == 'familiar') return '';
+        if (token.actor.type == 'hazard') {
+            let initiative = token.actor.attributes?.stealth?.value;
+            return `Init: Stealth (${initiative})`; 
+        }
+        let initiative = token.actor.attributes.initiative;
+        let initiativeModifier = initiative?.totalModifier;
+        let initiativeLabel = initiative?.label.replace('iative',''); //Initiative is too long for the button
         if (initiativeModifier > 0) {
             initiativeModifier = `+${initiativeModifier}`;
         } else {
             initiativeModifier = this.getPerception(token); //NPCs won't have a valid Initiative value, so default to use Perception
         } 
-        return (initiativeAbility != '') ? `(${initiativeAbility}): ${initiativeModifier}` : `(perception): ${initiativeModifier}`;
+        return `${initiativeLabel} (${initiativeModifier})`;
     }
 
     toggleInitiative(token) {
@@ -63,31 +79,36 @@ export class pf2e{
     }
 
     getPerception(token) {
-        let perception = token.actor.data.data.attributes?.perception.totalModifier;
+        if (this.isLimitedSheet(token.actor) || token.actor.type == 'hazard') return '';
+        let perception = token.actor.attributes.perception?.totalModifier;
         return (perception >= 0) ? `+${perception}` : perception;
     }
 
     getAbility(token, ability) {
+        if (this.isLimitedSheet(token.actor) || token.actor.type == 'familiar') return '';
         if (ability == undefined) ability = 'str';
-        return token.actor.data.data.abilities?.[ability].value;
+        return token.actor.abilities?.[ability]?.value;
     } 
 
     getAbilityModifier(token, ability) {
+        if (this.isLimitedSheet(token.actor) || token.actor.type == 'hazard' || token.actor.type == 'familiar') return '';
         if (ability == undefined) ability = 'str';
-        let val = token.actor.data.data.abilities?.[ability].mod;
+        let val = token.actor.abilities?.[ability]?.mod;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getAbilitySave(token, ability) {
+        if (this.isLimitedSheet(token.actor)) return '';
         if (ability == undefined) ability = 'fortitude';
         else if (ability == 'fort') ability = 'fortitude';
         else if (ability == 'ref') ability = 'reflex';
         else if (ability == 'will') ability = 'will';
-        let val = token.actor.data.data.saves?.[ability].value;
+        let val = token.actor.data.data.saves?.[ability]?.value;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getSkill(token, skill) {
+        if (this.isLimitedSheet(token.actor)) return '';
         if (skill == undefined) skill = 'acr';
         if (skill.startsWith('lor')) {
             const index = parseInt(skill.split('_')[1])-1;
@@ -103,6 +124,7 @@ export class pf2e{
     }
 
     getLoreSkills(token) {
+        if (this.isLimitedSheet(token.actor)) return [];
         const skills = token.actor.data.data.skills;
         return Object.keys(skills).map(key => skills[key]).filter(s => s.lore == true);
     }
@@ -183,25 +205,28 @@ export class pf2e{
      * Roll
      */
      roll(token,roll,options,ability,skill,save) {
+        if (this.isLimitedSheet(token.actor)) return;
         options.skipDialog = true;
         if (roll == undefined) roll = 'skill';
         if (ability == undefined) ability = 'str';
         if (skill == undefined) skill = 'acr';
         if (save == undefined) save = 'fort';
         if (roll == 'perception') {
-            let checkModifier = new game.pf2e.CheckModifier(`Perception Check`, token.actor.perception);
-            game.pf2e.Check.roll(checkModifier, {type:"perception-check", actor: token.actor, skipDialog: true}, null);
+            this.checkRoll(`Perception Check`, token.actor.perception, 'perception-check', token.actor);
         }
-        if (roll == 'initiative') token.actor.rollInitiative(options);
+        if (roll == 'initiative') {
+            this.checkRoll(token.actor.attributes?.initiative?.label, token.actor.attributes?.initiative, 'initiative', token.actor);
+        }
+            
         if (roll == 'ability') return; //Ability Checks are not supported in pf2e
         else if (roll == 'save') {
             let ability = save;
             if (ability == 'fort') ability = 'fortitude';
             else if (ability == 'ref') ability = 'reflex';
             else if (ability == 'will') ability = 'will';
+            if (token.actor.type == 'hazard' && ability == 'will') return; //Hazards don't have Will saves
             let abilityName = ability.charAt(0).toUpperCase() + ability.slice(1);
-            let checkModifier = new game.pf2e.CheckModifier(`${abilityName} Check`, token.actor.saves?.[ability]);
-            game.pf2e.Check.roll(checkModifier, {type:"saving-throw", actor: token.actor, skipDialog: true}, null);
+            this.checkRoll(`${abilityName} Saving Throw`, token.actor.saves?.[ability], 'saving-throw', token.actor);
         }
         else if (roll == 'skill') {
             if (skill.startsWith('lor')) {
@@ -216,16 +241,20 @@ export class pf2e{
             }
             let skillName = token.actor.data.data.skills?.[skill].name;
             skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
-            let checkModifier = new game.pf2e.CheckModifier(`${skillName} Check`, token.actor.skills?.[skill]);
-        
-            game.pf2e.Check.roll(checkModifier, {type:"skill-check", actor: token.actor, skipDialog: true}, null); 
+            this.checkRoll(`Skill Check: ${skillName}`, token.actor.skills?.[skill], 'skill-check', token.actor);
         }
+    }
+
+    checkRoll(checkLabel,stat,type,actor) {
+        let checkModifier = new game.pf2e.CheckModifier(checkLabel, stat);
+        game.pf2e.Check.roll(checkModifier, {type:type, actor: actor, skipDialog: true}, null);
     }
 
     /**
      * Items
      */
     getItems(token,itemType) {
+        if (this.isLimitedSheet(token.actor)) return [];
         if (itemType == undefined) itemType = 'any';
         const allItems = token.actor.items;
         if (itemType == 'any') return allItems.filter(i => i.type == 'weapon' || i.type == 'equipment' || i.type == 'consumable' || i.type == 'loot' || i.type == 'container');
@@ -234,13 +263,14 @@ export class pf2e{
     }
 
     getItemUses(item) {
-        return {available: item.data.data.quantity.value};
+        return {available: item.quantity.value};
     }
     
     /**
      * Features
      */
      getFeatures(token,featureType) {
+        if (this.isLimitedSheet(token.actor)) return [];
         if (featureType == undefined) featureType = 'any';
         const allItems = token.actor.items;
         if (featureType == 'any') return allItems.filter(i => i.type == 'ancestry' || i.type == 'background' || i.type == 'class' || i.type == 'feat' || i.type == 'action');
@@ -249,7 +279,10 @@ export class pf2e{
         if (featureType == 'action-int') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'interaction');
         if (featureType == 'action-off') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'offensive');
         if (featureType == 'strike') { //Strikes are not in the actor.items collection
-            let actions = token.actor.data.data.actions.filter(a=>a.type == 'strike');
+            if (token.actor.type == 'hazard' || token.actor.type == 'familiar') {
+                return allItems.filter(i => i.type == 'melee' || i.type == 'ranged');
+            }
+            let actions = token.actor.data.data.actions?.filter(a=>a.type == 'strike');
             for (let a of actions) {
                 a.img = a.imageUrl;
                 a.data = {
@@ -262,7 +295,7 @@ export class pf2e{
     }
 
     getFeatureUses(item) {
-        if (item.data.type == 'class') return {available: item.actor.data.data.details.level.value};
+        if (item.data.type == 'class') return {available: item.actor.details.level.value};
         else return;
     }
 
@@ -270,6 +303,7 @@ export class pf2e{
      * Spells
      */
     getSpells(token,level) {
+        if (this.isLimitedSheet(token.actor)) return '';
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
@@ -278,13 +312,14 @@ export class pf2e{
     }
 
     getSpellUses(token,level,item) {
+        if (this.isLimitedSheet(token.actor)) return '';
         if (level == undefined || level == 'any') level = item.level;
         if (item.isCantrip == true) return;
         const spellbook = token.actor.items.filter(i => i.data.type === 'spellcastingEntry')[0];
         if (spellbook == undefined) return;
         return {
-            available: spellbook.data.data.slots?.[`slot${level}`].value,
-            maximum: spellbook.data.data.slots?.[`slot${level}`].max
+            available: spellbook.slots?.[`slot${level}`].value,
+            maximum: spellbook.slots?.[`slot${level}`].max
         }
     }
 
@@ -292,8 +327,13 @@ export class pf2e{
         let variant = 0;
         if (otherControls.rollOption == 'map1') variant = 1;
         if (otherControls.rollOption == 'map2') variant = 2;
+        if (item?.parent?.type == 'hazard' && item.type==='melee') return item.rollNPCAttack({}, variant+1);
         if (item.type==='strike') return item.variants[variant].roll({event});
-        if (item.type==='weapon' || item.type==='melee') return item.parent.data.data.actions.find(a=>a.name===item.name).variants[variant].roll({event});
+        if (item?.parent?.type !== 'hazard' && (item.type==='weapon' || item.type==='melee')) return item.parent.actions.find(a=>a.name===item.name).variants[variant].roll({event});
         return game.pf2e.rollItemMacro(item.id);
+    }
+
+    isLimitedSheet(actor) {
+        return limitedSheets.includes(actor.type);
     }
 }
