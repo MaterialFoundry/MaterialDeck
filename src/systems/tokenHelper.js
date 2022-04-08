@@ -318,4 +318,14 @@ export class TokenHelper{
     rollItem(item) {
         return this.system.rollItem(item);
     }
+
+    /**
+     * Ring Colors
+     */
+     getSkillRingColor(token,skill) {
+        return this.system.getSkillRingColor(token,skill);
+    }
+    getSaveRingColor(token,save) {
+        return this.system.getSaveRingColor(token,save);
+    }
 }

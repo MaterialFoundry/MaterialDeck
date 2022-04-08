@@ -2,6 +2,14 @@ import {compatibleCore} from "../misc.js";
 import {otherControls} from "../../MaterialDeck.js";
 
 const limitedSheets = ['loot', 'vehicle'];
+const proficiencyColors = 
+{
+    untrained: "#424242",
+    trained: "#171F69",
+    expert: "#3C005E",
+    master: "#664400",
+    legendary: "#5E0000"
+};
 
 export class pf2e{
 
@@ -98,29 +106,50 @@ export class pf2e{
     }
 
     getAbilitySave(token, ability) {
-        if (this.isLimitedSheet(token.actor)) return '';
-        if (ability == undefined) ability = 'fortitude';
-        else if (ability == 'fort') ability = 'fortitude';
-        else if (ability == 'ref') ability = 'reflex';
-        else if (ability == 'will') ability = 'will';
-        let val = token.actor.data.data.saves?.[ability]?.value;
+        ability = this.fixSave(ability);
+        const save = this.findSave(token, ability);
+        if (save == undefined) return '';
+        let val = save?.value;
         return (val >= 0) ? `+${val}` : val;
     }
 
+    findSave(token, ability) {
+        if (this.isLimitedSheet(token.actor)) return;
+        return token.actor.data.data.saves?.[ability];
+    }
+
+    fixSave(ability) {
+        if (ability == undefined) return 'fortitude';
+        else if (ability == 'fort') return 'fortitude';
+        else if (ability == 'ref') return 'reflex';
+        else if (ability == 'will') return 'will';
+    }
+
     getSkill(token, skill) {
-        if (this.isLimitedSheet(token.actor)) return '';
+        const tokenSkill = this.findSkill(token, skill);
+        if (tokenSkill == undefined) return '';
+        
+        if (skill.startsWith('lor')) {
+            return `${tokenSkill.name}: +${tokenSkill.totalModifier}`;
+        }
+
+        const val = tokenSkill.totalModifier;
+        return (val >= 0) ? `+${val}` : val;
+    }
+
+    findSkill(token, skill) {
+        if (this.isLimitedSheet(token.actor)) return;
         if (skill == undefined) skill = 'acr';
         if (skill.startsWith('lor')) {
             const index = parseInt(skill.split('_')[1])-1;
             const loreSkills = this.getLoreSkills(token);
             if (loreSkills.length > index) {
-                return `${loreSkills[index].name}: +${loreSkills[index].totalModifier}`;
+                return loreSkills[index];
             } else {
-                return '';
+                return;
             }
         }
-        const val = token.actor.data.data.skills?.[skill].totalModifier;
-        return (val >= 0) ? `+${val}` : val;
+        return token.actor.data.data.skills?.[skill];
     }
 
     getLoreSkills(token) {
@@ -335,5 +364,28 @@ export class pf2e{
 
     isLimitedSheet(actor) {
         return limitedSheets.includes(actor.type);
+    }
+
+    /**
+    * Ring Colors
+    */
+    getSkillRingColor(token, skill) {
+        return this.getRingColor(this.findSkill(token, skill));
+    }
+
+    getSaveRingColor(token, save) {
+        save = this.fixSave(save);
+        return this.getRingColor(this.findSave(token, save));
+    }
+
+    getRingColor(stat) {
+        if (stat == undefined) return;
+        let statModifiers = stat?.modifiers || stat?._modifiers;
+        const profLevel = statModifiers?.find(m => m.type == 'proficiency')?.slug;
+        // console.log(`Proficiency Level for ${stat.name}: ${profLevel}`);
+        if (profLevel != undefined) {
+            return proficiencyColors?.[profLevel];
+        }
+        return;
     }
 }

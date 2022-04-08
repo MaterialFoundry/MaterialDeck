@@ -235,4 +235,15 @@ export class forbiddenlands{
         sheet.rollSpecificAttack(item.id);
         return item.sendToChat();
     }
+
+    /**
+     * Ring Colors
+     */
+     getSkillRingColor(token, skill) {
+        return;
+    }
+
+    getSaveRingColor(token, save) {
+        return;        
+    }
 }

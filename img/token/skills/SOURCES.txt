@@ -10,6 +10,7 @@ his.png: https://game-icons.net/1x1/delapouite/backward-time.html
 ins.png: https://game-icons.net/1x1/lorc/light-bulb.html
 itm.png: https://game-icons.net/1x1/lorc/one-eyed.html
 inv.png: https://game-icons.net/1x1/lorc/magnifying-glass.html
+lor.png: https://game-icons.net/1x1/lorc/bookmarklet.html
 med.png: https://game-icons.net/1x1/delapouite/first-aid-kit.html
 nat.png: https://game-icons.net/1x1/delapouite/forest.html
 occ.png: https://game-icons.net/1x1/skoll/pentacle.html
