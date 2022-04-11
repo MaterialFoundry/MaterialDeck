@@ -315,8 +315,8 @@ export class TokenHelper{
         return this.system.getSpellUses(token,level,item);
     }
 
-    rollItem(item) {
-        return this.system.rollItem(item);
+    rollItem(item, settings) {
+        return this.system.rollItem(item, settings);
     }
 
     /**

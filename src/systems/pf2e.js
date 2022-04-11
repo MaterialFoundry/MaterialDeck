@@ -17,6 +17,8 @@ export class pf2e{
         
     }
 
+    tokenSpellData = new Map();
+
     getHP(token) {
         const hp = token.actor.attributes?.hp;
         return {
@@ -331,34 +333,155 @@ export class pf2e{
     /**
      * Spells
      */
+    buildSpellData(token) {
+        let spellData = [[],[],[],[],[],[],[],[],[],[],[],[]];
+        let spellcastingEntries = token.actor.spellcasting;
+        const actorLevel = token.actor.data.data.details.level.value;
+        spellcastingEntries.forEach(spellCastingEntry => {
+            let highestSpellSlot = Math.ceil(actorLevel/2);
+            while (spellCastingEntry.data.data.slots?.[`slot${highestSpellSlot}`]?.max <= 0) highestSpellSlot--;
+            //Prepared (not flexible)
+            if (spellCastingEntry.data.data.prepared?.value == 'prepared' && !spellCastingEntry?.data.data?.prepared?.flexible == true) {
+                for (let slotLevel = 0; slotLevel < 11; slotLevel++) {
+                    for (let slot = 0; slot < spellCastingEntry.data.data.slots?.[`slot${slotLevel}`].max; slot++) {
+                        let spellId = spellCastingEntry.data.data.slots?.[`slot${slotLevel}`].prepared?.[slot].id;
+                        let spell = spellCastingEntry.spells.get(spellId);
+                        if (spellId != null) {
+                            spellData[slotLevel].push(spell);
+                        }
+                    }
+                }
+            } else {
+                spellCastingEntry.spells.forEach( ses => {
+                    if ((spellCastingEntry.data.data.prepared.value == 'spontaneous' || spellCastingEntry.data.data.prepared?.flexible == true) && ses.data.data.location.signature == true) {
+                        let baseLevel = this.getSpellLevel(ses);
+                        for (let level = baseLevel; level <= highestSpellSlot; level++) {
+                            spellData[level].push(ses);
+                        }
+                    } else {
+                        spellData[this.getSpellLevel(ses)].push(ses);
+                    }
+                });
+            }
+        });
+        this.tokenSpellData.set(token.id,  {spellData: spellData, timeStamp: Date.now()});
+        return spellData;
+    }
+
+    getSpellData(token) {
+        let existingSpellData = this.tokenSpellData.get(token.id);
+        if (existingSpellData == undefined) return this.buildSpellData(token);
+        let milisSinceCreation = Date.now() - existingSpellData.timeStamp;
+        if (milisSinceCreation > 10000) {
+            this.tokenSpellData.delete(token.id);
+            return this.buildSpellData(token);
+        }
+        return existingSpellData.spellData;
+    }
+
+    getSpellLevel(spell) {
+        if (spell.isFocusSpell == true) return 11;
+        if (spell.isCantrip == true) return 0;
+        return spell.level;
+    }
+
     getSpells(token,level) {
         if (this.isLimitedSheet(token.actor)) return '';
         if (level == undefined) level = 'any';
-        const allItems = token.actor.items;
-        if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        if (level == '0') return allItems.filter(i => i.type == 'spell' && i.isCantrip == true)
-        else return allItems.filter(i => i.type == 'spell' && i.level == level && i.isCantrip == false)
+        let spellData = this.getSpellData(token);
+
+        if (level == 'f') return this.getUniqueSpells(spellData[11]);
+        if (level == 'any') return this.getUniqueSpells(spellData.flat());
+        return this.getUniqueSpells(spellData[level]);
+    }
+
+    getUniqueSpells(spells) {
+        return Array.from(new Set(spells));
     }
 
     getSpellUses(token,level,item) {
         if (this.isLimitedSheet(token.actor)) return '';
         if (level == undefined || level == 'any') level = item.level;
         if (item.isCantrip == true) return;
-        const spellbook = token.actor.items.filter(i => i.data.type === 'spellcastingEntry')[0];
+        if (item.isFocusSpell == true) return {
+            available: token.actor.data.data.resources.focus.value,
+            maximum: token.actor.data.data.resources.focus.max
+        }
+        const spellbook = this.findSpellcastingEntry(token.actor, item);
         if (spellbook == undefined) return;
+        if (spellbook.data.data.prepared.value == 'innate') {
+            return {
+                available: item.data.data.location.uses.value,
+                maximum: item.data.data.location.uses.max
+            }
+        }
+        if (spellbook.data.data.prepared.value == 'prepared') {
+            if (!spellbook.data.data.prepared?.flexible == true) {
+                let slotsExpended = 0;
+                let slotsPrepared = 0;
+                for (let slot = 0; slot < spellbook.data.data.slots?.[`slot${level}`].max; slot++) {
+                    let slotEntry = spellbook.data.data.slots?.[`slot${level}`].prepared?.[slot];
+                    if (slotEntry.id == item.id) {
+                        slotsPrepared++;
+                        if (slotEntry?.expended == true) {
+                            slotsExpended++;
+                        }
+                    }
+                }
+                return {
+                    available: slotsPrepared - slotsExpended,
+                    maximum: slotsPrepared
+                }
+            }
+        }
         return {
-            available: spellbook.slots?.[`slot${level}`].value,
-            maximum: spellbook.slots?.[`slot${level}`].max
+            available: spellbook.data.data.slots?.[`slot${level}`].value,
+            maximum: spellbook.data.data.slots?.[`slot${level}`].max
         }
     }
 
-    rollItem(item) {
+    findSpellcastingEntry(actor, spell) {
+        let spellcastingEntries = actor.spellcasting;
+        let result;
+        spellcastingEntries.forEach(spellCastingEntry => {
+            if (spellCastingEntry.spells.get(spell.id) != undefined) {
+                result = spellCastingEntry;
+            }
+        });
+        return result;
+    }
+
+    rollItem(item, settings) {
         let variant = 0;
         if (otherControls.rollOption == 'map1') variant = 1;
         if (otherControls.rollOption == 'map2') variant = 2;
         if (item?.parent?.type == 'hazard' && item.type==='melee') return item.rollNPCAttack({}, variant+1);
         if (item.type==='strike') return item.variants[variant].roll({event});
         if (item?.parent?.type !== 'hazard' && (item.type==='weapon' || item.type==='melee')) return item.parent.actions.find(a=>a.name===item.name).variants[variant].roll({event});
+        if (item.type === 'spell') {
+            const spellbook = this.findSpellcastingEntry(item.parent, item);
+            if (spellbook != undefined) {
+                let spellLvl = item.level;
+                if (settings.spellType == 'f' || settings.spellType == '0') {
+                    const actorLevel = item.parent.data.data.details.level.value;
+                    spellLvl =  Math.ceil(actorLevel/2);
+                } else if (settings.spellType != 'any') {
+                    spellLvl = settings.spellType;
+                }
+                if (spellbook.data.data.prepared.value == 'prepared' && !spellbook.data.data.prepared?.flexible == true) {
+                    for (let slotId = 0; slotId < spellbook.data.data.slots?.[`slot${spellLvl}`].max; slotId++) {
+                        let slotEntry = spellbook.data.data.slots?.[`slot${spellLvl}`].prepared?.[slotId];
+                        if (slotEntry.id == item.id) {
+                            if (!slotEntry?.expended == true) {
+                                return spellbook.cast(item, {slot: slotId, level: spellLvl});
+                            }
+                        }
+                    }
+                } else {
+                    return spellbook.cast(item, { level: spellLvl});
+                }
+            }
+        }
         return game.pf2e.rollItemMacro(item.id);
     }
 
@@ -382,7 +505,6 @@ export class pf2e{
         if (stat == undefined) return;
         let statModifiers = stat?.modifiers || stat?._modifiers;
         const profLevel = statModifiers?.find(m => m.type == 'proficiency')?.slug;
-        // console.log(`Proficiency Level for ${stat.name}: ${profLevel}`);
         if (profLevel != undefined) {
             return proficiencyColors?.[profLevel];
         }
