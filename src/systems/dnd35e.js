@@ -199,4 +199,15 @@ export class dnd35e{
     rollItem(item) {
         return item.roll()
     }
+
+    /**
+     * Ring Colors
+     */
+     getSkillRingColor(token, skill) {
+        return;
+    }
+
+    getSaveRingColor(token, save) {
+        return;        
+    }
 }

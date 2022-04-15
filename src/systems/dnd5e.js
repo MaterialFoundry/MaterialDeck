@@ -1,5 +1,12 @@
 import {compatibleCore} from "../misc.js";
 
+const proficiencyColors = {
+    0: "#000000",
+    0.5: "#804A00",
+    1: "#C0C0C0",
+    2: "#FFD700"
+}
+
 export class dnd5e{
     constructor(){
         
@@ -201,5 +208,20 @@ export class dnd5e{
 
     rollItem(item) {
         return item.roll()
+    }
+
+    /**
+     * Ring Colors
+     */
+     getSkillRingColor(token, skill) {
+        const profLevel = token.actor.data.data?.skills[skill]?.proficient;
+        if (profLevel == undefined) return;
+        return proficiencyColors?.[profLevel];
+    }
+
+    getSaveRingColor(token, save) {
+        const profLevel = token.actor.data.data?.abilities[save]?.proficient;        
+        if (profLevel == undefined) return;
+        return proficiencyColors?.[profLevel];
     }
 }

@@ -134,4 +134,15 @@ export class demonlord{
     rollItem(item) {
         return item.roll()
     }
+
+    /**
+     * Ring Colors
+     */
+    getSkillRingColor(token, skill) {
+        return;
+    }
+
+    getSaveRingColor(token, save) {
+        return;        
+    }
 }

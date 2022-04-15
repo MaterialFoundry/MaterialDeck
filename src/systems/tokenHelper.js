@@ -315,7 +315,17 @@ export class TokenHelper{
         return this.system.getSpellUses(token,level,item);
     }
 
-    rollItem(item) {
-        return this.system.rollItem(item);
+    rollItem(item, settings) {
+        return this.system.rollItem(item, settings);
+    }
+
+    /**
+     * Ring Colors
+     */
+     getSkillRingColor(token,skill) {
+        return this.system.getSkillRingColor(token,skill);
+    }
+    getSaveRingColor(token,save) {
+        return this.system.getSaveRingColor(token,save);
     }
 }

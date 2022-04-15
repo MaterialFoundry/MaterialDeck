@@ -198,8 +198,16 @@ export class TokenControl{
                 else if (stats == 'PassiveInvestigation') txt += tokenHelper.getPassiveInvestigation(token);
                 else if (stats == 'Ability') txt += tokenHelper.getAbility(token, settings.ability);
                 else if (stats == 'AbilityMod') txt += tokenHelper.getAbilityModifier(token, settings.ability);
-                else if (stats == 'Save') txt += tokenHelper.getAbilitySave(token, settings.save);
-                else if (stats == 'Skill') txt += tokenHelper.getSkill(token, settings.skill);
+                else if (stats == 'Save') {
+                    txt += tokenHelper.getAbilitySave(token, settings.save);
+                    ringColor = tokenHelper.getSaveRingColor(token, settings.save);
+                    if (ringColor != undefined) ring = 2;
+                }
+                else if (stats == 'Skill') {
+                    txt += tokenHelper.getSkill(token, settings.skill);
+                    ringColor = tokenHelper.getSkillRingColor(token, settings.skill);
+                    if (ringColor != undefined) ring = 2;
+                }
                 else if (stats == 'Prof') txt += tokenHelper.getProficiency(token);
                 else if (stats == 'Fate') txt += tokenHelper.getFate(token) /* WFRP4e */
                 else if (stats == 'Fortune') txt += tokenHelper.getFortune(token) /* WFRP4e */
@@ -444,7 +452,6 @@ export class TokenControl{
             }
             else if (stats == 'Ability' || stats == 'AbilityMod' || stats == 'Save') {
                 overlay = true;
-                ring = 1;
                 let ability = (stats == 'Save') ? settings.save : settings.ability;
                 if (ability == undefined) ability = 'str';
                 if (ability == 'con') iconSrc = "modules/MaterialDeck/img/token/abilities/cons.png";
@@ -452,10 +459,9 @@ export class TokenControl{
             }
             else if (stats == 'Skill') {
                 overlay = true;
-                ring = 1;
                 let skill = settings.skill;
                 if (skill == undefined) skill = 'acr';
-                else iconSrc = "modules/MaterialDeck/img/token/skills/" + skill + ".png";
+                else iconSrc = "modules/MaterialDeck/img/token/skills/" + (skill.startsWith('lor')? 'lor' : skill) + ".png";
             }
             else if (settings.onClick == 'center' || settings.onClick == 'centerSelect') {
                 overlay = true;
@@ -835,7 +841,7 @@ export class TokenControl{
 
             const item = items[itemNr];
             if (item != undefined) {
-                tokenHelper.rollItem(item);
+                tokenHelper.rollItem(item, settings);
             }
             
         }

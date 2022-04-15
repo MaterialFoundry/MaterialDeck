@@ -168,5 +168,14 @@ export class wfrp4e {
         return;
     }
 
+    /**
+     * Ring Colors
+     */
+     getSkillRingColor(token, skill) {
+        return;
+    }
 
+    getSaveRingColor(token, save) {
+        return;        
+    }
 }
