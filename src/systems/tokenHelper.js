@@ -1,10 +1,12 @@
-import {dnd5e} from "./dnd5e.js"
-import {dnd35e} from "./dnd35e.js"
-import {pf2e} from "./pf2e.js"
+import {dnd5e} from "./dnd5e.js";
+import {dnd35e} from "./dnd35e.js";
+import {pf2e} from "./pf2e.js";
 import {demonlord} from "./demonlord.js";
-import {wfrp4e} from "./wfrp4e.js"
-import {forbiddenlands} from "./forbidden-lands.js"
+import {wfrp4e} from "./wfrp4e.js";
+import {forbiddenlands} from "./forbidden-lands.js";
+import {starfinder} from "./starfinder.js";
 import {compatibleCore} from "../misc.js";
+import {gamingSystem} from "../../MaterialDeck.js";
 
 
 export class TokenHelper{
@@ -14,11 +16,12 @@ export class TokenHelper{
     }
 
     setSystem() {
-        if (game.system.id == 'D35E' || game.system.id == 'pf1') this.system = new dnd35e();
-        else if (game.system.id == 'pf2e') this.system = new pf2e();
-        else if (game.system.id == 'demonlord') this.system = new demonlord();
-        else if (game.system.id == 'wfrp4e') this.system = new wfrp4e();
-        else if (game.system.id == 'forbidden-lands') this.system = new forbiddenlands();
+        if (gamingSystem == 'D35E' || gamingSystem == 'pf1') this.system = new dnd35e();
+        else if (gamingSystem == 'pf2e') this.system = new pf2e();
+        else if (gamingSystem == 'demonlord') this.system = new demonlord();
+        else if (gamingSystem == 'wfrp4e') this.system = new wfrp4e();
+        else if (gamingSystem == 'forbidden-lands') this.system = new forbiddenlands();
+        else if (gamingSystem == 'sfrpg') this.system = new starfinder();
         else this.system = new dnd5e();     //default to dnd5e
     }
 
@@ -34,7 +37,7 @@ export class TokenHelper{
         else if (type == 'actorId') return this.getTokenFromActorId(identifier);
     }
     getTokenFromTokenId(id) {
-        return canvas.tokens.children[0].children.find(p => p.id == id);
+        return canvas.tokens.get(id);
     }
 
     getTokenFromTokenName(name) {
@@ -132,7 +135,7 @@ export class TokenHelper{
     }
 
     /***********************************************************************
-     * System agnostic functions
+     * System specific functions
      ***********************************************************************/
     getHP(token) {
         return this.system.getHP(token);
@@ -245,8 +248,18 @@ export class TokenHelper{
         return this.system.getEmpathy(token)
     }
      /* forbidden-lands */
-     getWillPower(token) {
+    getWillPower(token) {
         return this.system.getWillPower(token)
+    }
+
+    /* starfinder */
+    getStamina(token) {
+        return this.system.getStamina(token);
+    }
+
+    /* starfinder */
+    getKinAC(token) {
+        return this.system.getKinAC(token);
     }
     
 

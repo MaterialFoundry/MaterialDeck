@@ -80,6 +80,19 @@ export const registerSettings = async function() {
     });
 
     /**
+     * System override
+     */
+     game.settings.register(MODULE.moduleName,'systemOverride', {
+        name: "MaterialDeck.Sett.SystemOverride",
+        hint: "MaterialDeck.Sett.SystemOverrideHint",
+        scope: "client",
+        config: true,
+        default: "",
+        type: String,
+        onChange: x => window.location.reload()
+    });
+
+    /**
      * Sets the ip address of the server
      */
     game.settings.register(MODULE.moduleName,'address', {

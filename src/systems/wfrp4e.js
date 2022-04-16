@@ -104,7 +104,6 @@ export class wfrp4e {
     }
 
     roll(token,roll,options,ability,skill,save) {
-        //console.log("roll(", token, roll, options, ability, skill, save, ")");
         if (ability == undefined) ability = 'ag';
         return game.wfrp4e.utility.rollItemMacro(ability, "characteristic", false);
     }
@@ -125,7 +124,6 @@ export class wfrp4e {
 
 
     getItemUses(item) {
-        //console.log("getItemUses(" , item , ")")
         if ( item.type == 'ammunition') {
             return {available: item.data.data.quantity.value};
         }

@@ -1,4 +1,20 @@
 # Changelog Material Deck Module
+### v1.4.9 - 16-04-2022
+Fixes:
+<ul>
+<li>PF2e: Fixed rolls and conditions for compatibility with latest pf2e version. Thanks to Kyamsil</li>
+<li>Token Action => Set Vison: Setting light is working again</li>
+<li>Other Actions => Roll Dice: Roll result would show as 'NaN' in Foundry v9, this is fixed</li>
+</ul>
+
+Additions:
+<ul>
+<li>Added support for the Starfinder system</li>
+<li>External Modules => Added support for 'Monks Active Tile Triggers'</li>
+<li>Added 'System Override' module setting. If your system is not supported, MD defaults to 5e. Here you can choose a supported system that is most similar to yours and have Material Deck use that system instead.</li>
+<li>Token Action => Displayed Stats: A colored border is drawn around certain skills, saves, etc to indicate proficiency (compatible systems: dnd5e, pf2e). Thanks to Kyamsil</li>
+</ul>
+
 ### v1.4.8 - 22-12-2021
 Fixes:
 <ul>

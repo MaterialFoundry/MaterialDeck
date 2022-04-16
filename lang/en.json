@@ -21,6 +21,8 @@
     "MaterialDeck.Sett.ImageBrightnessHint": "Sets the brightness of the default white images. If the Image Cache Size is bigger than 0, perform a refresh for instant results.",
     "MaterialDeck.Sett.NrOfConnMessages": "Number of Connection Warnings",
     "MaterialDeck.Sett.NrOfConnMessagesHint": "Sets the number of times a connection warning is displayed if Material Deck cannot connect to Material Server. If set to 0, it will give not be limited.",
+    "MaterialDeck.Sett.SystemOverride": "System Override",
+    "MaterialDeck.Sett.SystemOverrideHint": "Overrides the automatic gaming system detection. Unsupported systems default to dnd5e, but if an unsupported system is similar to a different system you can specify that system here. Leave empty for system autodetection.",
 
     "MaterialDeck.PL.Unrestricted": "Unrestricted",
     "MaterialDeck.PL.OneTrackPlaylist": "One track per playlist",

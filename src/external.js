@@ -69,6 +69,7 @@ export class ExternalModules{
         else if (module == 'lockView')      this.updateLockView(settings,context,device);
         else if (module == 'aboutTime')     this.updateAboutTime(settings,context,device);
         else if (module == 'soundscape')    this.updateSoundscape(settings,context,device);
+        else if (module == 'monksActiveTiles') this.updateMonksActiveTiles(settings,context,device);
     }
 
     keyPress(settings,context,device){
@@ -84,6 +85,7 @@ export class ExternalModules{
         else if (module == 'lockView')      this.keyPressLockView(settings,context,device);
         else if (module == 'aboutTime')     this.keyPressAboutTime(settings,context,device);
         else if (module == 'soundscape')    this.keyPressSoundscape(settings,context,device);
+        else if (module == 'monksActiveTiles') this.keyPressMonksActiveTiles(settings,context,device);
     }
 
     getModuleEnable(moduleId){
@@ -989,6 +991,42 @@ export class ExternalModules{
             this.soundscapeSettings.soundboardVolume = data.volume;
 
         this.updateAll();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Monks Active Tile Triggers
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    updateMonksActiveTiles(settings,context,device) {
+        const id = settings.monksActiveTilesId;
+        if (id == undefined || id == '') return;
+        let tile = canvas.background.placeables.find(t => t.id == id);
+        if (tile == undefined) return;
+        const tileData = tile.data.flags?.['monks-active-tiles'];
+        if (tileData == undefined) return;
+
+        let ring = 1;
+        let ringColor = '#000000';
+        let background = '#000000';
+        if (tileData.active) {
+            ring = 2;
+            ringColor = '#00ff00'
+        }
+        let src = tile.data.img;
+
+        streamDeck.setTitle('',context);
+        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+    }
+
+    keyPressMonksActiveTiles(settings,context,device) {
+        const mode = settings.monksActiveTilesMode ? settings.monksActiveTilesMode : 'toggle';
+        const id = settings.monksActiveTilesId;
+        if (id == undefined || id == '') return;
+        let tile = canvas.background.placeables.find(t => t.id == id);
+        if (tile == undefined) return;
+        const tileData = tile.data.flags?.['monks-active-tiles'];
+        if (tileData == undefined) return;
+
+        if (mode == 'toggle') tile.document.setFlag('monks-active-tiles','active',!tileData.active);
     }
 }
 

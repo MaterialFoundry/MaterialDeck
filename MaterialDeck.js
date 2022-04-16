@@ -23,6 +23,8 @@ export var tokenHelper;
 
 export const moduleName = "MaterialDeck";
 
+export let gamingSystem = "dnd5e";
+
 let ready = false;
 
 export let hotbarUses = false;
@@ -65,7 +67,7 @@ async function analyzeWSmessage(msg){
         const msg = {
             target: "SD",
             type: "init",
-            system: game.system.id
+            system: gamingSystem
         }
         ws.send(JSON.stringify(msg));
         
@@ -222,7 +224,7 @@ function startWebsocket() {
         const msg2 = {
             target: "SD",
             type: "init",
-            system: game.system.id
+            system: gamingSystem
         }
         ws.send(JSON.stringify(msg2));
         clearInterval(wsInterval);
@@ -290,6 +292,9 @@ export function getPermission(action,func) {
 Hooks.once('ready', async()=>{
     registerSettings();
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
+
+    const systemOverride = game.settings.get(moduleName,'systemOverride');
+    gamingSystem = systemOverride != '' ? systemOverride : game.system.id;
 
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
@@ -391,6 +396,11 @@ Hooks.once('ready', async()=>{
     if (hotbarUsesTemp != undefined) hotbarUses = true;
 });
 
+function updateActor(id) {
+    const token = tokenHelper.getTokenFromActorId(id)
+    tokenControl.update(token.id);
+}
+
 Hooks.on('updateToken',(scene,token)=>{
     if (enableModule == false || ready == false) return;
     let tokenId = token._id;
@@ -400,17 +410,26 @@ Hooks.on('updateToken',(scene,token)=>{
 
 Hooks.on('updateActor',(actor)=>{
     if (enableModule == false || ready == false) return;
-    let children = canvas.tokens.children[0].children;
-    for (let i=0; i<children.length; i++){
-        if (children[i].actor.id == actor._id){
-            let tokenId = children[i].id;
-            if (tokenId == canvas.tokens.controlled[0]?.id) {
-                tokenControl.update(canvas.tokens.controlled[0]?.id);
-            }
-                
-        }
-    }
+    updateActor(actor.id);
     if (macroControl != undefined) macroControl.updateAll();
+});
+
+Hooks.on('createActiveEffect',(data)=>{
+    if (enableModule == false || ready == false) return;
+    updateActor(data.parent.id);
+    return;
+});
+
+Hooks.on('deleteActiveEffect',(data)=>{
+    if (enableModule == false || ready == false) return;
+    updateActor(data.parent.id);
+    return;
+});
+
+Hooks.on('onActorSetCondition',(data)=>{
+    if (enableModule == false || ready == false) return;
+    updateActor(data.actor.id);
+    return;
 });
 
 Hooks.on('controlToken',(token,controlled)=>{
@@ -582,6 +601,11 @@ Hooks.on('about-time.clockRunningStatus', ()=>{
     if (enableModule == false || ready == false) return;
     externalModules.updateAll();
 })
+
+Hooks.on('updateTile',()=>{
+    if (enableModule == false || ready == false) return;
+    externalModules.updateAll();
+});
 
 Hooks.once('init', ()=>{
     //CONFIG.debug.hooks = true;

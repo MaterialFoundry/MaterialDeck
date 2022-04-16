@@ -190,6 +190,13 @@ export class TokenControl{
                             heart: "#00FF00"
                         };
                 }
+                else if (stats == 'Stamina') {    //starfinder
+                    const stamina = tokenHelper.getStamina(token);
+                    txt += `${stamina.value}/${stamina.max}`;
+                }
+                else if (stats == 'KinAC') {    //starfinder
+                    txt += tokenHelper.getKinAC(token);
+                }
                 else if (stats == 'AC') txt += tokenHelper.getAC(token);
                 else if (stats == 'ShieldHP') txt += tokenHelper.getShieldHP(token);
                 else if (stats == 'Speed') txt += tokenHelper.getSpeed(token);
@@ -434,7 +441,7 @@ export class TokenControl{
                 iconSrc = "modules/MaterialDeck/img/token/hp_empty.png";
             if (stats == 'TempHP') //Temp HP
                 iconSrc = "modules/MaterialDeck/img/token/temp_hp_empty.png";
-            else if (stats == 'AC' || stats == 'ShieldHP') //AC
+            else if (stats == 'AC' || stats == 'ShieldHP' || stats == 'KinAC') //AC
                 iconSrc = "modules/MaterialDeck/img/token/ac.webp";
             else if (stats == 'Speed') //Speed
                 iconSrc = "modules/MaterialDeck/img/token/speed.webp";
@@ -616,22 +623,28 @@ export class TokenControl{
                 if (isNaN(dimVision)==false) data.dimSight = dimVision;
                 if (isNaN(brightVision)==false) data.brightSight = brightVision;
                 if (isNaN(sightAngle)==false) data.sightAngle = sightAngle;
-                if (isNaN(dimRadius)==false) data.dimLight = dimRadius;
-                if (isNaN(brightRadius)==false) data.brightLight = brightRadius;
-                if (isNaN(emissionAngle)==false) data.lightAngle = emissionAngle;
-                data.lightColor = lightColor;
-                data.lightAlpha = Math.sqrt(colorIntensity).toNearest(0.05)
+
+                let light = {};
+
+
+                if (isNaN(dimRadius)==false) light.dim = dimRadius;
+                if (isNaN(brightRadius)==false) light.bright = brightRadius;
+                if (isNaN(emissionAngle)==false) light.angle = emissionAngle;
+                light.color = lightColor;
+                light.alpha = Math.sqrt(colorIntensity).toNearest(0.05)
+
                 let animation = {
                     type: '',
-                    speed: tokenData.lightAnimation.speed,
-                    intensity: tokenData.lightAnimation.intensity
+                    speed: tokenData.light.animation.speed,
+                    intensity: tokenData.light.animation.intensity
                 };
                 if (animationType != 'none'){
                     animation.type = animationType;
                     animation.intensity = animationIntensity;
                     animation.speed = animationSpeed;
                 }
-                data.lightAnimation = animation;
+                light.animation = animation;
+                data.light = light;
                 if (compatibleCore('0.8.1')) token.document.update(data);
                 else token.update(data);
             }

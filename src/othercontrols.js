@@ -1,5 +1,5 @@
 import * as MODULE from "../MaterialDeck.js";
-import {streamDeck} from "../MaterialDeck.js";
+import {streamDeck, gamingSystem} from "../MaterialDeck.js";
 import {compatibleCore} from "./misc.js";
 
 export class OtherControls{
@@ -530,7 +530,7 @@ export class OtherControls{
         if (tokenControlled) r = new Roll(settings.rollDiceFormula,actor.getRollData());
         else r = new Roll(settings.rollDiceFormula);
 
-        r.evaluate();
+        r.evaluate({async:false});
         
         if (rollFunction == 'public') {
             r.toMessage(r,{rollMode:"roll"})
@@ -687,7 +687,7 @@ export class OtherControls{
 
     updateCompendiumBrowser(settings,context,device,options={}){
         let rendered = options.renderCompendiumBrowser;
-        if (rendered == undefined && game.system.id == "pf2e") rendered = (document.getElementById("app-1") != null);
+        if (rendered == undefined && gamingSystem == "pf2e") rendered = (document.getElementById("app-1") != null);
         else if (rendered == undefined) rendered = (document.getElementById("compendium-popout") != null);
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
@@ -701,13 +701,13 @@ export class OtherControls{
 
     keyPressCompendiumBrowser(settings){
         let element = null;
-        if (game.system.id == "pf2e") element = document.getElementById("app-1")
+        if (gamingSystem == "pf2e") element = document.getElementById("app-1")
         else element = document.getElementById("compendium-popout");
         const rendered = (element != null);
 
         if (rendered) 
             element.getElementsByClassName("close")[0].click();
-        else if (game.system.id == "pf2e")
+        else if (gamingSystem == "pf2e")
             document.getElementsByClassName("compendium-browser-btn")[0].click()
         else
             ui.compendium.renderPopout();
