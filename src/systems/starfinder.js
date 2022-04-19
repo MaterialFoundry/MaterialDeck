@@ -130,8 +130,8 @@ export class starfinder{
                 await effect.delete();
         }
         else {
-            const effect = CONFIG.statusEffects.find(e => e.id === condition);
-            await token.toggleEffect(effect);
+            if (this.getConditionActive(token,condition)) token.actor.setCondition(condition,false);
+            else token.actor.setCondition(condition,true);
         }
         return true;
     }
