@@ -8,7 +8,7 @@ import {SoundboardControl} from "./src/soundboard.js";
 import {OtherControls} from "./src/othercontrols.js";
 import {ExternalModules} from "./src/external.js";
 import {SceneControl} from "./src/scene.js";
-import {downloadUtility, compatibleCore} from "./src/misc.js";
+import {downloadUtility, compatibleCore, compareVersions} from "./src/misc.js";
 import {TokenHelper} from "./src/systems/tokenHelper.js";
 export var streamDeck;
 export var tokenControl;
@@ -90,10 +90,10 @@ async function analyzeWSmessage(msg){
         
         sdVersion = data.version;
 
-        if (data.version < minimumSDversion && updateDialog == undefined) {
+        if (!compareVersions(minimumSDversion,data.version) && updateDialog == undefined) {
             updateDialog = new Dialog({
                 title: "Material Deck: Update Needed",
-                content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is incompatible with this verion of the module.<br>Update to v" + minimumSDversion + " or newer.</p>",
+                content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is incompatible with this version of the module.<br>Update to v" + minimumSDversion + " or newer.</p>",
                 buttons: {
                  download: {
                   icon: '<i class="fas fa-download"></i>',

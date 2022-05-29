@@ -1,8 +1,26 @@
 import {sdVersion, msVersion, moduleName, getPermission, enableModule, streamDeck} from "../MaterialDeck.js";
 import {macroControl,soundboard,playlistControl} from "../MaterialDeck.js";
 
+export function compareVersions(checkedVersion, requiredVersion) {
+    requiredVersion = requiredVersion.split(".");
+    checkedVersion = checkedVersion.split(".");
+    for (let i=0; i<3; i++) {
+        requiredVersion[i] = isNaN(parseInt(requiredVersion[i])) ? 0 : parseInt(requiredVersion[i]);
+        checkedVersion[i] = isNaN(parseInt(checkedVersion[i])) ? 0 : parseInt(checkedVersion[i]);
+    }
+
+    if (checkedVersion[0] > requiredVersion[0]) return false;
+    if (checkedVersion[0] < requiredVersion[0]) return true;
+    if (checkedVersion[1] > requiredVersion[1]) return false;
+    if (checkedVersion[1] < requiredVersion[1]) return true;
+    if (checkedVersion[2] > requiredVersion[2]) return false;
+    return true;
+}
+
 export function compatibleCore(compatibleVersion){
     let coreVersion = game.version == undefined ? game.data.version : `0.${game.version}`;
+    return compareVersions(compatibleVersion, coreVersion);
+    /*
     coreVersion = coreVersion.split(".");
     compatibleVersion = compatibleVersion.split(".");
     if (compatibleVersion[0] > coreVersion[0]) return false;
@@ -11,6 +29,7 @@ export function compatibleCore(compatibleVersion){
     if (compatibleVersion[1] < coreVersion[1]) return true;
     if (compatibleVersion[2] > coreVersion[2]) return false;
     return true;
+    */
   }
 
 export class playlistConfigForm extends FormApplication {
@@ -1219,8 +1238,9 @@ export class deviceConfig extends FormApplication {
             dConfig = {};
             game.settings.set(moduleName, 'devices', dConfig);
         }
-
+  
         for (let d of streamDeck.buttonContext) {
+            if (d == undefined) continue;
             let type;
             if (d.type == 0) type = 'Stream Deck';
             else if (d.type == 1) type = 'Stream Deck Mini';
@@ -1242,6 +1262,7 @@ export class deviceConfig extends FormApplication {
             }
             this.devices.push(device);
         }
+        
         
         return {
             devices: this.devices
