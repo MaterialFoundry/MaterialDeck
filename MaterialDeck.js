@@ -70,9 +70,9 @@ async function analyzeWSmessage(msg){
             system: gamingSystem
         }
         ws.send(JSON.stringify(msg));
-        
+        if (data.MSversion) msVersion = data.MSversion;
 
-        console.log("streamdeck connected to server");
+        console.log("streamdeck connected to server", msVersion);
         streamDeck.resetImageBuffer();
     }
 

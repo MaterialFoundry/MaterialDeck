@@ -1184,7 +1184,7 @@ export class downloadUtility extends FormApplication {
         let parent = this;
         let url;
         if (reqType == 'SD') url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck_SD/master/Plugin/com.cdeenen.materialdeck.sdPlugin/manifest.json';
-        else if (reqType == 'MS') url = 'https://raw.githubusercontent.com/CDeenen/MaterialServer/master/src/Windows/package.json';
+        else if (reqType == 'MS') url = 'https://raw.githubusercontent.com/CDeenen/MaterialServer/master/package.json';
         const elementId = reqType == 'SD' ? 'masterSdVersion' : 'masterMsVersion';
 
         var request = new XMLHttpRequest();

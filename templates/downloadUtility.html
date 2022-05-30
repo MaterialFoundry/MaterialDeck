@@ -51,9 +51,10 @@
           <td class='columnVersion' id='masterMsVersion'>{{masterMsVersion}}</td>
           <td class='columnOS'>
             <select id="os" default="" {{#if msDlDisable}}disabled{{/if}}>
-                <option value="win">{{localize "MaterialDeck.DownloadUtility.Windows"}}</option>
-                <option value="macos">{{localize "MaterialDeck.DownloadUtility.Macos"}}</option>
-                <option value="linux">{{localize "MaterialDeck.DownloadUtility.Linux"}}</option>
+                <option value="win32-x64">{{localize "MaterialDeck.DownloadUtility.Windows"}}</option>
+                <option value="macos-x64">{{localize "MaterialDeck.DownloadUtility.MacosIntel"}}</option>
+                <option value="macos-arm64">{{localize "MaterialDeck.DownloadUtility.MacosM1"}}</option>
+                <option value="linux-x64">{{localize "MaterialDeck.DownloadUtility.Linux"}}</option>
                 <option value="source">{{localize "MaterialDeck.DownloadUtility.Source"}}</option>
             </select>
           </td>

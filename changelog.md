@@ -1,4 +1,16 @@
 # Changelog Material Deck Module
+### v1.4.10 - 30-05-2022
+Fixes:
+<ul>
+    <li>Stream Deck plugin v1.4.10 was not properly recognized as compatible</li>
+</ul>
+
+Additions;
+<ul>
+    <li>Material Server version is now displayed in the Download Utility (MS v1.1.0+)</li>
+</ul>
+
+
 ### v1.4.9 - 16-04-2022
 Fixes:
 <ul>
