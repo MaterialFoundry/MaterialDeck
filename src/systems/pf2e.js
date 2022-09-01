@@ -294,7 +294,7 @@ export class pf2e{
     }
 
     getItemUses(item) {
-        return {available: item.quantity.value};
+        return {available: item.quantity};
     }
     
     /**
@@ -304,7 +304,16 @@ export class pf2e{
         if (this.isLimitedSheet(token.actor)) return [];
         if (featureType == undefined) featureType = 'any';
         const allItems = token.actor.items;
-        if (featureType == 'any') return allItems.filter(i => i.type == 'ancestry' || i.type == 'background' || i.type == 'class' || i.type == 'feat' || i.type == 'action');
+        if (featureType == 'any') return allItems.filter(i => i.type == 'ancestry' || i.type == 'background' || i.type == 'class' || i.type == 'feat' || i.type == 'action' || i.type == 'heritage' || i.type == 'deity' || i.type == '');
+        if (featureType == 'feat-any') return allItems.filter(i => i.type == 'feat');
+        if (featureType == 'ancestryfeature') return allItems.filter(i => i.type == 'feat' && i.featType == 'ancestryfeature');
+        if (featureType == 'classfeature') return allItems.filter(i => i.type == 'feat' && i.featType == 'classfeature');
+        if (featureType == 'feat-anc') return allItems.filter(i => i.type == 'feat' && i.featType == 'ancestry');
+        if (featureType == 'feat-arc') return allItems.filter(i => i.type == 'feat' && i.featType == 'archetype' && i.name.indexOf('Dedication') < 0);
+        if (featureType == 'feat-ded') return allItems.filter(i => i.type == 'feat' && i.featType == 'archetype' && i.name.indexOf('Dedication') > 0);
+        if (featureType == 'feat-cla') return allItems.filter(i => i.type == 'feat' && i.featType == 'class');
+        if (featureType == 'feat-gen') return allItems.filter(i => i.type == 'feat' && i.featType == 'general');
+        if (featureType == 'feat-ski') return allItems.filter(i => i.type == 'feat' && i.featType == 'skill');
         if (featureType == 'action-any') return allItems.filter(i => i.type == 'action');
         if (featureType == 'action-def') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'defensive');
         if (featureType == 'action-int') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'interaction');
@@ -326,7 +335,7 @@ export class pf2e{
     }
 
     getFeatureUses(item) {
-        if (item.data.type == 'class') return {available: item.actor.details.level.value};
+        if (item.data.type == 'class') return {available: item.parent.data.data.details.level.value};
         else return;
     }
 
@@ -457,7 +466,7 @@ export class pf2e{
         if (otherControls.rollOption == 'map2') variant = 2;
         if (item?.parent?.type == 'hazard' && item.type==='melee') return item.rollNPCAttack({}, variant+1);
         if (item.type==='strike') return item.variants[variant].roll({event});
-        if (item?.parent?.type !== 'hazard' && (item.type==='weapon' || item.type==='melee')) return item.parent.actions.find(a=>a.name===item.name).variants[variant].roll({event});
+        if (item?.parent?.type !== 'hazard' && (item.type==='weapon' || item.type==='melee')) return item.parent.data.data.actions.find(a=>a.name===item.name).variants[variant].roll({event});
         if (item.type === 'spell') {
             const spellbook = this.findSpellcastingEntry(item.parent, item);
             if (spellbook != undefined) {
