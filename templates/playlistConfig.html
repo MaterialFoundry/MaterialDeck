@@ -4,7 +4,7 @@
     </div>
     <div class="form-group">     
         <label>{{localize "MaterialDeck.PL.Mode"}}</label>
-        <select name="playMode" class="playMode" default="">
+        <select name="playMode" class="materialDeck_plConfig_select" default="">
             {{#select playMode}}
                 <option value="0">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
                 <option value="1">{{localize "MaterialDeck.PL.OneTrackPlaylist"}}</option>
@@ -14,7 +14,7 @@
     </div>
     <div class="form-group">     
         <label>{{localize "MaterialDeck.PL.Nr"}}</label>
-        <input type="number" id="numberOfPlaylists" name="plNum" min="0" max="127" value={{numberOfPlaylists}}>
+        <input type="number" class="materialDeck_plConfig_select" id="numberOfPlaylists" name="plNum" min="0" max="127" value={{numberOfPlaylists}}>
     </div>
     <div>                    
         <h2>{{localize "MaterialDeck.Playlists"}}</h2>
@@ -22,7 +22,7 @@
     {{#each playlistData}}
         <div class="form-group">
             <label>{{localize "MaterialDeck.Playlist"}} {{this.iteration}}</label>
-            <select name="selectedPlaylist" class="playlist-select" id="playlist{{this.iteration}}" default="">
+            <select name="selectedPlaylist" class="materialDeck_plConfig_select" id="playlist{{this.iteration}}" default="">
                 {{#select this.playlist}}
                     <option value="">{{localize "MaterialDeck.None"}}</option>
                     {{#each ../playlists}}
@@ -31,7 +31,7 @@
                 {{/select}}
             </select>
             &nbsp;
-            <select name="playlistMode" class="playlistMode" id="playlistMode{{this.iteration}}" default="">
+            <select name="playlistMode" class="materialDeck_plConfig_select" id="playlistMode{{this.iteration}}" default="">
                 {{#select this.playlistMode}}
                     <option value="0">{{localize "MaterialDeck.PL.Mode"}}</option>
                     <option value="1">{{localize "MaterialDeck.PL.Unrestricted"}}</option>

@@ -1,6 +1,4 @@
-import * as MODULE from "../MaterialDeck.js";
-import {streamDeck} from "../MaterialDeck.js";
-import {compatibleCore} from "./misc.js";
+import { moduleName, streamDeck, getPermission } from "../../MaterialDeck.js";
 
 export class PlaylistControl{
     constructor(){
@@ -22,7 +20,7 @@ export class PlaylistControl{
     }
 
     update(settings,context,device){
-        if (MODULE.getPermission('PLAYLIST','PLAY') == false ) {
+        if (getPermission('PLAYLIST','PLAY') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -84,7 +82,7 @@ export class PlaylistControl{
             let playlistOffset = parseInt(settings.offset);
             if (isNaN(playlistOffset)) playlistOffset = 0;
             let number = parseInt(this.playlistOffset + playlistOffset);
-            const nrOfPlaylists = parseInt(game.settings.get(MODULE.moduleName,'playlists').playlistNumber);
+            const nrOfPlaylists = parseInt(game.settings.get(moduleName,'playlists').playlistNumber);
             if (number < 0) number += nrOfPlaylists;
             else if (number >= nrOfPlaylists) number -= nrOfPlaylists;
             const targetPlaylist = this.getPlaylist(number);
@@ -116,7 +114,7 @@ export class PlaylistControl{
             
             let playlist = this.getPlaylist(playlistNr);
             if (playlist != undefined){
-                const track = compatibleCore("0.8.1") ? playlist.sounds.contents[trackNr] : playlist.sounds[trackNr];
+                const track = playlist.sounds.contents[trackNr];
                 if (track != undefined){
                     if (track.playing) 
                         ringColor = ringOnColor;
@@ -157,7 +155,7 @@ export class PlaylistControl{
         }
         else {
             let playing = game.playlists.playing;
-            let settings = game.settings.get(MODULE.moduleName,'playlists');
+            let settings = game.settings.get(moduleName,'playlists');
             let selectedPlaylists = settings.selectedPlaylist;
             for (let i=0; i<playing.length; i++){
                 const playlistNr = selectedPlaylists.findIndex(p => p == playing[i]._id);
@@ -189,14 +187,14 @@ export class PlaylistControl{
     }
 
     getPlaylist(num){
-        let selectedPlaylists = game.settings.get(MODULE.moduleName,'playlists').selectedPlaylist;
+        let selectedPlaylists = game.settings.get(moduleName,'playlists').selectedPlaylist;
         if (selectedPlaylists != undefined) 
             return game.playlists.get(selectedPlaylists[num]);
         else return undefined;
     }
 
     keyPress(settings,context,device){
-        if (MODULE.getPermission('PLAYLIST','PLAY') == false ) return;
+        if (getPermission('PLAYLIST','PLAY') == false ) return;
         let playlistNr = settings.playlistNr;
         if (playlistNr == undefined || playlistNr < 1) playlistNr = 1;
         playlistNr--;
@@ -222,7 +220,7 @@ export class PlaylistControl{
                     if (playlistMode == 'playlist')
                         this.playPlaylist(playlist,playlistNr);
                     else {
-                        const track = compatibleCore("0.8.1") ? playlist.sounds.contents[trackNr] : playlist.sounds[trackNr];
+                        const track = playlist.sounds.contents[trackNr];
                         if (track != undefined){
                             this.playTrack(track,playlist,playlistNr);
                         }
@@ -251,7 +249,7 @@ export class PlaylistControl{
                     let playlistOffset = parseInt(settings.offset);
                     if (isNaN(playlistOffset)) playlistOffset = 0;
                     let number = parseInt(this.playlistOffset + playlistOffset);
-                    const nrOfPlaylists = parseInt(game.settings.get(MODULE.moduleName,'playlists').playlistNumber);
+                    const nrOfPlaylists = parseInt(game.settings.get(moduleName,'playlists').playlistNumber);
                     if (number < 0) number += nrOfPlaylists;
                     else if (number >= nrOfPlaylists) number -= nrOfPlaylists;
                     this.playlistOffset = number;
@@ -281,12 +279,15 @@ export class PlaylistControl{
             playlist.stopAll();
             return;
         }
-        let mode = game.settings.get(MODULE.moduleName,'playlists').playlistMode[playlistNr];
+        let mode = game.settings.get(moduleName,'playlists').playlistMode[playlistNr];
+        const originalPlayMode = playlist.mode;
+        await playlist.update({mode: CONST.PLAYLIST_MODES.SEQUENTIAL});
         if (mode == 0) {
-            mode = game.settings.get(MODULE.moduleName,'playlists').playMode;
-            if (mode == 2) await this.stopAll();
+            mode = game.settings.get(moduleName,'playlists').playMode;
+            if (mode == 2) await this.stopAll(true);
         }
         playlist.playAll();
+        await playlist.update({mode: originalPlayMode});
     }
     
     async playTrack(track,playlist,playlistNr){
@@ -301,23 +302,25 @@ export class PlaylistControl{
             return;
         }
         let play;
+        const originalPlayMode = playlist.mode;
         if (track.playing)
             play = false;
         else {
             play = true;
-            let mode = game.settings.get(MODULE.moduleName,'playlists').playlistMode[playlistNr];
+            let mode = game.settings.get(moduleName,'playlists').playlistMode[playlistNr];
             if (mode == 0) {
-                mode = game.settings.get(MODULE.moduleName,'playlists').playMode;
-                if (mode == 1) await playlist.stopAll();
-                else if (mode == 2) await this.stopAll();
+                mode = game.settings.get(moduleName,'playlists').playMode;
+                if (mode == 0) await playlist.update({mode: CONST.PLAYLIST_MODES.SIMULTANEOUS});
+                else if (mode == 1) await playlist.stopAll();
+                else if (mode == 2) await this.stopAll(true);
             }
-            else if (mode == 2) await playlist.stopAll();
+            else if (mode == 2) await playlist.stopAll(true);
         }
         
-        if (compatibleCore("0.8.1") && play) await playlist.playSound(track);
-        else if (compatibleCore("0.8.1")) await playlist.stopSound(track);
-        else await playlist.updateEmbeddedEntity("PlaylistSound", {_id: track._id, playing: play});
+        if (play) await playlist.playSound(track);
+        else await playlist.stopSound(track);
         
         playlist.update({playing: play});
+        await playlist.update({mode: originalPlayMode});
     }
 }

@@ -1,15 +1,19 @@
-import {registerSettings} from "./src/settings.js";
-import {StreamDeck} from "./src/streamDeck.js";
-import {TokenControl} from "./src/token.js";
-import {MacroControl} from "./src/macro.js";
-import {CombatTracker} from "./src/combattracker.js";
-import {PlaylistControl} from "./src/playlist.js";
-import {SoundboardControl} from "./src/soundboard.js";
-import {OtherControls} from "./src/othercontrols.js";
-import {ExternalModules} from "./src/external.js";
-import {SceneControl} from "./src/scene.js";
-import {downloadUtility, compatibleCore, compareVersions} from "./src/misc.js";
-import {TokenHelper} from "./src/systems/tokenHelper.js";
+import { registerSettings } from "./src/settings.js";
+import { StreamDeck } from "./src/streamDeck.js";
+import { TokenControl } from "./src/actions/token.js";
+import { MacroControl } from "./src/actions/macro.js";
+import { CombatTracker } from "./src/actions/combattracker.js";
+import { PlaylistControl } from "./src/actions/playlist.js";
+import { SoundboardControl } from "./src/actions/soundboard.js";
+import { OtherControls } from "./src/actions/othercontrols.js";
+import { ExternalModules } from "./src/actions/external.js";
+import { SceneControl } from "./src/actions/scene.js";
+import { downloadUtility, compareVersions, compatibleCore } from "./src/misc.js";
+import { TokenHelper } from "./src/systems/tokenHelper.js";
+
+export const minimumSDversion = "1.4.11";
+export const minimumMSversion = "1.0.2";
+
 export var streamDeck;
 export var tokenControl;
 export var macroControl;
@@ -20,21 +24,15 @@ export var otherControls;
 export var externalModules;
 export var sceneControl;
 export var tokenHelper;
-
 export const moduleName = "MaterialDeck";
-
 export let gamingSystem = "dnd5e";
-
-let ready = false;
-
 export let hotbarUses = false;
 export let calculateHotbarUses;
-
-let controlTokenTimer;
-
 export let sdVersion;
 export let msVersion;
 
+let ready = false;
+let controlTokenTimer;
 let updateDialog;
        
 //CONFIG.debug.hooks = true;
@@ -67,33 +65,58 @@ async function analyzeWSmessage(msg){
         const msg = {
             target: "SD",
             type: "init",
-            system: gamingSystem
+            system: getGamingSystem(),
+            coreVersion: game.version.split('.')[0]
         }
         ws.send(JSON.stringify(msg));
         if (data.MSversion) msVersion = data.MSversion;
+        if (data.SDversion) sdVersion = data.SDversion;
 
         console.log("streamdeck connected to server", msVersion);
         streamDeck.resetImageBuffer();
     }
 
     if (data.type == "version" && data.source == "SD") {
-        let minimumSDversion;
-        let minimumMSversion;
-        if (compatibleCore("0.8.5")) {
-            minimumSDversion = game.modules.get("MaterialDeck").data.flags.minimumSDversion.replace('v','');
-            minimumMSversion = game.modules.get("MaterialDeck").data.flags.minimumMSversion;
-        }
-        else {
-            minimumSDversion = game.modules.get("MaterialDeck").data.minimumSDversion.replace('v','');
-            minimumMSversion = game.modules.get("MaterialDeck").data.minimumMSversion;
-        }
-        
         sdVersion = data.version;
 
-        if (!compareVersions(minimumSDversion,data.version) && updateDialog == undefined) {
+        const sdCompatible = compareVersions(minimumSDversion,sdVersion);
+        const msCompatible = compareVersions(minimumMSversion,msVersion);
+
+        if ((!sdCompatible || !msCompatible) && updateDialog == undefined) {
+            let content = "";
+            
+            if (!sdCompatible && !msCompatible) 
+                content = game.i18n.localize("MaterialDeck.SdMsUpdateRequired")
+            else if (!sdCompatible)
+                content = game.i18n.localize("MaterialDeck.SdUpdateRequired")
+            else    
+                content = game.i18n.localize("MaterialDeck.MsUpdateRequired")
+            const sd = sdCompatible ? 'display:none' : ''
+            const ms = msCompatible ? 'display:none' : ''
+            content += `
+                <table>
+                    <tr>
+                        <th style='width:40%'>
+                        <th style='width:30%'>${game.i18n.localize("MaterialDeck.DownloadUtility.Current")}</th>
+                        <th style='width:30%'>${game.i18n.localize("MaterialDeck.DownloadUtility.Minimum")}</th>
+                    </tr>
+                    <tr style="${sd}">
+                        <td>Stream Deck Plugin</td>
+                        <td><center>${sdVersion}</center></td>
+                        <td><center>${minimumSDversion}</center></td>
+                    </tr>
+                    <tr style="${ms}">
+                        <td>Material Server</th>
+                        <td><center>${msVersion}</center></td>
+                        <td><center>${minimumMSversion}</center></td>
+                    <tr>
+                </table>
+                `
+            //else if (!sdCompatible) contents += `The Stream Deck plugin version you're using is v${data.version}, which is incompatible with this version of the module.<br>Update to v${minimumSDversion} or newer.`;
+            
             updateDialog = new Dialog({
                 title: "Material Deck: Update Needed",
-                content: "<p>The Stream Deck plugin version you're using is v" + data.version + ", which is incompatible with this version of the module.<br>Update to v" + minimumSDversion + " or newer.</p>",
+                content,
                 buttons: {
                  download: {
                   icon: '<i class="fas fa-download"></i>',
@@ -224,7 +247,8 @@ function startWebsocket() {
         const msg2 = {
             target: "SD",
             type: "init",
-            system: gamingSystem
+            system: getGamingSystem(),
+            coreVersion: game.version.split('.')[0]
         }
         ws.send(JSON.stringify(msg2));
         clearInterval(wsInterval);
@@ -278,6 +302,11 @@ export function getPermission(action,func) {
     else return settings.permissions?.[action]?.[func]?.[role];
 }
 
+function getGamingSystem() {
+    const systemOverride = game.settings.get(moduleName,'systemOverride');
+    gamingSystem = (systemOverride == undefined || systemOverride == null || systemOverride == '') ? game.system.id : systemOverride;
+    return gamingSystem;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -290,11 +319,10 @@ export function getPermission(action,func) {
  * Attempt to open the websocket
  */
 Hooks.once('ready', async()=>{
-    registerSettings();
-    enableModule = (game.settings.get(moduleName,'Enable')) ? true : false;
+    await registerSettings();
+    enableModule = (game.settings.get(moduleName,'Enable')) ? true : false; 
 
-    const systemOverride = game.settings.get(moduleName,'systemOverride');
-    gamingSystem = systemOverride != '' ? systemOverride : game.system.id;
+    getGamingSystem();
 
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
@@ -435,7 +463,7 @@ Hooks.on('onActorSetCondition',(data)=>{
 Hooks.on('controlToken',(token,controlled)=>{
     if (enableModule == false || ready == false) return;
     if (controlled) {
-        tokenControl.update(token.data._id);
+        tokenControl.update(compatibleCore('10.0') ? token.id : token.data._id);
         if (controlTokenTimer != undefined) {
             clearTimeout(controlTokenTimer);
             controlTokenTimer = undefined;
@@ -459,9 +487,7 @@ Hooks.on('renderHotbar', (hotbar)=>{
 
 Hooks.on('render', (app)=>{
     if (enableModule == false || ready == false) return;
-    if (compatibleCore("0.8.1") == false) return;
     if (app.id == "hotbar" && macroControl != undefined)  macroControl.hotbar(app.macros);
-    
 });
 
 Hooks.on('renderCombatTracker',()=>{
@@ -484,6 +510,11 @@ Hooks.on('closeplaylistConfigForm', (form)=>{
     if (enableModule == false || ready == false) return;
     if (form.template == "./modules/MaterialDeck/templates/playlistConfig.html")
         playlistControl.updateAll();
+});
+
+Hooks.on('lightingRefresh',()=>{
+    if (enableModule == false || ready == false) return;
+    if (tokenControl != undefined) tokenControl.update();
 });
 
 Hooks.on('pauseGame',()=>{
@@ -610,6 +641,7 @@ Hooks.on('updateTile',()=>{
 Hooks.once('init', ()=>{
     //CONFIG.debug.hooks = true;
     //registerSettings(); //in ./src/settings.js
+    
 });
 
 Hooks.once('canvasReady',()=>{

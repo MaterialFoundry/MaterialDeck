@@ -1,30 +1,36 @@
-import {compatibleCore} from "../misc.js";
+import { compatibleCore } from "../misc.js";
 
 export class forbiddenlands{
     constructor(){
-        
+        console.log("Material Deck: Using system 'Forbidden Lands'");
+    }
+
+    getActorData(token) {
+        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+    }
+
+    getItemData(item) {
+        return compatibleCore('10.0') ? item.system : item.data.data;
     }
 
     getHP(token) {
-        const hp = token.actor.data.data.attribute.strength;
+        const hp = this.getActorData(token).attribute.strength;
         return {
             value: hp.value,
             max: hp.max
         }
     }
 
-
     getAgility(token) {
-        const agility = token.actor.data.data.attribute.agility;
+        const agility = this.getActorData(token).attribute.agility;
         return {
             value: agility.value,
             max: agility.max
         }
     }
 
-
     getWits(token) {
-        const wits = token.actor.data.data.attribute.wits;
+        const wits = this.getActorData(token).attribute.wits;
         return {
             value: wits.value,
             max: wits.max
@@ -32,7 +38,7 @@ export class forbiddenlands{
     }
 
     getEmpathy(token) {
-        const empathy = token.actor.data.data.attribute.empathy;
+        const empathy = this.getActorData(token).attribute.empathy;
         return {
             value: empathy.value,
             max: empathy.max
@@ -40,7 +46,7 @@ export class forbiddenlands{
     }
 
     getWillPower(token) {
-        const wp = token.actor.data.data.bio.willpower;
+        const wp = this.getActorData(token).bio.willpower;
         return {
             value: wp.value,
             max: wp.max
@@ -49,15 +55,9 @@ export class forbiddenlands{
 
     getTempHP(token) {
         return 0;
-        const hp = token.actor.data.data.attributes.hp;
-        return {
-            value: (hp.temp == null) ? 0 : hp.temp,
-            max: (hp.tempmax == null) ? 0 : hp.tempmax
-        }
     }
 
     getAC(token) {
-
         const totalArmor = token.actor.itemTypes.armor.reduce((sum, armor) => {
 			if (armor.itemProperties.part === "shield") return sum;
 			const value = armor.itemProperties.bonus.value;
@@ -76,8 +76,6 @@ export class forbiddenlands{
 
     getInitiative(token) {
         return 0;
-        let initiative = token.actor.data.data.attributes.init.total;
-        return (initiative >= 0) ? `+${initiative}` : initiative;
     }
 
     toggleInitiative(token) {
@@ -86,17 +84,15 @@ export class forbiddenlands{
 
     getPassivePerception(token) {
         return 0;
-        return token.actor.data.data.skills.prc.passive;
     }
 
     getPassiveInvestigation(token) {
         return;
-        return token.actor.data.data.skills.inv.passive;
     }
 
     getAbility(token, ability) {
         if (ability == undefined) ability = 'strength';
-        return token.actor.data.data.attribute?.[ability].value;
+        return this.getActorData(token).attribute?.[ability].value;
     } 
 
     getAbilityModifier(token, ability) {
@@ -116,8 +112,6 @@ export class forbiddenlands{
 
     getProficiency(token) {
         return;
-        const val = token.actor.data.data.attributes.prof;
-        return (val >= 0) ? `+${val}` : val;
     }
 
     getConditionIcon(condition) {
@@ -181,9 +175,9 @@ export class forbiddenlands{
 
     getItemUses(item) {
         if (item.type == 'monsterAttack') return;
-        if (item.type == 'rawMaterial') return {available: item.data.data.quantity};
-        return {available: item.data.data.bonus.value,
-            maximum: item.data.data.bonus.max};
+        if (item.type == 'rawMaterial') return {available: this.getItemData(item).quantity};
+        return {available: this.getItemData(item).bonus.value,
+            maximum: this.getItemData(item).bonus.max};
     }
 
     /**
@@ -197,10 +191,10 @@ export class forbiddenlands{
     }
 
     getFeatureUses(item) {
-        if (item.data.type == 'class') return {available: item.data.data.levels};
+        if (item.data.type == 'class') return {available: this.getItemData(item).levels};
         else return {
-            available: item.data.data.uses.value, 
-            maximum: item.data.data.uses.max
+            available: this.getItemData(item).uses.value, 
+            maximum: this.getItemData(item).uses.max
         };
     }
 
@@ -211,15 +205,15 @@ export class forbiddenlands{
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        else return allItems.filter(i => i.type == 'spell' && i.data.data.level == level)
+        else return allItems.filter(i => i.type == 'spell' && this.getItemData(i).level == level)
     }
 
     getSpellUses(token,level,item) {
         if (level == undefined) level = 'any';
-        if (item.data.data.level == 0) return;
+        if (this.getItemData(item).level == 0) return;
         return {
-            available: token.actor.data.data.spells?.[`spell${level}`].value,
-            maximum: token.actor.data.data.spells?.[`spell${level}`].max
+            available: this.getActorData(token).spells?.[`spell${level}`].value,
+            maximum: this.getActorData(token).spells?.[`spell${level}`].max
         }
     }
 

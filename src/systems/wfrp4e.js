@@ -1,21 +1,28 @@
-import {compatibleCore} from "../misc.js";
+import { compatibleCore } from "../misc.js";
 
 export class wfrp4e {
     constructor(){
-        
+        console.log("Material Deck: Using system 'Warhammer Fantasy Roleplaying 4e'");
+    }
+
+    getActorData(token) {
+        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+    }
+
+    getItemData(item) {
+        return compatibleCore('10.0') ? item.system : item.data.data;
     }
 
     getFate(token) {
-        return token.actor.data.data.status.fate.value
+        return this.getActorData(token).status.fate.value
     }
 
     getFortune(token) {
-        return token.actor.data.data.status.fortune.value
+        return this.getActorData(token).status.fortune.value
     }
 
-
     getWounds(token) {
-        const wounds =  token.actor.data.data.status.wounds
+        const wounds =  this.getActorData(token).status.wounds
         return {
             value: wounds.value,
             max: wounds.max
@@ -24,7 +31,7 @@ export class wfrp4e {
     }
 
     getCriticalWounds(token) {
-        const criticalWounds = token.actor.data.data.status.criticalWounds
+        const criticalWounds = this.getActorData(token).status.criticalWounds
         return {
             value: criticalWounds.value,
             max: criticalWounds.max
@@ -32,19 +39,19 @@ export class wfrp4e {
     }
 
     getCorruption(token) {
-        return token.actor.data.data.status.corruption.value
+        return this.getActorData(token).status.corruption.value
     }
 
     getAdvantage(token) {
-        return token.actor.data.data.status.advantage.value
+        return this.getActorData(token).status.advantage.value
     }
 
     getResolve(token) {
-        return token.actor.data.data.status.resolve.value
+        return this.getActorData(token).status.resolve.value
     }
 
     getResilience(token) {
-        return token.actor.data.data.status.resilience.value
+        return this.getActorData(token).status.resilience.value
     }
 
     getAbility(token, abilityName) {
@@ -53,7 +60,7 @@ export class wfrp4e {
 
     getCharacteristics(token, characteristicName) {
         if (characteristicName == undefined ) characteristicName = `AG`;
-        const characteristic = token.actor.data.data.characteristics[characteristicName.toLowerCase()]
+        const characteristic = this.getActorData(token).characteristics[characteristicName.toLowerCase()]
         const val = characteristic.value;
         return (val >= 0) ? `+${val}` : val;
     }
@@ -74,7 +81,7 @@ export class wfrp4e {
     }
 
     getFeatureUses(item) {
-        return {available: `+${item.data.data.total.value}`};
+        return {available: `+${this.getItemData(item).total.value}`};
     }
     
     getHP(token) {
@@ -86,7 +93,7 @@ export class wfrp4e {
     }
 
     getSpeed(token) {
-        return token.actor.data.data.details.move.value;
+        return this.getActorData(token).details.move.value;
     }
 
 
@@ -125,7 +132,7 @@ export class wfrp4e {
 
     getItemUses(item) {
         if ( item.type == 'ammunition') {
-            return {available: item.data.data.quantity.value};
+            return {available: this.getItemData(item).quantity.value};
         }
         else {
             return;

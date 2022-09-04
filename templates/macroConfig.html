@@ -1,25 +1,12 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
-    <style>
-        .boxed {
-            border: 1px solid black ;
-            border-radius: 5px ; 
-            max-width: 166px;
-            height: {{height}}px;
-        }
-        .navigation {
-            flex:1;
-            max-width: 8%;
-        }
-    </style>
-
-    <div class="navigationDiv" style="width:100%; display:flex; flex-direction:row;">
-        <button type="button" class="navigation" id="navPrev" {{prevDisabled}}>
+    <div class="materialDeck_macroConfig_navigationDiv">
+        <button type="button" class="materialDeck_macroConfig_navigation" name="navPrev" {{prevDisabled}}>
             <i class="fas fa-arrow-left"></i>
         </button>
-        <p style="width:84%; text-align:center; padding: 0px 0; font-size: 20px"><b>
+        <p class="materialDeck_macroConfig_p"><b>
             {{localize "MaterialDeck.Perm.MACRO.label"}}: {{macroRange}} {{localize "MaterialDeck.Of"}} {{totalMacros}}
         </b></p>
-        <button type="button" class="navigation" id="navNext">
+        <button type="button" class="materialDeck_macroConfig_navigation" name="navNext">
             <i class="fas fa-arrow-right"></i>
         </button>
     </div>
@@ -28,12 +15,12 @@
     {{#each macroData}}
         <div class="form-group" style="width:100%">
             {{#each this.dataThis}}
-                <div class="boxed" style="padding: 5px; margin:2px; width:10%">
+                <div class="materialDeck_macroConfig_boxed">
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Macro"}} {{this.iteration}}
                     </div>
                     <div>
-                        <select name="macros" class="macros-select" id="macros{{this.iteration}}" default="" style="width:100%;">
+                        <select name="macros" class="macros-select" id="materialDeck_macroConfig_macros{{this.iteration}}" default="" style="width:100%;">
                             {{#select this.macro}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each ../../macros}}
@@ -44,30 +31,30 @@
                     </div>
                     {{#if ../../furnace}}
                         <label>{{localize "MaterialDeck.FurnaceArgs"}}</label>
-                        <input type="text" name="args" id="args{{this.iteration}}" value="{{this.args}}">
+                        <input type="text" name="args" id="materialDeck_macroConfig_args{{this.iteration}}" value="{{this.args}}">
                     {{/if}}
                     
-                    <div class="flex-container" style="display:flex;flex-direction:row;padding-top:10px">  
+                    <div class="flex-container materialDeck_macroConfig_background">  
                         <label style="flex:1">{{localize "MaterialDeck.Background"}}</label>
-                        <input style="flex:1" type="color" name="colorPicker" id="colorpicker{{this.iteration}}" data-dtype="String" value="{{this.color}}">
+                        <input style="flex:1" type="color" name="colorPicker" id="materialDeck_macroConfig_colorpicker{{this.iteration}}" data-dtype="String" value="{{this.color}}">
                     </div>
                 </div>
             {{/each}}
         </div>
     {{/each}}
     <hr>
-    <div class="navigationDiv" style="width:100%; display:flex; flex-direction:row;">
-        <button type="button" class="navigation" id="clearPage">
+    <div class="materialDeck_macroConfig_navigationDiv">
+        <button type="button" class="materialDeck_macroConfig_navigation" name="clearPage">
             <i></i>{{localize "MaterialDeck.ClearPage"}}
         </button>
-        <button type="button" class="navigation" id="clearAll">
+        <button type="button" class="materialDeck_macroConfig_navigation" name="clearAll">
             <i></i>{{localize "MaterialDeck.ClearAll"}}
         </button>
         <p style="width:68%;"></p>
-        <button type="button" class="navigation" id="import">
+        <button type="button" class="materialDeck_macroConfig_navigation" name="import">
             <i></i>{{localize "MaterialDeck.Import"}}
         </button>
-        <button type="button" class="navigation" id="export">
+        <button type="button" class="materialDeck_macroConfig_navigation" name="export">
             <i></i>{{localize "MaterialDeck.Export"}}
         </button>
     </div>

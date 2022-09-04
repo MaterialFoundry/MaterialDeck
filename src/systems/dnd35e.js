@@ -1,12 +1,20 @@
-import {compatibleCore} from "../misc.js";
+import { compatibleCore } from "../misc.js";
 
 export class dnd35e{
     constructor(){
-        
+        console.log("Material Deck: Using system 'Dungeons & Dragons 3.5e'/'Pathfinder 1e'");
+    }
+
+    getActorData(token) {
+        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+    }
+
+    getItemData(item) {
+        return compatibleCore('10.0') ? item.system : item.data.data;
     }
 
     getHP(token) {
-        const hp = token.actor.data.data.attributes.hp;
+        const hp = this.getActorData(token).attributes.hp;
         return {
             value: hp.value,
             max: hp.max
@@ -14,7 +22,7 @@ export class dnd35e{
     }
 
     getTempHP(token) {
-        const hp = token.actor.data.data.attributes.hp;
+        const hp = this.getActorData(token).attributes.hp;
         return {
             value: (hp.temp == null) ? 0 : hp.temp,
             max: (hp.tempmax == null) ? 0 : hp.tempmax
@@ -22,7 +30,7 @@ export class dnd35e{
     }
 
     getAC(token) {
-        return token.actor.data.data.attributes.ac.normal.total;
+        return this.getActorData(token).attributes.ac.normal.total;
     }
 
     getShieldHP(token) {
@@ -30,7 +38,7 @@ export class dnd35e{
     }
 
     getSpeed(token) {
-        const movement = token.actor.data.data.attributes.speed;
+        const movement = this.getActorData(token).attributes.speed;
         let speed = "";
         if (movement.burrow.total > 0) speed += `Burrow: ${movement.burrow.total}Ft`;
         if (movement.climb.total > 0) {
@@ -53,7 +61,7 @@ export class dnd35e{
     }
 
     getInitiative(token) {
-        let initiative = token.actor.data.data.attributes.init.total;
+        let initiative = this.getActorData(token).attributes.init.total;
         return (initiative >= 0) ? `+${initiative}` : initiative;
     }
 
@@ -71,29 +79,29 @@ export class dnd35e{
 
     getAbility(token, ability) {
         if (ability == undefined) ability = 'str';
-        return token.actor.data.data.abilities?.[ability].value;
+        return this.getActorData(token).abilities?.[ability].value;
     } 
 
     getAbilityModifier(token, ability) {
         if (ability == undefined) ability = 'str';
-        let val = token.actor.data.data.abilities?.[ability].mod;
+        let val = this.getActorData(token).abilities?.[ability].mod;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getAbilitySave(token, ability) {
         if (ability == undefined) ability = 'fort';
-        let val = token.actor.data.data.attributes.savingThrows?.[ability].total;
+        let val = this.getActorData(token).attributes.savingThrows?.[ability].total;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getSkill(token, skill) {
         if (skill == undefined) skill = 'apr';
-        const val = token.actor.data.data.skills?.[skill].mod;
+        const val = this.getActorData(token).skills?.[skill].mod;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getProficiency(token) {
-        const val = token.actor.data.data.attributes.prof;
+        const val = this.getActorData(token).attributes.prof;
         return (val >= 0) ? `+${val}` : val;
     }
 
@@ -133,7 +141,10 @@ export class dnd35e{
         if (roll == 'ability') token.actor.rollAbilityTest(ability,options);
         else if (roll == 'save') token.actor.rollSavingThrow(save, null, null,options);
         else if (roll == 'skill') token.actor.rollSkill(skill,options);
-        else if (roll == 'initiative') token.actor.rollInitiative(options);
+        else if (roll == 'initiative') {
+            options.rerollInitiative = true;
+            token.actor.rollInitiative(options);
+        }
         else if (roll == 'grapple') token.actor.rollGrapple(options);
         else if (roll == 'bab') token.actor.rollBAB(options);
         else if (roll == 'melee') token.actor.rollMelee(options);
@@ -147,16 +158,16 @@ export class dnd35e{
         if (itemType == undefined) itemType = 'any';
         const allItems = token.actor.items;
         if (itemType == 'any') return allItems.filter(i => i.type == 'weapon' || i.type == 'equipment' || i.type == 'consumable' || i.type == 'loot' || i.type == 'container');
-        else if (game.system.id == 'D35E' && itemType == 'container') return allItems.filter(i => i.type == 'loot' && i.data.data.subType == itemType);
+        else if (game.system.id == 'D35E' && itemType == 'container') return allItems.filter(i => i.type == 'loot' && this.getItemData(i).subType == itemType);
         else {
             if (itemType == 'gear' || itemType == 'ammo' || itemType == 'misc' || itemType == 'tradeGoods') 
-                return allItems.filter(i => i.type == 'loot' && i.data.data.subType == itemType);
+                return allItems.filter(i => i.type == 'loot' && this.getItemData(i).subType == itemType);
             else return allItems.filter(i => i.type == itemType);
         }
     }
 
     getItemUses(item) {
-        return {available: item.data.data.quantity};
+        return {available: this.getItemData(item).quantity};
     }
 
     /**
@@ -170,10 +181,10 @@ export class dnd35e{
     }
 
     getFeatureUses(item) {
-        if (item.data.type == 'class') return {available: item.data.data.levels};
+        if (item.data.type == 'class') return {available: this.getItemData(item).levels};
         else return {
-            available: item.data.data.uses.value, 
-            maximum: item.data.data.uses.max
+            available: this.getItemData(item).uses.value, 
+            maximum: this.getItemData(item).uses.max
         };
     }
 
@@ -184,12 +195,12 @@ export class dnd35e{
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        else return allItems.filter(i => i.type == 'spell' && i.data.data.level == level)
+        else return allItems.filter(i => i.type == 'spell' && this.getItemData(i).level == level)
     }
 
     getSpellUses(token,level,item) {
         if (level == undefined) level = 'any';
-        if (item.data.data.level == 0) return;
+        if (this.getItemData(item).level == 0) return;
         return {
             available: item.charges, 
             maximum: item.maxCharges

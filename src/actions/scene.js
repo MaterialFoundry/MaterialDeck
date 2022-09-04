@@ -1,6 +1,5 @@
-import * as MODULE from "../MaterialDeck.js";
-import {streamDeck} from "../MaterialDeck.js";
-import {compatibleCore} from "./misc.js";
+import { streamDeck, getPermission } from "../../MaterialDeck.js";
+import { compatibleCore } from "../misc.js";
 
 export class SceneControl{
     constructor(){
@@ -34,7 +33,7 @@ export class SceneControl{
         let src = "";
         let name = "";
         if (func == 'visible') { //visible scenes
-            if (MODULE.getPermission('SCENE','VISIBLE') == false ) {
+            if (getPermission('SCENE','VISIBLE') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -47,12 +46,12 @@ export class SceneControl{
             if (scene != undefined){
                 ringColor = scene.isView ? ringOnColor : ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = scene.img;
+                if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
                 if (scene.active) name += "\n(Active)";
             }
         }
         else if (func == 'dir') {   //from directory
-            if (MODULE.getPermission('SCENE','DIRECTORY') == false ) {
+            if (getPermission('SCENE','DIRECTORY') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -61,33 +60,39 @@ export class SceneControl{
             nr--;
 
             let sceneList = [];
-            for (let i=0; i<ui.scenes.tree.children.length; i++){
-                const scenesInFolder = compatibleCore("0.8.1") ? ui.scenes.tree.children[i].contents : ui.scenes.tree.children[i].entities;
-                for (let j=0; j<scenesInFolder.length; j++)
-                    sceneList.push(scenesInFolder[j])
+            if (compatibleCore('10.0')) {
+                sceneList = ui.scenes.documents;
             }
-            for (let i=0; i<ui.scenes.tree.content.length; i++)
-                sceneList.push(ui.scenes.tree.content[i])
+            else {
+                for (let i=0; i<ui.scenes.tree.children.length; i++){
+                    const scenesInFolder = ui.scenes.tree.children[i].contents;
+                    for (let j=0; j<scenesInFolder.length; j++)
+                        sceneList.push(scenesInFolder[j])
+                }
+                for (let i=0; i<ui.scenes.tree.content.length; i++)
+                    sceneList.push(ui.scenes.tree.content[i])
+            }
+            
 
             const scene = sceneList[nr+this.sceneOffset];
             
             if (scene != undefined){
                 if (scene.isView) 
                     ringColor = ringOnColor;
-                else if (scene.data.navigation && scene.data.permission.default == 0)
+                else if ((compatibleCore('10.0') && scene.navigation && scene.permission.default == 0) || (!compatibleCore('10.0') && scene.data.navigation && scene.data.permission.default == 0))
                     ringColor = '#000791';
-                else if (scene.data.navigation)
+                else if ((compatibleCore('10.0') && scene.navigation) || (!compatibleCore('10.0') && scene.data.navigation))
                     ringColor = '#2d2d2d';
                 else 
                     ringColor = ringOffColor;
                 
                 if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = scene.img;
+                if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
                 if (scene.active) name += "\n(Active)";
             }
         }
         else if (func == 'any') {   //by name
-            if (MODULE.getPermission('SCENE','NAME') == false ) {
+            if (getPermission('SCENE','NAME') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -97,19 +102,19 @@ export class SceneControl{
             if (scene != undefined){
                 ringColor = scene.isView ? ringOnColor : ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = scene.img;
+                if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
                 if (scene.active) name += "\n(Active)";
             }
         }
         else if (func == 'active'){
-            if (MODULE.getPermission('SCENE','ACTIVE') == false ) {
+            if (getPermission('SCENE','ACTIVE') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
             const scene = game.scenes.active;
             if (scene == undefined) return;
             if (settings.displaySceneName) name = scene.name;
-            if (settings.displaySceneIcon) src = scene.img;
+            if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
             ring = 0;
         }
         else if (func == 'offset'){
@@ -126,7 +131,7 @@ export class SceneControl{
         const func = settings.sceneFunction ? settings.sceneFunction : 'visible';
 
         if (func == 'visible'){ //visible scenes
-            if (MODULE.getPermission('SCENE','VISIBLE') == false ) return;
+            if (getPermission('SCENE','VISIBLE') == false ) return;
             const viewFunc = settings.sceneViewFunction ? settings.sceneViewFunction : 'view';
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
@@ -147,21 +152,26 @@ export class SceneControl{
             }  
         }
         else if (func == 'dir') {   //from directory
-            if (MODULE.getPermission('SCENE','DIRECTORY') == false ) return;
+            if (getPermission('SCENE','DIRECTORY') == false ) return;
             const viewFunc = settings.sceneViewFunction ? settings.sceneViewFunction : 'view';
             let nr = parseInt(settings.sceneNr);
             if (isNaN(nr) || nr < 1) nr = 1;
             nr--;
 
             let sceneList = [];
-            for (let i=0; i<ui.scenes.tree.children.length; i++){
-                const scenesInFolder = compatibleCore("0.8.1") ? ui.scenes.tree.children[i].contents : ui.scenes.tree.children[i].entities;
-                for (let j=0; j<scenesInFolder.length; j++)
-                    sceneList.push(scenesInFolder[j])
+            if (compatibleCore('10.0')) {
+                sceneList = ui.scenes.documents;
             }
-            for (let i=0; i<ui.scenes.tree.content.length; i++)
-                sceneList.push(ui.scenes.tree.content[i])
-
+            else {
+                for (let i=0; i<ui.scenes.tree.children.length; i++){
+                    const scenesInFolder = ui.scenes.tree.children[i].contents;
+                    for (let j=0; j<scenesInFolder.length; j++)
+                        sceneList.push(scenesInFolder[j])
+                }
+                for (let i=0; i<ui.scenes.tree.content.length; i++)
+                    sceneList.push(ui.scenes.tree.content[i])
+            }
+            
             const scene = sceneList[nr+this.sceneOffset];
 
             if (scene != undefined){
@@ -179,7 +189,7 @@ export class SceneControl{
 
         }
         else if (func == 'any'){ //by name
-            if (MODULE.getPermission('SCENE','NAME') == false ) return;
+            if (getPermission('SCENE','NAME') == false ) return;
             if (settings.sceneName == undefined || settings.sceneName == '') return;
             const scenes = game.scenes.entries;
             let scene = game.scenes.getName(settings.sceneName);
@@ -199,7 +209,7 @@ export class SceneControl{
             }
         }
         else if (func == 'active'){
-            if (MODULE.getPermission('SCENE','ACTIVE') == false ) return;
+            if (getPermission('SCENE','ACTIVE') == false ) return;
             const scene = game.scenes.active;
             if (scene == undefined) return;
             scene.view();

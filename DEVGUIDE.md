@@ -7,7 +7,7 @@ In addition to this repo, you will also need to check out the [MaterialDeck_SD g
 
 ### Make a new system.js file
 
-In the [src/systems](src/systems) directory, create a new system file by copying and pasting a similar system to it; for example, `cp demonlord.js wfrp4.js`
+In the [src/systems](src/systems) directory, create a new system file by copying and pasting a similar system to it, or use template.js; for example, `cp demonlord.js wfrp4.js`
 You then need to go through all the functions in there and make sure that the correct data is set.
 
 ### Update TokenHelper

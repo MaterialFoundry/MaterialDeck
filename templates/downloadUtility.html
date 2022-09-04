@@ -1,56 +1,36 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
-    <style>
-        .columnLabel {
-            width:25%;
-            text-align: left;
-        }
-        .columnVersion {
-            width:15%;
-            text-align: left;
-        }
-        .columnOS {
-            width:15%;
-        }
-        .columnButton {
-            width:15%;
-        }
-        .btn {
-            width:100%;
-        }
-    </style>
-    
     <h2>{{localize "MaterialDeck.DownloadUtility.Plugin"}}</h2>
 
     <table style="width:100%; min-width:400px">
         <tr>
-          <th class='columnLabel'></th>
-          <th class='columnVersion'>{{localize "MaterialDeck.DownloadUtility.Current"}}</th>
-          <th class='columnVersion'>{{localize "MaterialDeck.DownloadUtility.Minimum"}}</th>
-          <th class='columnVersion'>{{localize "MaterialDeck.DownloadUtility.Latest"}}</th>
-          <th class='columnOS'>{{localize "MaterialDeck.DownloadUtility.OS"}}</th>
-          <th class='columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
+          <th class='materialDeck_dlUtil_columnLabel'></th>
+          <th class='materialDeck_dlUtil_columnVersion'>{{localize "MaterialDeck.DownloadUtility.Current"}}</th>
+          <th class='materialDeck_dlUtil_columnVersion'>{{localize "MaterialDeck.DownloadUtility.Minimum"}}</th>
+          <th class='materialDeck_dlUtil_columnVersion'>{{localize "MaterialDeck.DownloadUtility.Latest"}}</th>
+          <th class='materialDeck_dlUtil_columnOS'>{{localize "MaterialDeck.DownloadUtility.OS"}}</th>
+          <th class='materialDeck_dlUtil_columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
         </tr>
 
         <tr>
-          <td class='columnLabel'>{{localize "MaterialDeck.DownloadUtility.SDplugin"}}</td>
-          <td class='columnVersion'>{{localSdVersion}}</td>
-          <td class='columnVersion'>{{minimumSdVersion}}</td>
-          <td class='columnVersion' id='masterSdVersion'>{{masterSdVersion}}</td>
-          <td class='columnOS'></td>
-          <td class='columnButton'>
-            <button type="button" class='btn' id='downloadSd' {{#if sdDlDisable}}disabled{{/if}}>
+          <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.SDplugin"}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{localSdVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{minimumSdVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion' id='materialDeck_dlUtil_masterSdVersion'>{{masterSdVersion}}</td>
+          <td class='materialDeck_dlUtil_columnOS'></td>
+          <td class='materialDeck_dlUtil_columnButton'>
+            <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_downloadSd' {{#if sdDlDisable}}disabled{{/if}}>
                 <i class="fas fa-download"></i>
             </button>
           </td>
         </tr>
 
         <tr>
-          <td class='columnLabel'>{{localize "MaterialDeck.DownloadUtility.MSserver"}}</td>
-          <td class='columnVersion'>{{localMsVersion}}</td>
-          <td class='columnVersion'>{{minimumMsVersion}}</td>
-          <td class='columnVersion' id='masterMsVersion'>{{masterMsVersion}}</td>
-          <td class='columnOS'>
-            <select id="os" default="" {{#if msDlDisable}}disabled{{/if}}>
+          <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.MSserver"}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{localMsVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{minimumMsVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion' id='materialDeck_dlUtil_masterMsVersion'>{{masterMsVersion}}</td>
+          <td class='materialDeck_dlUtil_columnOS'>
+            <select id="materialDeck_dlUtil_os" default="" {{#if msDlDisable}}disabled{{/if}}>
                 <option value="win32-x64">{{localize "MaterialDeck.DownloadUtility.Windows"}}</option>
                 <option value="macos-x64">{{localize "MaterialDeck.DownloadUtility.MacosIntel"}}</option>
                 <option value="macos-arm64">{{localize "MaterialDeck.DownloadUtility.MacosM1"}}</option>
@@ -58,8 +38,8 @@
                 <option value="source">{{localize "MaterialDeck.DownloadUtility.Source"}}</option>
             </select>
           </td>
-          <td class='columnButton'>
-            <button type="button" class='btn' id='downloadMs' {{#if msDlDisable}}disabled{{/if}}>
+          <td class='materialDeck_dlUtil_columnButton'>
+            <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_downloadMs' {{#if msDlDisable}}disabled{{/if}}>
                 <i class="fas fa-download"></i>
             </button>
           </td>
@@ -71,14 +51,14 @@
       <table style="width:100%; min-width:400px">
         <tr>
           <th style='text-align: left;'>{{localize "MaterialDeck.DownloadUtility.Name"}}</th>
-          <th class='columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
+          <th class='materialDeck_dlUtil_columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
         </tr>
         <div id='profileContents'>
           {{#each profiles as |p|}}
             <tr>
               <td>{{p.label}}</td>
-              <td class='columnButton'>
-                <button type="button" class='btn' id='dlProfile-{{p.id}}' name='downloadProfile' {{#if ../profileDlDisable}}disabled{{/if}}>
+              <td class='materialDeck_dlUtil_columnButton'>
+                <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_dlProfile-{{p.id}}' name='downloadProfile' {{#if ../profileDlDisable}}disabled{{/if}}>
                     <i class="fas fa-download"></i>
                 </button>
               </td>
@@ -87,7 +67,7 @@
         </div>
       </table> 
       
-      <button type="button" id='refresh'>
+      <button type="button" id='materialDeck_dlUtil_refresh'>
         <i class="fas fa-redo"></i>
         {{localize "MaterialDeck.DownloadUtility.Refresh"}}
     </button>

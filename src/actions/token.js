@@ -1,11 +1,11 @@
-import * as MODULE from "../MaterialDeck.js";
-import {streamDeck, macroControl, otherControls, tokenHelper} from "../MaterialDeck.js";
-import { compatibleCore } from "./misc.js";
+import { streamDeck, macroControl, otherControls, tokenHelper, getPermission } from "../../MaterialDeck.js";
+import { compatibleCore } from "../misc.js";
 
 export class TokenControl{
     constructor(){
         this.active = false;
         this.wildcardOffset = 0;
+        this.itemOffset = 0;
     }
 
     async update(tokenId=null){
@@ -29,7 +29,7 @@ export class TokenControl{
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
         const prependTitle = settings.prependTitle ? settings.prependTitle : '';
         const mode = settings.tokenMode ? settings.tokenMode : 'token';
-    
+
         let validToken = false;
         let token;
         if (settings.combatTrackerMode) token = tokenHelper.getTokenFromTokenId(tokenId);
@@ -43,11 +43,11 @@ export class TokenControl{
         let uses = undefined;
         let hp = undefined;
         if (validToken) {
-            if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) {
+            if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-            if (token.owner == false && token.observer == false && MODULE.getPermission('TOKEN','NON_OWNED') == false ) {
+            if (token.owner == false && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -58,16 +58,16 @@ export class TokenControl{
     
                 const permission = token.actor?.permission;
                 if (settings.combat){
-                    if (permission == 0 && MODULE.getPermission('COMBAT','DISPLAY_ALL_NAMES') == false) txt = "";
-                    else if (permission == 1 && MODULE.getPermission('COMBAT','DISPLAY_LIMITED_NAME') == false) txt = "";
-                    else if (permission == 2 && MODULE.getPermission('COMBAT','DISPLAY_OBSERVER_NAME') == false) txt = "";
+                    if (permission == 0 && getPermission('COMBAT','DISPLAY_ALL_NAMES') == false) txt = "";
+                    else if (permission == 1 && getPermission('COMBAT','DISPLAY_LIMITED_NAME') == false) txt = "";
+                    else if (permission == 2 && getPermission('COMBAT','DISPLAY_OBSERVER_NAME') == false) txt = "";
     
                     if (permission == 0 && stats == 'HP') stats = 'none';
-                    else if (stats == 'HP' && permission == 1 && MODULE.getPermission('COMBAT','DISPLAY_LIMITED_HP') == false) stats = 'none';
-                    else if (stats == 'HP' && permission == 2 && MODULE.getPermission('COMBAT','DISPLAY_OBSERVER_HP') == false) stats = 'none';
-                    else if (stats != 'HP' && permission < 3 && MODULE.getPermission('COMBAT','DISPLAY_NON_OWNED_STATS') == false) stats = 'none';
+                    else if (stats == 'HP' && permission == 1 && getPermission('COMBAT','DISPLAY_LIMITED_HP') == false) stats = 'none';
+                    else if (stats == 'HP' && permission == 2 && getPermission('COMBAT','DISPLAY_OBSERVER_HP') == false) stats = 'none';
+                    else if (stats != 'HP' && permission < 3 && getPermission('COMBAT','DISPLAY_NON_OWNED_STATS') == false) stats = 'none';
                 }
-                else if (MODULE.getPermission('TOKEN','STATS') == false) {
+                else if (getPermission('TOKEN','STATS') == false) {
                     statsOld = stats;
                     stats = 'none';
                 }
@@ -231,12 +231,12 @@ export class TokenControl{
                 }
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
-                    if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
+                    if (getPermission('TOKEN','VISIBILITY') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
-                    if (token.data.hidden){
+                    if (compatibleCore('10.0') ? token.document.hidden : token.data.hidden){
                         ring = 2;
                         ringColor = "#FF7B00";
                     }
@@ -246,7 +246,7 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'combatState') { //toggle combat state
-                    if (MODULE.getPermission('TOKEN','COMBAT') == false ) {
+                    if (getPermission('TOKEN','COMBAT') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -271,7 +271,7 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'condition') { //handle condition
-                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
+                    if (getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -286,7 +286,7 @@ export class TokenControl{
                     }  
                 }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
-                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
+                    if (getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -303,7 +303,7 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'wildcard') { //wildcard images
-                    if (MODULE.getPermission('TOKEN','WILDCARD') == false ) {
+                    if (getPermission('TOKEN','WILDCARD') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -316,7 +316,7 @@ export class TokenControl{
                     let currentImgNr = 0
                     let imgNr;
                     for (let i=0; i<images.length; i++) 
-                        if (images[i] == token.data.img){
+                        if (images[i] == tokenHelper.getTokenIcon(token)){
                             currentImgNr = i;
                             break;
                         }
@@ -342,32 +342,61 @@ export class TokenControl{
                 else if (settings.onClick == 'initiative') //Initiative
                     iconSrc = "modules/MaterialDeck/img/token/init.png";
             }
+            else if (mode == 'offset') {
+                iconSrc = "modules/MaterialDeck/img/black.png";
+                const itemOffset = settings.itemOffset ? settings.itemOffset : 0;
+                ringColor = settings.offRing ? settings.offRing : '#000000';
+                const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+                ring = 1;
+                if (itemOffset == this.itemOffset) {
+                    
+                    ring = 2;
+                    ringColor = ringOnColor;
+                }
+            }
+            else if (mode == 'offsetRel') {
+                
+            }
+            else if (mode == 'dispOffset') {
+                iconSrc = "modules/MaterialDeck/img/black.png";
+                const prependTitle = settings.offsetPrepend ? settings.offsetPrepend : '';
+                txt += prependTitle + this.itemOffset;
+            }
             //Items
             else {
                 txt += prependTitle;
                 const allItems = token.actor.items;
-                const itemNr = settings.itemNr ? settings.itemNr - 1 : 0;
+                let itemNr = settings.itemNr ? settings.itemNr - 1 : 0;
+                itemNr += this.itemOffset;
                 const displayUses = settings.displayUses ? settings.displayUses : false;
                 const displayName = settings.displayInventoryName ? settings.displayInventoryName : false;
                 const displayIcon = settings.displayInventoryIcon ? settings.displayInventoryIcon : false;
+                const selectionMode = settings.inventorySelection ? settings.inventorySelection : 'order';
                 let items = allItems;
                 let item;
                 if (mode == 'inventory') {
                     items = tokenHelper.getItems(token,settings.inventoryType);
                     items = this.sortItems(items);
-                    item = items[itemNr];
+                    if (selectionMode == 'order')       item = items[itemNr];
+                    else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
+                    else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
+                    
                     if (item != undefined && displayUses) uses = tokenHelper.getItemUses(item);
                 }
                 else if (mode == 'features') {
                     items = tokenHelper.getFeatures(token,settings.featureType);
                     items = this.sortItems(items);
-                    item = items[itemNr];
+                    if (selectionMode == 'order')       item = items[itemNr];
+                    else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
+                    else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
                     if (item != undefined && displayUses) uses = tokenHelper.getFeatureUses(item);
                 }
                 else if (mode == 'spellbook') {
                     items = tokenHelper.getSpells(token,settings.spellType);
                     items = this.sortItems(items);
-                    item = items[itemNr];
+                    if (selectionMode == 'order')       item = items[itemNr];
+                    else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
+                    else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
                     if (displayUses && item != undefined) uses = tokenHelper.getSpellUses(token,settings.spellType,item);
                 }
                 if (item != undefined) {
@@ -382,7 +411,7 @@ export class TokenControl{
             if (mode == 'token') {
                 iconSrc += "";
                 if (settings.onClick == 'visibility') { //toggle visibility
-                    if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) {
+                    if (getPermission('TOKEN','VISIBILITY') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -393,7 +422,7 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'combatState') { //toggle combat state
-                    if (MODULE.getPermission('TOKEN','COMBAT') == false ) {
+                    if (getPermission('TOKEN','COMBAT') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -411,7 +440,7 @@ export class TokenControl{
                     }
                 }
                 else if (settings.onClick == 'condition') { //toggle condition
-                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
+                    if (getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -420,7 +449,7 @@ export class TokenControl{
                     if (icon == 'stats') iconSrc = tokenHelper.getConditionIcon(settings.condition);
                 }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
-                    if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) {
+                    if (getPermission('TOKEN','CONDITIONS') == false ) {
                         streamDeck.noPermission(context,device);
                         return;
                     }
@@ -434,9 +463,9 @@ export class TokenControl{
                 }
             } 
         }
-
-        if (icon == 'stats'){
-            if (MODULE.getPermission('TOKEN','STATS') == false) stats = statsOld;
+    
+        if (icon == 'stats' && mode != 'offset' && mode != 'offsetRel'){
+            if (getPermission('TOKEN','STATS') == false) stats = statsOld;
             if (stats == 'HP') //HP
                 iconSrc = "modules/MaterialDeck/img/token/hp_empty.png";
             if (stats == 'TempHP') //Temp HP
@@ -503,13 +532,15 @@ export class TokenControl{
                 iconSrc = "modules/MaterialDeck/img/move/rotateccw.png";
             }
         }
+
         streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
         streamDeck.setTitle(txt,context);
     }
 
     sortItems(items) {
         let sorted = Object.values(items);
-        sorted.sort((a,b) => a.data.sort - b.data.sort);
+        if (compatibleCore('10.0')) sorted.sort((a,b) => a.sort - b.sort);
+        else sorted.sort((a,b) => a.data.sort - b.data.sort);
         return sorted;
     }
 
@@ -522,13 +553,11 @@ export class TokenControl{
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
         const mode = settings.tokenMode ? settings.tokenMode : 'token';
         
-        let token;
-        if (selection == 'selected') token = canvas.tokens.controlled[0];
-        else token = tokenHelper.getToken(selection,tokenIdentifier);
+        let token = tokenHelper.getToken(selection,tokenIdentifier);
 
         if (token == undefined) return;
-        if (token.owner == false && token.observer == true && MODULE.getPermission('TOKEN','OBSERVER') == false ) return;
-        if (token.owner == false && token.observer == false && MODULE.getPermission('TOKEN','NON_OWNED') == false ) return;
+        if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) return;
+        if (token.owner == false && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) return;
         
         if (mode == 'token') {
 
@@ -565,18 +594,18 @@ export class TokenControl{
                 else token.sheet.close();
             }
             else if (onClick == 'visibility') {    //Toggle visibility
-                if (MODULE.getPermission('TOKEN','VISIBILITY') == false ) return;
+                if (getPermission('TOKEN','VISIBILITY') == false ) return;
                 token.toggleVisibility();
             }
             else if (onClick == 'combatState') {    //Toggle combat state
-                if (MODULE.getPermission('TOKEN','COMBAT') == false ) return;
+                if (getPermission('TOKEN','COMBAT') == false ) return;
                 token.toggleCombat();
             }
             else if (onClick == 'target') {    //Target token
                 token.setTarget(!token.isTargeted,{releaseOthers:false});
             }
             else if (onClick == 'condition') {    //Handle condition
-                if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
+                if (getPermission('TOKEN','CONDITIONS') == false ) return;
                 const func = settings.conditionFunction ? settings.conditionFunction : 'toggle';
 
                 if (func == 'toggle'){ //toggle
@@ -594,7 +623,7 @@ export class TokenControl{
 
             }
             else if (onClick == 'cubCondition') { //Combat Utility Belt conditions
-                if (MODULE.getPermission('TOKEN','CONDITIONS') == false ) return;
+                if (getPermission('TOKEN','CONDITIONS') == false ) return;
                 const condition = settings.cubConditionName;
                 if (condition == undefined || condition == '') return;
                 const effect = CONFIG.statusEffects.find(e => e.label === condition);
@@ -602,57 +631,108 @@ export class TokenControl{
                 this.update(tokenId); 
             }
             else if (onClick == 'vision'){
-                if (MODULE.getPermission('TOKEN','VISION') == false ) return;
-                const token = canvas.tokens.children[0].children.find(p => p.id == tokenId);
-                if (token == undefined) return;
-                let tokenData = token.data;
+                if (getPermission('TOKEN','VISION') == false ) return;
 
-                const dimVision = parseInt(settings.dimVision);
-                const brightVision = parseInt(settings.brightVision);
-                const sightAngle = parseInt(settings.sightAngle);
-                const dimRadius = parseInt(settings.dimRadius);
-                const brightRadius = parseInt(settings.brightRadius);
-                const emissionAngle = parseInt(settings.emissionAngle);
-                const lightColor = settings.lightColor ? settings.lightColor : '#000000';
-                const colorIntensity = isNaN(parseInt(settings.colorIntensity)) ? 0 : parseInt(settings.colorIntensity)/100;
-                const animationType = settings.animationType ? settings.animationType : 'none';
-                const animationSpeed = isNaN(parseInt(settings.animationSpeed)) ? 1 : parseInt(settings.animationSpeed);
-                const animationIntensity = isNaN(parseInt(settings.animationIntensity)) ? 1 : parseInt(settings.animationIntensity);
-
-                let data = {};
-                if (isNaN(dimVision)==false) data.dimSight = dimVision;
-                if (isNaN(brightVision)==false) data.brightSight = brightVision;
-                if (isNaN(sightAngle)==false) data.sightAngle = sightAngle;
-
-                let light = {};
-
-
-                if (isNaN(dimRadius)==false) light.dim = dimRadius;
-                if (isNaN(brightRadius)==false) light.bright = brightRadius;
-                if (isNaN(emissionAngle)==false) light.angle = emissionAngle;
-                light.color = lightColor;
-                light.alpha = Math.sqrt(colorIntensity).toNearest(0.05)
-
-                let animation = {
-                    type: '',
-                    speed: tokenData.light.animation.speed,
-                    intensity: tokenData.light.animation.intensity
-                };
-                if (animationType != 'none'){
-                    animation.type = animationType;
-                    animation.intensity = animationIntensity;
-                    animation.speed = animationSpeed;
+                let sight = {};
+                let light = {
+                    animation: {}
                 }
-                light.animation = animation;
-                data.light = light;
-                if (compatibleCore('0.8.1')) token.document.update(data);
-                else token.update(data);
+                
+                //Vision basic config
+                if (settings.visionEnabled && settings.visionEnabled != 'noChange') {
+                    if (compatibleCore('10.0')) {
+                        if (settings.visionEnabled == 'toggle')
+                            sight.enabled = !token.document.sight.enabled;
+                        else
+                            sight.enabled = settings.visionEnabled == 'enable';
+                    }
+                    else {
+                        if (settings.visionEnabled == 'toggle')
+                            sight.vision = !token.data.vision;
+                        else
+                            sight.vision = settings.visionEnabled == 'enable';
+                    }
+                }
+                if (settings.visionRange && isNaN(settings.visionRange) == false) sight.range = parseInt(settings.visionRange);
+                if (settings.visionDimRange && isNaN(settings.visionDimRange) == false) sight.dimSight = parseInt(settings.visionDimRange);
+                if (settings.visionBrightRange && isNaN(settings.visionBrightRange) == false) sight.brightSight = parseInt(settings.visionBrightRange);
+                if (compatibleCore('10.0') && settings.visionAngle && isNaN(settings.visionAngle) == false) sight.angle = parseInt(settings.visionAngle);
+                else if (!compatibleCore('10.0') && settings.visionAngle && isNaN(settings.visionAngle) == false) sight.sightAngle = parseInt(settings.visionAngle);
+                if (settings.visionMode && settings.visionMode != 'noChange') sight.visionMode = settings.visionMode;
+
+                //Vision detection modes
+                let detectionModes = token.document.detectionModes;
+                if (settings.visionDetectionModeEnable && settings.visionDetectionModeEnable != 'noChange' && settings.visionDetectionModeNumber && detectionModes[settings.visionDetectionModeNumber-1] != undefined) {
+                    if (settings.visionDetectionModeEnable == 'toggle')
+                        detectionModes[settings.visionDetectionModeNumber-1].enabled = !detectionModes[settings.visionDetectionModeNumber-1].enabled;
+                    else if (settings.visionDetectionModeEnable == 'enable') 
+                        detectionModes[settings.visionDetectionModeNumber-1].enabled = true;
+                    else if (settings.visionDetectionModeEnable == 'disable') 
+                        detectionModes[settings.visionDetectionModeNumber-1].enabled = false;
+                    detectionModes = detectionModes;
+                }
+
+                //Vision advanced options
+                if (settings.visionColorEnable) sight.color = settings.visionColor ? (settings.visionColor == '#000000' ? null : settings.visionColor) : null;
+                if (settings.visionAttenuationEnable) sight.attenuation = settings.visionAttenuation ? parseFloat(settings.visionAttenuation) : 0;
+                if (settings.visionBrightnessEnable) sight.brightness = settings.visionBrightness ? parseFloat(settings.visionBrightness) : 0;
+                if (settings.visionSaturationEnable) sight.saturation = settings.visionSaturation ? parseFloat(settings.visionSaturation) : 0;
+                if (settings.visionContrastEnable) sight.contrast = settings.visionContrast ? parseFloat(settings.visionContrast) : 0;
+
+                //Light basic config
+                if (settings.lightDimRadius && isNaN(settings.lightDimRadius) == false) light.dim = parseInt(settings.lightDimRadius);
+                if (settings.lightBrightRadius && isNaN(settings.lightBrightRadius) == false) light.bright = parseInt(settings.lightBrightRadius);
+                if (settings.lightEmissionAngle && isNaN(settings.lightEmissionAngle) == false) light.angle = parseInt(settings.lightEmissionAngle);
+                if (settings.lightColorEnable) light.color = settings.lightColor ? (settings.lightColor == '#000000' ? null : settings.lightColor) : null;
+                if (settings.lightColorIntensityEnable) light.alpha = settings.lightColorIntensity ? parseFloat(settings.lightColorIntensity) : 0;
+
+                //Light animation
+                if (settings.lightAnimationType && settings.lightAnimationType != 'noChange') light.animation.type = settings.lightAnimationType == 'none' ? null : settings.lightAnimationType;
+                if (settings.lightAnimationSpeedEnable) light.animation.speed = settings.lightAnimationSpeed ? parseFloat(settings.lightAnimationSpeed) : 5;
+                if (settings.lightAnimationReverseDirection && settings.lightAnimationReverseDirection != 'noChange') {
+                    if (settings.lightAnimationReverseDirection == 'toggle')
+                        light.animation.reverse = compatibleCore('10.0') ? !token.document.light.animation.reverse : !token.data.light.animation.reverse;
+                    else if (settings.lightAnimationReverseDirection == 'enable') 
+                        light.animation.reverse = true;
+                    else if (settings.lightAnimationReverseDirection == 'disable') 
+                        light.animation.reverse = false;
+                }
+                if (settings.lightAnimationIntensityEnable) light.animation.intensity = settings.lightAnimationIntensity ? parseFloat(settings.lightAnimationIntensity) : 5;
+
+                //Light advanced options
+                if (settings.lightColorationTechnique && settings.lightColorationTechnique != 'noChange') light.coloration = parseInt(settings.lightColorationTechnique);
+                if (settings.lightLuminosityEnable) light.luminosity = settings.lightLuminosity ? parseFloat(settings.lightLuminosity) : 0.5;
+                if (settings.lightGradualIllumination && settings.lightGradualIllumination != 'noChange') {
+                    if (settings.lightGradualIllumination == 'toggle')
+                        light.gradual = !token.data.light.gradual;
+                    else if (settings.lightGradualIllumination == 'enable') 
+                        light.gradual = true;
+                    else if (settings.lightGradualIllumination == 'disable') 
+                        light.gradual = false;
+                }
+                if (settings.lightAttenuationEnable) light.attenuation = settings.lightAttenuation ? parseFloat(settings.lightAttenuation) : 0.5;
+                if (settings.lightSaturationEnable) light.saturation = settings.lightSaturation ? parseFloat(settings.lightSaturation) : 0;
+                if (settings.lightContrastEnable) light.contrast = settings.lightContrast ? parseFloat(settings.lightContrast) : 0;
+                if (settings.lightShadowsEnable) light.shadows = settings.lightShadows ? parseFloat(settings.lightShadows) : 0;
+
+                let data;
+                if (compatibleCore('10.0')) {
+                    data = {
+                        sight,
+                        light
+                    }
+                }
+                else {
+                    data = sight;
+                    data.light = light;
+                }
+                token.document.update(data);
             }
             else if (onClick == 'initiative'){
                 tokenHelper.toggleInitiative(token);
             }
             else if (onClick == 'wildcard') { //wildcard images
-                if (MODULE.getPermission('TOKEN','WILDCARD') == false ) return;
+                if (getPermission('TOKEN','WILDCARD') == false ) return;
                 const method = settings.wildcardMethod ? settings.wildcardMethod : 'iterate';
                 let value = parseInt(settings.wildcardValue);
                 if (isNaN(value)) value = 1;
@@ -663,7 +743,7 @@ export class TokenControl{
                 if (method == 'iterate'){
                     let currentImgNr = 0
                     for (let i=0; i<images.length; i++) 
-                        if (images[i] == token.data.img){
+                        if (images[i] == tokenHelper.getTokenIcon(token)){
                             currentImgNr = i;
                             break;
                         }
@@ -684,8 +764,7 @@ export class TokenControl{
                 else return;
 
                 iconSrc = images[imgNr];
-                if (compatibleCore('0.8.1')) token.document.update({img: iconSrc});
-                else token.update({img: iconSrc})
+                token.document.update({img: iconSrc});
             }
             else if (onClick == 'macro') {  //call a macro
                 const settingsNew = {
@@ -712,7 +791,7 @@ export class TokenControl{
                 if (otherControls.rollOption != 'dialog') otherControls.setRollOption('normal');
             }
             else if (onClick == 'custom') {//custom onClick function
-                if (MODULE.getPermission('TOKEN','CUSTOM') == false ) return;
+                if (getPermission('TOKEN','CUSTOM') == false ) return;
                 const formula = settings.customOnClickFormula ? settings.customOnClickFormula : '';
                 if (formula == '') return;
 
@@ -828,8 +907,7 @@ export class TokenControl{
                                 if (path != '') path += '.';
                                 path += targetArray[i][j];
                             }
-                            if (compatibleCore('0.8.1')) await token.document.update({[path]:value});
-                            else await token.update({[path]:value})
+                            await token.document.update({[path]:value});
                             this.update(token.id);
                         }
                         
@@ -837,9 +915,20 @@ export class TokenControl{
                 }
             }
         }
+        else if (mode == 'offset') {
+            const itemOffset = settings.itemOffset ? settings.itemOffset : 0;
+            this.itemOffset = parseInt(itemOffset);
+            this.update(tokenId);
+        }
+        else if (mode == 'offsetRel') {
+            const itemOffset = settings.itemOffset ? settings.itemOffset : 0;
+            this.itemOffset += parseInt(itemOffset);
+            this.update(tokenId);
+        }
         else {
             const allItems = token.actor.items;
             const itemNr = settings.itemNr ? settings.itemNr - 1 : 0;
+            const selectionMode = settings.inventorySelection ? settings.inventorySelection : 'order';
             let items = allItems;
             if (mode == 'inventory') {
                 items = tokenHelper.getItems(token,settings.inventoryType);
@@ -851,10 +940,12 @@ export class TokenControl{
                 items = tokenHelper.getSpells(token,settings.spellType);
             }
             items = this.sortItems(items);
-
-            const item = items[itemNr];
+            let item;
+            if (selectionMode == 'order')       item = items[itemNr];
+            else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
+            else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
             if (item != undefined) {
-                tokenHelper.rollItem(item, settings);
+                tokenHelper.rollItem(item, settings, otherControls.rollOption);
             }
             
         }

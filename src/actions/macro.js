@@ -1,6 +1,5 @@
-import * as MODULE from "../MaterialDeck.js";
-import {streamDeck} from "../MaterialDeck.js";
-import {compatibleCore} from "./misc.js";
+import { moduleName, streamDeck, getPermission, hotbarUses } from "../../MaterialDeck.js";
+import { compatibleCore } from "../misc.js";
 
 export class MacroControl{
     constructor(){
@@ -39,7 +38,7 @@ export class MacroControl{
         let uses = undefined;
         
         if (mode == 'macroBoard') {  //Macro board
-            if ((MODULE.getPermission('MACRO','MACROBOARD') == false )) {
+            if ((getPermission('MACRO','MACROBOARD') == false )) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -57,8 +56,8 @@ export class MacroControl{
             else { //Execute macro
                 macroNumber += this.offset - 1;
                 if (macroNumber < 0) macroNumber = 0;
-                macroId = game.settings.get(MODULE.moduleName,'macroSettings').macros[macroNumber];
-                background = game.settings.get(MODULE.moduleName,'macroSettings').color[macroNumber];
+                macroId = game.settings.get(moduleName,'macroSettings').macros[macroNumber];
+                background = game.settings.get(moduleName,'macroSettings').color[macroNumber];
                 if (background == undefined) background = '#000000';
                 ring = 0;
             }  
@@ -69,11 +68,11 @@ export class MacroControl{
             macroId = macro?.id;
         }
         else { //Macro Hotbar
-            if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
+            if ((getPermission('MACRO','HOTBAR') == false )) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-            if (mode == 'hotbar') macroId = game.user.data.hotbar[macroNumber];
+            if (mode == 'hotbar') macroId = compatibleCore('10.0') ? game.user.hotbar[macroNumber] : game.user.data.hotbar[macroNumber];
             else {
                 let macros;
                 if (mode == 'customHotbar' && game.modules.get('custom-hotbar') != undefined) 
@@ -91,7 +90,7 @@ export class MacroControl{
             if (macro != undefined) {
                 if (displayName) name = macro.name;
                 if (displayIcon) src = macro.img;
-                if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
+                if (hotbarUses && displayUses) uses = await this.getUses(macro);
             }
         }
         else {
@@ -126,7 +125,7 @@ export class MacroControl{
                 let macroNumber = data.settings.macroNumber;
                 if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 1;
 
-                if ((MODULE.getPermission('MACRO','HOTBAR') == false )) {
+                if ((getPermission('MACRO','HOTBAR') == false )) {
                     streamDeck.noPermission(context,device);
                     return;
                 } 
@@ -150,7 +149,7 @@ export class MacroControl{
                 if (macro != undefined && macro != null) {
                     if (displayName) name += macro.name;
                     if (displayIcon) src += macro.img;
-                    if (MODULE.hotbarUses && displayUses) uses = await this.getUses(macro);
+                    if (hotbarUses && displayUses) uses = await this.getUses(macro);
                 }
                 streamDeck.setIcon(context,device,src,{background:background,uses:uses});
                 streamDeck.setTitle(name,context);
@@ -165,11 +164,11 @@ export class MacroControl{
         let target = settings.target ? settings.target : undefined;
         
         if (mode == 'hotbar' || mode == 'visibleHotbar' || mode == 'customHotbar'){
-            if ((MODULE.getPermission('MACRO','HOTBAR') == false )) return;
-            this.executeHotbar(macroNumber,mode);
+            if ((getPermission('MACRO','HOTBAR') == false )) return;
+            this.executeHotbar(macroNumber,mode,target);
         } 
         else if (mode == 'name') {
-            if ((MODULE.getPermission('MACRO','BY_NAME') == false )) return;
+            if ((getPermission('MACRO','BY_NAME') == false )) return;
             const macroName = settings.macroNumber;
             const macro = game.macros.getName(macroName);
 
@@ -177,16 +176,13 @@ export class MacroControl{
            
             const args = settings.macroArgs ? settings.macroArgs : "";
 
-            let furnaceEnabled = false;
-            let furnace = game.modules.get("furnace");
-            if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) furnaceEnabled = true;
-
+            let advancedMacrosEnabled = false;
             let advancedMacros = game.modules.get("advanced-macros");
-            if (advancedMacros != undefined && advancedMacros.active) furnaceEnabled = true;
+            if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
 
-            if (args == "" || args == " ") furnaceEnabled = false;
+            if (args == "" || args == " ") advancedMacrosEnabled = false;
 
-            if (furnaceEnabled == false) macro.execute({token:target});
+            if (advancedMacrosEnabled == false) macro.execute({token:target});
             else {
                 let chatData = {
                     user: game.user._id,
@@ -198,7 +194,7 @@ export class MacroControl{
 
         }
         else {
-            if ((MODULE.getPermission('MACRO','MACROBOARD') == false )) return;
+            if ((getPermission('MACRO','MACROBOARD') == false )) return;
             if (settings.macroBoardMode == 'offset') {
                 let macroOffset = settings.macroOffset;
                 if (macroOffset == undefined) macroOffset = 0;
@@ -210,9 +206,9 @@ export class MacroControl{
         }
     }
 
-    executeHotbar(macroNumber,mode){
+    executeHotbar(macroNumber,mode,target){
         let macroId 
-        if (mode == 'hotbar') macroId = game.user.data.hotbar[macroNumber];
+        if (mode == 'hotbar') macroId = compatibleCore('10.0') ? game.user.hotbar[macroNumber] : game.user.data.hotbar[macroNumber];
         else {
             let macros;
             if (mode == 'customHotbar' && game.modules.get('custom-hotbar') != undefined) { 
@@ -224,29 +220,26 @@ export class MacroControl{
         }
         if (macroId == undefined) return;
         let macro = game.macros.get(macroId);
-        macro.execute();
+        macro.execute({token:target});
     }
 
     executeBoard(macroNumber){
         macroNumber = parseInt(macroNumber);
         macroNumber += this.offset - 1;
         if (macroNumber < 0) macroNumber = 0;
-        var macroId = game.settings.get(MODULE.moduleName,'macroSettings').macros[macroNumber];
+        var macroId = game.settings.get(moduleName,'macroSettings').macros[macroNumber];
 
         if (macroId != undefined){
             let macro = game.macros.get(macroId);
             if (macro != undefined && macro != null) {
-                const args = game.settings.get(MODULE.moduleName,'macroSettings').args;
-                let furnaceEnabled = false;
-                let furnace = game.modules.get("furnace");
-                if (furnace != undefined && furnace.active && compatibleCore("0.8.1")==false) furnaceEnabled = true;
-
+                const args = game.settings.get(moduleName,'macroSettings').args;
+                let advancedMacrosEnabled = false;
                 let advancedMacros = game.modules.get("advanced-macros");
-                if (advancedMacros != undefined && advancedMacros.active) furnaceEnabled = true;
+                if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
 
-                if (args == undefined || args[macroNumber] == undefined || args[macroNumber] == "") furnaceEnabled = false;
+                if (args == undefined || args[macroNumber] == undefined || args[macroNumber] == "") advancedMacrosEnabled = false;
                 
-                if (furnaceEnabled == false) macro.execute();
+                if (advancedMacrosEnabled == false) macro.execute();
                 else {
                     let chatData = {
                         user: game.user._id,

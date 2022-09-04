@@ -1,4 +1,4 @@
-import {compatibleCore} from "../misc.js";
+import { compatibleCore } from "../misc.js";
 
 const proficiencyColors = {
     0: "#000000",
@@ -9,11 +9,19 @@ const proficiencyColors = {
 
 export class starfinder{
     constructor(){
-        
+        console.log("Material Deck: Using system 'Starfinder'");
+    }
+
+    getActorData(token) {
+        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+    }
+
+    getItemData(item) {
+        return compatibleCore('10.0') ? item.system : item.data.data;
     }
 
     getHP(token) {
-        const hp = token.actor.data.data.attributes.hp;
+        const hp = this.getActorData(token).attributes.hp;
         return {
             value: hp.value,
             max: hp.max
@@ -25,7 +33,7 @@ export class starfinder{
     }
 
     getStamina(token) {
-        const stamina = token.actor.data.data.attributes.sp;
+        const stamina = this.getActorData(token).attributes.sp;
         return {
             value: stamina.value,
             max: stamina.max
@@ -33,11 +41,11 @@ export class starfinder{
     }
 
     getAC(token) {
-        return token.actor.data.data.attributes.eac.value;
+        return this.getActorData(token).attributes.eac.value;
     }
 
     getKinAC(token) {
-        return token.actor.data.data.attributes.kac.value;
+        return this.getActorData(token).attributes.kac.value;
     }
 
     getShieldHP(token) {
@@ -45,7 +53,7 @@ export class starfinder{
     }
 
     getSpeed(token) {
-        const movement = token.actor.data.data.attributes.speed;
+        const movement = this.getActorData(token).attributes.speed;
         let speed = "";
         if (movement.burrowing.value > 0) speed += `Burrow: ${movement.burrowing.value}Ft`;
         if (movement.climbing.value > 0) {
@@ -68,7 +76,7 @@ export class starfinder{
     }
 
     getInitiative(token) {
-        let initiative = token.actor.data.data.attributes.init.total;
+        let initiative = this.getActorData(token).attributes.init.total;
         return (initiative >= 0) ? `+${initiative}` : initiative;
     }
 
@@ -86,25 +94,25 @@ export class starfinder{
 
     getAbility(token, ability) {
         if (ability == undefined) ability = 'str';
-        return token.actor.data.data.abilities?.[ability].value;
+        return this.getActorData(token).abilities?.[ability].value;
     } 
 
     getAbilityModifier(token, ability) {
         if (ability == undefined) ability = 'str';
-        let val = token.actor.data.data.abilities?.[ability].mod;
+        let val = this.getActorData(token).abilities?.[ability].mod;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getAbilitySave(token, ability) {
         if (ability == undefined) ability = 'fort';
         else if (ability == 'ref') ability = 'reflex';
-        let val = token.actor.data.data.attributes?.[ability].bonus;
+        let val = this.getActorData(token).attributes?.[ability].bonus;
         return (val >= 0) ? `+${val}` : val;
     }
 
     getSkill(token, skill) {
         if (skill == undefined) skill = 'acr';
-        const val = token.actor.data.data.skills?.[skill].mod;
+        const val = this.getActorData(token).skills?.[skill].mod;
         return (val >= 0) ? `+${val}` : val;
     }
 
@@ -148,7 +156,10 @@ export class starfinder{
         if (roll == 'ability') token.actor.rollAbilityTest(ability,options);
         else if (roll == 'save') token.actor.rollAbilitySave(save,options);
         else if (roll == 'skill') token.actor.rollSkill(skill,options);
-        else if (roll == 'initiative') token.actor.rollInitiative(options);
+        else if (roll == 'initiative') {
+            options.rerollInitiative = true;
+            token.actor.rollInitiative(options);
+        }
         else if (roll == 'deathSave') token.actor.rollDeathSave(options);
     }
 
@@ -164,7 +175,7 @@ export class starfinder{
     }
 
     getItemUses(item) {
-        return {available: item.data.data.quantity};
+        return {available: this.getItemData(item).quantity};
     }
 
     /**
@@ -183,10 +194,10 @@ export class starfinder{
     }
 
     getFeatureUses(item) {
-        if (item.data.type == 'class') return {available: item.data.data.levels};
+        if (item.data.type == 'class') return {available: this.getItemData(item).levels};
         else return {
-            available: item.data.data.uses.value, 
-            maximum: item.data.data.uses.max
+            available: this.getItemData(item).uses.value, 
+            maximum: this.getItemData(item).uses.max
         };
     }
 
@@ -197,16 +208,16 @@ export class starfinder{
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        else if (level == 'innate') return allItems.filter(i => i.type == 'spell' && i.data.data.preparation.mode == 'innate');
-        else return allItems.filter(i => i.type == 'spell' && i.data.data.preparation.mode == '' && i.data.data.level == level)
+        else if (level == 'innate') return allItems.filter(i => i.type == 'spell' && this.getItemData(i).preparation.mode == 'innate');
+        else return allItems.filter(i => i.type == 'spell' && this.getItemData(i).preparation.mode == '' && this.getItemData(i).level == level)
     }
 
     getSpellUses(token,level,item) {
         if (level == undefined) level = 'any';
-        if (item.data.data.level == 0) return;
+        if (this.getItemData(item).level == 0) return;
 
-        const spellSlots = token.actor.data.data.spells;
-        const allowedClasses = item.data.data.allowedClasses;
+        const spellSlots = this.getActorData(token).spells;
+        const allowedClasses = this.getItemData(item).allowedClasses;
 
         let uses = {available: 0, maximum: 0};
         if (allowedClasses.myst && spellSlots?.[`spell${level}`].perClass?.mystic?.max > uses.maximum) 
@@ -229,13 +240,13 @@ export class starfinder{
      * Ring Colors
      */
      getSkillRingColor(token, skill) {
-        const profLevel = token.actor.data.data?.skills[skill]?.proficient;
+        const profLevel = this.getActorData(token)?.skills[skill]?.proficient;
         if (profLevel == undefined) return;
         return proficiencyColors?.[profLevel];
     }
 
     getSaveRingColor(token, save) {
-        const profLevel = token.actor.data.data?.abilities[save]?.proficient;        
+        const profLevel = this.getActorData(token)?.abilities[save]?.proficient;        
         if (profLevel == undefined) return;
         return proficiencyColors?.[profLevel];
     }

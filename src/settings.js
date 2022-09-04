@@ -1,4 +1,4 @@
-import * as MODULE from "../MaterialDeck.js";
+import { moduleName, isEmpty } from "../MaterialDeck.js";
 import { playlistConfigForm, macroConfigForm, soundboardConfigForm, downloadUtility, deviceConfig } from "./misc.js";
 
 let userPermissions = {};
@@ -70,7 +70,7 @@ export const registerSettings = async function() {
     //world,global,client
 
     //Enabled the module
-    game.settings.register(MODULE.moduleName,'Enable', {
+    game.settings.register(moduleName,'Enable', {
         name: "MaterialDeck.Sett.Enable",
         scope: "client",
         config: true,
@@ -82,20 +82,31 @@ export const registerSettings = async function() {
     /**
      * System override
      */
-     game.settings.register(MODULE.moduleName,'systemOverride', {
+    game.settings.register(moduleName,'systemOverride', {
         name: "MaterialDeck.Sett.SystemOverride",
         hint: "MaterialDeck.Sett.SystemOverrideHint",
         scope: "client",
         config: true,
         default: "",
         type: String,
+        choices: {
+            "": "Autodetect",
+            "D35E": "Dungeons & Dragons 3.5e",
+            "dnd5e": "Dungeons & Dragons 5e",
+            "forbidden-lands": "Forbidden Lands",
+            "pf1": "Pathfinder 1e",
+            "pf2e": "Pathfinder 2e",
+            "demonlord": "Shadow of the Demon Lord",
+            "sfrpg": "Starfinder",
+            "wfrp4e": "Warhammer Fantasy Roleplay 4e",
+        },
         onChange: x => window.location.reload()
     });
 
     /**
      * Sets the ip address of the server
      */
-    game.settings.register(MODULE.moduleName,'address', {
+    game.settings.register(moduleName,'address', {
         name: "MaterialDeck.Sett.ServerAddr",
         hint: "MaterialDeck.Sett.ServerAddrHint",
         scope: "client",
@@ -105,7 +116,7 @@ export const registerSettings = async function() {
         onChange: x => window.location.reload()
     });
 
-    game.settings.register(MODULE.moduleName, 'imageBuffer', {
+    game.settings.register(moduleName, 'imageBuffer', {
         name: "MaterialDeck.Sett.ImageBuffer",
         hint: "MaterialDeck.Sett.ImageBufferHint",
         default: 100,
@@ -116,7 +127,7 @@ export const registerSettings = async function() {
         
     });
 
-    game.settings.register(MODULE.moduleName, 'imageBrightness', {
+    game.settings.register(moduleName, 'imageBrightness', {
         name: "MaterialDeck.Sett.ImageBrightness",
         hint: "MaterialDeck.Sett.ImageBrightnessHint",
         default: 50,
@@ -127,7 +138,7 @@ export const registerSettings = async function() {
         
     });
 
-    game.settings.register(MODULE.moduleName, 'nrOfConnMessages', {
+    game.settings.register(moduleName, 'nrOfConnMessages', {
         name: "MaterialDeck.Sett.NrOfConnMessages",
         hint: "MaterialDeck.Sett.NrOfConnMessagesHint",
         default: 5,
@@ -139,59 +150,61 @@ export const registerSettings = async function() {
     });
 
     //Create the Help button
-    game.settings.registerMenu(MODULE.moduleName, 'helpMenu',{
+    game.settings.registerMenu(moduleName, 'helpMenu',{
         name: "MaterialDeck.Sett.Help",
         label: "MaterialDeck.Sett.Help",
         type: helpMenu,
         restricted: false
     });
 
-    game.settings.registerMenu(MODULE.moduleName, 'downloadUtility',{
+    game.settings.registerMenu(moduleName, 'downloadUtility',{
         name: "MaterialDeck.DownloadUtility.Title",
         label: "MaterialDeck.DownloadUtility.Title",
         type: downloadUtility,
         restricted: false
     });
 
-    game.settings.registerMenu(MODULE.moduleName, 'deviceConfig',{
+    game.settings.registerMenu(moduleName, 'deviceConfig',{
         name: "MaterialDeck.DeviceConfig.Title",
         label: "MaterialDeck.DeviceConfig.Title",
         type: deviceConfig,
         restricted: false
     });
 
-    game.settings.register(MODULE.moduleName, 'devices', {
+    game.settings.register(moduleName, 'devices', {
         name: "devices",
         scope: "client",
         type: Object,
         config: false
     });
 
-    game.settings.registerMenu(MODULE.moduleName, 'permissionConfig',{
+    game.settings.registerMenu(moduleName, 'permissionConfig',{
         name: "MaterialDeck.Sett.Permission",
         label: "MaterialDeck.Sett.Permission",
         type: userPermission,
         restricted: true
     });
 
-    game.settings.register(MODULE.moduleName, 'userPermission', {
+    game.settings.register(moduleName, 'userPermission', {
         name: "userPermission",
+        label: "",
         scope: "world",
         type: Object,
-        config: false
+        config: false,
+        default: {}
     });
 
     /**
      * Playlist soundboard
      */
-    game.settings.registerMenu(MODULE.moduleName, 'playlistConfigMenu',{
+    game.settings.registerMenu(moduleName, 'playlistConfigMenu',{
         name: "MaterialDeck.Sett.PlaylistConfig",
         label: "MaterialDeck.Sett.PlaylistConfig",
         type: playlistConfigForm,
         restricted: false
     });
 
-    game.settings.register(MODULE.moduleName, 'playlists', {
+    game.settings.register(moduleName, 'playlists', {
         name: "selectedPlaylists",
         scope: "world",
         type: Object,
@@ -202,21 +215,22 @@ export const registerSettings = async function() {
     /**
      * Macro Board
      */
-    game.settings.registerMenu(MODULE.moduleName, 'macroConfigMenu',{
+    game.settings.registerMenu(moduleName, 'macroConfigMenu',{
         name: "MaterialDeck.Sett.MacroConfig",
         label: "MaterialDeck.Sett.MacroConfig",
         type: macroConfigForm,
         restricted: false
     });
 
-    game.settings.register(MODULE.moduleName, 'macroSettings', {
+    game.settings.register(moduleName, 'macroSettings', {
         name: "macroSettings",
         scope: "world",
         type: Object,
-        config: false
+        config: false,
+        default: {}
     });
 
-    game.settings.register(MODULE.moduleName, 'macroArgs', {
+    game.settings.register(moduleName, 'macroArgs', {
         name: "macroArgs",
         scope: "world",
         type: Object,
@@ -226,7 +240,7 @@ export const registerSettings = async function() {
     /**
      * Soundboard
      */
-    game.settings.register(MODULE.moduleName, 'soundboardSettings', {
+    game.settings.register(moduleName, 'soundboardSettings', {
         name: "soundboardSettings",
         scope: "world",
         type: Object,
@@ -234,15 +248,16 @@ export const registerSettings = async function() {
         config: false
     });
 
-    game.settings.registerMenu(MODULE.moduleName, 'soundboardConfigMenu',{
+    game.settings.registerMenu(moduleName, 'soundboardConfigMenu',{
         name: "MaterialDeck.Sett.SoundboardConfig",
         label: "MaterialDeck.Sett.SoundboardConfig",
         type: soundboardConfigForm,
         restricted: false
     });
 
-    let permissionSettings = game.settings.get(MODULE.moduleName,'userPermission');
-    if (permissionSettings == undefined || permissionSettings == null || MODULE.isEmpty(permissionSettings)) {
+    let permissionSettings = game.settings.get(moduleName,'userPermission');
+    
+    if (permissionSettings == undefined || permissionSettings == null || isEmpty(permissionSettings)) {
         permissionSettings = {
             enable: defaultEnable,
             permissions: defaultUserPermissions
@@ -254,7 +269,7 @@ export const registerSettings = async function() {
         if (permissionSettings.permissions.MACRO.BY_NAME == undefined) permissionSettings.permissions.MACRO.BY_NAME = [false,false,true,true];
     }
     if (game.user.isGM)
-        game.settings.set(MODULE.moduleName,'userPermission',permissionSettings);      
+        game.settings.set(moduleName,'userPermission',permissionSettings);      
 }
 
 
@@ -311,7 +326,7 @@ export class helpMenu extends FormApplication {
      */
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            id: "userPermissionConfig",
+            id: "materialDeck_userPermissionConfig",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.Permission"),
             template: "./modules/MaterialDeck/templates/userPermissionConfig.html",
             width: 660,
@@ -324,18 +339,23 @@ export class helpMenu extends FormApplication {
      * Provide data to the template
      */
     async getData() {
-        let settings = game.settings.get(MODULE.moduleName,'userPermission');
-        if (settings == undefined || settings == null || MODULE.isEmpty(settings)) {
+        let settings = game.settings.get(moduleName,'userPermission');
+        if (settings == undefined || settings == null || isEmpty(settings)) {
             settings = {
                 enable: defaultEnable,
                 permissions: defaultUserPermissions
             }
         }
-
+        
         const actions = Object.entries(duplicate(settings.permissions)).reduce((arr, e) => {
             const perms = Object.entries(duplicate(e[1])).reduce((arr, p) => {
                 let perm = {};
-                perm.roles = [p[1][0],p[1][1],p[1][2],p[1][3]]
+                perm.roles = [
+                    {role:'player',en:p[1][0]},
+                    {role:'trusted',en:p[1][1]},
+                    {role:'assistent',en:p[1][2]},
+                    {role:'gm',en:p[1][3]}
+                ]
                 perm.id = p[0];
                 perm.label = game.i18n.localize("MaterialDeck.Perm."+e[0]+"."+p[0]+".label");
                 perm.hint = game.i18n.localize("MaterialDeck.Perm."+e[0]+"."+p[0]+".hint");
@@ -355,14 +375,21 @@ export class helpMenu extends FormApplication {
             if (actions[i].id == 'MOVE')
                 actions.splice(i,1);
         }
+        
+        const enable = [
+            {role:'player',en:settings.enable[0]},
+            {role:'trusted',en:settings.enable[1]},
+            {role:'assistent',en:settings.enable[2]},
+            {role:'gm',en:settings.enable[3]}
+        ]
         return {
           roles: Object.keys(CONST.USER_ROLES).reduce((obj, r) => {
             if ( r === "NONE" ) return obj;
             obj[r] = `USER.Role${r.titleCase()}`;
             return obj;
           }, {}),
-          actions: actions,
-          enable: settings.enable
+          actions,
+          enable
         }
     }
   
@@ -372,12 +399,28 @@ export class helpMenu extends FormApplication {
      * @param {*} formData 
      */
     async _updateObject(event, formData) {
-        let permissions = expandObject(formData);
         let settings = {};
-        settings.enable = permissions.ENABLE;
+        let permissions = expandObject(formData);
+
+        for (const [key, value] of Object.entries(permissions)) {
+            const val = value;
+            let conf = {};
+            if (key == 'ENABLE') {
+                settings.enable = [value.player, value.trusted, value.assistent, value.gm];
+            }
+            else {
+                conf = {};
+                for (const [key, value] of Object.entries(val)) {
+                    const arr = [value.player, value.trusted, value.assistent, value.gm];
+                    conf[key] = arr;
+                }
+            }
+            permissions[key] = conf;
+        }
+    
         delete permissions.ENABLE;
         settings.permissions = permissions;
-       // game.settings.set(MODULE.moduleName,'userPermission',settings);
+        game.settings.set(moduleName,'userPermission',settings);
     }
   
     async activateListeners(html) {
@@ -396,7 +439,7 @@ export class helpMenu extends FormApplication {
             enable: defaultEnable,
             permissions: defaultUserPermissions
         }
-        await game.settings.set(MODULE.moduleName,'userPermission',settings);
+        await game.settings.set(moduleName,'userPermission',settings);
         this.render();
         ui.notifications.info(game.i18n.localize("MaterialDeck.Perm.DefaultNotification"));
     }

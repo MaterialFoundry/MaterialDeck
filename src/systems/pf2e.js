@@ -1,5 +1,5 @@
-import {compatibleCore} from "../misc.js";
-import {otherControls} from "../../MaterialDeck.js";
+import { otherControls } from "../../MaterialDeck.js";
+import { compatibleCore } from "../misc.js";
 
 const limitedSheets = ['loot', 'vehicle'];
 const proficiencyColors = 
@@ -14,10 +14,18 @@ const proficiencyColors =
 export class pf2e{
 
     constructor(){
-        
+        console.log("Material Deck: Using system 'Pathfinder 2e'");
     }
 
     tokenSpellData = new Map();
+
+    getActorData(token) {
+        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+    }
+
+    getItemData(item) {
+        return compatibleCore('10.0') ? item.system : item.data.data;
+    }
 
     getHP(token) {
         const hp = token.actor.attributes?.hp;
@@ -48,7 +56,7 @@ export class pf2e{
     getSpeed(token) {
         if (this.isLimitedSheet(token.actor) || token.actor.type == 'hazard') {
             if (token.actor.type == 'vehicle') {
-                return token.actor.data.data.details.speed;
+                return this.getActorData(token).details.speed;
             } else return '';
         }
         let speed = `${token.actor.attributes.speed?.total}'`;
@@ -117,7 +125,7 @@ export class pf2e{
 
     findSave(token, ability) {
         if (this.isLimitedSheet(token.actor)) return;
-        return token.actor.data.data.saves?.[ability];
+        return this.getActorData(token).saves?.[ability];
     }
 
     fixSave(ability) {
@@ -151,12 +159,12 @@ export class pf2e{
                 return;
             }
         }
-        return token.actor.data.data.skills?.[skill];
+        return this.getActorData(token).skills?.[skill];
     }
 
     getLoreSkills(token) {
         if (this.isLimitedSheet(token.actor)) return [];
-        const skills = token.actor.data.data.skills;
+        const skills = this.getActorData(token).skills;
         return Object.keys(skills).map(key => skills[key]).filter(s => s.lore == true);
     }
 
@@ -270,7 +278,7 @@ export class pf2e{
                     return;
                 }
             }
-            let skillName = token.actor.data.data.skills?.[skill].name;
+            let skillName = this.getActorData(token).skills?.[skill].name;
             skillName = skillName.charAt(0).toUpperCase() + skillName.slice(1);
             this.checkRoll(`Skill Check: ${skillName}`, token.actor.skills?.[skill], 'skill-check', token.actor);
         }
@@ -315,14 +323,14 @@ export class pf2e{
         if (featureType == 'feat-gen') return allItems.filter(i => i.type == 'feat' && i.featType == 'general');
         if (featureType == 'feat-ski') return allItems.filter(i => i.type == 'feat' && i.featType == 'skill');
         if (featureType == 'action-any') return allItems.filter(i => i.type == 'action');
-        if (featureType == 'action-def') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'defensive');
-        if (featureType == 'action-int') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'interaction');
-        if (featureType == 'action-off') return allItems.filter(i => i.type == 'action' && i.data.data.actionCategory?.value == 'offensive');
+        if (featureType == 'action-def') return allItems.filter(i => i.type == 'action' && this.getItemData(i).actionCategory?.value == 'defensive');
+        if (featureType == 'action-int') return allItems.filter(i => i.type == 'action' && this.getItemData(i).actionCategory?.value == 'interaction');
+        if (featureType == 'action-off') return allItems.filter(i => i.type == 'action' && this.getItemData(i).actionCategory?.value == 'offensive');
         if (featureType == 'strike') { //Strikes are not in the actor.items collection
             if (token.actor.type == 'hazard' || token.actor.type == 'familiar') {
                 return allItems.filter(i => i.type == 'melee' || i.type == 'ranged');
             }
-            let actions = token.actor.data.data.actions?.filter(a=>a.type == 'strike');
+            let actions = this.getActorData(token).actions?.filter(a=>a.type == 'strike');
             for (let a of actions) {
                 a.img = a.imageUrl;
                 a.data = {
@@ -345,7 +353,7 @@ export class pf2e{
     buildSpellData(token) {
         let spellData = [[],[],[],[],[],[],[],[],[],[],[],[]];
         let spellcastingEntries = token.actor.spellcasting;
-        const actorLevel = token.actor.data.data.details.level.value;
+        const actorLevel = this.getActorData(token).details.level.value;
         spellcastingEntries.forEach(spellCastingEntry => {
             let highestSpellSlot = Math.ceil(actorLevel/2);
             while (spellCastingEntry.data.data.slots?.[`slot${highestSpellSlot}`]?.max <= 0) highestSpellSlot--;
@@ -413,15 +421,15 @@ export class pf2e{
         if (level == undefined || level == 'any') level = item.level;
         if (item.isCantrip == true) return;
         if (item.isFocusSpell == true) return {
-            available: token.actor.data.data.resources.focus.value,
-            maximum: token.actor.data.data.resources.focus.max
+            available: this.getActorData(token).resources.focus.value,
+            maximum: this.getActorData(token).resources.focus.max
         }
         const spellbook = this.findSpellcastingEntry(token.actor, item);
         if (spellbook == undefined) return;
         if (spellbook.data.data.prepared.value == 'innate') {
             return {
-                available: item.data.data.location.uses.value,
-                maximum: item.data.data.location.uses.max
+                available: this.getItemData(item).location.uses.value,
+                maximum: this.getItemData(item).location.uses.max
             }
         }
         if (spellbook.data.data.prepared.value == 'prepared') {

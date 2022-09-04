@@ -1,4 +1,4 @@
-import * as MODULE from "../MaterialDeck.js";
+import { moduleName, sendWS, tokenControl, macroControl, combatTracker, playlistControl, soundboard, otherControls, externalModules, sceneControl } from "../MaterialDeck.js";
 
 export class StreamDeck{
     constructor() {
@@ -90,14 +90,14 @@ export class StreamDeck{
         }
 
         if (this.getActive(action) == false){
-            if (action == 'token') MODULE.tokenControl.active = false; 
-            else if (action == 'macro') MODULE.macroControl.active = false; 
-            else if (action == 'combattracker') MODULE.combatTracker.active = false; 
-            else if (action == 'playlist') MODULE.playlistControl.active = false;
-            else if (action == 'soundboard') MODULE.soundboard.active = false;
-            else if (action == 'other') MODULE.otherControls.active = false;
-            else if (action == 'external') MODULE.externalModules.active = false;
-            else if (action == 'scene') MODULE.sceneControl.active = false;
+            if (action == 'token') tokenControl.active = false; 
+            else if (action == 'macro') macroControl.active = false; 
+            else if (action == 'combattracker') combatTracker.active = false; 
+            else if (action == 'playlist') playlistControl.active = false;
+            else if (action == 'soundboard') soundboard.active = false;
+            else if (action == 'other') otherControls.active = false;
+            else if (action == 'external') externalModules.active = false;
+            else if (action == 'scene') sceneControl.active = false;
         }
     }
 
@@ -204,7 +204,7 @@ export class StreamDeck{
                 target: 0
             }
         };
-        MODULE.sendWS(JSON.stringify(msg));
+        sendWS(JSON.stringify(msg));
     }
     
     setColor(context,color = '#000000'){
@@ -216,7 +216,7 @@ export class StreamDeck{
             format: 'color',
             background: color
         };
-        MODULE.sendWS(JSON.stringify(msg));
+        sendWS(JSON.stringify(msg));
     }
 
     setImage(image,context,device,nr,id){
@@ -232,7 +232,7 @@ export class StreamDeck{
                 target: 0
             }
         };
-        MODULE.sendWS(JSON.stringify(json));
+        sendWS(JSON.stringify(json));
     }
 
     setBufferImage(context,device,nr,id){
@@ -247,7 +247,7 @@ export class StreamDeck{
                 target: 0
             }
         };
-        MODULE.sendWS(JSON.stringify(json));
+        sendWS(JSON.stringify(json));
     }
 
     setIcon(context,device,src='',options = {}){
@@ -301,6 +301,8 @@ export class StreamDeck{
         let format = split[split.length-1].split('?')[0];
         split = split[0].split(' ');
         if (split[0] == 'fas' || split[0] == 'far' || split[0] == 'fal' || split[0] == 'fad') format = 'icon';
+        let split2 = split[0].split('-');
+        if (split2[0] == 'fa') format = 'icon';
         let msg = {
             target: "SD",
             event: 'setIcon',
@@ -326,7 +328,7 @@ export class StreamDeck{
             action: action,
             state: state
         };
-        MODULE.sendWS(JSON.stringify(msg));
+        sendWS(JSON.stringify(msg));
     }
 
     setProfile(action,device){
@@ -343,7 +345,7 @@ export class StreamDeck{
                 profile: profile
             }
         };
-        MODULE.sendWS(JSON.stringify(json));
+        sendWS(JSON.stringify(json));
     }
 
     setPluginId(id){
@@ -439,7 +441,7 @@ export class StreamDeck{
         img.onload = () => {
             if (format == 'color') ctx.filter = "opacity(0)";
             
-            if (data.overlay == true) ctx.filter = "brightness(" + game.settings.get(MODULE.moduleName,'imageBrightness') + "%)";
+            if (data.overlay == true) ctx.filter = "brightness(" + game.settings.get(moduleName,'imageBrightness') + "%)";
             //ctx.filter = "brightness(0) saturate(100%) invert(38%) sepia(62%) saturate(2063%) hue-rotate(209deg) brightness(90%) contrast(95%)";
             var imageAspectRatio = img.width / img.height;
             var canvasAspectRatio = canvas.width / canvas.height;
@@ -564,7 +566,7 @@ export class StreamDeck{
 
     addToImageBuffer(img,data){
         const id = this.getImageBufferId(data);
-        const maxBufferSize = game.settings.get(MODULE.moduleName,'imageBuffer');
+        const maxBufferSize = game.settings.get(moduleName,'imageBuffer');
         if (maxBufferSize == 0) return false;
         if (this.imageBufferCounter > maxBufferSize) this.imageBufferCounter = 0;
         
@@ -581,7 +583,7 @@ export class StreamDeck{
     }
 
     checkImageBuffer(data){
-        if (game.settings.get(MODULE.moduleName,'imageBuffer') == 0) return false;
+        if (game.settings.get(moduleName,'imageBuffer') == 0) return false;
         const id = this.getImageBufferId(data);
         
         for (let i=0; i<this.imageBuffer.length; i++){

@@ -1,6 +1,5 @@
-import * as MODULE from "../MaterialDeck.js";
-import {streamDeck, gamingSystem} from "../MaterialDeck.js";
-import {compatibleCore} from "./misc.js";
+import { streamDeck, gamingSystem, getPermission } from "../../MaterialDeck.js";
+import { compatibleCore } from "../misc.js";
 
 export class OtherControls{
     constructor(){
@@ -94,7 +93,7 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     updatePause(settings,context,device,options={}){
-        if (MODULE.getPermission('OTHER','PAUSE') == false ) {
+        if (getPermission('OTHER','PAUSE') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -119,7 +118,7 @@ export class OtherControls{
     }
 
     keyPressPause(settings){
-        if (MODULE.getPermission('OTHER','PAUSE') == false ) return;
+        if (getPermission('OTHER','PAUSE') == false ) return;
         
         const pauseFunction = settings.pauseFunction ? settings.pauseFunction : 'pause';
 
@@ -186,7 +185,7 @@ export class OtherControls{
         }
         else {
             let viewPosition = canvas.scene._viewPosition;
-            const gridSize = canvas.scene.data.grid;
+            const gridSize = compatibleCore('10.0') ? canvas.scene.grid.size : canvas.scene.data.grid;
             viewPosition.duration = 100;
             
             if (dir == 'up') viewPosition.y -= gridSize;
@@ -220,7 +219,7 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
     
     updateControl(settings,context,device,options={}){
-        if (MODULE.getPermission('OTHER','CONTROL') == false ) {
+        if (getPermission('OTHER','CONTROL') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -241,19 +240,19 @@ export class OtherControls{
             controlNr--;
             controlNr += this.controlsOffset;
 
-            const selectedControl = ui.controls.controls[controlNr];
+            const selectedControl = ui.controls.controls[controlNr];       
             
             if (selectedControl != undefined){
                 if (selectedControl.visible == false) {
                     streamDeck.noPermission(context,device,false);
                     return;
                 }
-                if (tool == 'open'){  //open category
+                //if (tool == 'open'){  //open category
                     txt = game.i18n.localize(selectedControl.title);
                     src = selectedControl.icon;
                     if (activeControl == selectedControl.name)
                         ringColor = "#FF7B00";
-                }
+                //}
             }
         }
         else if (control == 'dispTools'){  //displayed tools
@@ -330,7 +329,7 @@ export class OtherControls{
     }
 
     keyPressControl(settings){
-        if (MODULE.getPermission('OTHER','CONTROL') == false ) return;
+        if (getPermission('OTHER','CONTROL') == false ) return;
         if (canvas.scene == null) return;
         const control = settings.control ? settings.control : 'dispControls';
         const tool = settings.tool ?  settings.tool : 'open';
@@ -346,9 +345,12 @@ export class OtherControls{
                     streamDeck.noPermission(context,device,false);
                     return;
                 }
-                ui.controls.activeControl = selectedControl.name;
-                selectedControl.activeTool = selectedControl.activeTool;
-                if (compatibleCore("0.8.2")) {
+                if (compatibleCore('10.0')) {
+                    ui.controls.initialize({layer: selectedControl.layer});
+                }
+                else {
+                    ui.controls.activeControl = selectedControl.name;
+                    selectedControl.activeTool = selectedControl.activeTool;
                     for (let layer of canvas.layers) {
                         if (layer.options == undefined) continue;
                         if (layer.options.name == selectedControl.layer) {
@@ -357,7 +359,6 @@ export class OtherControls{
                         }
                     }
                 }
-                else canvas.getLayer(selectedControl.layer).activate();
             }
         }
         else if (control == 'dispTools'){  //displayed tools
@@ -383,8 +384,15 @@ export class OtherControls{
                     else if (selectedTool.button){
                         selectedTool.onClick();
                     }
-                    else
-                        selectedControl.activeTool = selectedTool.name;
+                    else {
+                        if (compatibleCore('10.0')) {
+                            ui.controls.initialize({layer: selectedControl.layer, tool: selectedTool.name});
+                        }
+                        else {
+                            selectedControl.activeTool = selectedTool.name;
+                        }
+                    }
+                        
                 }  
             }
         }
@@ -406,9 +414,12 @@ export class OtherControls{
                     return;
                 }
                 if (tool == 'open'){  //open category
-                    ui.controls.activeControl = control;
-                    selectedControl.activeTool = selectedControl.activeTool;
-                    if (compatibleCore("0.8.2")) {
+                    if (compatibleCore('10.0')) {
+                        ui.controls.initialize({layer: selectedControl.layer});
+                    }
+                    else {
+                        ui.controls.activeControl = control;
+                        selectedControl.activeTool = selectedControl.activeTool;
                         for (let layer of canvas.layers) {
                             if (layer.options == undefined) continue;
                             if (layer.options.name == selectedControl.layer) {
@@ -417,7 +428,7 @@ export class OtherControls{
                             }
                         }
                     }
-                    else canvas.getLayer(selectedControl.layer).activate();
+                    
                 }
                 else {
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
@@ -426,8 +437,21 @@ export class OtherControls{
                             streamDeck.noPermission(context,device,false);
                             return;
                         }
-                        ui.controls.activeControl = control;
-                        if (compatibleCore("0.8.2")) {
+                        if (compatibleCore('10.0')) {
+                            if (selectedTool.toggle) {
+                                ui.controls.initialize({layer: selectedControl.layer});
+                                selectedTool.active = !selectedTool.active;
+                                selectedTool.onClick(selectedTool.active);
+                            }
+                            else if (selectedTool.button){
+                                ui.controls.initialize({layer: selectedControl.layer});
+                                selectedTool.onClick();
+                            }
+                            else
+                            ui.controls.initialize({layer: selectedControl.layer, tool: selectedTool.name});
+                        }
+                        else {
+                            ui.controls.activeControl = control;
                             for (let layer of canvas.layers) {
                                 if (layer.options == undefined) continue;
                                 if (layer.options.name == selectedControl.layer) {
@@ -435,17 +459,17 @@ export class OtherControls{
                                     break;
                                 }
                             }
+                            if (selectedTool.toggle) {
+                                selectedTool.active = !selectedTool.active;
+                                selectedTool.onClick(selectedTool.active);
+                            }
+                            else if (selectedTool.button){
+                                selectedTool.onClick();
+                            }
+                            else
+                                selectedControl.activeTool = tool;
                         }
-                        else canvas.getLayer(selectedControl.layer).activate();
-                        if (selectedTool.toggle) {
-                            selectedTool.active = !selectedTool.active;
-                            selectedTool.onClick(selectedTool.active);
-                        }
-                        else if (selectedTool.button){
-                            selectedTool.onClick();
-                        }
-                        else
-                            selectedControl.activeTool = tool;
+ 
                     }
                 }
             }
@@ -456,7 +480,7 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateDarkness(settings,context,device,options={}){
-        if (MODULE.getPermission('OTHER','DARKNESS') == false ) {
+        if (getPermission('OTHER','DARKNESS') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -476,7 +500,7 @@ export class OtherControls{
         }
         else if (func == 'disp'){    //display darkness
             src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
-            const darkness = canvas.scene != null ? Math.floor(canvas.scene.data.darkness*100)/100 : '';
+            const darkness = canvas.scene != null ? compatibleCore('10.0') ? Math.floor(canvas.scene.darkness*100)/100 : Math.floor(canvas.scene.data.darkness*100)/100 : '';
             txt += darkness;
         }
         streamDeck.setTitle(txt,context);
@@ -485,39 +509,48 @@ export class OtherControls{
 
     keyPressDarkness(settings) {
         if (canvas.scene == null) return;
-        if (MODULE.getPermission('OTHER','DARKNESS') == false ) return;
+        if (getPermission('OTHER','DARKNESS') == false ) return;
         const func = settings.darknessFunction ? settings.darknessFunction : 'value';
         const value = parseFloat(settings.darknessValue) ? parseFloat(settings.darknessValue) : 0;
+        const animateDarkness = parseInt(settings.darknessAnimation) ? parseInt(settings.darknessAnimation) : 500;
 
         if (func == 'value') //value
-            canvas.scene.update({darkness: value});
+            canvas.scene.update({darkness: value}, {animateDarkness});
         else if (func == 'incDec'){ //increase/decrease
-            let darkness = canvas.scene.data.darkness - value;
+            let darkness = compatibleCore('10.0') ? canvas.scene.darkness - value : canvas.scene.data.darkness - value;
             if (darkness > 1) darkness = 1;
             if (darkness < 0) darkness = 0;
-            canvas.scene.update({darkness: darkness});
+            canvas.scene.update({darkness: darkness}, {animateDarkness});
+        }
+        else if (func == 'transitionDay') {
+            canvas.scene.update({darkness: 0}, {animateDarkness: 10000})
+        }
+        else if (func == 'transitionNight') {
+            canvas.scene.update({darkness: 1}, {animateDarkness: 10000})
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateRollDice(settings,context,device,options={}){
-        if (MODULE.getPermission('OTHER','DICE') == false ) {
+        if (getPermission('OTHER','DICE') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
         const background = settings.background ? settings.background : '#000000';
         let txt = '';
+        const formula = settings.rollDiceFormula ? settings.rollDiceFormula : '1d20 + 7';
 
-        if (settings.displayDiceName) txt = 'Roll: ' + settings.rollDiceFormula;
+        if (settings.displayDiceName) txt = 'Roll: ' + formula;
 
         streamDeck.setTitle(txt,context);
         streamDeck.setIcon(context,device,'',{background:background});
     }
 
     keyPressRollDice(settings,context,device){
-        if (MODULE.getPermission('OTHER','DICE') == false ) return;
-        if (settings.rollDiceFormula == undefined || settings.rollDiceFormula == '') return;
+        if (getPermission('OTHER','DICE') == false ) return;
+        const formula = settings.rollDiceFormula ? settings.rollDiceFormula : '1d20 + 7';
+        if (formula == '') return;
         const rollFunction = settings.rollDiceFunction ? settings.rollDiceFunction : 'public';
 
         let actor;
@@ -527,8 +560,8 @@ export class OtherControls{
         if (actor != undefined) tokenControlled = true;
 
         let r;
-        if (tokenControlled) r = new Roll(settings.rollDiceFormula,actor.getRollData());
-        else r = new Roll(settings.rollDiceFormula);
+        if (tokenControlled) r = new Roll(formula,actor.getRollData());
+        else r = new Roll(formula);
 
         r.evaluate({async:false});
         
@@ -539,12 +572,12 @@ export class OtherControls{
             r.toMessage(r,{rollMode:"selfroll"})
         }
         else if (rollFunction == 'sd'){
-            let txt = settings.displayDiceName ? 'Roll: '+settings.rollDiceFormula + '\nResult: ' : '';
+            let txt = settings.displayDiceName ? 'Roll: '+formula + '\nResult: ' : '';
             txt += r.total;
             streamDeck.setTitle(txt,context);
             let data = this.rollData
             data[context] = {
-                formula: settings.rollDiceFormula,
+                formula: formula,
                 result: txt
             }
             this.rollData = data;
@@ -556,7 +589,7 @@ export class OtherControls{
     updateRollTable(settings,context,device,options={}){
         const name = settings.rollTableName;
         if (name == undefined) return;
-        if (MODULE.getPermission('OTHER','TABLES') == false ) {
+        if (getPermission('OTHER','TABLES') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -566,14 +599,14 @@ export class OtherControls{
         if (table == undefined) return;
 
         let txt = settings.displayRollName ? table.name : '';
-        let src = settings.displayRollIcon ? table.data.img : '';
+        let src = settings.displayRollIcon ? (compatibleCore('10.0') ? table.img : table.data.img) : '';
 
         if (table == undefined) {
             src = '';
             txt = '';
         }
         else {
-            if (table.permission < 2 && MODULE.getPermission('OTHER','TABLES_ALL') == false ) {
+            if (table.permission < 2 && getPermission('OTHER','TABLES_ALL') == false ) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -584,7 +617,7 @@ export class OtherControls{
     }
 
     keyPressRollTable(settings){
-        if (MODULE.getPermission('OTHER','TABLES') == false ) return;
+        if (getPermission('OTHER','TABLES') == false ) return;
         const name = settings.rollTableName;
         if (name == undefined) return;
 
@@ -592,7 +625,7 @@ export class OtherControls{
         const table = game.tables.getName(name);
 
         if (table != undefined) {
-            if (table.permission < 2 && MODULE.getPermission('OTHER','TABLES_ALL') == false ) return;
+            if (table.permission < 2 && getPermission('OTHER','TABLES_ALL') == false ) return;
             if (func == 'open'){ //open
                 const element = document.getElementById(table.sheet.id);
                 if (element == null) table.sheet.render(true);
@@ -609,18 +642,34 @@ export class OtherControls{
 
     getSidebarName(nr){
         let name;
-        if (nr == 'chat') name = game.i18n.localize("SIDEBAR.TabChat");
-        else if (nr == 'combat') name = game.i18n.localize("SIDEBAR.TabCombat");
-        else if (nr == 'scenes') name = game.i18n.localize("SIDEBAR.TabScenes");
-        else if (nr == 'actors') name = game.i18n.localize("SIDEBAR.TabActors");
-        else if (nr == 'items') name = game.i18n.localize("SIDEBAR.TabItems");
-        else if (nr == 'journal') name = game.i18n.localize("SIDEBAR.TabJournal");
-        else if (nr == 'tables') name = game.i18n.localize("SIDEBAR.TabTables");
-        else if (nr == 'cards') name = game.i18n.localize("SIDEBAR.TabCards");
-        else if (nr == 'playlists') name = game.i18n.localize("SIDEBAR.TabPlaylists");
-        else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
-        else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
-        else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
+        if (compatibleCore('10.0')) {
+            if (nr == 'chat') name = game.i18n.localize("DOCUMENT.ChatMessages");
+            else if (nr == 'combat') name = game.i18n.localize("DOCUMENT.Combats");
+            else if (nr == 'scenes') name = game.i18n.localize("DOCUMENT.Scenes");
+            else if (nr == 'actors') name = game.i18n.localize("DOCUMENT.Actors");
+            else if (nr == 'items') name = game.i18n.localize("DOCUMENT.Items");
+            else if (nr == 'journal') name = game.i18n.localize("DOCUMENT.JournalEntries");
+            else if (nr == 'tables') name = game.i18n.localize("DOCUMENT.RollTables");
+            else if (nr == 'cards') name = game.i18n.localize("DOCUMENT.Cards");
+            else if (nr == 'playlists') name = game.i18n.localize("DOCUMENT.Playlists");
+            else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
+            else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
+            else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
+        }
+        else {
+            if (nr == 'chat') name = game.i18n.localize("SIDEBAR.TabChat");
+            else if (nr == 'combat') name = game.i18n.localize("SIDEBAR.TabCombat");
+            else if (nr == 'scenes') name = game.i18n.localize("SIDEBAR.TabScenes");
+            else if (nr == 'actors') name = game.i18n.localize("SIDEBAR.TabActors");
+            else if (nr == 'items') name = game.i18n.localize("SIDEBAR.TabItems");
+            else if (nr == 'journal') name = game.i18n.localize("SIDEBAR.TabJournal");
+            else if (nr == 'tables') name = game.i18n.localize("SIDEBAR.TabTables");
+            else if (nr == 'cards') name = game.i18n.localize("SIDEBAR.TabCards");
+            else if (nr == 'playlists') name = game.i18n.localize("SIDEBAR.TabPlaylists");
+            else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
+            else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
+            else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
+        }
         return name;
     }
 
@@ -629,11 +678,11 @@ export class OtherControls{
         if (nr == 'chat') icon = window.CONFIG.ChatMessage.sidebarIcon;
         else if (nr == 'combat') icon = window.CONFIG.Combat.sidebarIcon;
         else if (nr == 'scenes') icon = window.CONFIG.Scene.sidebarIcon;
-        else if (nr == 'actors') icon = "fas fa-users";
+        else if (nr == 'actors') icon = window.CONFIG.Actor.sidebarIcon;
         else if (nr == 'items') icon = window.CONFIG.Item.sidebarIcon;
         else if (nr == 'journal') icon = window.CONFIG.JournalEntry.sidebarIcon;
         else if (nr == 'tables') icon = window.CONFIG.RollTable.sidebarIcon;
-        else if (nr == 'cards') icon = "fas fa-id-badge";
+        else if (nr == 'cards') icon = window.CONFIG.Cards.sidebarIcon;
         else if (nr == 'playlists') icon = window.CONFIG.Playlist.sidebarIcon;
         else if (nr == 'compendium') icon = "fas fa-atlas";
         else if (nr == 'settings') icon = "fas fa-cogs";
@@ -642,7 +691,7 @@ export class OtherControls{
     }
     
     updateSidebar(settings,context,device,options={}){
-        if (MODULE.getPermission('OTHER','SIDEBAR') == false ) {
+        if (getPermission('OTHER','SIDEBAR') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -666,7 +715,7 @@ export class OtherControls{
     }
 
     keyPressSidebar(settings){
-        if (MODULE.getPermission('OTHER','SIDEBAR') == false ) return;
+        if (getPermission('OTHER','SIDEBAR') == false ) return;
         const sidebarTab = settings.sidebarTab ? settings.sidebarTab : 'chat';
         const popOut = settings.sidebarPopOut ? settings.sidebarPopOut : false;
         
@@ -718,17 +767,17 @@ export class OtherControls{
     updateCompendium(settings,context,device,options={}){
         const name = settings.compendiumName;
         if (name == undefined) return;
-        if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) {
+        if (getPermission('OTHER','COMPENDIUM') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
         const compendium = game.packs.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
-        if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) {
+        if (compendium.private && getPermission('OTHER','COMPENDIUM_ALL') == false) {
             streamDeck.noPermission(context,device);
             return;
         }
-        const rendered = compatibleCore("0.8.5") ? compendium.apps[0].rendered : compendium.rendered;
+        const rendered = compendium.apps[0].rendered;
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
@@ -742,13 +791,13 @@ export class OtherControls{
     keyPressCompendium(settings){
         let name = settings.compendiumName;
         if (name == undefined) return;
-        if (MODULE.getPermission('OTHER','COMPENDIUM') == false ) return;
+        if (getPermission('OTHER','COMPENDIUM') == false ) return;
 
         const compendium = game.packs.find(p=>p.metadata.label == name);
-        const rendered = compatibleCore("0.8.5") ? compendium.apps[0].rendered : compendium.rendered;
+        const rendered = compendium.apps[0].rendered;
         if (compendium == undefined) return;
-        if (compendium.private && MODULE.getPermission('OTHER','COMPENDIUM_ALL') == false) return;
-        else if (rendered) compatibleCore("0.8.5") ? compendium.apps[0].close() : compendium.close();
+        if (compendium.private && getPermission('OTHER','COMPENDIUM_ALL') == false) return;
+        else if (rendered) compendium.apps[0].close();
         else compendium.render(true);
     }
 
@@ -761,11 +810,11 @@ export class OtherControls{
         const journal = game.journal.getName(name);
         if (journal == undefined) return;
 
-        if (MODULE.getPermission('OTHER','JOURNAL') == false ) {
+        if (getPermission('OTHER','JOURNAL') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
-        if (journal.permission < 2 && MODULE.getPermission('OTHER','JOURNAL_ALL') == false ) {
+        if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -795,8 +844,8 @@ export class OtherControls{
         const journal = game.journal.getName(name);
         if (journal == undefined) return;
 
-        if (MODULE.getPermission('OTHER','JOURNAL') == false ) return;
-        if (journal.permission < 2 && MODULE.getPermission('OTHER','JOURNAL_ALL') == false ) return;
+        if (getPermission('OTHER','JOURNAL') == false ) return;
+        if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) return;
 
         if (journal.sheet.rendered == false) journal.sheet.render(true);
         else journal.sheet.close();
@@ -805,7 +854,7 @@ export class OtherControls{
 //////////////////////////////////////////////////////////////////////////////////////////
 
     updateChatMessage(settings,context,device,options={}){
-        if (MODULE.getPermission('OTHER','CHAT') == false ) {
+        if (getPermission('OTHER','CHAT') == false ) {
             streamDeck.noPermission(context,device);
             return;
         }
@@ -815,7 +864,7 @@ export class OtherControls{
     }
 
     keyPressChatMessage(settings){
-        if (MODULE.getPermission('OTHER','CHAT') == false ) return;
+        if (getPermission('OTHER','CHAT') == false ) return;
         const message = settings.chatMessage ? settings.chatMessage : '';
 
         let chatData = {

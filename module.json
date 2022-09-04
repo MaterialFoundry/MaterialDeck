@@ -2,7 +2,7 @@
   "name": "MaterialDeck",
   "title": "Material Deck",
   "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "author": "CDeenen",
   "authors": {
     "name": "CDeenen",
@@ -11,18 +11,15 @@
     "patreon": "MaterialFoundry",
     "reddit": "CDeenen123"
   },
-  "flags": {
-    "minimumSDversion": "1.4.7",
-    "minimumMSversion": "1.0.2"
-  },
-  "minimumSDversion": "1.4.7",
-  "minimumMSversion": "1.0.2",
-  "esmodules": [
-    "./MaterialDeck.js"
-  ],
+  "esmodules": ["./MaterialDeck.js"],
+  "styles": ["./css/style.css"],
   "socket": true,
-  "minimumCoreVersion": "0.7.5",
-  "compatibleCoreVersion": "9",
+  "minimumCoreVersion": "9",
+  "compatibleCoreVersion": "10",
+  "compatibility": {
+    "minimum": "9",
+    "verified": "10"
+  },
   "languages": [
     {
       "lang": "en",

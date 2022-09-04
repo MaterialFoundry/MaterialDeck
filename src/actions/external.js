@@ -1,4 +1,5 @@
-import {streamDeck} from "../MaterialDeck.js";
+import { streamDeck } from "../../MaterialDeck.js";
+import { compatibleCore } from "../misc.js";
 
 export class ExternalModules{
     soundscapeSettings = {
@@ -113,14 +114,14 @@ export class ExternalModules{
         let name = '';
         if (type == 'weatherControls') {
             const effect = (settings.weatherEffect == undefined) ? 'leaves' : settings.weatherEffect;
-            name = CONFIG.fxmaster.weather[effect].label;
-            icon = CONFIG.fxmaster.weather[effect].icon;
+            name = compatibleCore('10.0') ? game.i18n.localize(CONFIG.fxmaster.particleEffects[effect].label) : CONFIG.fxmaster.weather[effect].label;
+            icon = compatibleCore('10.0') ? CONFIG.fxmaster.particleEffects[effect].icon : CONFIG.fxmaster.weather[effect].icon;
             ring = canvas.scene.getFlag("fxmaster", "effects")?.[`core_${effect}`] ? 2 : 1;
             ringColor = ring < 2 ? '#000000' : "#00ff00";
         }
         else if (type == 'filters') {
             const filter = (settings.fxMasterFilter == undefined) ? 'underwater' : settings.fxMasterFilter;
-            name = CONFIG.fxmaster.filters[filter].label;
+            name = compatibleCore('10.0') ? game.i18n.localize(CONFIG.fxmaster.filterEffects[filter].label) : CONFIG.fxmaster.filters[filter].label;
             background = "#340057";
             if (displayIcon){
                 if (filter == 'lightning') icon = "fas fa-bolt";
@@ -174,7 +175,7 @@ export class ExternalModules{
                 applyColor: (settings.fxWeatherEnColor == undefined) ? false : settings.fxWeatherEnColor
             }
 
-            Hooks.call("fxmaster.switchWeather", {
+            Hooks.call(compatibleCore('10.0') ? "fxmaster.switchParticleEffect" : "fxmaster.switchWeather", {
                 name: `core_${effect}`,
                 type: effect,
                 options,

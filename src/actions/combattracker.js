@@ -1,6 +1,4 @@
-import * as MODULE from "../MaterialDeck.js";
-import {streamDeck, tokenControl} from "../MaterialDeck.js";
-import {compatibleCore} from "./misc.js";
+import { streamDeck, tokenControl, getPermission } from "../../MaterialDeck.js";
 
 export class CombatTracker{
     constructor(){
@@ -32,7 +30,7 @@ export class CombatTracker{
         settings.icon = settings.displayIcon ? 'tokenIcon' : 'none';
         
         if (mode == 'combatants'){
-            if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
+            if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
                 streamDeck.noPermission(context,device,device,false,"combat tracker");
                 return;
             }
@@ -44,7 +42,7 @@ export class CombatTracker{
                 const combatant = initiativeOrder[nr]
 
                 if (combatant != undefined){
-                    const tokenId = compatibleCore("0.8.1") ? combatant.data.tokenId : combatant.tokenId;
+                    const tokenId = combatant.data.tokenId;
                     tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00');
                     return;
                 }
@@ -59,12 +57,12 @@ export class CombatTracker{
             }
         }
         else if (mode == 'currentCombatant'){
-            if (MODULE.getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
+            if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
                 streamDeck.noPermission(context,device,device);
                 return;
             }
             if (combat != null && combat != undefined && combat.started){
-                const tokenId = compatibleCore("0.8.1") ? combat.combatant.data.tokenId : combat.combatant.tokenId;
+                const tokenId = combat.combatant.data.tokenId;
                 tokenControl.pushData(tokenId,settings,context,device);
             }
             else {
@@ -74,15 +72,15 @@ export class CombatTracker{
         }
         else if (mode == 'function'){
 
-            if (ctFunction == 'turnDisplay' && MODULE.getPermission('COMBAT','TURN_DISPLAY') == false) {
+            if (ctFunction == 'turnDisplay' && getPermission('COMBAT','TURN_DISPLAY') == false) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-            else if (ctFunction == 'endTurn' && MODULE.getPermission('COMBAT','END_TURN') == false) {
+            else if (ctFunction == 'endTurn' && getPermission('COMBAT','END_TURN') == false) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-            else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && MODULE.getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
+            else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
                 streamDeck.noPermission(context,device);
                 return;
             }
@@ -130,6 +128,8 @@ export class CombatTracker{
                 if (settings.displayRound && settings.displayTurn) txt += "\n";
                 if (settings.displayTurn) txt += "Turn\n"+turn;
             }
+            else if (ctFunction == 'rollInitiative' || ctFunction == 'rollInitiativeNPC')
+                src = "modules/MaterialDeck/img/token/init.png";
 
             streamDeck.setIcon(context,device,src,{background:background});
             streamDeck.setTitle(txt,context);
@@ -145,20 +145,19 @@ export class CombatTracker{
             if (combat == null || combat == undefined) return;
             const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
 
-            if (ctFunction == 'turnDisplay' && MODULE.getPermission('COMBAT','TURN_DISPLAY') == false) {
+            if (ctFunction == 'turnDisplay' && getPermission('COMBAT','TURN_DISPLAY') == false) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-            else if (ctFunction == 'endTurn' && MODULE.getPermission('COMBAT','END_TURN') == false) {
+            else if (ctFunction == 'endTurn' && getPermission('COMBAT','END_TURN') == false) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-            else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && MODULE.getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
+            else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
                 streamDeck.noPermission(context,device);
                 return;
             }
-
-            if (ctFunction == 'startStop'){
+            else if (ctFunction == 'startStop'){
                 let src;
                 let background;
                 if (game.combat.started){
@@ -169,8 +168,10 @@ export class CombatTracker{
                 }
                 return;
             }
-            if (game.combat.started == false) return;
+            else if (ctFunction == 'rollInitiative' && getPermission('COMBAT','OTHER_FUNCTIONS')) game.combat.rollAll();
+            else if (ctFunction == 'rollInitiativeNPC' && getPermission('COMBAT','OTHER_FUNCTIONS')) game.combat.rollNPC();
             
+            if (game.combat.started == false) return;
             if (ctFunction == 'nextTurn') await game.combat.nextTurn();
             else if (ctFunction == 'prevTurn') await game.combat.previousTurn();
             else if (ctFunction == 'nextRound') await game.combat.nextRound();
@@ -181,7 +182,6 @@ export class CombatTracker{
                 const token = canvas.tokens.placeables.filter(token => token.id == game.combat.combatant.token.id)[0];
                 if (token.can(game.userId,"control")) token.control();
             }
-            
         }
         else {
             const onClick = settings.onClick ? settings.onClick : 'doNothing';
@@ -193,12 +193,12 @@ export class CombatTracker{
                     if (nr == undefined || nr < 1) nr = 0;
                     const combatant = initiativeOrder[nr]
                     if (combatant == undefined) return;
-                    tokenId = compatibleCore("0.8.1") ? combatant.data.tokenId : combatant.tokenId;
+                    tokenId = combatant.data.tokenId;
                 }
             }
             else if (mode == 'currentCombatant') 
                 if (combat != null && combat != undefined && combat.started)
-                    tokenId = compatibleCore("0.8.1") ? combat.combatant.data.tokenId : combat.combatant.tokenId;
+                    tokenId = combat.combatant.data.tokenId;
                 
             let token = (canvas.tokens.children[0] != undefined) ? canvas.tokens.children[0].children.find(p => p.id == tokenId) : undefined;
             if (token == undefined) return;
@@ -225,6 +225,12 @@ export class CombatTracker{
                 const element = document.getElementById(token.sheet.id);
                 if (element == null) token.sheet.render(true);
                 else token.sheet.close();
+            }
+            else if (onClick == 'rollInitiative') {
+                token.actor.rollInitiative({rerollInitiative:true});
+            }
+            else if (onClick == 'target') {
+                token.setTarget(!token.isTargeted,{releaseOthers:false})
             }
         }
         

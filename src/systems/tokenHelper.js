@@ -1,12 +1,12 @@
-import {dnd5e} from "./dnd5e.js";
-import {dnd35e} from "./dnd35e.js";
-import {pf2e} from "./pf2e.js";
-import {demonlord} from "./demonlord.js";
-import {wfrp4e} from "./wfrp4e.js";
-import {forbiddenlands} from "./forbidden-lands.js";
-import {starfinder} from "./starfinder.js";
-import {compatibleCore} from "../misc.js";
-import {gamingSystem} from "../../MaterialDeck.js";
+import { dnd5e } from "./dnd5e.js";
+import { dnd35e } from "./dnd35e.js";
+import { pf2e } from "./pf2e.js";
+import { demonlord } from "./demonlord.js";
+import { wfrp4e } from "./wfrp4e.js";
+import { forbiddenlands } from "./forbidden-lands.js";
+import { starfinder } from "./starfinder.js";
+import { compatibleCore } from "../misc.js";
+import { gamingSystem } from "../../MaterialDeck.js";
 
 
 export class TokenHelper{
@@ -58,7 +58,7 @@ export class TokenHelper{
 
     moveToken(token,dir){
         if (dir == undefined) dir = 'up';
-        const gridSize = canvas.scene.data.grid;
+        const gridSize = compatibleCore('10.0') ? canvas.scene.grid.size : canvas.scene.data.grid;
         let x = token.x;
         let y = token.y;
 
@@ -88,8 +88,10 @@ export class TokenHelper{
         }
         if (game.user.isGM == false && game.paused) return;
         if (game.user.isGM == false && (token.can(game.user,"control") == false || token.checkCollision(token.getCenter(x, y)))) return;
-        if (compatibleCore("0.8.1")) token.document.update({x:x,y:y});
-        else token.update({x:x,y:y});
+        let coords = canvas.grid.getCenter(x,y);
+        coords[0] -= canvas.grid.size/2;
+        coords[1] -= canvas.grid.size/2;
+        token.document.update({x:coords[0],y:coords[1]});
     };
 
     rotateToken(token,move,value) {
@@ -97,11 +99,10 @@ export class TokenHelper{
         value = isNaN(parseInt(value)) ? 0 : parseInt(value);
 
         let rotationVal;
-        if (move == 'by') rotationVal = token.data.rotation + value;
+        if (move == 'by') rotationVal = compatibleCore('10.0') ? token.document.rotation + value : token.data.rotation + value;
         else rotationVal = value;
         
-        if (compatibleCore("0.8.1")) token.document.update({rotation: rotationVal});
-        else token.update({rotation: rotationVal});
+        token.document.update({rotation: rotationVal});
     }
 
     ///////////////////////////////////////////////
@@ -127,11 +128,11 @@ export class TokenHelper{
 
     ////////////////////////////////////////////////////
     getTokenIcon(token) {
-        return token.data.img;
+        return compatibleCore('10.0') ? token.document.texture.src : token.data.img;
     }
 
     getActorIcon(token) {
-        return token.actor.data.img;
+        return compatibleCore('10.0') ? token.actor.img : token.actor.data.img;
     }
 
     /***********************************************************************
@@ -328,8 +329,8 @@ export class TokenHelper{
         return this.system.getSpellUses(token,level,item);
     }
 
-    rollItem(item, settings) {
-        return this.system.rollItem(item, settings);
+    rollItem(item, settings, rollOption) {
+        return this.system.rollItem(item, settings, rollOption);
     }
 
     /**

@@ -1,12 +1,20 @@
-import {compatibleCore} from "../misc.js";
+import { compatibleCore } from "../misc.js";
 
 export class demonlord{
     constructor(){
-        
+        console.log("Material Deck: Using system 'Shadow of the Demon Lord'");
+    }
+
+    getActorData(token) {
+        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+    }
+
+    getItemData(item) {
+        return compatibleCore('10.0') ? item.system : item.data.data;
     }
 
     getHP(token) {
-        const hp = token.actor.data.data.characteristics.health;
+        const hp = this.getActorData(token).characteristics.health;
         return {
             value: hp.value,
             max: hp.max
@@ -18,7 +26,7 @@ export class demonlord{
     }
 
     getAC(token) {
-        return token.actor.data.data.characteristics.defense;
+        return this.getActorData(token).characteristics.defense;
     }
 
     getShieldHP(token) {
@@ -26,11 +34,11 @@ export class demonlord{
     }
 
     getSpeed(token) {
-        return token.actor.data.data.characteristics.speed;
+        return this.getActorData(token).characteristics.speed;
     }
 
     getInitiative(token) {
-        return token.actor.data.data.fastturn ? "FAST" : "SLOW";
+        return this.getActorData(token).fastturn ? "FAST" : "SLOW";
     }
 
     toggleInitiative(token) {
@@ -50,12 +58,12 @@ export class demonlord{
 
     getAbility(token, ability) {
         if (ability == undefined) ability = 'strength';
-        return token.actor.data.data.attributes?.[ability].value;
+        return this.getActorData(token).attributes?.[ability].value;
     } 
 
     getAbilityModifier(token, ability) {
         if (ability == undefined) ability = 'str';
-        let val = token.actor.data.data.attributes?.[ability].modifier;
+        let val = this.getActorData(token).attributes?.[ability].modifier;
         return (val >= 0) ? `+${val}` : val;
     }
 
@@ -65,7 +73,7 @@ export class demonlord{
 
     getSkill(token, skill) {
         if (skill == undefined) skill = 'acr';
-        const val = token.actor.data.data.skills?.[skill].total;
+        const val = this.getActorData(token).skills?.[skill].total;
         return (val >= 0) ? `+${val}` : val;
     }
 
@@ -114,7 +122,7 @@ export class demonlord{
     }
 
     getItemUses(item) {
-        return {available: item.data.data.quantity};
+        return {available: getItemData(item).quantity};
     }
 
     /**
@@ -124,7 +132,7 @@ export class demonlord{
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        else return allItems.filter(i => i.type == 'spell' && i.data.data.rank == level)
+        else return allItems.filter(i => i.type == 'spell' && getItemData(i).rank == level)
     }
 
     getSpellUses(token,level,item) {

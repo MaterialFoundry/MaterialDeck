@@ -1,251 +1,290 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
+    <script>
+        for (let element of document.getElementsByClassName("materialDeck_helpMenu_expandable")) {
+            element.addEventListener("click",(event) => {
+                let thisElement = event.target;
+                if (event.target.className == "materialDeck_helpMenu_expandableIcon") thisElement = event.target.parentElement;
+                let nextElement = thisElement.nextElementSibling;
+                const collapse = nextElement.className == "materialDeck_helpMenu_collapsed" ? false : true;
+                nextElement.className = collapse ? "materialDeck_helpMenu_collapsed" : "";
+                thisElement.children[0].src = collapse ? "modules/MaterialDeck/img/right.png" : "modules/MaterialDeck/img/down.png";
+            })
+        }
+    </script>
 
     <div style="width:1200px">
 
-        <h1>Introduction</h1>
-        Material Deck is a Foundry VTT module that allows you to control certain Foundry functions using an Elgato Stream Deck. 
-        A Stream Deck is a device that has physical buttons with displays behind them. Material Deck uses this to, for example, 
-        control playlists, execute macros, display and control the combat tracker.<br><br>
-        The module allows a high degree of customization, where each button on the Stream Deck can be assigned any desired function. 
-        Furthermore, it supports folder structures, allowing easy switching between various button configurations so you can easily switch 
-        between the combat tracker, soundboard, or any other (custom) configuration.<br>
-        <br>
-        Material Deck is a very large module with tons of features and ways of customizing your experience. This menu will only cover the basics to get you started, 
-        the full documentation can be found on <a href="https://github.com/CDeenen/MaterialDeck/wiki">Github</a>. Please also check the <a href="https://github.com/CDeenen/MaterialDeck/wiki/FAQ">FAQ</a> which answers some common questions, including some basic troubleshooting.<br>
-
-        <h1>Latest Releases</h1>
-        <a href="https://github.com/CDeenen/MaterialDeck/releases">Module</a><br>
-        <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Stream Deck</a><br>
-        <a href="https://github.com/CDeenen/MaterialServer/releases">Server</a><br>
-        You can use the download utility in the module settings to download the Stream Deck plugin, Stream Deck profiles and Material Server.
-
-        <h1>Getting Started</h1>
-        Besides installing this module, you also need to install and run some other things.
-
-        <h2>Installing the Stream Deck Software and Plugin</h2>
-        YOu have to download and install the <a href="https://www.elgato.com/en/gaming/downloads">Stream Deck software</a>. 
-        You then need to install the plugin. There is a delay between when the plugin get's updated and the update being pushed in the store. 
-        If you try to install the plugin right after an update, you might not have the latest version. Manual installation is better in that case.
-        <br>
-        <h3>Stream Deck Store</h3>
-        <ol>
-            <li>Open the Stream Deck application</li>
-            <li>Press 'More Actions' in the lower right</li>
-            <li>Search (top right) or scroll to find Material Deck</li>
-            <li>Press the 'Install' button</li>
-        </ol>
-
-        <h3>Manually</h3>
-        <ol>
-            <li>Download the latest plugin file using the download utility in the module settings, or download it (com.cdeenen.materialdeck.streamDeckPlugin) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
-            <li>Double-click the file, this should open the Stream Deck software</li>
-            <li>Press 'Install' in the pop-up</li>
-        </ol>
-
-        <h2>Installing a Stream Deck Profile (optional)</h2>
-        You can create your own profile, but it is recommended to start with one of the pre-made profiles. Currently, there is a profile for the normal and XL Stream Deck variants.
-        <ol>
-            <li>Download the latest plugin file using the download utility in the module settings, or download one (ending with .streamDeckProfile) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
-            <li>Double-click the file, this should load the profile into the Stream Deck software</li>
-        </ol>
-
-        <h2>Downloading and Starting Material Server</h2>
-        Material Server acts as a bridge application, bridging the communication between the Stream Deck and Material Deck.
-        <ol>
-            <li>Download the latest version for your operating system <a href="https://github.com/CDeenen/MaterialServer/releases">here</a></li>
-            <li>Download and install the <a href="https://github.com/CDeenen/MaterialServer/blob/master/README.md#prerequisites">prerequisites</a></li>
-            <li>Extract the archive</li>
-            <li>Double-click the file to start the server</li>
-        </ol>
-        <b>You need to always have Material Server running when you want to use Material Deck</b>
-        <br>
-        <br>
-        After setting up the module settings I suggest you just play around with one of the profiles to see that happens when you press buttons and do things in Foundry.
-        Most things should be pretty self explanatory. After that you could look into customizing your experience, as you can read about below.
+        <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/down.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Introduction</h1>
+        <div class="">
+            Material Deck is a Foundry VTT module that allows you to control certain Foundry functions using an Elgato Stream Deck. 
+            A Stream Deck is a device that has physical buttons with displays behind them. Material Deck uses this to, for example, 
+            control playlists, execute macros, display and control the combat tracker.<br><br>
+            The module allows a high degree of customization, where each button on the Stream Deck can be assigned any desired function. 
+            Furthermore, it supports folder structures, allowing easy switching between various button configurations so you can easily switch 
+            between the combat tracker, soundboard, or any other (custom) configuration.<br>
+            <br>
+            Material Deck is a very large module with tons of features and ways of customizing your experience. This menu will only cover the basics to get you started, 
+            the full documentation can be found on <a href="https://github.com/CDeenen/MaterialDeck/wiki">Github</a>. Please also check the <a href="https://github.com/CDeenen/MaterialDeck/wiki/FAQ">FAQ</a> which answers some common questions, including some basic troubleshooting.<br>    
+        </div>
         
-        <h1>Module Setup</h1>
-        <img src="modules/MaterialDeck/wiki/img/ModuleSettings.png" align="right" HSPACE="5" width="450">
-        There are four buttons at the top:
-        <ul>
-            <li>Help</li>
-            <li>User Permission Configuration</li>
-            <li>Download Utility</li>
-            <li>Playlist Configuration</li>
-            <li>Macro Configuration</li>
-            <li>Soundboard Configuration</li>
-        </ul>
-        The help button leads you to the page you are currently reading, the other buttons will be explained below.<br>
-        <br>
-        Below the buttons you will find the following settings:
-        <ul>
-            <li><b>Enable Module</b> - Ticking this box enabled the module for the client</li>
-            <li><b>Material Server Address</b> - Fill in the address of Material Server (usually if you run it on the same computer as 
-                you're using for Foundry, this can be localhost:3001). This is not necessarily the IP address of Foundry! It is the IP 
-                address of the computer that's running Material Server. The default value will work for 99% of people, only change it if 
-                you know what you're doing. More info on Material Server can be found <a href="https://github.com/CDeenen/MaterialServer/blob/master/README.md">here</a></li>
-            <li><b>Image Cache Size</b> - Sets the amount of images to store in the image cache. The image cache will locally store all images sent to the Stream Deck. 
-                This improves the update speed, but increases memory usage.</li>
-            <li><b>Image Brightness</b> - Sets the brightness of the default white images for better readibility of the text. If Image Cache Size is large, it'll take a while for 
-                the new brightness setting to be applied. A refresh will give instantaneous results.</li>
-            <li><b>Number of Connection Warnings</b> - Sets the number of times you will get a warning when Material Deck cannot connect to Material Server. Will be unlimited if set to 0.</li>
-        </ul>
+        <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Latest Releases</h1>
+        <div class="materialDeck_helpMenu_collapsed">
+            <a href="https://github.com/CDeenen/MaterialDeck/releases">Module</a><br>
+            <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Stream Deck</a><br>
+            <a href="https://github.com/CDeenen/MaterialServer/releases">Server</a><br>
+            You can use the download utility in the module settings to download the Stream Deck plugin, Stream Deck profiles and Material Server.    
+        </div>
 
-        <BR CLEAR="right" />
+        <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Getting Started</h1>
+        <div class="materialDeck_helpMenu_collapsed">
+            Besides installing this module, you also need to install and run some other things.<br>
+            After setting up the module settings I suggest you just play around with one of the profiles to see that happens when you press buttons and do things in Foundry.
+            Most things should be pretty self explanatory. After that you could look into customizing your experience, as you can read about below.
 
-        <h2>User Permission Configuration</h2>
-        <img src="modules/MaterialDeck/wiki/img/PermissionConfig.png" align="right" HSPACE="5" width="450">
-        Using the 'User Permission Configuration' screen, the GM can configure what Material Deck functions users have access to.<br>
-        Each action has various settings, and these settings can be set for each user role.<br>
-        <br>
-        To save the settings, press the 'Save Configuration' button at the lower left, or to set the settings back to the default values, press 'Reset Defaults' in the lower right.<br>
-        <br>
-
-        <BR CLEAR="right" />
-
-        <h2>Download Utility</h2>
-        <img src="modules/MaterialDeck/wiki/img/DownloadUtility.png" align="right" HSPACE="5" width="350">
-        The download utility allows you to easily check the current version of the Stream Deck plugin and Material Server, and gives you the option to download the latest version.<br>
-        Please note that the current version of Material Server is at the moment not supported.<br>
-        <br>
-        At the bottom you can also download the default profiles from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Github</a><div class=""></div><br>
-        <br>
-        The refresh button at the bottom refreshes the page in case there was a connection issue.
-
-        <BR CLEAR="right" />
-
-        <h2>Playlist Configuration</h2>
-        <img src="modules/MaterialDeck/wiki/img/PlaylistConfig.png" align="right" HSPACE="5" width="350">
-        The playlist configuration screen configures the playlists that you control using the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Playlist-Action">Playlist action</a>.<br>
-        There are 2 sections: 'Settings', and 'Playlists'.
-
-        <h3><b>Settings</b></h3>
-        <h4><b>Default Play Mode</b></h4>
-        The play mode determines what to do when a track is playing, while another track is requested. By setting it to 'Unrestricted', you can play as many tracks at the same time as you want. Setting it to 'One track per playlist' will automatically stop all playing tracks in the playlist, ensuring that only one track is playing at a time. Setting 'Play Method' to 'One track in total' will limit playback to only one track in total.<br>
-        This setting sets the default play mode, which can be overridden for each separate playlist, which will be discussed below.<br>
-        <br>
-        Options:
-        <ul>
-            <li><b>Unrestricted</b> - Play as many tracks at the same time as you want</li>
-            <li><b>One track per playlist</b> - Play only one track per playlist. Trying to start a second track will stop the other tracks in the playlist</li>
-            <li><b>One track in total</b> - Play only one track in total. Trying to start a second track will stop all other tracks that are playing</li>
-        </ul>
-        <b>Note:</b> This play method only applies if tracks are started using the Stream Deck, you can still play more tracks using Foundry's internal audio player.
-
-        <h4><b>Number of Playlists</b></h4>
-        This sets the number of playlists that will be displayed. You can make this number as high or low as you want. This only changes the amount of playlists 
-        that are displayed, not the amount of playlists that can be controlled (there is no upper limit, as long as Foundry doesn't crash).
-
-        <h3><b>Playlists</b></h3>
-        Here you can select which playlists can be controlled with the module. You can manage as many playlists as you've set at 'Number of playlists', 
-        where the playlist number corresponds with the number you have to fill in in the property inspector (see below).<br>
-        For each playlist you can set the play mode, which overrides the default play mode for that specific playlist.<br>
-        <br>
-        <b>Note:</b> While you can assign the same playlist to multiple playlists in this configuration screen, only the play method of the first instance will be applied.
-
-        <h2>Macro Configuration</h2>
-        The Macro Configuration screen is to configure the macroboard for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro action</a>.<br>
-        <br>
-        The screen is divided into 32 boxes, each labeled 'Macro #', where each represents a single macro and its settings. This screen will be refered to as a page.
-        By pressing the arrows at the top right and top left, you can go to the next or previous page. There is no limit to the amount of pages you can add, but if you 
-        have a lot of pages, at some point you might notice some performance issues.<br>
-        <br>
-        For each macro there are 3 options: 
-        <ul>
-            <li><b>Macro Selection</b> - Drop down menu from where you can select a macro from your macro directory</li>
-            <li><b>Furnace Arguments</b> - Allows you to use arguments if <a href="https://foundryvtt.com/packages/furnace/">the Furnace</a> is installed. Please read the 
-                documentation regarding advanced macros in the <a href="https://github.com/League-of-Foundry-Developers/fvtt-module-furnace#advanced-macros">README</a> of the Furnace. 
-                If, for example, you wanted to execute a macro named 'My Macro' with the arguments 'argument1 argument2 argument3', you would use for example /"My Macro" 100 50 "test" 
-                in the chat. In the macro configuration screen you would only fill in the arguments, so: 100 50 "test"</li>
-            <li><b>Background</b> - Color picker to set the background color of the Stream Deck button</li>
-        </ul>
-
-        <br>
-        At the bottom you have the following buttons:
-        <ul>
-            <li><b>Clear Page</b> - Clears all the macros on the current page. Please note that this is irreversible.</li>
-            <li><b>Clear All</b> - Clears all the macros. Please note that this is irreversible.</li>
-            <li><b>Import</b> - Import the macroboard from a file. This will override your current macroboard, and is irreversible.</li>
-            <li><b>Export</b> - Export your macroboard to a file.</li>
-        </ul>
-        When importing and exporting, you only import/export the metadata, not the actual macros. This means that you need to have the same macros in both the source and target Foundry client,
-        or you might run into issues.
-
-        <img src="modules/MaterialDeck/wiki/img/MacroConfig.png" align="center" HSPACE="5" width="100%">
-
-        <h2>Soundboard Configuration</h2>
-        The Soundboard Configuration screen is used to configure the soundboard for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Soundboard-Action">Soundboard action</a>.<br>
-        <br>
-        Similar to the Macro Configuration screen, the screen is divided into boxes, each labeled 'Sound #', where each represents a single sound and its settings. This screen will be refered to as a page.
-        By pressing the arrows at the top right and top left, you can go to the next or previous page. There is no limit to the amount of pages you can add, but if you 
-        have a lot of pages, at some point you might notice some performance issues.<br>
-        <br>
-        For each sound there are multiple options:
-        <ul>
-            <li><b>Name</b> - The name of the sound, this is the name that will be displayed on the SD button if 'Display Name' is selected in the property inspector. 
-                This name doesn't have to correspond with the file name of the sound, or the name that can be seen in the Foundry playlist.</li>
-            <li><b>Playlist</b> - Sets the playlist from which you want to select a sound. If you select 'File Picker', a file picker will appear instead of the sound selection drop-down menu.</li>
-            <li><b>Sound</b> - This is either a drop-down menu where you can select a sound from the selected playlist, or a file picker.
-                When using the file picker, it is possible to use wildcard names, this means that you can randomly play a sound from a selection. To do this, navigate to the folder that 
-                contains the sounds, in the textbox append the folder name with the common part of the name of the sounds you want to play, followed by an asterisk.
-                For example, if you have the sounds 'Thunder.wav', 'Thunder2.wav' and 'Thunder3.wav' in the folder 'Assets', you could fill in the following: 'Assets/Thunder*', which 
-                will play one of the three sounds randomly when you press the button on the Stream Deck.</li>
-            <li><b>Icon</b> - Here you can select an icon that will be displayed on the SD button if 'Display Icon' is selected in the property inspector.
-                Please read <a href="https://github.com/CDeenen/MaterialDeck/wiki/Getting-Started#important-notes-on-foundry-assigned-text-and-icons">these</a> notes on rules regarding icon selection.</li>
-            <li><b>On</b> - Clicking the colored box you'll be presented with a color picker. This sets the color of the ring that's shown on the button when the sound is playing.</li>
-            <li><b>Off</b> - Clicking the colored box you'll be presented with a color picker. This sets the color of the ring that's shown on the button when the sound is not playing.</li>
-            <li><b>Playback</b> - This sets the playback mode, you can select from:
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Installing the Stream Deck Software and Plugin</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                You have to download and install the <a href="https://www.elgato.com/en/gaming/downloads">Stream Deck software</a>. 
+                You then need to install the plugin. There is a delay between when the plugin get's updated and the update being pushed in the store. 
+                If you try to install the plugin right after an update, you might not have the latest version. Manual installation is better in that case.
+                <br>
+                <h3>Stream Deck Store</h3>
+                <ol>
+                    <li>Open the Stream Deck application</li>
+                    <li>Press 'More Actions' in the lower right</li>
+                    <li>Search (top right) or scroll to find Material Deck</li>
+                    <li>Press the 'Install' button</li>
+                </ol>
+        
+                <h3>Manually</h3>
+                <ol>
+                    <li>Download the latest plugin file using the download utility in the module settings, or download it (com.cdeenen.materialdeck.streamDeckPlugin) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
+                    <li>Double-click the file, this should open the Stream Deck software</li>
+                    <li>Press 'Install' in the pop-up</li>
+                </ol>
+            </div>
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Installing a Stream Deck Profile (optional)</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                You can create your own profile, but it is recommended to start with one of the pre-made profiles. Currently, there is a profile for the normal and XL Stream Deck variants.
+                <ol>
+                    <li>Download the latest plugin file using the download utility in the module settings, or download one (ending with .streamDeckProfile) from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">here</a></li>
+                    <li>Double-click the file, this should load the profile into the Stream Deck software</li>
+                </ol>
+            </div>
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Downloading and Starting Material Server</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                Material Server acts as a bridge application, bridging the communication between the Stream Deck and Material Deck.
+                <ol>
+                    <li>Download the latest version for your operating system <a href="https://github.com/CDeenen/MaterialServer/releases">here</a> or through the download utility</li>
+                    <li>Extract the archive</li>
+                    <li>Run 'materialserver.exe' (Windows) or 'materialserver' (MacOS and Linux)</li>
+                </ol>
+                <b>You need to always have Material Server running when you want to use Material Deck</b><br>
+                <br>
+                <a href="https://github.com/CDeenen/MaterialServer/wiki">Material Server documentation</a>
+            </div>
+            
+        </div>
+        <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Module Setup</h1>
+        <div class="materialDeck_helpMenu_collapsed">
+            <img src="modules/MaterialDeck/wiki/img/ModuleSettings.png" align="right" HSPACE="5" width="450">
+            There are four buttons at the top:
+            <ul>
+                <li>Help</li>
+                <li>User Permission Configuration</li>
+                <li>Download Utility</li>
+                <li>Playlist Configuration</li>
+                <li>Macro Configuration</li>
+                <li>Soundboard Configuration</li>
+            </ul>
+            The help button leads you to the page you are currently reading, the other buttons will be explained below.<br>
+            <br>
+            Below the buttons you will find the following settings:
+            <ul>
+                <li><b>Enable Module</b> - Ticking this box enabled the module for the client</li>
+                <li><b>Material Server Address</b> - Fill in the address of Material Server (usually if you run it on the same computer as 
+                    you're using for Foundry, this can be localhost:3001). This is not necessarily the IP address of Foundry! It is the IP 
+                    address of the computer that's running Material Server. The default value will work for 99% of people, only change it if 
+                    you know what you're doing. More info on Material Server can be found <a href="https://github.com/CDeenen/MaterialServer/blob/master/README.md">here</a></li>
+                <li><b>Image Cache Size</b> - Sets the amount of images to store in the image cache. The image cache will locally store all images sent to the Stream Deck. 
+                    This improves the update speed, but increases memory usage.</li>
+                <li><b>Image Brightness</b> - Sets the brightness of the default white images for better readibility of the text. If Image Cache Size is large, it'll take a while for 
+                    the new brightness setting to be applied. A refresh will give instantaneous results.</li>
+                <li><b>Number of Connection Warnings</b> - Sets the number of times you will get a warning when Material Deck cannot connect to Material Server. Will be unlimited if set to 0.</li>
+            </ul>
+    
+            <BR CLEAR="right" />
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">User Permission Configuration</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                <img src="modules/MaterialDeck/wiki/img/PermissionConfig.png" align="right" HSPACE="5" width="450">
+                Using the 'User Permission Configuration' screen, the GM can configure what Material Deck functions users have access to.<br>
+                Each action has various settings, and these settings can be set for each user role.<br>
+                <br>
+                To save the settings, press the 'Save Configuration' button at the lower left, or to set the settings back to the default values, press 'Reset Defaults' in the lower right.<br>
+                <br>
+        
+                <BR CLEAR="right" />
+            </div>
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Download Utility</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                <img src="modules/MaterialDeck/wiki/img/DownloadUtility.png" align="right" HSPACE="5" width="350">
+                The download utility allows you to easily check the current version of the Stream Deck plugin and Material Server, and gives you the option to download the latest version.<br>
+                Please note that the current version of Material Server is at the moment not supported.<br>
+                <br>
+                At the bottom you can also download the default profiles from <a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Github</a><div class=""></div><br>
+                <br>
+                The refresh button at the bottom refreshes the page in case there was a connection issue.
+        
+                <BR CLEAR="right" />
+            </div>
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Playlist Configuration</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                <img src="modules/MaterialDeck/wiki/img/PlaylistConfig.png" align="right" HSPACE="5" width="350">
+                The playlist configuration screen configures the playlists that you control using the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Playlist-Action">Playlist action</a>.<br>
+                There are 2 sections: 'Settings', and 'Playlists'.
+        
+                <h3><b>Settings</b></h3>
+                <h4><b>Default Play Mode</b></h4>
+                The play mode determines what to do when a track is playing, while another track is requested. By setting it to 'Unrestricted', you can play as many tracks at the same time as you want. Setting it to 'One track per playlist' will automatically stop all playing tracks in the playlist, ensuring that only one track is playing at a time. Setting 'Play Method' to 'One track in total' will limit playback to only one track in total.<br>
+                This setting sets the default play mode, which can be overridden for each separate playlist, which will be discussed below.<br>
+                <br>
+                Options:
                 <ul>
-                    <li>Once - Play the sound once</li>
-                    <li>Repeat - Play the sound on repeat</li>
-                    <li>Hold - Play the sound as long as the button is held down</li>
+                    <li><b>Unrestricted</b> - Play as many tracks at the same time as you want</li>
+                    <li><b>One track per playlist</b> - Play only one track per playlist. Trying to start a second track will stop the other tracks in the playlist</li>
+                    <li><b>One track in total</b> - Play only one track in total. Trying to start a second track will stop all other tracks that are playing</li>
                 </ul>
-            </li>
-            <li><b>Volume</b> - The playback volume of the sound. The final playback volume is also determined by the Interface Volume slider in Foundry's 'Audio Playlists' tab.</li>
-        </ul>
+                <b>Note:</b> This play method only applies if tracks are started using the Stream Deck, you can still play more tracks using Foundry's internal audio player.
+        
+                <h4><b>Number of Playlists</b></h4>
+                This sets the number of playlists that will be displayed. You can make this number as high or low as you want. This only changes the amount of playlists 
+                that are displayed, not the amount of playlists that can be controlled (there is no upper limit, as long as Foundry doesn't crash).
+        
+                <h3><b>Playlists</b></h3>
+                Here you can select which playlists can be controlled with the module. You can manage as many playlists as you've set at 'Number of playlists', 
+                where the playlist number corresponds with the number you have to fill in in the property inspector (see below).<br>
+                For each playlist you can set the play mode, which overrides the default play mode for that specific playlist.<br>
+                <br>
+                <b>Note:</b> While you can assign the same playlist to multiple playlists in this configuration screen, only the play method of the first instance will be applied.
+            </div>
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Macro Configuration</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                The Macro Configuration screen is to configure the macroboard for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro action</a>.<br>
+                <br>
+                The screen is divided into 32 boxes, each labeled 'Macro #', where each represents a single macro and its settings. This screen will be refered to as a page.
+                By pressing the arrows at the top right and top left, you can go to the next or previous page. There is no limit to the amount of pages you can add, but if you 
+                have a lot of pages, at some point you might notice some performance issues.<br>
+                <br>
+                For each macro there are 3 options: 
+                <ul>
+                    <li><b>Macro Selection</b> - Drop down menu from where you can select a macro from your macro directory</li>
+                    <li><b>Furnace Arguments</b> - Allows you to use arguments if <a href="https://foundryvtt.com/packages/furnace/">the Furnace</a> is installed. Please read the 
+                        documentation regarding advanced macros in the <a href="https://github.com/League-of-Foundry-Developers/fvtt-module-furnace#advanced-macros">README</a> of the Furnace. 
+                        If, for example, you wanted to execute a macro named 'My Macro' with the arguments 'argument1 argument2 argument3', you would use for example /"My Macro" 100 50 "test" 
+                        in the chat. In the macro configuration screen you would only fill in the arguments, so: 100 50 "test"</li>
+                    <li><b>Background</b> - Color picker to set the background color of the Stream Deck button</li>
+                </ul>
+        
+                <br>
+                At the bottom you have the following buttons:
+                <ul>
+                    <li><b>Clear Page</b> - Clears all the macros on the current page. Please note that this is irreversible.</li>
+                    <li><b>Clear All</b> - Clears all the macros. Please note that this is irreversible.</li>
+                    <li><b>Import</b> - Import the macroboard from a file. This will override your current macroboard, and is irreversible.</li>
+                    <li><b>Export</b> - Export your macroboard to a file.</li>
+                </ul>
+                When importing and exporting, you only import/export the metadata, not the actual macros. This means that you need to have the same macros in both the source and target Foundry client,
+                or you might run into issues.
+        
+                <img src="modules/MaterialDeck/wiki/img/MacroConfig.png" align="center" HSPACE="5" width="100%">
+            </div>
+    
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Soundboard Configuration</h2>
+            <div class="materialDeck_helpMenu_collapsed">
+                The Soundboard Configuration screen is used to configure the soundboard for the <a href="https://github.com/CDeenen/MaterialDeck/wiki/Soundboard-Action">Soundboard action</a>.<br>
+                <br>
+                Similar to the Macro Configuration screen, the screen is divided into boxes, each labeled 'Sound #', where each represents a single sound and its settings. This screen will be refered to as a page.
+                By pressing the arrows at the top right and top left, you can go to the next or previous page. There is no limit to the amount of pages you can add, but if you 
+                have a lot of pages, at some point you might notice some performance issues.<br>
+                <br>
+                For each sound there are multiple options:
+                <ul>
+                    <li><b>Name</b> - The name of the sound, this is the name that will be displayed on the SD button if 'Display Name' is selected in the property inspector. 
+                        This name doesn't have to correspond with the file name of the sound, or the name that can be seen in the Foundry playlist.</li>
+                    <li><b>Playlist</b> - Sets the playlist from which you want to select a sound. If you select 'File Picker', a file picker will appear instead of the sound selection drop-down menu.</li>
+                    <li><b>Sound</b> - This is either a drop-down menu where you can select a sound from the selected playlist, or a file picker.
+                        When using the file picker, it is possible to use wildcard names, this means that you can randomly play a sound from a selection. To do this, navigate to the folder that 
+                        contains the sounds, in the textbox append the folder name with the common part of the name of the sounds you want to play, followed by an asterisk.
+                        For example, if you have the sounds 'Thunder.wav', 'Thunder2.wav' and 'Thunder3.wav' in the folder 'Assets', you could fill in the following: 'Assets/Thunder*', which 
+                        will play one of the three sounds randomly when you press the button on the Stream Deck.</li>
+                    <li><b>Icon</b> - Here you can select an icon that will be displayed on the SD button if 'Display Icon' is selected in the property inspector.
+                        Please read <a href="https://github.com/CDeenen/MaterialDeck/wiki/Getting-Started#important-notes-on-foundry-assigned-text-and-icons">these</a> notes on rules regarding icon selection.</li>
+                    <li><b>On</b> - Clicking the colored box you'll be presented with a color picker. This sets the color of the ring that's shown on the button when the sound is playing.</li>
+                    <li><b>Off</b> - Clicking the colored box you'll be presented with a color picker. This sets the color of the ring that's shown on the button when the sound is not playing.</li>
+                    <li><b>Playback</b> - This sets the playback mode, you can select from:
+                        <ul>
+                            <li>Once - Play the sound once</li>
+                            <li>Repeat - Play the sound on repeat</li>
+                            <li>Hold - Play the sound as long as the button is held down</li>
+                        </ul>
+                    </li>
+                    <li><b>Volume</b> - The playback volume of the sound. The final playback volume is also determined by the Interface Volume slider in Foundry's 'Audio Playlists' tab.</li>
+                </ul>
+        
+                <br>
+                At the bottom you have the following buttons:
+                <ul>
+                    <li><b>Clear Page</b> - Clears all the sounds on the current page. Please note that this is irreversible.</li>
+                    <li><b>Clear All</b> - Clears all the sounds. Please note that this is irreversible.</li>
+                    <li><b>Import</b> - Import the soundboard from a file. This will override your current soundboard, and is irreversible.</li>
+                    <li><b>Export</b> - Export your soundboard to a file.</li>
+                </ul>
+                When importing and exporting, you only import/export the metadata, not the actual audio files. This means that you need to have the same audio files in the same relative location in both the source and target Foundry client,
+                or you might run into issues.
+        
+                <img src="modules/MaterialDeck/wiki/img/SoundboardConfig.png" align="center" HSPACE="5" width="100%">
+            </div>
+        </div>
+    
+        <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Customization</h1>
+        <div class="materialDeck_helpMenu_collapsed">
+            Material Deck is extremely flexible, but most of this flexibility must be performed in the Stream Deck software.<br>
+            Some basic instructions on using the software can be found <a href="https://github.com/CDeenen/MaterialDeck/wiki/Getting-Started#basic-stream-deck-setup-instructions">here</a>.<br>
+            <br>
+            Some of the things you can change are:
+            <ul>
+                <li><b>Button location</b> - You can drag buttons around into any order you want</li>
+                <li><b>Changing button text and icon</b> - All the text and icons on the Stream Deck can be customized, see <a href="https://github.com/CDeenen/MaterialDeck/wiki/Getting-Started#changing-the-button-text-and-icon">here</a></li>
+                <li><b>Customize the behavior of buttons</b> - See below</li>
+            </ul>
+            All the buttons have many settings to fine-tune your experience. Due to the large amount of things you can change, they will not be discussed here, instead you can read about it at the following links:
+            <ul>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Combat-Tracker-Action">Combat Tracker Action</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/External-Modules">External Modules</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro Action</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Other-Actions">Other Actions</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Playlist-Action">Playlist Action</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Scene-Action">Scene Action</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Soundboard-Action">Soundboard Action</a></li>
+                <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Token-Action">Token Action</a></li>
+            </ul>
+        </div>
+        
 
-        <br>
-        At the bottom you have the following buttons:
-        <ul>
-            <li><b>Clear Page</b> - Clears all the sounds on the current page. Please note that this is irreversible.</li>
-            <li><b>Clear All</b> - Clears all the sounds. Please note that this is irreversible.</li>
-            <li><b>Import</b> - Import the soundboard from a file. This will override your current soundboard, and is irreversible.</li>
-            <li><b>Export</b> - Export your soundboard to a file.</li>
-        </ul>
-        When importing and exporting, you only import/export the metadata, not the actual audio files. This means that you need to have the same audio files in the same relative location in both the source and target Foundry client,
-        or you might run into issues.
-
-        <img src="modules/MaterialDeck/wiki/img/SoundboardConfig.png" align="center" HSPACE="5" width="100%">
-
-        <h1>Customization</h1>
-        Material Deck is extremely flexible, but most of this flexibility must be performed in the Stream Deck software.<br>
-        Some basic instructions on using the software can be found <a href="https://github.com/CDeenen/MaterialDeck/wiki/Getting-Started#basic-stream-deck-setup-instructions">here</a>.<br>
-        <br>
-        Some of the things you can change are:
-        <ul>
-            <li><b>Button location</b> - You can drag buttons around into any order you want</li>
-            <li><b>Changing button text and icon</b> - All the text and icons on the Stream Deck can be customized, see <a href="https://github.com/CDeenen/MaterialDeck/wiki/Getting-Started#changing-the-button-text-and-icon">here</a></li>
-            <li><b>Customize the behavior of buttons</b> - See below</li>
-        </ul>
-        All the buttons have many settings to fine-tune your experience. Due to the large amount of things you can change, they will not be discussed here, instead you can read about it at the following links:
-        <ul>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Combat-Tracker-Action">Combat Tracker Action</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/External-Modules">External Modules</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Macro-Action">Macro Action</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Other-Actions">Other Actions</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Playlist-Action">Playlist Action</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Scene-Action">Scene Action</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Soundboard-Action">Soundboard Action</a></li>
-            <li><a href="https://github.com/CDeenen/MaterialDeck/wiki/Token-Action">Token Action</a></li>
-        </ul>
-
-        <h1>Feedback</h1>
-        If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
-
-        <h1>Credits</h1>
-        <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
-        <br>
-        Special thanks to Asmodeus#7588 who made this module possible by generously donating a Stream Deck XL
-        <br>
-        Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>, and feel free to join the Material Foundry <a href="https://discord.gg/3hd4G6TkmA">Discord</a> server.
+        <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Feedback & Credits</h1>
+        <div class="materialDeck_helpMenu_collapsed">
+            If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.<br>
+            <br>
+            <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>
+            <br>
+            Special thanks to Asmodeus#7588 who made this module possible by generously donating a Stream Deck XL
+            <br>
+            Please consider supporting me on <a href="https://www.patreon.com/materialfoundry">Patreon</a>, and feel free to join the Material Foundry <a href="https://discord.gg/3hd4G6TkmA">Discord</a> server.    
+        </div>
     </div>    
 </form>

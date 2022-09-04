@@ -1,41 +1,18 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
-
-  <style>
-    .columnLabel {
-        max-width:30%;
-        min-width:30%;
-        text-align: left;
-    }
-    .columnId {
-        max-width:25%;
-        min-width:25%;
-        text-align: left;
-        text-overflow: hidden;
-    }
-    .columnCB {
-        width:10%;
-        text-align: left;
-    }
-  </style>
-
   <table style="width:100%; min-width:400px">
     <tr>
-      <th class='columnLabel'>{{localize "MaterialDeck.Name"}}</th>
-      <th class='columnLabel'>{{localize "MaterialDeck.Type"}}</th>
-      <th class='columnId'>{{localize "MaterialDeck.Id"}}</th>
-      <th class='columnCB'>{{localize "MaterialDeck.Perm.ENABLE.ENABLE.label"}}</th>
+      <th class='materialDeck_devConf_columnLabel'>{{localize "MaterialDeck.Name"}}</th>
+      <th class='materialDeck_devConf_columnLabel'>{{localize "MaterialDeck.Type"}}</th>
+      <th class='materialDeck_devConf_columnId'>{{localize "MaterialDeck.Id"}}</th>
+      <th class='materialDeck_devConf_columnCB'>{{localize "MaterialDeck.Perm.ENABLE.ENABLE.label"}}</th>
     </tr>
     {{#each devices as |d|}}
     <tr>
-      <td class='columnLabel'>{{d.name}}</td>
-      <td class='columnLabel'>{{d.type}}</td>
-      <td class='columnId'><input type="text" value={{d.id}} disabled></td>
-      <td class='columnCB'><input type="checkbox" name="enable" id={{d.id}} {{checked d.en}}></td>
+      <td class='materialDeck_devConf_columnLabel'>{{d.name}}</td>
+      <td class='materialDeck_devConf_columnLabel'>{{d.type}}</td>
+      <td class='materialDeck_devConf_columnId'><input type="text" value={{d.id}} disabled></td>
+      <td class='materialDeck_devConf_columnCB'><input type="checkbox" name="enable" id="materialDeck_devConf_{{d.id}}" {{checked d.en}}></td>
     </tr>
     {{/each}}
-
   </table>
-
-    
-
 </form>

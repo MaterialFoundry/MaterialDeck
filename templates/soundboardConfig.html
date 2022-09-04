@@ -1,25 +1,13 @@
 <form autocomplete="off" onsubmit="event.preventDefault()">
-    <style>
-        .boxed {
-            border: 1px solid black ;
-            border-radius: 5px ; 
-            max-width: 166px;
-            height: 300px;
-        }
 
-        .navigation {
-            flex:1;
-        }
-    </style>
-
-    <div class="navigation" style="width:100%; display:flex; flex-direction:row;">
-        <button type="button" class="navigation" id="navPrev" {{prevDisabled}}>
+    <div class="materialDeck_sbConfig_navigationDiv">
+        <button type="button" class="materialDeck_sbConfig_navigation" name="navPrev" {{prevDisabled}}>
             <i class="fas fa-arrow-left"></i>
         </button>
-        <p style="flex:15; text-align:center; padding: 0px 0; font-size: 20px"><b>
+        <p class="materialDeck_sbConfig_p"><b>
             {{localize "MaterialDeck.Sounds"}}: {{soundRange}} {{localize "MaterialDeck.Of"}} {{totalSounds}}
         </b></p>
-        <button type="button" class="navigation" id="navNext">
+        <button type="button" class="materialDeck_sbConfig_navigation" name="navNext">
             <i class="fas fa-arrow-right"></i>
         </button>
     </div>
@@ -28,20 +16,20 @@
     {{#each soundData}}
         <div class="form-group" style="width:100%">
             {{#each this.dataThis}}
-                <div class="boxed" style="padding: 5px; margin:2px; width:10%">
+                <div class="materialDeck_sbConfig_boxed">
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Sound"}} {{this.iteration}}
                     </div>
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Name"}}
                     </div>
-                    <input type="text" name="namebox" value="{{this.name}}" id="name{{this.iteration}}" style="width:100%;" >
+                    <input type="text" name="namebox" value="{{this.name}}" id="materialDeck_sbConfig_name{{this.iteration}}" style="width:100%;" >
 
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Playlist"}}
                     </div>
                     <div>
-                        <select name="playlist" class="playlist-select" default="" style="width:100%;" id="playlists{{this.iteration}}">
+                        <select name="playlist" class="playlist-select" default="" style="width:100%;" id="materialDeck_sbConfig_playlists{{this.iteration}}">
                             {{#select this.selectedPlaylist}}
                                 {{#each ../../playlists}}
                                 <option value="{{this.id}}">{{this.name}}</option>
@@ -53,8 +41,8 @@
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Sound"}}
                     </div>
-                    <div class="form-fields" id="ss{{this.iteration}}" style="{{this.styleSS}}">
-                        <select name="sounds" class="sounds-select" default="" style="width:100%;" id="soundSelect{{this.iteration}}">
+                    <div class="form-fields" id="materialDeck_sbConfig_ss{{this.iteration}}" style="{{this.styleSS}}">
+                        <select name="sounds" class="sounds-select" default="" style="width:100%;" id="materialDeck_sbConfig_soundSelect{{this.iteration}}">
                             {{#select this.sound}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each sounds}}
@@ -63,11 +51,11 @@
                             {{/select}}
                         </select>
                     </div>
-                    <div class="form-fields" id="fp{{this.iteration}}" style="{{this.styleFP}}">
+                    <div class="form-fields" id="materialDeck_sbConfig_fp{{this.iteration}}" style="{{this.styleFP}}">
                         <button type="button" class="file-picker" data-type="audio" data-target="src{{this.iteration}}" title="Browse Files" tabindex="-1">
                             <i class="fas fa-file-import fa-fw"></i>
                         </button>
-                        <input class="image" type="text" name="src{{this.iteration}}" name2="soundSrc" id="srcPath{{this.iteration}}" placeholder="path/audio.mp3" value={{this.srcPath}}>
+                        <input class="image" type="text" name="src{{this.iteration}}" name2="soundSrc" id="materialDeck_sbConfig_srcPath{{this.iteration}}" placeholder="path/audio.mp3" value={{this.srcPath}}>
                     </div>
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Icon"}}
@@ -76,18 +64,18 @@
                         <button type="button" class="file-picker" data-type="image" data-target="img{{this.iteration}}" title="Browse Files" tabindex="-1">
                             <i class="fas fa-file-import fa-fw"></i>
                         </button>
-                        <input class="image" type="text" name="img{{this.iteration}}" name2="imgSrc"  id="imgPath{{this.iteration}}" placeholder="path/image.png" value={{this.imgPath}}>
+                        <input class="image" type="text" name="img{{this.iteration}}" name2="imgSrc"  id="materialDeck_sbConfig_imgPath{{this.iteration}}" placeholder="path/image.png" value={{this.imgPath}}>
                     </div>
                     <div class="flex-container" style="display:flex;flex-direction:row;padding-top:5px">  
                         <label style="flex:1">{{localize "MaterialDeck.On"}}&nbsp;&nbsp;&nbsp;</label>
-                        <input style="flex:1" type="color" id="colorOn{{this.iteration}}" name="colorOn" style="flex:4" data-dtype="String" value="{{this.colorOn}}">
+                        <input style="flex:1" type="color" id="materialDeck_sbConfig_colorOn{{this.iteration}}" name="colorOn" style="flex:4" data-dtype="String" value="{{this.colorOn}}">
                         <label style="flex:1">&nbsp;{{localize "MaterialDeck.Off"}}&nbsp;&nbsp;</label>
-                        <input style="flex:1" type="color" id="colorOff{{this.iteration}}" name="colorOff" style="flex:4" data-dtype="String" value="{{this.colorOff}}"> 
+                        <input style="flex:1" type="color" id="materialDeck_sbConfig_colorOff{{this.iteration}}" name="colorOff" style="flex:4" data-dtype="String" value="{{this.colorOff}}"> 
                     </div>
                     
                     <div class="form-group options">
                         <label>{{localize "MaterialDeck.Playback"}}</label>
-                        <select name="mode" id="playmode{{this.iteration}}" style="flex:1">
+                        <select name="mode" id="materialDeck_sbConfig_playmode{{this.iteration}}" style="flex:1">
                             {{#select this.mode}}
                             <option value="0">{{localize "MaterialDeck.Once"}}</option>
                             <option value="1">{{localize "MaterialDeck.Repeat"}}</option>
@@ -97,7 +85,7 @@
                     </div>
                     <div class="form-group options">
                     <label>{{localize "MaterialDeck.Volume"}}</label>
-                        <input type="range" min="0" max="100" value={{this.volume}} class="slider" name="volume" id="volume{{this.iteration}}">
+                        <input type="range" min="0" max="100" value={{this.volume}} class="slider" name="volume" id="materialDeck_sbConfig_volume{{this.iteration}}">
                     </div>
 
                 </div>
@@ -105,18 +93,18 @@
         </div>
     {{/each}}
     <hr>
-    <div class="navigation" style="width:100%; display:flex; flex-direction:row;">
-        <button type="button" class="navigation" id="clearPage">
+    <div class="materialDeck_sbConfig_navigationDiv">
+        <button type="button" class="materialDeck_sbConfig_navigation" name="clearPage">
             <i></i>{{localize "MaterialDeck.ClearPage"}}
         </button>
-        <button type="button" class="navigation" id="clearAll">
+        <button type="button" class="materialDeck_sbConfig_navigation" name="clearAll">
             <i></i>{{localize "MaterialDeck.ClearAll"}}
         </button>
         <p style="flex:15;"></p>
-        <button type="button" class="navigation" id="import">
+        <button type="button" class="materialDeck_sbConfig_navigation" name="import">
             <i></i>{{localize "MaterialDeck.Import"}}
         </button>
-        <button type="button" class="navigation" id="export">
+        <button type="button" class="materialDeck_sbConfig_navigation" name="export">
             <i></i>{{localize "MaterialDeck.Export"}}
         </button>
     </div>
