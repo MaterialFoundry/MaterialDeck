@@ -1,6 +1,11 @@
 # Changelog Material Deck Module
-### v1.4.11 - 05-09-2022
+### v1.4.12 - 07-09-2022
+Fixes:
+<ul>
+    <li>Some settings did not have a default value, which caused errors for new users in v10</li>
+</ul>
 
+### v1.4.11 - 05-09-2022
 Fixes:
 <ul>
     <li>Fixed system autodetection bug, where it would not always correctly detect the system</li>

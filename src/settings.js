@@ -175,7 +175,8 @@ export const registerSettings = async function() {
         name: "devices",
         scope: "client",
         type: Object,
-        config: false
+        config: false,
+        default: {}
     });
 
     game.settings.registerMenu(moduleName, 'permissionConfig',{
@@ -234,7 +235,8 @@ export const registerSettings = async function() {
         name: "macroArgs",
         scope: "world",
         type: Object,
-        config: false
+        config: false,
+        default: {}
     });
 
     /**
