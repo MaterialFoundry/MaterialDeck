@@ -1,5 +1,5 @@
 import { streamDeck } from "../../MaterialDeck.js";
-import { compatibleCore } from "../misc.js";
+import { } from "../misc.js";
 
 export class ExternalModules{
     soundscapeSettings = {
@@ -60,15 +60,13 @@ export class ExternalModules{
     update(settings,context,device){
         this.active = true;
         const module = settings.module ? settings.module : 'fxmaster';
-
         if (module == 'fxmaster')           this.updateFxMaster(settings,context,device);
         else if (module == 'gmscreen')      this.updateGMScreen(settings,context,device);
         else if (module == 'triggerHappy')  this.updateTriggerHappy(settings,context,device);
         else if (module == 'sharedVision')  this.updateSharedVision(settings,context,device);
-        else if (module == 'mookAI')        this.updateMookAI(settings,context,device);
         else if (module == 'notYourTurn')   this.updateNotYourTurn(settings,context,device);
         else if (module == 'lockView')      this.updateLockView(settings,context,device);
-        else if (module == 'aboutTime')     this.updateAboutTime(settings,context,device);
+        else if (module == 'simpleCalendar')     this.updateSimpleCalendar(settings,context,device);
         else if (module == 'soundscape')    this.updateSoundscape(settings,context,device);
         else if (module == 'monksActiveTiles') this.updateMonksActiveTiles(settings,context,device);
     }
@@ -81,10 +79,9 @@ export class ExternalModules{
         else if (module == 'gmscreen')      this.keyPressGMScreen(settings,context,device);
         else if (module == 'triggerHappy')  this.keyPressTriggerHappy(settings,context,device);
         else if (module == 'sharedVision')  this.keyPressSharedVision(settings,context,device);
-        else if (module == 'mookAI')        this.keyPressMookAI(settings,context,device);
         else if (module == 'notYourTurn')   this.keyPressNotYourTurn(settings,context,device);
         else if (module == 'lockView')      this.keyPressLockView(settings,context,device);
-        else if (module == 'aboutTime')     this.keyPressAboutTime(settings,context,device);
+        else if (module == 'simpleCalendar')     this.keyPressSimpleCalendar(settings,context,device);
         else if (module == 'soundscape')    this.keyPressSoundscape(settings,context,device);
         else if (module == 'monksActiveTiles') this.keyPressMonksActiveTiles(settings,context,device);
     }
@@ -114,14 +111,14 @@ export class ExternalModules{
         let name = '';
         if (type == 'weatherControls') {
             const effect = (settings.weatherEffect == undefined) ? 'leaves' : settings.weatherEffect;
-            name = compatibleCore('10.0') ? game.i18n.localize(CONFIG.fxmaster.particleEffects[effect].label) : CONFIG.fxmaster.weather[effect].label;
-            icon = compatibleCore('10.0') ? CONFIG.fxmaster.particleEffects[effect].icon : CONFIG.fxmaster.weather[effect].icon;
+            name =game.i18n.localize(CONFIG.fxmaster.particleEffects[effect].label);
+            icon = CONFIG.fxmaster.particleEffects[effect].icon;
             ring = canvas.scene.getFlag("fxmaster", "effects")?.[`core_${effect}`] ? 2 : 1;
             ringColor = ring < 2 ? '#000000' : "#00ff00";
         }
         else if (type == 'filters') {
             const filter = (settings.fxMasterFilter == undefined) ? 'underwater' : settings.fxMasterFilter;
-            name = compatibleCore('10.0') ? game.i18n.localize(CONFIG.fxmaster.filterEffects[filter].label) : CONFIG.fxmaster.filters[filter].label;
+            name = game.i18n.localize(CONFIG.fxmaster.filterEffects[filter].label);
             background = "#340057";
             if (displayIcon){
                 if (filter == 'lightning') icon = "fas fa-bolt";
@@ -150,6 +147,7 @@ export class ExternalModules{
             name = game.i18n.localize("MaterialDeck.FxMaster.Clear");
         }
 
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
         if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:ring,ringColor:ringColor});
         else streamDeck.setIcon(context,device, "", {background:background,ring:ring,ringColor:ringColor});
         if (displayName == 0) name = ""; 
@@ -175,7 +173,7 @@ export class ExternalModules{
                 applyColor: (settings.fxWeatherEnColor == undefined) ? false : settings.fxWeatherEnColor
             }
 
-            Hooks.call(compatibleCore('10.0') ? "fxmaster.switchParticleEffect" : "fxmaster.switchWeather", {
+            Hooks.call("fxmaster.switchParticleEffect", {
                 name: `core_${effect}`,
                 type: effect,
                 options,
@@ -236,7 +234,6 @@ export class ExternalModules{
     updateGMScreen(settings,context,device){
         if (this.getModuleEnable("gm-screen") == false) return;
         if (game.user.isGM == false) return;
-
         const background = settings.gmScreenBackground ? settings.gmScreenBackground : '#000000';
         let ring = 1;
         const ringColor = '#00FF00'
@@ -246,6 +243,7 @@ export class ExternalModules{
         if (this.gmScreenOpen) ring = 2;
         
         if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
         if (settings.displayGmScreenName) txt = game.i18n.localize(`GMSCR.gmScreen.Open`); 
         streamDeck.setTitle(txt,context);
@@ -272,7 +270,9 @@ export class ExternalModules{
         const ringColor = game.settings.get("trigger-happy", "enableTriggers") ? "#A600FF" : "#340057";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,device,"fas fa-grin-squint-tears",{background:background,ring:2,ringColor:ringColor});
+        let src = "fas fa-grin-squint-tears";
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        if (displayIcon) streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Trigger Happy';
         
@@ -313,7 +313,9 @@ export class ExternalModules{
         const ringColor = game.settings.get("SharedVision", "enable") ? "#A600FF" : "#340057";
 
         let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,device,"fas fa-eye",{background:background,ring:2,ringColor:ringColor});
+        let src = "fas fa-eye";
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        if (displayIcon) streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Shared Vision';
         streamDeck.setTitle(txt,context);
@@ -328,34 +330,6 @@ export class ExternalModules{
         if (mode == 'toggle') Hooks.call("setShareVision",{enable:'toggle'});
         else if (mode == 'enable') Hooks.call("setShareVision",{enable:true});
         else if (mode == 'disable') Hooks.call("setShareVision",{enable:false});
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Mook AI
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateMookAI(settings,context,device) {
-        if (this.getModuleEnable("mookAI") == false) return;
-        if (game.user.isGM == false) return;
-        
-        const displayName = settings.mookName ? settings.mookName : false;
-        const displayIcon = settings.mookIcon ? settings.mookIcon : false;
-
-        const background = "#000000";
-
-        let txt = '';
-        if (displayIcon) streamDeck.setIcon(context,device,"fas fa-brain",{background:'#000000'});
-        else streamDeck.setIcon(context,device,'',{background:'#000000'});
-        if (displayName) txt = 'Mook AI';
-        streamDeck.setTitle(txt,context);
-    }
-
-    async keyPressMookAI(settings,context,device) {
-        if (this.getModuleEnable("mookAI") == false) return;
-        if (game.user.isGM == false) return;
-        
-        let mook = await import('../../mookAI/scripts/mookAI.js');
-        let mookAI = new mook.MookAI ();
-        mookAI.takeNextTurn();
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -385,6 +359,7 @@ export class ExternalModules{
             txt = "Block Non-Combat Movement";
             ringColor = game.settings.get('NotYourTurn','nonCombat') ?  "#A600FF": "#340057" ;
         }
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
         if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
         else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
@@ -439,6 +414,7 @@ export class ExternalModules{
             ringColor = canvas.scene.getFlag('LockView', 'boundingBox') ?  "#A600FF": "#340057" ;
         }
         
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
         if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
         else streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
@@ -465,20 +441,20 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //About Time
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    updateAboutTime(settings,context,device) {
-        if (this.getModuleEnable("about-time") == false) return;
+    updateSimpleCalendar(settings,context,device) {
+        if (this.getModuleEnable("foundryvtt-simple-calendar") == false) return;
         if (game.user.isGM == false) return;
 
-        const displayTime = settings.aboutTimeDisplayTime ? settings.aboutTimeDisplayTime : 'none';
-        const displayDate = settings.aboutTimeDisplayDate ? settings.aboutTimeDisplayDate : 'none';
-        const background = settings.aboutTimeBackground ? settings.aboutTimeBackground : '#000000';
-        const ringOffColor = settings.aboutTimeOffRing ? settings.aboutTimeOffRing : '#000000';
-        const ringOnColor = settings.aboutTimeOnRing ? settings.aboutTimeOnRing : '#00FF00';
+        const displayTime = settings.simpleCalendarDisplayTime ? settings.simpleCalendarDisplayTime : 'none';
+        const displayDate = settings.simpleCalendarDisplayDate ? settings.simpleCalendarDisplayDate : 'none';
+        const background = settings.simpleCalendarBackground ? settings.simpleCalendarBackground : '#000000';
+        const ringOffColor = settings.simpleCalendarOffRing ? settings.simpleCalendarOffRing : '#000000';
+        const ringOnColor = settings.simpleCalendarOnRing ? settings.simpleCalendarOnRing : '#00FF00';
 
         let ring = 0;
         let ringColor = '#000000';
         let txt = '';
-        let currentTime = game.Gametime.DTNow().longDateExtended();
+        let currentTime = SimpleCalendar.api.currentDateTime();
         let clock = 'none';
 
         if (displayTime == 'clock') {
@@ -504,172 +480,112 @@ export class ExternalModules{
             }
             if (displayTime == 'hours24h' || displayTime == 'hours12h') txt = hours;
             else if (displayTime == 'minutes') txt = currentTime.minute;
-            else if (displayTime == 'seconds') txt = currentTime.second;
+            else if (displayTime == 'seconds') txt = currentTime.seconds;
             else {
                 if (currentTime.minute < 10) currentTime.minute = '0' + currentTime.minute;
-                if (currentTime.second < 10) currentTime.second = '0' + currentTime.second;
+                if (currentTime.seconds < 10) currentTime.seconds = '0' + currentTime.seconds;
                 txt += hours + ':' + currentTime.minute;
-                if (displayTime == 'full24h' || displayTime == 'full12h') txt += ':' + currentTime.second;
+                if (displayTime == 'full24h' || displayTime == 'full12h') txt += ':' + currentTime.seconds;
             }
             if (displayTime == 'compact12h' || displayTime == 'full12h' || displayTime == 'hours12h') txt += AMPM;
         }
         if (displayTime != 'none' && displayTime != 'clock' && displayDate != 'none') txt += '\n';
 
         if (displayDate == 'day') txt += currentTime.day;
-        else if (displayDate == 'dayName') txt += currentTime.dowString;
+        else if (displayDate == 'dayName') txt += SimpleCalendar.api.getCurrentWeekday().name;
         else if (displayDate == 'month') txt += currentTime.month;
-        else if (displayDate == 'monthName') txt += currentTime.monthString;
+        else if (displayDate == 'monthName') txt += SimpleCalendar.api.getCurrentMonth().name;
         else if (displayDate == 'year') txt += currentTime.year;
         else if (displayDate == 'small') txt += currentTime.day + '-' + currentTime.month;
         else if (displayDate == 'smallInv') txt += currentTime.month + '-' + currentTime.day;
         else if (displayDate == 'full') txt += currentTime.day + '-' + currentTime.month + '-' + currentTime.year;
         else if (displayDate == 'fullInv') txt += currentTime.month + '-' + currentTime.day + '-' + currentTime.year;
-        else if (displayDate == 'text' || displayDate == 'textDay') {
-
-            if (displayDate == 'textDay') txt += currentTime.dowString + ' ';
+        else if (displayDate == 'text' || displayDate == 'textDay' || displayDate == 'textAbbr' || displayDate == 'textDayAbbr') {
+            if (displayDate == 'textDay') txt += SimpleCalendar.api.getCurrentWeekday().name + ' ';
+            else if (displayDate == 'textDayAbbr') txt += SimpleCalendar.api.getCurrentWeekday().abbreviation + ' ';
             txt += currentTime.day;
-            if (currentTime.day % 10 == 1 && currentTime != 11) txt += game.i18n.localize("MaterialDeck.AboutTime.First");
-            else if (currentTime.day % 10 == 2 && currentTime != 12) txt += game.i18n.localize("MaterialDeck.AboutTime.Second");
-            else if (currentTime.day % 10 == 3 && currentTime != 13) txt += game.i18n.localize("MaterialDeck.AboutTime.Third");
-            else txt += game.i18n.localize("MaterialDeck.AboutTime.Fourth");
-            txt += ' ' + game.i18n.localize("MaterialDeck.AboutTime.Of") + ' ' + currentTime.monthString + ', ' + currentTime.year;
+            if (currentTime.day % 10 == 1 && currentTime != 11) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.First");
+            else if (currentTime.day % 10 == 2 && currentTime != 12) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Second");
+            else if (currentTime.day % 10 == 3 && currentTime != 13) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Third");
+            else txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Fourth");
+            txt += ' ' + game.i18n.localize("MaterialDeck.SimpleCalendar.Of") + ' '
+            if (displayDate == 'textAbbr' || displayDate == 'textDayAbbr') txt += SimpleCalendar.api.getCurrentMonth().abbreviation
+            else txt += SimpleCalendar.api.getCurrentMonth().name
+            txt += ', ' + currentTime.year;
         }
 
-        if (settings.aboutTimeActive) {
-            const clockRunning = game.Gametime.isRunning();
+        if (settings.simpleCalendarActive) {
+            const clockRunning = SimpleCalendar.api.clockStatus().started;
             ringColor = clockRunning ? ringOnColor : ringOffColor;
             ring = 2;
         }
         
-        streamDeck.setTitle(txt,context);
+        streamDeck.setTitle(txt.toString(),context);
         streamDeck.setIcon(context,device,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
     }
 
-    keyPressAboutTime(settings,context,device) {
-        if (this.getModuleEnable("about-time") == false) return;
+    keyPressSimpleCalendar(settings,context,device) {
+        if (this.getModuleEnable("foundryvtt-simple-calendar") == false) return;
         if (game.user.isGM == false) return;
 
-        const onClick = settings.aboutTimeOnClick ? settings.aboutTimeOnClick : 'none';
+        const onClick = settings.simpleCalendarOnClick ? settings.simpleCalendarOnClick : 'none';
         if (onClick == 'none') return;
         else if (onClick == 'startStop') {
-            const clockRunning = game.Gametime.isRunning();
-            const startMode = settings.aboutTimeStartStopMode ? settings.aboutTimeStartStopMode : 'toggle';
-            if ((startMode == 'toggle' && clockRunning) || startMode == 'stop') game.Gametime.stopRunning();
-            else if ((startMode == 'toggle' && !clockRunning) || startMode == 'start') game.Gametime.startRunning();
+            const clockRunning = SimpleCalendar.api.clockStatus().started;
+            const startMode = settings.simpleCalendarStartStopMode ? settings.simpleCalendarStartStopMode : 'toggle';
+            if (clockRunning && (startMode == 'toggle' || startMode == 'stop')) SimpleCalendar.api.stopClock();
+            else if (!clockRunning && (startMode == 'toggle' || startMode == 'start')) SimpleCalendar.api.startClock();
         }
         else if (onClick == 'advance') {
-            const advanceMode = settings.aboutTimeAdvanceMode ? settings.aboutTimeAdvanceMode : 'dawn';
-            let now = Gametime.DTNow();
-            if (advanceMode == 'dawn') {
-                let newDT = now.add({
-                    days: now.hours < 7 ? 0 : 1
-                }).setAbsolute({
-                    hours: 7,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
-            }
-            else if (advanceMode == 'noon') {
-                let newDT = now.add({
-                    days: now.hours < 12 ? 0 : 1
-                }).setAbsolute({
-                    hours: 12,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
-            }
-            else if (advanceMode == 'dusk') {
-                let newDT = now.add({
-                    days: now.hours < 20 ? 0 : 1
-                }).setAbsolute({
-                    hours: 20,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
-            }
-            else if (advanceMode == 'midnight') {
-                let newDT = Gametime.DTNow().add({
-                    days: 1
-                }).setAbsolute({
-                    hours: 0,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
-            }
-            else if (advanceMode == '1s') 
-                game.Gametime.advanceClock(1);
-            else if (advanceMode == '30s') 
-                game.Gametime.advanceClock(30);
-            
-            else if (advanceMode == '1m') 
-                game.Gametime.advanceTime({ minutes: 1 });
-            else if (advanceMode == '5m') 
-                game.Gametime.advanceTime({ minutes: 5 });
-            else if (advanceMode == '15m') 
-                game.Gametime.advanceTime({ minutes: 15 });
-            else if (advanceMode == '1h') 
-                game.Gametime.advanceTime({ hours: 1 });
+            const advanceMode = settings.simpleCalendarAdvanceMode ? settings.simpleCalendarAdvanceMode : 'dawn';
+            if (advanceMode == 'sunrise') SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Sunrise);
+            if (advanceMode == 'midday') SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Midday);
+            if (advanceMode == 'sunset') SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Sunset);
+            if (advanceMode == 'midnight') SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Midnight);
+            else if (advanceMode == '1s') SimpleCalendar.api.changeDate({seconds: 1});
+            else if (advanceMode == '30s') SimpleCalendar.api.changeDate({seconds: 30});
+            else if (advanceMode == '1m') SimpleCalendar.api.changeDate({minute: 1});
+            else if (advanceMode == '5m') SimpleCalendar.api.changeDate({minute: 5});
+            else if (advanceMode == '15m') SimpleCalendar.api.changeDate({minute: 15});
+            else if (advanceMode == '1h')  SimpleCalendar.api.changeDate({hour: 1});
+            else if (advanceMode == '6h')  SimpleCalendar.api.changeDate({hour: 6});
+            else if (advanceMode == '12h')  SimpleCalendar.api.changeDate({hour: 12});
+            else if (advanceMode == '1d')  SimpleCalendar.api.changeDate({day: 1});
+            else if (advanceMode == '7d')  SimpleCalendar.api.changeDate({day: 7});
+            else if (advanceMode == '1M')  SimpleCalendar.api.changeDate({month: 1});
+            else if (advanceMode == '1y')  SimpleCalendar.api.changeDate({year: 1});
         }
         else if (onClick == 'recede') {
-            const advanceMode = settings.aboutTimeAdvanceMode ? settings.aboutTimeAdvanceMode : 'dawn';
-            let now = Gametime.DTNow();
-            if (advanceMode == 'dawn') {
-                let newDT = now.add({
-                    days: now.hours < 7 ? -1 : 0
-                }).setAbsolute({
-                    hours: 7,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
+            const advanceMode = settings.simpleCalendarAdvanceMode ? settings.simpleCalendarAdvanceMode : 'dawn';
+            let now = SimpleCalendar.api.currentDateTime();
+            if (advanceMode == 'sunrise') {
+                SimpleCalendar.api.changeDate({day: -1});
+                SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Sunrise);
             }
-            else if (advanceMode == 'noon') {
-                let newDT = now.add({
-                    days: now.hours < 12 ? -1 : 0
-                }).setAbsolute({
-                    hours: 12,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
+            else if (advanceMode == 'midday') {
+                SimpleCalendar.api.changeDate({day: -1});
+                SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Midday);
             }
-            else if (advanceMode == 'dusk') {
-                let newDT = now.add({
-                    days: now.hours < 20 ? -1 : 0
-                }).setAbsolute({
-                    hours: 20,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
+            else if (advanceMode == 'sunset') {
+                SimpleCalendar.api.changeDate({day: -1});
+                SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Sunset);
             }
             else if (advanceMode == 'midnight') {
-                let newDT = Gametime.DTNow().add({
-                    days: -1
-                }).setAbsolute({
-                    hours: 0,
-                    minutes: 0,
-                    seconds: 0
-                });
-                Gametime.setAbsolute(newDT);
+                SimpleCalendar.api.changeDate({day: -1});
+                SimpleCalendar.api.advanceTimeToPreset(SimpleCalendar.api.PresetTimeOfDay.Midnight);
             }
-            else if (advanceMode == '1s') 
-                game.Gametime.advanceClock(-1);
-            else if (advanceMode == '30s') 
-                game.Gametime.advanceClock(-30);
-            
-            else if (advanceMode == '1m') 
-                game.Gametime.advanceTime({ minutes: -1 });
-            else if (advanceMode == '5m') 
-                game.Gametime.advanceTime({ minutes: -5 });
-            else if (advanceMode == '15m') 
-                game.Gametime.advanceTime({ minutes: -15 });
-            else if (advanceMode == '1h') 
-                game.Gametime.advanceTime({ hours: -1 });
+            else if (advanceMode == '1s') SimpleCalendar.api.changeDate({seconds: -1});
+            else if (advanceMode == '30s') SimpleCalendar.api.changeDate({seconds: -30});
+            else if (advanceMode == '1m') SimpleCalendar.api.changeDate({minute: -1});
+            else if (advanceMode == '5m') SimpleCalendar.api.changeDate({minute: -5});
+            else if (advanceMode == '15m') SimpleCalendar.api.changeDate({minute: -15});
+            else if (advanceMode == '1h')  SimpleCalendar.api.changeDate({hour: -1});
+            else if (advanceMode == '6h')  SimpleCalendar.api.changeDate({hour: -6});
+            else if (advanceMode == '12h')  SimpleCalendar.api.changeDate({hour: -12});
+            else if (advanceMode == '1d')  SimpleCalendar.api.changeDate({day: -1});
+            else if (advanceMode == '7d')  SimpleCalendar.api.changeDate({day: -7});
+            else if (advanceMode == '1M')  SimpleCalendar.api.changeDate({month: -1});
+            else if (advanceMode == '1y')  SimpleCalendar.api.changeDate({year: -1});
         }
     }
 
@@ -792,6 +708,7 @@ export class ExternalModules{
         }
        
         streamDeck.setTitle(txt,context);
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
@@ -1000,9 +917,9 @@ export class ExternalModules{
     updateMonksActiveTiles(settings,context,device) {
         const id = settings.monksActiveTilesId;
         if (id == undefined || id == '') return;
-        let tile = canvas.background.placeables.find(t => t.id == id);
+        let tile = canvas.tiles.placeables.find(t => t.id == id);
         if (tile == undefined) return;
-        const tileData = tile.data.flags?.['monks-active-tiles'];
+        const tileData = tile.document.flags?.['monks-active-tiles'];
         if (tileData == undefined) return;
 
         let ring = 1;
@@ -1012,9 +929,10 @@ export class ExternalModules{
             ring = 2;
             ringColor = '#00ff00'
         }
-        let src = tile.data.img;
+        let src =  tile.document.texture.sr;
 
         streamDeck.setTitle('',context);
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
@@ -1022,9 +940,9 @@ export class ExternalModules{
         const mode = settings.monksActiveTilesMode ? settings.monksActiveTilesMode : 'toggle';
         const id = settings.monksActiveTilesId;
         if (id == undefined || id == '') return;
-        let tile = canvas.background.placeables.find(t => t.id == id);
+        let tile = canvas.tiles.placeables.find(t => t.id == id);
         if (tile == undefined) return;
-        const tileData = tile.data.flags?.['monks-active-tiles'];
+        const tileData = tile.document.flags?.['monks-active-tiles'];
         if (tileData == undefined) return;
 
         if (mode == 'toggle') tile.document.setFlag('monks-active-tiles','active',!tileData.active);

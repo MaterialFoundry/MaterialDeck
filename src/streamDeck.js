@@ -47,10 +47,14 @@ export class StreamDeck{
                 device: device.id,
                 name: device.name,
                 type: device.type,
-                size: size,
+                size: deckSize,
                 buttons: buttons
             }
         }
+    }
+
+    removeDevice(iteration) {
+        this.buttonContext[iteration] = undefined;
     }
 
     setContext(device,size,iteration,action,context,coordinates = {column:0,row:0},settings, name, type){
@@ -131,6 +135,7 @@ export class StreamDeck{
                 counter++;
             }
         }
+
         let txtNew = "";
         let newTxtArray = ['','','','','','','','','','','','','','','','','','','',''];
         counter = 0;
@@ -139,27 +144,41 @@ export class StreamDeck{
             let txtNewPart = txtArray[i];
             
             if (txtNewPart != undefined && txtNewPart.length > 10){
-                let syllables = this.syllabify(txtNewPart);
-
-                for (let j=0; j<syllables.length; j++){
-                    if (syllables.length == 0){
+                let syllables = [];
+                if (game.i18n.lang == "ru") {
+                    newTxtArray[counter] = txtNewPart.slice(0,txtNewPart.length/2) + '-';
+                    counter++;
+                    newTxtArray[counter] = txtNewPart.slice(txtNewPart.length/2+1,txtNewPart.length);
+                    counter++;
+                }
+                else {
+                    syllables = this.syllabify(txtNewPart);
+                    if (syllables == null) {
                         newTxtArray[counter] = txtNewPart;
                         counter++;
                     }
-                    else if (syllables[j+1] == undefined){
-                        newTxtArray[counter] = syllables[j];
-                        counter++;
-                    }
-                    else if ((syllables[j].length+syllables[j+1].length) < 10){
-                        newTxtArray[counter] = syllables[j]+syllables[j+1]; 
-                        if (syllables.length-2 > j) newTxtArray[counter] += '-';
-                        counter++;
-                        j++;
-                    }
                     else {
-                        newTxtArray[counter] = syllables[j];
-                        if (syllables.length > j) newTxtArray[counter] += '-';
-                        counter++;
+                        for (let j=0; j<syllables.length; j++){
+                            if (syllables.length == 0){
+                                newTxtArray[counter] = txtNewPart;
+                                counter++;
+                            }
+                            else if (syllables[j+1] == undefined){
+                                newTxtArray[counter] = syllables[j];
+                                counter++;
+                            }
+                            else if ((syllables[j].length+syllables[j+1].length) < 10){
+                                newTxtArray[counter] = syllables[j]+syllables[j+1]; 
+                                if (syllables.length-2 > j) newTxtArray[counter] += '-';
+                                counter++;
+                                j++;
+                            }
+                            else {
+                                newTxtArray[counter] = syllables[j];
+                                if (syllables.length > j) newTxtArray[counter] += '-';
+                                counter++;
+                            }
+                        }
                     }
                 }
             }
@@ -186,15 +205,14 @@ export class StreamDeck{
     setTitle(txt,context){
         if (txt == null || txt == undefined) txt = '';
         txt = this.formatTitle(txt);
-        for (let i=0; i<32; i++){
-            if (this.buttonContext[i] == undefined) continue;
-            if (this.buttonContext[i].context == context) {
-                if (this.buttonContext[i].txt != undefined)
-                    if (this.buttonContext[i].txt == txt) 
-                        return;
-                this.buttonContext[i].txt = txt;
-            }
+        
+        for (let device of this.buttonContext) {
+            if (device == undefined) continue;
+            const btn = device.buttons.find(b => b?.context == context);
+            if (btn == undefined) continue;
+            btn.txt = txt;
         }
+
         let msg = {
             target: "SD",
             event: 'setTitle',

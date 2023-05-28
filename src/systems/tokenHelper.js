@@ -8,7 +8,6 @@ import { starfinder } from "./starfinder.js";
 import { compatibleCore } from "../misc.js";
 import { gamingSystem } from "../../MaterialDeck.js";
 
-
 export class TokenHelper{
     constructor(){
         this.system;
@@ -16,7 +15,7 @@ export class TokenHelper{
     }
 
     setSystem() {
-        if (gamingSystem == 'D35E' || gamingSystem == 'pf1') this.system = new dnd35e();
+        if (gamingSystem == 'D35E' || gamingSystem == 'pf1') this.system = new dnd35e(gamingSystem);
         else if (gamingSystem == 'pf2e') this.system = new pf2e();
         else if (gamingSystem == 'demonlord') this.system = new demonlord();
         else if (gamingSystem == 'wfrp4e') this.system = new wfrp4e();
@@ -58,7 +57,7 @@ export class TokenHelper{
 
     moveToken(token,dir){
         if (dir == undefined) dir = 'up';
-        const gridSize = compatibleCore('10.0') ? canvas.scene.grid.size : canvas.scene.data.grid;
+        const gridSize = canvas.scene.grid.size;
         let x = token.x;
         let y = token.y;
 
@@ -99,7 +98,7 @@ export class TokenHelper{
         value = isNaN(parseInt(value)) ? 0 : parseInt(value);
 
         let rotationVal;
-        if (move == 'by') rotationVal = compatibleCore('10.0') ? token.document.rotation + value : token.data.rotation + value;
+        if (move == 'by') rotationVal = token.document.rotation + value;
         else rotationVal = value;
         
         token.document.update({rotation: rotationVal});
@@ -128,16 +127,29 @@ export class TokenHelper{
 
     ////////////////////////////////////////////////////
     getTokenIcon(token) {
-        return compatibleCore('10.0') ? token.document.texture.src : token.data.img;
+        return token.document.texture.src;
     }
 
     getActorIcon(token) {
-        return compatibleCore('10.0') ? token.actor.img : token.actor.data.img;
+        return token.actor.img;
     }
 
     /***********************************************************************
      * System specific functions
      ***********************************************************************/
+
+    getStatsList() {
+        return this.system.getStatsList();
+    }
+
+    getAttackModes() {
+        return this.system.getAttackModes();
+    }
+
+    getOnClickList() {
+        return this.system.getOnClickList();
+    }
+
     getHP(token) {
         return this.system.getHP(token);
     }
@@ -186,8 +198,20 @@ export class TokenHelper{
         return this.system.getAbilitySave(token, ability);
     }
 
+    getAbilityList() {
+        return this.system.getAbilityList();
+    }
+
+    getSavesList() {
+        return this.system.getSavesList();
+    }
+
     getSkill(token, skill) {
         return this.system.getSkill(token, skill);
+    }
+
+    getSkillList() {
+        return this.system.getSkillList();
     }
 
     getProficiency(token) {
@@ -279,6 +303,10 @@ export class TokenHelper{
         return this.system.toggleCondition(token,condition);
     }
 
+    getConditionList() {
+        return this.system.getConditionList();
+    }
+
     /* PF2E */
     getConditionValue(token,condition) {
         return this.system.getConditionValue(token,condition);
@@ -296,6 +324,10 @@ export class TokenHelper{
         return this.system.roll(token,roll,options,ability,skill,save);
     }
 
+    getRollTypes() {
+        return this.system.getRollTypes();
+    }
+
     /**
      * Items
      */
@@ -305,6 +337,14 @@ export class TokenHelper{
 
     getItemUses(item) {
         return this.system.getItemUses(item);
+    }
+
+    getItemTypes() {
+        return this.system.getItemTypes();
+    }
+
+    getWeaponRollModes() {
+        return this.system.getWeaponRollModes();
     }
 
     /**
@@ -318,19 +358,31 @@ export class TokenHelper{
         return this.system.getFeatureUses(item);
     }
 
+    getFeatureTypes() {
+        return this.system.getFeatureTypes();
+    }
+
     /**
      * Spells
      */
-     getSpells(token,level) {
-        return this.system.getSpells(token,level);
+     getSpells(token,level,type) {
+        return this.system.getSpells(token,level,type);
     }
 
     getSpellUses(token,level,item) {
         return this.system.getSpellUses(token,level,item);
     }
 
-    rollItem(item, settings, rollOption) {
-        return this.system.rollItem(item, settings, rollOption);
+    rollItem(item, settings, rollOption, attackMode) {
+        return this.system.rollItem(item, settings, rollOption, attackMode);
+    }
+
+    getSpellLevels() {
+        return this.system.getSpellLevels();
+    }
+
+    getSpellTypes() {
+        return this.system.getSpellTypes();
     }
 
     /**

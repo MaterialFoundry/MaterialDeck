@@ -36,6 +36,7 @@ export class MacroControl{
         let src = ""; 
         let macroId = undefined;
         let uses = undefined;
+        let macroLabel = "";
         
         if (mode == 'macroBoard') {  //Macro board
             if ((getPermission('MACRO','MACROBOARD') == false )) {
@@ -56,8 +57,14 @@ export class MacroControl{
             else { //Execute macro
                 macroNumber += this.offset - 1;
                 if (macroNumber < 0) macroNumber = 0;
-                macroId = game.settings.get(moduleName,'macroSettings').macros[macroNumber];
-                background = game.settings.get(moduleName,'macroSettings').color[macroNumber];
+                const macroSettings = game.settings.get(moduleName,'macroSettings');
+                macroId = macroSettings.macros[macroNumber];
+                background = macroSettings.color[macroNumber];
+                try {
+                    macroLabel = macroSettings.labels[macroNumber];
+                }
+                catch (err) {}
+                if ((macroLabel == undefined || macroLabel == "") && game.macros.get(macroId)) macroLabel = game.macros.get(macroId).name;
                 if (background == undefined) background = '#000000';
                 ring = 0;
             }  
@@ -72,7 +79,7 @@ export class MacroControl{
                 streamDeck.noPermission(context,device);
                 return;
             }
-            if (mode == 'hotbar') macroId = compatibleCore('10.0') ? game.user.hotbar[macroNumber] : game.user.data.hotbar[macroNumber];
+            if (mode == 'hotbar') macroId = game.user.hotbar[macroNumber];
             else {
                 let macros;
                 if (mode == 'customHotbar' && game.modules.get('custom-hotbar') != undefined) 
@@ -88,7 +95,8 @@ export class MacroControl{
             let macro = game.macros._source.find(p => p._id == macroId);
             
             if (macro != undefined) {
-                if (displayName) name = macro.name;
+                if (displayName && mode == 'macroBoard') name = macroLabel;
+                else if (displayName) name = macro.name;
                 if (displayIcon) src = macro.img;
                 if (hotbarUses && displayUses) uses = await this.getUses(macro);
             }
@@ -98,6 +106,7 @@ export class MacroControl{
             if (displayIcon) src = "modules/MaterialDeck/img/black.png";
         }
         
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
         streamDeck.setTitle(name,context);
     }
@@ -114,8 +123,7 @@ export class MacroControl{
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
-                if (data == undefined || data.action != 'macro' || data.settings.macroMode == 'macroBoard') continue;
-            
+                if (data == undefined || data.action != 'macro' || data.settings.macroMode != 'hotbar') continue;
                 const context = data.context;
                 const mode = data.settings.macroMode ? data.settings.macroMode : 'hotbar';
                 const displayName = data.settings.displayName ? data.settings.displayName : false;
@@ -137,7 +145,7 @@ export class MacroControl{
                 
                 let macroId;
                 if (mode == 'hotbar'){
-                    macroId = game.user.data.hotbar[macroNumber];
+                    macroId = game.user.hotbar[macroNumber];
                 }
                 else {
                     if (macroNumber > 9) macroNumber = 0;
@@ -151,6 +159,7 @@ export class MacroControl{
                     if (displayIcon) src += macro.img;
                     if (hotbarUses && displayUses) uses = await this.getUses(macro);
                 }
+                if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
                 streamDeck.setIcon(context,device,src,{background:background,uses:uses});
                 streamDeck.setTitle(name,context);
             }
@@ -177,19 +186,35 @@ export class MacroControl{
             const args = settings.macroArgs ? settings.macroArgs : "";
 
             let advancedMacrosEnabled = false;
-            let advancedMacros = game.modules.get("advanced-macros");
-            if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
-
+            if (compatibleCore('11.0')) {
+                advancedMacrosEnabled = true;
+            }
+            else {
+                let advancedMacros = game.modules.get("advanced-macros");
+                if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
+            }
+            
             if (args == "" || args == " ") advancedMacrosEnabled = false;
 
             if (advancedMacrosEnabled == false) macro.execute({token:target});
             else {
-                let chatData = {
-                    user: game.user._id,
-                    speaker: ChatMessage.getSpeaker(),
-                    content: "/'" + macro.name + "' " + args
-                };
-                ChatMessage.create(chatData, {});
+                if (compatibleCore('11.0')) {
+                    let argument;
+                    try {
+                        argument = JSON.parse(args)
+                        macro.execute(argument);
+                    } catch (err) {
+                        console.error(err)
+                    }
+                }
+                else {
+                    let chatData = {
+                        user: game.user._id,
+                        speaker: ChatMessage.getSpeaker(),
+                        content: "/amacro '" + macro.name + "' " + args[macroNumber]
+                    };
+                    ChatMessage.create(chatData, {});
+                }
             }
 
         }
@@ -208,7 +233,7 @@ export class MacroControl{
 
     executeHotbar(macroNumber,mode,target){
         let macroId 
-        if (mode == 'hotbar') macroId = compatibleCore('10.0') ? game.user.hotbar[macroNumber] : game.user.data.hotbar[macroNumber];
+        if (mode == 'hotbar') macroId = game.user.hotbar[macroNumber];
         else {
             let macros;
             if (mode == 'customHotbar' && game.modules.get('custom-hotbar') != undefined) { 
@@ -234,19 +259,35 @@ export class MacroControl{
             if (macro != undefined && macro != null) {
                 const args = game.settings.get(moduleName,'macroSettings').args;
                 let advancedMacrosEnabled = false;
-                let advancedMacros = game.modules.get("advanced-macros");
-                if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
-
+                if (compatibleCore('11.0')) {
+                    advancedMacrosEnabled = true;
+                }
+                else {
+                    let advancedMacros = game.modules.get("advanced-macros");
+                    if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
+                }
+                
                 if (args == undefined || args[macroNumber] == undefined || args[macroNumber] == "") advancedMacrosEnabled = false;
                 
                 if (advancedMacrosEnabled == false) macro.execute();
                 else {
-                    let chatData = {
-                        user: game.user._id,
-                        speaker: ChatMessage.getSpeaker(),
-                        content: "/'" + macro.name + "' " + args
-                    };
-                    ChatMessage.create(chatData, {});
+                    if (compatibleCore('11.0')) {
+                        let argument;
+                        try {
+                            argument = JSON.parse(args[macroNumber])
+                            macro.execute(argument);
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    }
+                    else {
+                        let chatData = {
+                            user: game.user._id,
+                            speaker: ChatMessage.getSpeaker(),
+                            content: "/amacro '" + macro.name + "' " + args[macroNumber]
+                        };
+                        ChatMessage.create(chatData, {});
+                    }
                 }
             }
         }

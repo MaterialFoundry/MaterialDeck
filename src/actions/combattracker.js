@@ -1,4 +1,5 @@
 import { streamDeck, tokenControl, getPermission } from "../../MaterialDeck.js";
+import {  } from "../misc.js";
 
 export class CombatTracker{
     constructor(){
@@ -18,40 +19,70 @@ export class CombatTracker{
         }
     }
 
+    applyFilter(combatant, settings) {
+        let conf = {
+            forceIcon: undefined,
+            hideName: false
+        }
+        const disposition = combatant.token.disposition;
+        const hidden = combatant.token.hidden;
+        const visibilityMode = settings.visibilityMode ? settings.visibilityMode : 'remove';
+        const dispositionMode = settings.dispositionMode ? settings.dispositionMode : 'remove';
+        if (hidden && (settings.visibilityFilter == 'all' || (settings.visibilityFilter == 'hostileNeutral' && disposition != 1) || (settings.visibilityFilter == 'hostile' && disposition == -1))) {
+            if (visibilityMode == 'black' || visibilityMode == 'remove') conf.forceIcon = "modules/MaterialDeck/img/black.png";
+            else if (visibilityMode == 'mysteryMan') conf.forceIcon = "modules/MaterialDeck/img/token/mystery-man.png";
+            else if (visibilityMode == 'hideName') conf.hideName = true;
+        }
+        if ((settings.dispositionFilter == 'friendlyNeutral' && disposition == -1) || (settings.dispositionFilter == 'friendly' && disposition != 1))  {
+            if (conf.forceIcon == undefined && (dispositionMode == 'black' || dispositionMode == 'remove')) conf.forceIcon = "modules/MaterialDeck/img/black.png";
+            else if (conf.forceIcon == undefined && dispositionMode == 'mysteryMan') conf.forceIcon = "modules/MaterialDeck/img/token/mystery-man.png";
+            else if (dispositionMode == 'hideName') conf.hideName = true;
+        }
+        return conf;
+    }
+
     update(settings,context,device){
         this.active = true;
         const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
         const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
+        settings.combatTrackerMode = mode;
         const combat = game.combat;
         let src = "modules/MaterialDeck/img/black.png";
         let txt = "";
         let background = "#000000";
         settings.combat = true;
         settings.icon = settings.displayIcon ? 'tokenIcon' : 'none';
-        
         if (mode == 'combatants'){
             if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
                 streamDeck.noPermission(context,device,device,false,"combat tracker");
                 return;
             }
             if (combat != null && combat != undefined && combat.turns.length != 0){
-                const initiativeOrder = combat.turns;
-                let nr = settings.combatantNr - 1;
-                if (nr == undefined || nr < 1) nr = 0;
-                const combatantState = (nr == combat.turn) ? 2 : 1;
+                let initiativeOrder = combat.turns;
+                const dispositionMode = settings.dispositionMode ? settings.dispositionMode : 'remove';
+                if (dispositionMode == 'remove' && settings.dispositionFilter == 'friendly') initiativeOrder = initiativeOrder.filter(c => c.token.disposition == 1);
+                else if (dispositionMode == 'remove' && settings.dispositionFilter == 'friendlyNeutral') initiativeOrder = initiativeOrder.filter(c => c.token.disposition != -1);
+                const visibilityMode = settings.visibilityMode ? settings.visibilityMode : 'none';
+                if (visibilityMode == 'remove' && settings.visibilityFilter == 'hostile') initiativeOrder = initiativeOrder.filter(c => c.token.disposition != -1 && c.token.hidden == false)
+                else if (visibilityMode == 'remove' && settings.visibilityFilter == 'hostileNeutral') initiativeOrder = initiativeOrder.filter(c => c.token.disposition == 1 && c.token.hidden == false)
+                else if (visibilityMode == 'remove' && settings.visibilityFilter == 'all') initiativeOrder = initiativeOrder.filter(c => c.token.hidden == false)
+                const nr = settings.combatantNr ? settings.combatantNr - 1 : 0;
                 const combatant = initiativeOrder[nr]
-
+                const combatantState = (combatant?.token.id == combat.current.tokenId) ? 2 : 1;
                 if (combatant != undefined){
-                    const tokenId = combatant.data.tokenId;
-                    tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00');
+                    const filterConfig = this.applyFilter(combatant, settings);
+                    const tokenId = combatant.token.id;
+                    tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00', filterConfig.forceIcon, filterConfig.hideName);
                     return;
                 }
                 else {
+                    if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
                     streamDeck.setIcon(context,device,src,{background:background});
                     streamDeck.setTitle(txt,context);
                 } 
             }
             else {
+                if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
                 streamDeck.setIcon(context,device,src,{background:background});
                 streamDeck.setTitle(txt,context);
             }
@@ -62,10 +93,12 @@ export class CombatTracker{
                 return;
             }
             if (combat != null && combat != undefined && combat.started){
-                const tokenId = combat.combatant.data.tokenId;
-                tokenControl.pushData(tokenId,settings,context,device);
+                const filterConfig = this.applyFilter(combat.combatant, settings);
+                const tokenId = combat.combatant.token.id;
+                tokenControl.pushData(tokenId,settings,context,device,undefined,undefined, filterConfig.forceIcon, filterConfig.hideName);
             }
             else {
+                if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
                 streamDeck.setIcon(context,device,src,{background:background});
                 streamDeck.setTitle(txt,context);
             }
@@ -131,6 +164,11 @@ export class CombatTracker{
             else if (ctFunction == 'rollInitiative' || ctFunction == 'rollInitiativeNPC')
                 src = "modules/MaterialDeck/img/token/init.png";
 
+            if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+                src = settings.iconOverride;
+                background = settings.background ? settings.background : '#000000'
+            }
+
             streamDeck.setIcon(context,device,src,{background:background});
             streamDeck.setTitle(txt,context);
         }
@@ -193,12 +231,12 @@ export class CombatTracker{
                     if (nr == undefined || nr < 1) nr = 0;
                     const combatant = initiativeOrder[nr]
                     if (combatant == undefined) return;
-                    tokenId = combatant.data.tokenId;
+                    tokenId = combatant.token.id;
                 }
             }
             else if (mode == 'currentCombatant') 
                 if (combat != null && combat != undefined && combat.started)
-                    tokenId = combat.combatant.data.tokenId;
+                    tokenId = combat.combatant.token.id;
                 
             let token = (canvas.tokens.children[0] != undefined) ? canvas.tokens.children[0].children.find(p => p.id == tokenId) : undefined;
             if (token == undefined) return;

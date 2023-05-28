@@ -5,8 +5,21 @@
     "MaterialDeck.Notifications.Soundboard.NoPermission": "You do not have permission to configure the soundboard",
     "MaterialDeck.Notifications.Macroboard.NoPermission": "You do not have permission to configure the macroboard",
     "MaterialDeck.Notifications.Playlist.NoPermission": "You do not have permission to configure the playlists",
+
+    "MaterialDeck.EnableDialog.Title": "Material Deck: Enable for this Client",
+    "MaterialDeck.EnableDialog.Content": "Do you want to enable Material Deck for this client?<br><br>If you don't have a Stream Deck connected, or don't want to use it for Material Deck, please click no.<br><br>You can always change this in the Material Deck module settings.<br><br>Foundry will refresh after this.<br>",
+    "MaterialDeck.EnableDialog.Yes": "Yes",
+    "MaterialDeck.EnableDialog.No": "No",
+
+    "MaterialDeck.UpdateRequired.Title": "Material Deck: Update Required",
+    "MaterialDeck.UpdateRequired.MS": "The Material Server version you are using is incompatible with this version of Material Deck.",
+    "MaterialDeck.UpdateRequired.SD": "The Stream Deck plugin you are using is incompatible with this version of Material Deck.",
+    "MaterialDeck.UpdateRequired.Both": "The Stream Deck plugin and Material Server you are using are incompatible with this version of Material Deck.",
+    "MaterialDeck.UpdateRequired.Update": "Please update using the Download Utility or click the link below.",
+    "MaterialDeck.UpdateRequired.SDdownload": "Stream Deck Plugin",
     
-    "MaterialDeck.Sett.Enable": "Enable module",
+    "MaterialDeck.Sett.Enable": "Enable Module for This Client",
+    "MaterialDeck.Sett.EnableHint": "Enabling the module for this client is required if you want to use Material Deck on your computer. If you do not have a Stream Deck connected or don't want to use it for Material Deck, disable the module here.",
     "MaterialDeck.Sett.Help": "Help",
     "MaterialDeck.Sett.Permission": "User Permission Configuration",
     "MaterialDeck.DeviceConfig.Title": "Device Configuration",
@@ -63,6 +76,7 @@
     "MaterialDeck.Filename": "Filename",
     "MaterialDeck.Id": "Id",
     "MaterialDeck.Type": "Type",
+    "MaterialDeck.Label": "Label",
 
     "MaterialDeck.ExportDialog.Title": "Export",
     "MaterialDeck.ExportDialog.SoundboardContent": "Export the soundboard data. Please note that only the metadata is exported, so you will have to make sure the audio files are in the same relative location when you import them.",
@@ -189,19 +203,20 @@
     "MaterialDeck.Perm.TOKEN.OBSERVER.label": "Observer",
     "MaterialDeck.Perm.TOKEN.OBSERVER.hint": "Allow users access to tokens with observer permission",
 
-    "MaterialDeck.AboutTime.First": "st",
-    "MaterialDeck.AboutTime.Second": "nd",
-    "MaterialDeck.AboutTime.Third": "rd",
-    "MaterialDeck.AboutTime.Fourth": "th",
-    "MaterialDeck.AboutTime.Of": "of",
+    "MaterialDeck.SimpleCalendar.First": "st",
+    "MaterialDeck.SimpleCalendar.Second": "nd",
+    "MaterialDeck.SimpleCalendar.Third": "rd",
+    "MaterialDeck.SimpleCalendar.Fourth": "th",
+    "MaterialDeck.SimpleCalendar.Of": "of",
 
     "MaterialDeck.DownloadUtility.Title": "Download Utility",
-    "MaterialDeck.DownloadUtility.Plugin": "Plugin & Material Server",
+    "MaterialDeck.DownloadUtility.Plugin": "Module, Stream Deck Plugin & Material Server",
     "MaterialDeck.DownloadUtility.Minimum": "Minimum",
     "MaterialDeck.DownloadUtility.Current": "Current",
     "MaterialDeck.DownloadUtility.Latest": "Latest",
     "MaterialDeck.DownloadUtility.OS": "OS",
     "MaterialDeck.DownloadUtility.Download": "Download",
+    "MaterialDeck.DownloadUtility.module": "Module",
     "MaterialDeck.DownloadUtility.SDplugin": "SD Plugin",
     "MaterialDeck.DownloadUtility.MSserver": "Material Server",
     "MaterialDeck.DownloadUtility.Windows": "Windows",
@@ -211,9 +226,5 @@
     "MaterialDeck.DownloadUtility.Source": "Source",
     "MaterialDeck.DownloadUtility.Profiles": "Profiles",
     "MaterialDeck.DownloadUtility.Name": "Name",
-    "MaterialDeck.DownloadUtility.Refresh": "Refresh",
-
-    "MaterialDeck.SdMsUpdateRequired": "The Stream Deck plugin and Material Server version you are using are incompatible with this version of the module.<br>Please update them.",
-    "MaterialDeck.SdUpdateRequired": "The Stream Deck plugin you are using is incompatible with this version of the module.<br>Please update it.",
-    "MaterialDeck.MsUpdateRequired": "The Material Server version you are using is incompatible with this version of the module.<br>Please update it."
+    "MaterialDeck.DownloadUtility.Refresh": "Refresh"
 }

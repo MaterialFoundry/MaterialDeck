@@ -45,6 +45,7 @@ export class SoundboardControl{
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
 
             streamDeck.setTitle(txt,context);
+            if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
             streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'offset') { //Offset
@@ -57,7 +58,9 @@ export class SoundboardControl{
             else ringColor = ringOffColor;
 
             streamDeck.setTitle(txt,context);
-            streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
+            let src = '';
+            if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+            streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'stopAll') {   //Stop all sounds
             let src = 'modules/MaterialDeck/img/playlist/stop.png';
@@ -66,6 +69,7 @@ export class SoundboardControl{
             for (let i=0; i<this.activeSounds.length; i++)
                 if (this.activeSounds[i]) 
                     soundPlaying = true;
+            if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
             if (soundPlaying)
                 streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:'#00FF00',overlay:true});
             else
@@ -183,5 +187,15 @@ export class SoundboardControl{
             this.activeSounds[soundNr] = undefined;
         }
         this.updateAll();
+    }
+
+    ambientVolumeChanged(ambientVolume) {
+        for (let i = 0; i<this.activeSounds.length; i++) {
+            let sound = this.activeSounds[i];
+            if (sound == undefined) continue;
+            let volume = game.settings.get(moduleName,'soundboardSettings').volume[i]/100;
+            volume = AudioHelper.inputToVolume(volume) * ambientVolume;
+            sound.gain.value = volume;
+        }
     }
 }

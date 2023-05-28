@@ -27,8 +27,8 @@ export function compatibleCore(compatibleVersion){
 export function compatibleSystem(compatibleVersion){
     const split = compatibleVersion.split(".");
     if (split.length == 2) compatibleVersion = `0.${compatibleVersion}`;
-    let coreVersion = game.system.data.version;
-    return compareVersions(compatibleVersion, coreVersion);
+    let coreVersion = game.system.version;
+    return compareVersions(coreVersion, compatibleVersion);
 }
 
 export class playlistConfigForm extends FormApplication {
@@ -190,29 +190,38 @@ export class macroConfigForm extends FormApplication {
             return;
         }
         //Get the settings
-        var selectedMacros = game.settings.get(moduleName,'macroSettings').macros;
-        var color = game.settings.get(moduleName,'macroSettings').color;
-        var args = game.settings.get(moduleName,'macroSettings').args;
+        const settings = game.settings.get(moduleName,'macroSettings');
+        var selectedMacros = settings.macros;
+        var color = settings.color;
+        var args = settings.args;
+        var labels = settings.labels;
 
         //Check if the settings are defined
         if (selectedMacros == undefined) selectedMacros = [];
         if (color == undefined) color = [];
         if (args == undefined) args = [];
+        if (labels == undefined) labels = [];
 
         //Check if the Furnace is installed and enabled
         let height = 95;
         let advancedMacrosEnabled = false;
-        let advancedMacros = game.modules.get("advanced-macros");
-        if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
-        if (advancedMacrosEnabled) {
+        if (compatibleCore('11.0')) {
             advancedMacrosEnabled = true;
-            height += 50;
         }
+        else {
+            let advancedMacros = game.modules.get("advanced-macros");
+            if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
+            if (advancedMacrosEnabled) {
+                advancedMacrosEnabled = true;
+                height += 50;
+            }
+        }
+        
 
         let iteration = this.page*32;
         let macroData = [];
         for (let j=0; j<4; j++){
-            let macroThis = [];
+            let macroRowConfig = [];
       
             for (let i=0; i<8; i++){
                 let colorData = color[iteration];
@@ -227,18 +236,20 @@ export class macroConfigForm extends FormApplication {
                 }
                 else 
                     colorData = '#000000';
-                    
+                const label = labels[iteration] == undefined || labels[iteration] == "" ? game.macros.get(selectedMacros[iteration])?.name : labels[iteration];
                 let dataThis = {
                     iteration: iteration+1,
                     macro: selectedMacros[iteration],
                     color: colorData,
-                    args: args[iteration]
+                    args: args[iteration],
+                    label
                 }
-                macroThis.push(dataThis);
+                macroRowConfig.push(dataThis);
                 iteration++;
             }
-            macroData.push({dataThis: macroThis});
+            macroData.push({macroRowConfig});
         }
+       
         return {
             height: height,
             macros: game.macros,
@@ -271,6 +282,7 @@ export class macroConfigForm extends FormApplication {
         const macro = html.find("select[name='macros']");
         const args = html.find("input[name='args']");
         const color = html.find("input[name='colorPicker']");
+        const label = html.find("input[name='macroLabel']")
 
         importBtn.on('click', async(event) => {
             let importDialog = new importConfigForm();
@@ -360,13 +372,18 @@ export class macroConfigForm extends FormApplication {
         macro.on("change", event => {
             let id = event.target.id.replace('materialDeck_macroConfig_macros','');
             let settings = game.settings.get(moduleName,'macroSettings');
-            settings.macros[id-1]=event.target.value;
+            settings.macros[id-1] = event.target.value;
+            if (settings.labels == undefined) settings.labels = [];
+            const macroLabel = event.target.value == '' ? '' : game.macros.get(event.target.value).name;
+            settings.labels[id-1] = macroLabel;
+            document.getElementById(`materialDeck_macroConfig_label${id}`).value = macroLabel;
             this.updateSettings(settings);
         });
 
         args.on("change", event => {
             let id = event.target.id.replace('materialDeck_macroConfig_args','');
             let settings = game.settings.get(moduleName,'macroSettings');
+            if (settings.args == undefined) settings.args = [];
             settings.args[id-1]=event.target.value;
             this.updateSettings(settings);
         });
@@ -377,6 +394,14 @@ export class macroConfigForm extends FormApplication {
             settings.color[id-1]=event.target.value;
             this.updateSettings(settings);
         });
+
+        label.on("change", event => {
+            let id = event.target.id.replace('materialDeck_macroConfig_label','');
+            let settings = game.settings.get(moduleName,'macroSettings');
+            if (settings.labels == undefined) settings.labels = [];
+            settings.labels[id-1] = event.target.value;
+            this.updateSettings(settings);
+        })
     }
 
     async updateSettings(settings){
@@ -1020,6 +1045,7 @@ export class downloadUtility extends FormApplication {
         this.masterSDversion;
         this.localMSversion = msVersion;
         this.masterMSversion;
+        this.masterModuleVersion;
         this.releaseAssets = [];
         this.profiles = [];
 
@@ -1027,6 +1053,7 @@ export class downloadUtility extends FormApplication {
         setTimeout(function(){
             parent.checkForUpdate('SD');
             parent.checkForUpdate('MS');
+            parent.checkForUpdate('Module');
             parent.getReleaseData();
         },100)
     }
@@ -1071,6 +1098,8 @@ export class downloadUtility extends FormApplication {
             localMsVersion: this.localMSversion,
             masterMsVersion: this.masterMSversion,
             msDlDisable: this.masterMSversion == undefined,
+            localModuleVersion: game.modules.get('MaterialDeck').version,
+            masterModuleVersion: this.masterModuleVersion,
             profiles: this.profiles,
             profileDlDisable: dlDisabled
         } 
@@ -1118,6 +1147,8 @@ export class downloadUtility extends FormApplication {
             this.checkForUpdate('SD');
             document.getElementById('materialDeck_dlUtil_masterMsVersion').value = 'Getting data';
             this.checkForUpdate('MS');
+            document.getElementById('materialDeck_dlUtil_masterModuleVersion').value = 'Getting data';
+            this.checkForUpdate('Module');
             this.getReleaseData();
         })
     }
@@ -1152,9 +1183,19 @@ export class downloadUtility extends FormApplication {
     checkForUpdate(reqType) {
         let parent = this;
         let url;
-        if (reqType == 'SD') url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck_SD/master/Plugin/com.cdeenen.materialdeck.sdPlugin/manifest.json';
-        else if (reqType == 'MS') url = 'https://raw.githubusercontent.com/CDeenen/MaterialServer/master/package.json';
-        const elementId = reqType == 'SD' ? 'materialDeck_dlUtil_masterSdVersion' : 'materialDeck_dlUtil_masterMsVersion';
+        let elementId;
+        if (reqType == 'SD') {
+            elementId = 'materialDeck_dlUtil_masterSdVersion';
+            url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck_SD/master/Plugin/com.cdeenen.materialdeck.sdPlugin/manifest.json';
+        }
+        else if (reqType == 'MS') {
+            elementId = 'materialDeck_dlUtil_masterMsVersion';
+            url = 'https://raw.githubusercontent.com/CDeenen/MaterialServer/master/package.json';
+        }
+        else if (reqType == 'Module') {
+            elementId = 'materialDeck_dlUtil_masterModuleVersion';
+            url = game.modules.get('MaterialDeck').manifest;
+        }
 
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
@@ -1165,6 +1206,7 @@ export class downloadUtility extends FormApplication {
                 if (type.indexOf("text") !== 1) {
                     if (reqType == 'SD') parent.masterSDversion = JSON.parse(request.responseText).Version;
                     else if (reqType == 'MS') parent.masterMSversion = JSON.parse(request.responseText).version;
+                    else if (reqType == 'Module') parent.masterModuleVersion = JSON.parse(request.responseText).version;
                     parent.render(true);
                     return;
                 }
@@ -1206,7 +1248,6 @@ export class deviceConfig extends FormApplication {
             dConfig = {};
             game.settings.set(moduleName, 'devices', dConfig);
         }
-  
         for (let d of streamDeck.buttonContext) {
             if (d == undefined) continue;
             let type;
@@ -1230,7 +1271,6 @@ export class deviceConfig extends FormApplication {
             }
             this.devices.push(device);
         }
-        
         
         return {
             devices: this.devices

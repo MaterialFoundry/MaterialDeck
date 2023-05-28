@@ -1,16 +1,47 @@
 import { compatibleCore } from "../misc.js";
 
 export class dnd35e{
-    constructor(){
+    conf;
+    system;
+
+    constructor(gamingSystem){
         console.log("Material Deck: Using system 'Dungeons & Dragons 3.5e'/'Pathfinder 1e'");
+        if (gamingSystem == 'D35E') this.conf = CONFIG.D35E;
+        else if (gamingSystem == 'pf1') this.conf = CONFIG.PF1;
+        this.system = gamingSystem;
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value:'HP', name:'HP'},
+            {value:'HPbox', name:'HP (box)'},
+            {value:'TempHP', name:'Temp HP'},
+            {value:'AC', name:'AC'},
+            {value:'Speed', name:'Speed'},
+            {value:'Init', name:'Initiative'},
+            {value:'Ability', name:'Ability Score'},
+            {value:'AbilityMod', name:'Ability Score Modifier'},
+            {value:'Save', name:'Saving Throw Modifier'},
+            {value:'Skill', name:'Skill Modifier'},
+            {value:'Prof', name:'Proficiency'}
+        ]
+    }
+
+    getAttackModes() {
+        return [
+        ]
+    }
+
+    getOnClickList() {
+        return []
     }
 
     getHP(token) {
@@ -94,10 +125,34 @@ export class dnd35e{
         return (val >= 0) ? `+${val}` : val;
     }
 
+    getAbilityList() {
+        const keys = Object.keys(this.conf.abilities);
+        let abilities = [];
+        for (let k of keys) abilities.push({value:this.conf.abilityAbbreviations?.[k], name:this.conf.abilities?.[k]})
+        return abilities;
+    }
+
+    getSavesList() {
+        const keys = Object.keys(this.conf.savingThrows);
+        let saves = [];
+        for (let k of keys) saves.push({value:k, name:this.conf.savingThrows?.[k]})
+        return saves;
+    }
+
     getSkill(token, skill) {
         if (skill == undefined) skill = 'apr';
         const val = this.getActorData(token).skills?.[skill].mod;
         return (val >= 0) ? `+${val}` : val;
+    }
+
+    getSkillList() {
+        const keys = Object.keys(this.conf.skills);
+        let skills = [];
+        for (let s of keys) {
+            const skill = this.conf.skills?.[s];
+            skills.push({value:s, name:skill})
+        }
+        return skills;
     }
 
     getProficiency(token) {
@@ -129,6 +184,12 @@ export class dnd35e{
         return true;
     }
 
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) conditions.push({value:c.id, name:game.i18n.localize(c.label)});
+        return conditions;
+    }
+
     /**
      * Roll
      */
@@ -151,6 +212,27 @@ export class dnd35e{
         else if (roll == 'ranged') token.actor.rollRanged(options);
     }
 
+    getRollTypes() {
+        if (this.system == 'D35E') {
+            return [
+                {value:'initiative', name:'Initiative'},
+                {value:'grapple', name:'Grapple'},
+                {value:'bab', name:'Base Attack Bonus'},
+                {value:'melee', name:'Melee'},
+                {value:'ranged', name:'Ranged'}
+            ]
+        }
+        else if (this.system == 'pf1') {
+            return [
+                {value:'initiative', name:'Initiative'},
+                {value:'cmb', name:'Combat Maneuver Bonus'},
+                {value:'bab', name:'Base Attack Bonus'},
+                {value:'attack', name:'Attack'},
+                {value:'defenses', name:'Defenses'}
+            ]
+        }
+    }
+
     /**
      * Items
      */
@@ -168,6 +250,23 @@ export class dnd35e{
 
     getItemUses(item) {
         return {available: this.getItemData(item).quantity};
+    }
+
+    getItemTypes() {
+        return [
+            {value:'weapon', name:'Weapons'},
+            {value:'equipment', name:'Armor/Equipment'},
+            {value:'consumable', name:'Consumables'},
+            {value:'gear', name:'Gear'},
+            {value:'ammo', name:'Ammunition'},
+            {value:'misc', name:'Miscellaneous'},
+            {value:'tradeGoods', name:'Trade Goods'},
+            {value:'container', name:'Containers'}
+        ]
+    }
+
+    getWeaponRollModes() {
+        return []
     }
 
     /**
@@ -188,10 +287,17 @@ export class dnd35e{
         };
     }
 
+    getFeatureTypes() {
+        return [
+            {value:'class', name:'Class'},
+            {value:'feat', name:'Abilities'}
+        ]
+    }
+
     /**
      * Spells
      */
-     getSpells(token,level) {
+     getSpells(token,level,type) {
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
@@ -205,6 +311,18 @@ export class dnd35e{
             available: item.charges, 
             maximum: item.maxCharges
         }
+    }
+
+    getSpellLevels() {
+        const keys = Object.keys(this.conf.spellLevels);
+        let levels = [];
+        for (let l of keys) levels.push({value:l, name:this.conf.spellLevels?.[l]});
+        return levels;
+    }
+
+    getSpellTypes() {
+        return [
+        ]
     }
 
     rollItem(item) {

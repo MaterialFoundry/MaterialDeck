@@ -8,16 +8,44 @@ const proficiencyColors = {
 }
 
 export class starfinder{
+    conf;
+
     constructor(){
         console.log("Material Deck: Using system 'Starfinder'");
+        this.conf = CONFIG.SFRPG;
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value:'HP', name:'HP'},
+            {value:'HPbox', name:'HP (box)'},
+            {value:'Stamina', name:'Stamina'},
+            {value:'AC', name:'Energy AC'},
+            {value:'KinAC', name:'Kinetic AC'},
+            {value:'Speed', name:'Speed'},
+            {value:'Init', name:'Initiative'},
+            {value:'Ability', name:'Ability Score'},
+            {value:'AbilityMod', name:'Ability Score Modifier'},
+            {value:'Save', name:'Saving Throw Modifier'},
+            {value:'Skill', name:'Skill Modifier'}
+        ]
+    }
+
+    getAttackModes() {
+        return [
+        ]
+    }
+
+    getOnClickList() {
+        return []
     }
 
     getHP(token) {
@@ -110,10 +138,34 @@ export class starfinder{
         return (val >= 0) ? `+${val}` : val;
     }
 
+    getAbilityList() {
+        const keys = Object.keys(this.conf.abilities);
+        let abilities = [];
+        for (let k of keys) abilities.push({value:k, name:this.conf.abilities?.[k]})
+        return abilities;
+    }
+
+    getSavesList() {
+        const keys = Object.keys(this.conf.saves);
+        let saves = [];
+        for (let k of keys) saves.push({value:k, name:this.conf.saves?.[k]})
+        return saves;
+    }
+
     getSkill(token, skill) {
         if (skill == undefined) skill = 'acr';
         const val = this.getActorData(token).skills?.[skill].mod;
         return (val >= 0) ? `+${val}` : val;
+    }
+
+    getSkillList() {
+        const keys = Object.keys(this.conf.skills);
+        let skills = [];
+        for (let s of keys) {
+            const skill = this.conf.skills?.[s];
+            skills.push({value:s, name:skill.label})
+        }
+        return skills;
     }
 
     getProficiency(token) {
@@ -144,6 +196,12 @@ export class starfinder{
         return true;
     }
 
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) conditions.push({value:c.id, name:c.label});
+        return conditions;
+    }
+
     /**
      * Roll
      */
@@ -163,6 +221,13 @@ export class starfinder{
         else if (roll == 'deathSave') token.actor.rollDeathSave(options);
     }
 
+    getRollTypes() {
+        return [
+            {value:'initiative', name:'Initiative'},
+            {value:'deathSave', name:'Death Save'}
+        ]
+    }
+
     /**
      * Items
      */
@@ -176,6 +241,25 @@ export class starfinder{
 
     getItemUses(item) {
         return {available: this.getItemData(item).quantity};
+    }
+
+    getItemTypes() {
+        return [
+            {value:'weapon', name:'Weapons'},
+            {value:'shield', name:'Shields'},
+            {value:'equipment', name:'Armor'},
+            {value:'ammunition', name:'Ammunition'},
+            {value:'consumable', name:'Consumables'},
+            {value:'goods', name:'Goods'},
+            {value:'container', name:'Containers'},
+            {value:'technological', name:'Technological, Magical, and Hybrid Items'},
+            {value:'enhancers', name:'Equipment Enhancers'},
+            {value:'augmentation', name:'Augmentations'}
+        ]
+    }
+
+    getWeaponRollModes() {
+        return []
     }
 
     /**
@@ -201,10 +285,23 @@ export class starfinder{
         };
     }
 
+    getFeatureTypes() {
+        return [
+            {value:'class', name:'Class'},
+            {value:'race', name:'Race'},
+            {value:'theme', name:'Theme'},
+            {value:'asi', name:'Ability Score Increases'},
+            {value:'archetypes', name:'Archetypes'},
+            {value:'activeFeat', name:'Active Feats'},
+            {value:'passiveFeat', name:'Passive Feats'},
+            {value:'actorResource', name:'Actor Resources'}
+        ]
+    }
+
     /**
      * Spells
      */
-     getSpells(token,level) {
+     getSpells(token,level,type) {
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
@@ -230,6 +327,18 @@ export class starfinder{
             uses = {available: spellSlots?.[`spell${level}`].perClass?.witchwarper.value, maximum: spellSlots?.[`spell${level}`].perClass?.witchwarper.max} 
 
         return uses;
+    }
+
+    getSpellLevels() {
+        const keys = Object.keys(this.conf.spellLevels);
+        let levels = [{label:'innate', name:game.i18n.localize("SFRPG.SpellPreparationModesInnate")}];
+        for (let l of keys) levels.push({value:l, name:this.conf.spellLevels?.[l]});
+        return levels;
+    }
+
+    getSpellTypes() {
+        return [
+        ]
     }
 
     rollItem(item) {

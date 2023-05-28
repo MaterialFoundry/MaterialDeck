@@ -1,16 +1,42 @@
 import { compatibleCore } from "../misc.js";
 
 export class demonlord{
+    conf;
+
     constructor(){
         console.log("Material Deck: Using system 'Shadow of the Demon Lord'");
+        this.conf = CONFIG.DL;
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value:'HP', name:'HP'},
+            {value:'HPbox', name:'HP (box)'},
+            {value:'AC', name:'AC'},
+            {value:'Speed', name:'Speed'},
+            {value:'Init', name:'Initiative'},
+            {value:'Ability', name:'Ability Score'},
+            {value:'AbilityMod', name:'Ability Score Modifier'}
+        ]
+    }
+
+    getAttackModes() {
+        return [
+            {value:'attack', name:'Attack'},
+            {value:'damage', name:'Damage'},
+            {value:'damageCrit', name:'Critical Damage'},
+            {value:'versatile', name:'Versatile Damage'},
+            {value:'versatileCrit', name:'Versatile Critical Damage'},
+            {value:'otherFormula', name:'Other Formula'},
+        ]
     }
 
     getHP(token) {
@@ -71,6 +97,17 @@ export class demonlord{
         return;
     }
 
+    getSavesList() {
+        return [];
+    }
+
+    getAbilityList() {
+        const keys = Object.keys(this.conf.attributes);
+        let abilities = [];
+        for (let k of keys) abilities.push({value:k, name:this.conf.attributes?.[k]})
+        return abilities;
+    }
+    
     getSkill(token, skill) {
         if (skill == undefined) skill = 'acr';
         const val = this.getActorData(token).skills?.[skill].total;
@@ -90,6 +127,12 @@ export class demonlord{
     getConditionActive(token,condition) {
         if (condition == undefined) condition = 'removeAll';
         return token.actor.effects.find(e => e.isTemporary === condition) != undefined;
+    }
+
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) if (c.disabled != undefined) conditions.push({value:c.id, name:c.label});
+        return conditions;
     }
 
     async toggleCondition(token,condition) {
@@ -128,7 +171,7 @@ export class demonlord{
     /**
      * Spells
      */
-     getSpells(token,level) {
+     getSpells(token,level,type) {
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
@@ -137,6 +180,11 @@ export class demonlord{
 
     getSpellUses(token,level,item) {
         return;
+    }
+
+    getSpellTypes() {
+        return [
+        ]
     }
 
     rollItem(item) {
@@ -152,5 +200,47 @@ export class demonlord{
 
     getSaveRingColor(token, save) {
         return;        
+    }
+
+    getSkillList() {
+        return [];
+    }
+
+    getOnClickList() {
+        return [{value:'initiative',name:'Toggle Initiative'}]
+    }
+
+    getRollTypes() {
+        return []
+    }
+
+    getItemTypes() {
+        return []
+    }
+
+    getWeaponRollModes() {
+        return []
+    }
+
+    getFeatureTypes() {
+        return [
+            {value:'class', name:'Class'},
+            {value:'feat', name:'Abilities'}
+        ]
+    }
+
+    getSpellLevels() {
+        return [
+            {value:'0', name:'Cantrip'},
+            {value:'1', name:'1st Level'},
+            {value:'2', name:'2nd Level'},
+            {value:'3', name:'3rd Level'},
+            {value:'4', name:'4th Level'},
+            {value:'5', name:'5th Level'},
+            {value:'6', name:'6th Level'},
+            {value:'7', name:'7th Level'},
+            {value:'8', name:'8th Level'},
+            {value:'9', name:'9th Level'}
+        ]
     }
 }

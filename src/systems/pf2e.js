@@ -12,19 +12,49 @@ const proficiencyColors =
 };
 
 export class pf2e{
+    conf;
 
     constructor(){
         console.log("Material Deck: Using system 'Pathfinder 2e'");
+        this.conf = CONFIG.PF2E;
     }
 
     tokenSpellData = new Map();
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value:'HP', name:'HP'},
+            {value:'HPbox', name:'HP (box)'},
+            {value:'TempHP', name:'Temp HP'},
+            {value:'AC', name:'AC'},
+            {value:'ShieldHP', name:'Shield HP'},
+            {value:'Speed', name:'Speed'},
+            {value:'Init', name:'Initiative'},
+            {value:'Ability', name:'Ability Score'},
+            {value:'AbilityMod', name:'Ability Score Modifier'},
+            {value:'Save', name:'Saving Throw Modifier'},
+            {value:'Skill', name:'Skill Modifier'},
+            {value:'Prof', name:'Proficiency'},
+            {value:'Condition', name: 'Condition'},
+            {value:'Perception', name: 'Perception'}
+        ]
+    }
+
+    getAttackModes() {
+        return [
+        ]
+    }
+
+    getOnClickList() {
+        return []
     }
 
     getHP(token) {
@@ -116,11 +146,19 @@ export class pf2e{
     }
 
     getAbilitySave(token, ability) {
-        ability = this.fixSave(ability);
+        if (ability == undefined) return 'fortitude';
+        //ability = this.fixSave(ability);
         const save = this.findSave(token, ability);
         if (save == undefined) return '';
         let val = save?.value;
         return (val >= 0) ? `+${val}` : val;
+    }
+
+    getAbilityList() {
+        const keys = Object.keys(this.conf.abilities);
+        let abilities = [];
+        for (let k of keys) abilities.push({value:k, name:game.i18n.localize(this.conf.abilities?.[k])})
+        return abilities;
     }
 
     findSave(token, ability) {
@@ -128,11 +166,20 @@ export class pf2e{
         return this.getActorData(token).saves?.[ability];
     }
 
+    /*
     fixSave(ability) {
         if (ability == undefined) return 'fortitude';
         else if (ability == 'fort') return 'fortitude';
         else if (ability == 'ref') return 'reflex';
         else if (ability == 'will') return 'will';
+    }
+    */
+
+    getSavesList() {
+        const keys = Object.keys(this.conf.saves);
+        let saves = [];
+        for (let k of keys) saves.push({value:k, name:game.i18n.localize(this.conf.saves?.[k])})
+        return saves;
     }
 
     getSkill(token, skill) {
@@ -160,6 +207,16 @@ export class pf2e{
             }
         }
         return this.getActorData(token).skills?.[skill];
+    }
+
+    getSkillList() {
+        const keys = Object.keys(this.conf.skills);
+        let skills = [];
+        for (let s of keys) {
+            skills.push({value:s, name:game.i18n.localize(this.conf.skills?.[s])})
+        }
+        for (let i=1; i<4; i++) skills.push({value:`lor_${i}`, name: `${game.i18n.localize(this.conf.skillList.lore)} #${i}`})
+        return skills;
     }
 
     getLoreSkills(token) {
@@ -240,6 +297,12 @@ export class pf2e{
         return true;
     }
 
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) conditions.push({value:c.id, name:game.i18n.localize(c.label)});
+        return conditions;
+    }
+
     /**
      * Roll
      */
@@ -289,6 +352,13 @@ export class pf2e{
         game.pf2e.Check.roll(checkModifier, {type:type, actor: actor, skipDialog: true}, null);
     }
 
+    getRollTypes() {
+        return [
+            {value:'initiative', name:'Initiative'},
+            {value:'perception', name:'Perception'}
+        ]
+    }
+
     /**
      * Items
      */
@@ -303,6 +373,20 @@ export class pf2e{
 
     getItemUses(item) {
         return {available: item.quantity};
+    }
+
+    getItemTypes() {
+        return [
+            {value:'weapon', name:'Weapons'},
+            {value:'armor', name:'Armor'},
+            {value:'equipment', name:'Equipment'},
+            {value:'consumable', name:'Consumables'},
+            {value:'treasure', name:'Treasure'}
+        ]
+    }
+
+    getWeaponRollModes() {
+        return []
     }
     
     /**
@@ -345,6 +429,30 @@ export class pf2e{
     getFeatureUses(item) {
         if (item.data.type == 'class') return {available: item.parent.data.data.details.level.value};
         else return;
+    }
+
+    getFeatureTypes() {
+        return [
+            {value:'ancestry', name:'Ancestry'},
+            {value:'ancestryfeature', name:'Ancestry Feature'},
+            {value:'heritage', name: 'Heritage'},
+            {value:'background', name: 'Background'},
+            {value:'class', name:'Class'},
+            {value:'classfeature', name:'Class Feature'},
+            {value:'deity', name: 'Deity'},
+            {value:'feat-any', name:'Feats - Any'},
+            {value:'feat-anc', name:'Feats - Ancestry'},
+            {value:'feat-arc', name: 'Feats - Archetype'},
+            {value:'feat-ded', name: 'Feats - Dedication'},
+            {value:'feat-cla', name: 'Feats - Class'},
+            {value:'feat-gen', name: 'Feats - General'},
+            {value:'feat-ski', name: 'Feats - Skill'},
+            {value:'action-any', name:'Actions - Any'},
+            {value:'action-def', name:'Actions - Defensive'},
+            {value:'action-int', name:'Actions - Interaction'},
+            {value:'action-off', name:'Actions - Offensive'},
+            {value:'strike', name:'Strikes'}
+        ]
     }
 
     /**
@@ -402,7 +510,7 @@ export class pf2e{
         return spell.level;
     }
 
-    getSpells(token,level) {
+    getSpells(token,level,type) {
         if (this.isLimitedSheet(token.actor)) return '';
         if (level == undefined) level = 'any';
         let spellData = this.getSpellData(token);
@@ -468,6 +576,21 @@ export class pf2e{
         return result;
     }
 
+    getSpellLevels() {
+        const keys = Object.keys(this.conf.spellLevels);
+        let levels = [
+            {value:'f', name: game.i18n.localize("PF2E.SpellCategoryFocus")},
+            {value:'0', name: game.i18n.localize("PF2E.SpellCantripLabel")}
+        ];
+        for (let l of keys) levels.push({value:l, name:game.i18n.localize(this.conf.spellLevels?.[l])});
+        return levels;
+    }
+
+    getSpellTypes() {
+        return [
+        ]
+    }
+
     rollItem(item, settings) {
         let variant = 0;
         if (otherControls.rollOption == 'map1') variant = 1;
@@ -514,7 +637,7 @@ export class pf2e{
     }
 
     getSaveRingColor(token, save) {
-        save = this.fixSave(save);
+        //save = this.fixSave(save);
         return this.getRingColor(this.findSave(token, save));
     }
 

@@ -72,11 +72,20 @@ export const registerSettings = async function() {
     //Enabled the module
     game.settings.register(moduleName,'Enable', {
         name: "MaterialDeck.Sett.Enable",
+        hint: "MaterialDeck.Sett.EnableHint",
         scope: "client",
         config: true,
         default: false,
         type: Boolean,
         onChange: x => window.location.reload()
+    });
+
+    game.settings.register(moduleName,'EnableDialogShown', {
+        name: "MaterialDeck_EnableDialogShown",
+        scope: "client",
+        config: false,
+        default: false,
+        type: Boolean
     });
 
     /**

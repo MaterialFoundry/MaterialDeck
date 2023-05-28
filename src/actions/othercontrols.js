@@ -1,5 +1,5 @@
 import { streamDeck, gamingSystem, getPermission } from "../../MaterialDeck.js";
-import { compatibleCore } from "../misc.js";
+import {  } from "../misc.js";
 
 export class OtherControls{
     constructor(){
@@ -8,10 +8,16 @@ export class OtherControls{
         this.rollOption = 'dialog';
         this.controlsOffset = 0;
         this.toolsOffset = 0;
+        this.attackMode = 'chat';
     }
 
     setRollOption(option) {
         this.rollOption = option;
+        this.updateAll();
+    }
+
+    setAttackMode(option) {
+        this.attackMode = option;
         this.updateAll();
     }
 
@@ -55,8 +61,12 @@ export class OtherControls{
             this.updateChatMessage(settings,context,device,options);
         else if (mode == 'rollOptions')
             this.updateRollOptions(settings,context,device,options);
+        else if (mode == 'attackModes')
+            this.updateAttackMode(settings,context,device,options);
         else if (mode == 'rollMode')
             this.updateRollMode(settings,context,device,options);
+        else if (mode == 'globalVolumeControls')
+            this.updateGlobalVolumeControls(settings, context, device, options);
     }
 
     keyPress(settings,context,device){
@@ -86,8 +96,12 @@ export class OtherControls{
             this.keyPressChatMessage(settings);
         else if (mode == 'rollOptions')
             this.keyPressRollOptions(settings);
+        else if (mode == 'attackModes')
+            this.keyPressAttackMode(settings);
         else if (mode == 'rollMode')
             this.keyPressRollMode(settings);
+        else if (mode == 'globalVolumeControls')
+            this.keyPressGlobalVolumeControls(settings);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +127,12 @@ export class OtherControls{
         }
         else if (pauseFunction == 'toggle')  //toggle
             src = 'modules/MaterialDeck/img/other/pause/playpause.png';
-        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor,overlay:true});
+        let overlay = true;
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            src = settings.iconOverride;
+            overlay = false;
+        }
+        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor,overlay});
         streamDeck.setTitle('',context);
     }
 
@@ -163,8 +182,12 @@ export class OtherControls{
             url = "modules/MaterialDeck/img/move/zoomin.png";
         else if (dir ==  'zoomOut') 
             url = "modules/MaterialDeck/img/move/zoomout.png";
-        
-        streamDeck.setIcon(context,device,url,{background:background,overlay:true});
+        let overlay = true;
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            url = settings.iconOverride;
+            overlay = false;
+        }
+        streamDeck.setIcon(context,device,url,{background:background,overlay});
         streamDeck.setTitle('',context);
     }
 
@@ -185,7 +208,7 @@ export class OtherControls{
         }
         else {
             let viewPosition = canvas.scene._viewPosition;
-            const gridSize = compatibleCore('10.0') ? canvas.scene.grid.size : canvas.scene.data.grid;
+            const gridSize = canvas.scene.grid.size;
             viewPosition.duration = 100;
             
             if (dir == 'up') viewPosition.y -= gridSize;
@@ -324,6 +347,7 @@ export class OtherControls{
                 }
             }
         }
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(txt,context);
     }
@@ -345,20 +369,8 @@ export class OtherControls{
                     streamDeck.noPermission(context,device,false);
                     return;
                 }
-                if (compatibleCore('10.0')) {
-                    ui.controls.initialize({layer: selectedControl.layer});
-                }
-                else {
-                    ui.controls.activeControl = selectedControl.name;
-                    selectedControl.activeTool = selectedControl.activeTool;
-                    for (let layer of canvas.layers) {
-                        if (layer.options == undefined) continue;
-                        if (layer.options.name == selectedControl.layer) {
-                            layer.activate();
-                            break;
-                        }
-                    }
-                }
+                ui.controls.initialize({layer: selectedControl.layer});
+                canvas.layers.find(l => l.options.name == selectedControl.layer).activate();
             }
         }
         else if (control == 'dispTools'){  //displayed tools
@@ -385,12 +397,8 @@ export class OtherControls{
                         selectedTool.onClick();
                     }
                     else {
-                        if (compatibleCore('10.0')) {
-                            ui.controls.initialize({layer: selectedControl.layer, tool: selectedTool.name});
-                        }
-                        else {
-                            selectedControl.activeTool = selectedTool.name;
-                        }
+                        ui.controls.initialize({layer: selectedControl.layer, tool: selectedTool.name});
+                        canvas.layers.find(l => l.options.name == selectedControl.layer).activate();
                     }
                         
                 }  
@@ -414,21 +422,8 @@ export class OtherControls{
                     return;
                 }
                 if (tool == 'open'){  //open category
-                    if (compatibleCore('10.0')) {
-                        ui.controls.initialize({layer: selectedControl.layer});
-                    }
-                    else {
-                        ui.controls.activeControl = control;
-                        selectedControl.activeTool = selectedControl.activeTool;
-                        for (let layer of canvas.layers) {
-                            if (layer.options == undefined) continue;
-                            if (layer.options.name == selectedControl.layer) {
-                                layer.activate();
-                                break;
-                            }
-                        }
-                    }
-                    
+                    ui.controls.initialize({layer: selectedControl.layer});
+                    canvas.layers.find(l => l.options.name == selectedControl.layer).activate();
                 }
                 else {
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
@@ -437,39 +432,23 @@ export class OtherControls{
                             streamDeck.noPermission(context,device,false);
                             return;
                         }
-                        if (compatibleCore('10.0')) {
-                            if (selectedTool.toggle) {
-                                ui.controls.initialize({layer: selectedControl.layer});
-                                selectedTool.active = !selectedTool.active;
-                                selectedTool.onClick(selectedTool.active);
-                            }
-                            else if (selectedTool.button){
-                                ui.controls.initialize({layer: selectedControl.layer});
-                                selectedTool.onClick();
-                            }
-                            else
-                            ui.controls.initialize({layer: selectedControl.layer, tool: selectedTool.name});
+                        if (selectedTool.toggle) {
+                            ui.controls.initialize({layer: selectedControl.layer});
+                            canvas.layers.find(l => l.options.name == selectedControl.layer).activate();
+                            selectedTool.active = !selectedTool.active;
+                            selectedTool.onClick(selectedTool.active);
+                        }
+                        else if (selectedTool.button){
+                            ui.controls.initialize({layer: selectedControl.layer});
+                            canvas.layers.find(l => l.options.name == selectedControl.layer).activate();
+                            selectedTool.onClick();
                         }
                         else {
-                            ui.controls.activeControl = control;
-                            for (let layer of canvas.layers) {
-                                if (layer.options == undefined) continue;
-                                if (layer.options.name == selectedControl.layer) {
-                                    layer.activate();
-                                    break;
-                                }
-                            }
-                            if (selectedTool.toggle) {
-                                selectedTool.active = !selectedTool.active;
-                                selectedTool.onClick(selectedTool.active);
-                            }
-                            else if (selectedTool.button){
-                                selectedTool.onClick();
-                            }
-                            else
-                                selectedControl.activeTool = tool;
+                            
+                            ui.controls.initialize({layer: selectedControl.layer, tool: selectedTool.name});
+                            canvas.layers.find(l => l.options.name == selectedControl.layer).activate();
                         }
- 
+                            
                     }
                 }
             }
@@ -500,11 +479,16 @@ export class OtherControls{
         }
         else if (func == 'disp'){    //display darkness
             src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
-            const darkness = canvas.scene != null ? compatibleCore('10.0') ? Math.floor(canvas.scene.darkness*100)/100 : Math.floor(canvas.scene.data.darkness*100)/100 : '';
+            const darkness = canvas.scene != null ? Math.floor(canvas.scene.darkness*100)/100 : '';
             txt += darkness;
         }
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,device,src,{background:background,overlay:true});
+        let overlay = true;
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            src = settings.iconOverride;
+            overlay = false;
+        }
+        streamDeck.setIcon(context,device,src,{background:background,overlay});
     }
 
     keyPressDarkness(settings) {
@@ -517,16 +501,16 @@ export class OtherControls{
         if (func == 'value') //value
             canvas.scene.update({darkness: value}, {animateDarkness});
         else if (func == 'incDec'){ //increase/decrease
-            let darkness = compatibleCore('10.0') ? canvas.scene.darkness - value : canvas.scene.data.darkness - value;
+            let darkness = canvas.scene.darkness - value;
             if (darkness > 1) darkness = 1;
             if (darkness < 0) darkness = 0;
             canvas.scene.update({darkness: darkness}, {animateDarkness});
         }
         else if (func == 'transitionDay') {
-            canvas.scene.update({darkness: 0}, {animateDarkness: 10000})
+            canvas.scene.update({darkness: 0}, {animateDarknes})
         }
         else if (func == 'transitionNight') {
-            canvas.scene.update({darkness: 1}, {animateDarkness: 10000})
+            canvas.scene.update({darkness: 1}, {animateDarknes})
         }
     }
 
@@ -544,7 +528,9 @@ export class OtherControls{
         if (settings.displayDiceName) txt = 'Roll: ' + formula;
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,device,'',{background:background});
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        streamDeck.setIcon(context,device,src,{background:background});
     }
 
     keyPressRollDice(settings,context,device){
@@ -599,7 +585,7 @@ export class OtherControls{
         if (table == undefined) return;
 
         let txt = settings.displayRollName ? table.name : '';
-        let src = settings.displayRollIcon ? (compatibleCore('10.0') ? table.img : table.data.img) : '';
+        let src = settings.displayRollIcon ? table.img : '';
 
         if (table == undefined) {
             src = '';
@@ -613,6 +599,7 @@ export class OtherControls{
         }
 
         streamDeck.setTitle(txt,context);
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background});
     }
 
@@ -642,34 +629,18 @@ export class OtherControls{
 
     getSidebarName(nr){
         let name;
-        if (compatibleCore('10.0')) {
-            if (nr == 'chat') name = game.i18n.localize("DOCUMENT.ChatMessages");
-            else if (nr == 'combat') name = game.i18n.localize("DOCUMENT.Combats");
-            else if (nr == 'scenes') name = game.i18n.localize("DOCUMENT.Scenes");
-            else if (nr == 'actors') name = game.i18n.localize("DOCUMENT.Actors");
-            else if (nr == 'items') name = game.i18n.localize("DOCUMENT.Items");
-            else if (nr == 'journal') name = game.i18n.localize("DOCUMENT.JournalEntries");
-            else if (nr == 'tables') name = game.i18n.localize("DOCUMENT.RollTables");
-            else if (nr == 'cards') name = game.i18n.localize("DOCUMENT.Cards");
-            else if (nr == 'playlists') name = game.i18n.localize("DOCUMENT.Playlists");
-            else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
-            else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
-            else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
-        }
-        else {
-            if (nr == 'chat') name = game.i18n.localize("SIDEBAR.TabChat");
-            else if (nr == 'combat') name = game.i18n.localize("SIDEBAR.TabCombat");
-            else if (nr == 'scenes') name = game.i18n.localize("SIDEBAR.TabScenes");
-            else if (nr == 'actors') name = game.i18n.localize("SIDEBAR.TabActors");
-            else if (nr == 'items') name = game.i18n.localize("SIDEBAR.TabItems");
-            else if (nr == 'journal') name = game.i18n.localize("SIDEBAR.TabJournal");
-            else if (nr == 'tables') name = game.i18n.localize("SIDEBAR.TabTables");
-            else if (nr == 'cards') name = game.i18n.localize("SIDEBAR.TabCards");
-            else if (nr == 'playlists') name = game.i18n.localize("SIDEBAR.TabPlaylists");
-            else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
-            else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
-            else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
-        }
+        if (nr == 'chat') name = game.i18n.localize("DOCUMENT.ChatMessages");
+        else if (nr == 'combat') name = game.i18n.localize("DOCUMENT.Combats");
+        else if (nr == 'scenes') name = game.i18n.localize("DOCUMENT.Scenes");
+        else if (nr == 'actors') name = game.i18n.localize("DOCUMENT.Actors");
+        else if (nr == 'items') name = game.i18n.localize("DOCUMENT.Items");
+        else if (nr == 'journal') name = game.i18n.localize("DOCUMENT.JournalEntries");
+        else if (nr == 'tables') name = game.i18n.localize("DOCUMENT.RollTables");
+        else if (nr == 'cards') name = game.i18n.localize("DOCUMENT.Cards");
+        else if (nr == 'playlists') name = game.i18n.localize("DOCUMENT.Playlists");
+        else if (nr == 'compendium') name = game.i18n.localize("SIDEBAR.TabCompendium");
+        else if (nr == 'settings') name = game.i18n.localize("SIDEBAR.TabSettings");
+        else if (nr == 'collapse') name = game.i18n.localize("SIDEBAR.CollapseToggle");
         return name;
     }
 
@@ -708,9 +679,10 @@ export class OtherControls{
         }
         else if (popOut == false) ringColor = (sidebarTab == 'collapse' && collapsed || (activeTab == sidebarTab)) ? ringOnColor : ringOffColor;
         const name = settings.displaySidebarName ? this.getSidebarName(sidebarTab) : '';
-        const icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
+        let icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
 
         streamDeck.setTitle(name,context);
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
         streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
     }
 
@@ -745,7 +717,9 @@ export class OtherControls{
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressCompendiumBrowser(settings){
@@ -785,7 +759,9 @@ export class OtherControls{
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressCompendium(settings){
@@ -834,7 +810,9 @@ export class OtherControls{
         const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
-        streamDeck.setIcon(context,device,"",{background:background,ring:2,ringColor:ringColor});
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressJournal(settings){
@@ -860,7 +838,9 @@ export class OtherControls{
         }
         const background = settings.background ? settings.background : '#000000';
         streamDeck.setTitle("",context);
-        streamDeck.setIcon(context,device,"",{background:background});
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
+        streamDeck.setIcon(context,device,src,{background:background});
     }
 
     keyPressChatMessage(settings){
@@ -881,11 +861,16 @@ export class OtherControls{
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-        const iconSrc = "modules/MaterialDeck/img/other/d20.png";
-        const rollOption = settings.rollOptionFunction ? settings.rollOptionFunction : 'normal';
+        let iconSrc = "modules/MaterialDeck/img/other/d20.png";
+        const rollOption = settings.rollOptionFunction ? settings.rollOptionFunction : 'dialog';
         const ringColor = (rollOption == this.rollOption) ? ringOnColor : ringOffColor;
         streamDeck.setTitle("",context);
-        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay:true});
+        let overlay = true;
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            iconSrc = settings.iconOverride;
+            overlay = false;
+        }
+        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
     }
 
     keyPressRollOptions(settings){
@@ -898,15 +883,47 @@ export class OtherControls{
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+
+    updateAttackMode(settings,context,device,options={}){
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        let iconSrc = "modules/MaterialDeck/img/other/d20.png";
+        const attackMode = settings.attackMode ? settings.attackMode : 'chat';
+        const ringColor = (attackMode == this.attackMode) ? ringOnColor : ringOffColor;
+        streamDeck.setTitle("",context);
+        let overlay = true;
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            iconSrc = settings.iconOverride;
+            overlay = false;
+        }
+        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
+    }
+
+    keyPressAttackMode(settings){
+        const attackMode = settings.attackMode ? settings.attackMode : 'chat';
+        if (this.attackMode != attackMode) {
+            this.setAttackMode(attackMode)
+        }
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
     updateRollMode(settings,context,device,options={}){
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-        const iconSrc = "modules/MaterialDeck/img/other/d20.png";
+        let iconSrc = "modules/MaterialDeck/img/other/d20.png";
         const rollMode = settings.rollMode ? settings.rollMode : 'roll';
         const ringColor = (rollMode == game.settings.get('core','rollMode')) ? ringOnColor : ringOffColor;
         streamDeck.setTitle("",context);
-        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay:true});
+        let overlay = true;
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            iconSrc = settings.iconOverride;
+            overlay = false;
+        }
+        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
     }
 
     async keyPressRollMode(settings){
@@ -914,4 +931,48 @@ export class OtherControls{
         await game.settings.set('core','rollMode',rollMode);
         this.updateAll();
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    async updateGlobalVolumeControls(settings,context,device,options={}){
+        const background = settings.background ? settings.background : '#000000';
+        let iconSrc = "modules/MaterialDeck/img/transparant.png";
+        const type = settings.globalVolumeType ? settings.globalVolumeType : 'playlists';
+        let txt = "";
+        
+        if (settings.displayGlobalVolumeValue) {
+            if (type == 'playlists') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalPlaylistVolume"))*100)/100;
+            else if (type == 'ambient') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalAmbientVolume"))*100)/100;
+            else if (type == 'interface') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalInterfaceVolume"))*100)/100;
+        }
+
+        streamDeck.setTitle(txt,context);
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            iconSrc = settings.iconOverride;
+        }
+        streamDeck.setIcon(context,device,iconSrc,{background:background});
+    }
+
+    async keyPressGlobalVolumeControls(settings){
+        const type = settings.globalVolumeType ? settings.globalVolumeType : 'playlists';
+        const mode = settings.globalVolumeMode ? settings.globalVolumeMode : 'incDec';
+        const value = settings.globalVolumeValue ? settings.globalVolumeValue : 0.1;
+        let settingLabel = '';
+        let newVolume = 0;
+        if (type == 'playlists') settingLabel = "globalPlaylistVolume";
+        else if (type == 'ambient') settingLabel = "globalAmbientVolume";
+        else if (type == 'interface') settingLabel = "globalInterfaceVolume";
+        
+        if (mode == 'incDec') newVolume = AudioHelper.volumeToInput(await game.settings.get("core", settingLabel)) + parseFloat(value);
+        else if (mode == 'set') newVolume = value;
+
+        if (newVolume > 1) newVolume = 1;
+        else if (newVolume < 0) newVolume = 0;
+
+        await game.settings.set("core", settingLabel, AudioHelper.inputToVolume(newVolume));
+        document.getElementsByName(settingLabel)[0].value = newVolume;
+
+        this.updateAll();
+    }
 }
+

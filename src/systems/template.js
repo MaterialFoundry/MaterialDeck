@@ -24,16 +24,54 @@ const proficiencyColors = {
 
 //Rename 'template' to the name of your system
 export class template{
+    conf; //this variable stores the configuration data for the system, set in the constructor
+
     constructor(){
         console.log("Material Deck: Using system 'SystemName'");
+        this.conf = CONFIG.DND5E; //You can use this to get various things like the list of ability scores, conditions, etc. Make sure you set it to the correct value for your system
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    /**
+     * This generates a list of stats to be displayed on the SD: Token Action => Stats.
+     * Choose the ones you want to use and change the 'name' value if desired. If you add new ones, you will need to add a function to handle them in src/token.js.
+     * After each option you'll find what function it will call after the button is pressed on the SD
+     */
+    getStatsList() {
+        return [
+            {value:'HP', name:'HP'},                                        //will call getHP()
+            {value:'HPbox', name:'HP (box)'},                               //will call getHP()
+            {value:'TempHP', name:'Temp HP'},                               //will call getTempHP()
+            {value:'AC', name:'AC'},                                        //will call getAC()
+            {value:'ShieldHP', name:'Shield HP'},                           //will call getShieldHP()
+            {value:'Speed', name:'Speed'},                                  //will call getSpeed()
+            {value:'Init', name:'Initiative'},                              //will call getInitiative()
+            {value:'Ability', name:'Ability Score'},                        //will call getAbility()
+            {value:'AbilityMod', name:'Ability Score Modifier'},            //will call getAbilityModifier()
+            {value:'Save', name:'Saving Throw Modifier'},                   //will call getAbilitySave()
+            {value:'Skill', name:'Skill Modifier'},                         //will call getSkill()
+            {value:'PassivePerception', name:'Passive Perception'},         //will call getPassivePerception()
+            {value:'PassiveInvestigation', name:'Passive Investigation'},   //will call getPassiveInvestigation()
+            {value:'Prof', name:'Proficiency'},                             //will call getProficiency()
+            {value:'Condition', name: 'Condition'},                         //will call getConditionValue()
+        ]
+    }
+
+    /**
+     * Adds an on click option to the SD: Token Action => On Click
+     * Currently only supports toggling initiative (for Shadow of the Demonlord)
+     */
+    getOnClickList() {
+        return [
+            //{value:'initiative',name:'Toggle Initiative'}
+        ]
     }
 
     /**
@@ -147,6 +185,17 @@ export class template{
     getAbilitySave(token, ability) {
         if (ability == undefined) ability = ''; //default ability
         return;
+    }
+
+    /**
+     * Returns a list of abilities available to the system
+     * Each array item must be {value:'abilityId', name:'abilityName'}
+     * 'abilityId' is defined by the system, the name can be anything you want
+     * @returns 
+     */
+    getAbilityList() {
+        let abilities = [];
+        return abilities;
     }
 
     /**

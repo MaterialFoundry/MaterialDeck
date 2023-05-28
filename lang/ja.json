@@ -184,11 +184,11 @@
     "MaterialDeck.Perm.TOKEN.OBSERVER.label": "オブザーバー",
     "MaterialDeck.Perm.TOKEN.OBSERVER.hint": "オブザーバー権限を持つトークンへのユーザーアクセスを許可する",
 
-    "MaterialDeck.AboutTime.First": "１",
-    "MaterialDeck.AboutTime.Second": "２",
-    "MaterialDeck.AboutTime.Third": "３",
-    "MaterialDeck.AboutTime.Fourth": "４",
-    "MaterialDeck.AboutTime.Of": "/",
+    "MaterialDeck.SimpleCalendar.First": "１",
+    "MaterialDeck.SimpleCalendar.Second": "２",
+    "MaterialDeck.SimpleCalendar.Third": "３",
+    "MaterialDeck.SimpleCalendar.Fourth": "４",
+    "MaterialDeck.SimpleCalendar.Of": "/",
 
     "MaterialDeck.DownloadUtility.Title": "ダウンロード･ユーティリティ",
     "MaterialDeck.DownloadUtility.Plugin": "プラグイン＆Material Server",

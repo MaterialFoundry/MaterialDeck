@@ -1,5 +1,5 @@
 import { streamDeck, macroControl, otherControls, tokenHelper, getPermission } from "../../MaterialDeck.js";
-import { compatibleCore } from "../misc.js";
+import {  } from "../misc.js";
 
 export class TokenControl{
     constructor(){
@@ -20,21 +20,20 @@ export class TokenControl{
         }
     }
 
-    async pushData(tokenId,settings,context,device,ring=0,ringColor='#000000'){
+    async pushData(tokenId,settings,context,device,ring=0,ringColor='#000000',forceIcon,hideName=false){
         const name = settings.displayName ? settings.displayName : false;
         const icon = settings.icon ? settings.icon : 'none';
-        const background = settings.background ? settings.background : "#000000";
         let stats =  settings.stats ? settings.stats : 'none';
         const selection = settings.selection ? settings.selection : 'selected';
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
         const prependTitle = settings.prependTitle ? settings.prependTitle : '';
         const mode = settings.tokenMode ? settings.tokenMode : 'token';
+        const background = (mode == 'inventory') ? (settings.inventoryBackground ? settings.inventoryBackground : "#000000") : (settings.background ? settings.background : "#000000");
 
         let validToken = false;
         let token;
         if (settings.combatTrackerMode) token = tokenHelper.getTokenFromTokenId(tokenId);
         else token = tokenHelper.getToken(selection,tokenIdentifier);
-
         if (token != undefined) validToken = true;
         let txt = "";
         let iconSrc = "";
@@ -78,21 +77,7 @@ export class TokenControl{
                 
                 if (stats == 'custom'){
                     const custom = settings.custom ? settings.custom : '';
-                    let split = custom.split('[');
-                    for (let i=0; i<split.length; i++) split[i] = split[i].split(']');
-                    for (let i=0; i<split.length; i++)
-                        for (let j=0; j<split[i].length; j++){
-                            if (split[i][j][0] != '@') txt += split[i][j];
-                            else {
-                                const dataPath = split[i][j].split('@')[1].split('.');
-                                let data = token;
-                                
-                                for (let i=0; i<dataPath.length; i++)
-                                    data = data?.[dataPath[i]];
-                                if (data == undefined) txt += '[undef]';
-                                else txt += data;
-                            }
-                        }
+                    txt += this.decodeCustomStat(custom, token);
                 }
                 
                 if (stats == 'HP' || stats == 'Wounds') {
@@ -236,7 +221,7 @@ export class TokenControl{
                         return;
                     }
                     ring = 1;
-                    if (compatibleCore('10.0') ? token.document.hidden : token.data.hidden){
+                    if (token.document.hidden){
                         ring = 2;
                         ringColor = "#FF7B00";
                     }
@@ -392,7 +377,7 @@ export class TokenControl{
                     if (item != undefined && displayUses) uses = tokenHelper.getFeatureUses(item);
                 }
                 else if (mode == 'spellbook') {
-                    items = tokenHelper.getSpells(token,settings.spellType);
+                    items = tokenHelper.getSpells(token,settings.spellType,settings.spellMode);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
@@ -533,14 +518,19 @@ export class TokenControl{
             }
         }
 
+        if (forceIcon) {
+            iconSrc = forceIcon;
+            txt = "";
+        }
+        else if (hideName) txt = "";
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) iconSrc = settings.iconOverride;
         streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
         streamDeck.setTitle(txt,context);
     }
 
     sortItems(items) {
         let sorted = Object.values(items);
-        if (compatibleCore('10.0')) sorted.sort((a,b) => a.sort - b.sort);
-        else sorted.sort((a,b) => a.data.sort - b.data.sort);
+        sorted.sort((a,b) => a.sort - b.sort);
         return sorted;
     }
 
@@ -640,24 +630,15 @@ export class TokenControl{
                 
                 //Vision basic config
                 if (settings.visionEnabled && settings.visionEnabled != 'noChange') {
-                    if (compatibleCore('10.0')) {
-                        if (settings.visionEnabled == 'toggle')
-                            sight.enabled = !token.document.sight.enabled;
-                        else
-                            sight.enabled = settings.visionEnabled == 'enable';
-                    }
-                    else {
-                        if (settings.visionEnabled == 'toggle')
-                            sight.vision = !token.data.vision;
-                        else
-                            sight.vision = settings.visionEnabled == 'enable';
-                    }
+                    if (settings.visionEnabled == 'toggle')
+                        sight.enabled = !token.document.sight.enabled;
+                    else
+                        sight.enabled = settings.visionEnabled == 'enable';
                 }
                 if (settings.visionRange && isNaN(settings.visionRange) == false) sight.range = parseInt(settings.visionRange);
                 if (settings.visionDimRange && isNaN(settings.visionDimRange) == false) sight.dimSight = parseInt(settings.visionDimRange);
                 if (settings.visionBrightRange && isNaN(settings.visionBrightRange) == false) sight.brightSight = parseInt(settings.visionBrightRange);
-                if (compatibleCore('10.0') && settings.visionAngle && isNaN(settings.visionAngle) == false) sight.angle = parseInt(settings.visionAngle);
-                else if (!compatibleCore('10.0') && settings.visionAngle && isNaN(settings.visionAngle) == false) sight.sightAngle = parseInt(settings.visionAngle);
+                if (settings.visionAngle && isNaN(settings.visionAngle) == false) sight.angle = parseInt(settings.visionAngle);
                 if (settings.visionMode && settings.visionMode != 'noChange') sight.visionMode = settings.visionMode;
 
                 //Vision detection modes
@@ -691,7 +672,7 @@ export class TokenControl{
                 if (settings.lightAnimationSpeedEnable) light.animation.speed = settings.lightAnimationSpeed ? parseFloat(settings.lightAnimationSpeed) : 5;
                 if (settings.lightAnimationReverseDirection && settings.lightAnimationReverseDirection != 'noChange') {
                     if (settings.lightAnimationReverseDirection == 'toggle')
-                        light.animation.reverse = compatibleCore('10.0') ? !token.document.light.animation.reverse : !token.data.light.animation.reverse;
+                        light.animation.reverse = !token.document.light.animation.reverse;
                     else if (settings.lightAnimationReverseDirection == 'enable') 
                         light.animation.reverse = true;
                     else if (settings.lightAnimationReverseDirection == 'disable') 
@@ -716,15 +697,9 @@ export class TokenControl{
                 if (settings.lightShadowsEnable) light.shadows = settings.lightShadows ? parseFloat(settings.lightShadows) : 0;
 
                 let data;
-                if (compatibleCore('10.0')) {
-                    data = {
-                        sight,
-                        light
-                    }
-                }
-                else {
-                    data = sight;
-                    data.light = light;
+                data = {
+                    sight,
+                    light
                 }
                 token.document.update(data);
             }
@@ -927,7 +902,8 @@ export class TokenControl{
         }
         else {
             const allItems = token.actor.items;
-            const itemNr = settings.itemNr ? settings.itemNr - 1 : 0;
+            let itemNr = settings.itemNr ? settings.itemNr - 1 : 0;
+            itemNr += this.itemOffset;
             const selectionMode = settings.inventorySelection ? settings.inventorySelection : 'order';
             let items = allItems;
             if (mode == 'inventory') {
@@ -945,7 +921,7 @@ export class TokenControl{
             else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
             else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
             if (item != undefined) {
-                tokenHelper.rollItem(item, settings, otherControls.rollOption);
+                tokenHelper.rollItem(item, settings, otherControls.rollOption, otherControls.attackMode);
             }
             
         }
@@ -984,5 +960,65 @@ export class TokenControl{
 
     pf2eCondition(condition){
         return "systems/pf2e/icons/conditions-2/" + condition + ".png";
+    }
+
+    decodeCustomStat(custom, token) {
+        let txt = "";
+
+        let split = custom.split(/\[|\]/g)
+        
+        for (let segment of split) {
+            if (segment.startsWith('if')) {
+                let ifA;
+                let ifMode;
+                let ifB;
+                let ifThen;
+                let ifElse;
+
+                let spaceSplit = segment.split(' ');
+                let count = 0;
+                for (let segment of spaceSplit) {
+                    if (segment.startsWith('if')) ifA = this.decodeIfSegment(segment, token);
+                    else if (segment.startsWith('then')) ifThen = this.decodeIfSegment(segment, token);
+                    else if (segment.startsWith('else')) ifElse = this.decodeIfSegment(segment, token);
+                    else {
+                        segment = segment.split(')')[0];
+                        if (count == 1) ifMode = segment;
+                        else if (count == 2) ifB = segment.startsWith('@') ? this.getCustomDataPath(segment, token) : segment;
+                    }
+                    count++;
+                }
+
+                if (ifMode == '>') txt += ifA > ifB ? ifThen : ifElse;
+                else if (ifMode == '>=') txt += ifA >= ifB ? ifThen : ifElse;
+                else if (ifMode == '<') txt += ifA < ifB ? ifThen : ifElse;
+                else if (ifMode == '<=') txt += ifA <= ifB ? ifThen : ifElse;
+                else if (ifMode == '==') txt += ifA == ifB ? ifThen : ifElse;
+            }
+            else if (segment.startsWith('@')) txt += this.getCustomDataPath(segment, token);
+            else txt += segment;
+        }
+
+        return txt;
+    }
+
+    decodeIfSegment(segment, token) {
+        let split = segment.split(/\(|\)/g);
+        if (split[1].startsWith('@')) return this.getCustomDataPath(split[1], token);
+        return split[1];
+    }
+
+    getCustomDataPath(path, token) {
+        const dataPath = path.split('@')[1].split('.');
+        let data;
+        if (dataPath[0] == 'actor') data = token.actor;
+        else if (dataPath[0] == 'token') data = token;
+        
+        for (let i=1; i<dataPath.length; i++) {
+            data = data?.[dataPath[i]];
+        }
+            
+        if (data == undefined) return '[undef]';
+        return data;
     }
 }

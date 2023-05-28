@@ -1,5 +1,5 @@
 import { streamDeck, getPermission } from "../../MaterialDeck.js";
-import { compatibleCore } from "../misc.js";
+import {  } from "../misc.js";
 
 export class SceneControl{
     constructor(){
@@ -27,6 +27,7 @@ export class SceneControl{
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringActiveColor = settings.activeRing ? settings.activeRing : '#FFFF00'
         let ringColor = "#000000";
         let ring = 2;
 
@@ -46,7 +47,7 @@ export class SceneControl{
             if (scene != undefined){
                 ringColor = scene.isView ? ringOnColor : ringOffColor;
                 if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
+                if (settings.displaySceneIcon) src = scene.background.src;
                 if (scene.active) name += "\n(Active)";
             }
         }
@@ -60,34 +61,24 @@ export class SceneControl{
             nr--;
 
             let sceneList = [];
-            if (compatibleCore('10.0')) {
-                sceneList = ui.scenes.documents;
-            }
-            else {
-                for (let i=0; i<ui.scenes.tree.children.length; i++){
-                    const scenesInFolder = ui.scenes.tree.children[i].contents;
-                    for (let j=0; j<scenesInFolder.length; j++)
-                        sceneList.push(scenesInFolder[j])
-                }
-                for (let i=0; i<ui.scenes.tree.content.length; i++)
-                    sceneList.push(ui.scenes.tree.content[i])
-            }
-            
+            sceneList = ui.scenes.documents;
 
             const scene = sceneList[nr+this.sceneOffset];
             
             if (scene != undefined){
-                if (scene.isView) 
+                if (scene.active)
+                    ringColor = ringActiveColor;
+                else if (scene.isView) 
                     ringColor = ringOnColor;
-                else if ((compatibleCore('10.0') && scene.navigation && scene.permission.default == 0) || (!compatibleCore('10.0') && scene.data.navigation && scene.data.permission.default == 0))
+                else if (scene.navigation && scene.permission.default == 0)
                     ringColor = '#000791';
-                else if ((compatibleCore('10.0') && scene.navigation) || (!compatibleCore('10.0') && scene.data.navigation))
+                else if (scene.navigation)
                     ringColor = '#2d2d2d';
                 else 
                     ringColor = ringOffColor;
                 
                 if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
+                if (settings.displaySceneIcon) src = scene.background.src;
                 if (scene.active) name += "\n(Active)";
             }
         }
@@ -100,9 +91,12 @@ export class SceneControl{
             let scene = game.scenes.getName(settings.sceneName);
 
             if (scene != undefined){
-                ringColor = scene.isView ? ringOnColor : ringOffColor;
+                if (scene.active)
+                    ringColor = ringActiveColor;
+                else if (scene.isView) 
+                    ringColor = ringOnColor;
                 if (settings.displaySceneName) name = scene.name;
-                if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
+                if (settings.displaySceneIcon) src = scene.background.src;
                 if (scene.active) name += "\n(Active)";
             }
         }
@@ -114,7 +108,7 @@ export class SceneControl{
             const scene = game.scenes.active;
             if (scene == undefined) return;
             if (settings.displaySceneName) name = scene.name;
-            if (settings.displaySceneIcon) src = compatibleCore('10.0') ? scene.background.src : scene.img;
+            if (settings.displaySceneIcon) src = scene.background.src;
             ring = 0;
         }
         else if (func == 'offset'){
@@ -124,6 +118,7 @@ export class SceneControl{
             src = "modules/MaterialDeck/img/transparant.png";
         }
         streamDeck.setTitle(name,context);
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
@@ -159,18 +154,7 @@ export class SceneControl{
             nr--;
 
             let sceneList = [];
-            if (compatibleCore('10.0')) {
-                sceneList = ui.scenes.documents;
-            }
-            else {
-                for (let i=0; i<ui.scenes.tree.children.length; i++){
-                    const scenesInFolder = ui.scenes.tree.children[i].contents;
-                    for (let j=0; j<scenesInFolder.length; j++)
-                        sceneList.push(scenesInFolder[j])
-                }
-                for (let i=0; i<ui.scenes.tree.content.length; i++)
-                    sceneList.push(ui.scenes.tree.content[i])
-            }
+            sceneList = ui.scenes.documents;
             
             const scene = sceneList[nr+this.sceneOffset];
 

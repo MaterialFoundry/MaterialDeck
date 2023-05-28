@@ -14,12 +14,19 @@
 
     {{#each macroData}}
         <div class="form-group" style="width:100%">
-            {{#each this.dataThis}}
+            {{#each this.macroRowConfig}}
                 <div class="materialDeck_macroConfig_boxed">
                     <div style="text-align:center;">                    
                         {{localize "MaterialDeck.Macro"}} {{this.iteration}}
                     </div>
                     <div>
+                        <div style="text-align:center;">                    
+                            {{localize "MaterialDeck.Label"}}
+                        </div>
+                        <input type="text" value="{{this.label}}" name="macroLabel" id="materialDeck_macroConfig_label{{this.iteration}}" style="width:100%;" >
+                        <div style="text-align:center;">                    
+                            {{localize "MaterialDeck.Macro"}}
+                        </div>
                         <select name="macros" class="macros-select" id="materialDeck_macroConfig_macros{{this.iteration}}" default="" style="width:100%;">
                             {{#select this.macro}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>

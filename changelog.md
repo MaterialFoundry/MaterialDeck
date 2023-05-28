@@ -1,4 +1,50 @@
 # Changelog Material Deck Module
+### v1.5.0 - 28-05-2023
+Additions:
+<ul>
+    <li>Most settings in the plugin are now hyperlinks. Clicking them opens a window opening the relevant section on the wiki describing that setting.</li>
+    <li>Token Action => Stats: Added support for simple if-statements in the custom stats function</li>
+    <li>(dnd5e) Token Action => Added option to filter spells by preparedness</li>
+    <li>Added an 'Icon Override' option to each action. Filling in a path to an icon on your Foundry server will make the button use that icon instead of the default one</li>
+    <li>Added a one-time popup asking users if they want to enable the module for their client. This should hopefully solve one of the most common connection issues</li>
+    <li>Token Action: Added background color option for items, abilities and spells</li>
+    <li>Added the current and latest module version to the download utility</li>
+    <li>Combat Tracker: Added option to filter combatants in order to not display neutral, hostile or hidden tokens</li>
+    <li>Macro Action => Macroboard: Added a label to each macro. By default this is the name of the macro, but this can be edited to your liking. If 'Display Name/Label' is selected in the SD app, the label will be displayed. This allows you to distinguish macros when the same macro is used for multiple functions (using macro arguments)</li>
+    <li>(dnd5e) Other: Added 'Attack Roll Modes' where you can configure weapon rolls to roll for 'to hit', 'damage', 'crit damage', etc</li> 
+    <li>Scene Action: Added option to specify a ring color for the active scene</li>
+    <li>Other Controls => Darkness Control: Added animation time option for 'Transition to Day/Night'</li>
+    <li>Other Controls: Added 'Global Volume Controls' to control the playlist, ambient and interface volume</li>
+</ul>
+
+Fixes:
+<ul>
+    <li>External Modules => Monk's Active Tile Triggers: Was no longer working, should now be fixed</li>
+    <li>Soundboard: Changing the 'Ambient' volume slider now instantaneously changes the volume of any currently playing sounds</li>
+    <li>Token Action => On Click => Handle Condition: Fixed some issues with conditions not being there or not working</li>
+    <li>Token Action => On Click: Fixed item offset</li>
+    <li>Fixed issue where long text would result in an error if Foundry was set to Russian</li>
+    <li>Macro Action => Macroboard: Arguments are stored again</li>
+    <li>Macro Action: Arguments were broken due to an update to Advanced Macros, this is now fixed</li>
+    <li>Macro Action: Fixed issue with icons on SD turning black when changing the icon in Foundry or moving the macro on the macrobar</li>
+    <li>Playlist Action: Playlist with shuffle enabled now play shuffled</li>
+    <li>Other => Control Buttons: Changing controls now loads the correct canvas layer</li>
+    <li>Combat Tracker: Token image, name and stats would not always display (if a new Combat Tracker action was created without changing 'Mode')</li>
+</ul>
+
+Other:
+<ul>
+    <li>Made compatible with Foundry v11, dropped compatibility with Foundry v9</li>
+    <li>Moved most of the system-dependent code from the plugin to the module. This makes implementing new system or modifying/fixing current systems easier. It also automates some stuff (for example grabbing all conditions from Foundry instead of hardcoding them)</li>
+    <li>External Modules => About Time: Has been replaced with 'Simple Calendar' since About Time no longer functions as time/calendar management. It still functions exactly the same</li>
+    <li>External Modules => Mook AI: Has been removed since the module hasn't been updated for Foundry v10 or v11</li>
+    <li>Changed the logo in the Stream Deck app from the Foundry VTT logo to the Material Foundry logo</li>
+</ul>
+
+<b>Compatible server app and SD plugin:</b><br>
+Material Server v1.0.2+ (unchanged): https://github.com/CDeenen/MaterialServer/releases <br>
+SD plugin v1.5.0 (<b>must be updated!</b>): https://github.com/CDeenen/MaterialDeck_SD/releases<br>
+
 ### v1.4.12 - 07-09-2022
 Fixes:
 <ul>

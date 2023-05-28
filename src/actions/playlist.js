@@ -34,12 +34,17 @@ export class PlaylistControl{
             this.updateTrack(settings,context,device);
         }
         else {
-            const src = mode == 'stopAll' ? 'modules/MaterialDeck/img/playlist/stop.png' : 'modules/MaterialDeck/img/playlist/pause.png';
+            let src = mode == 'stopAll' ? 'modules/MaterialDeck/img/playlist/stop.png' : 'modules/MaterialDeck/img/playlist/pause.png';
             const background = settings.background ? settings.background : '#000000';
             const ringColor = (game.playlists.playing.length > 0) ? '#00FF00' : '#000000';
             const ring = (game.playlists.playing.length > 0) ? 2 : 1;
             const txt = settings.displayPlaylistName ? this.getPlaylist(this.playlistOffset).name : '';
-            streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay:true});
+            let overlay = true;
+            if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+                src = settings.iconOverride;
+                overlay = false;
+            }
+            streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay});
             streamDeck.setTitle(txt,context);
         }
     }
@@ -88,6 +93,8 @@ export class PlaylistControl{
             const targetPlaylist = this.getPlaylist(number);
             if (targetPlaylist != undefined) name = targetPlaylist.name;
         }
+
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
@@ -102,7 +109,7 @@ export class PlaylistControl{
         let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
-        if (playlistType == 'playStop'){
+        if (playlistType == 'playStop' || playlistType == 'incDecVol' || playlistType == 'setVol'){
             let playlistNr = parseInt(settings.playlistNr);
             if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
             playlistNr--;
@@ -122,6 +129,11 @@ export class PlaylistControl{
                         ringColor = ringOffColor;
                     if (settings.displayName)
                         name = track.name;
+                    if (settings.displayTrackVolume) {
+                        if (settings.displayName) name += ' ';
+                        name += Math.round(AudioHelper.volumeToInput(track.volume)*100)/100
+                    }
+                        
                 }
             } 
         }
@@ -134,6 +146,7 @@ export class PlaylistControl{
         //Relative Offset
         else if (playlistType == 'relativeOffset') {
         }
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
         streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         streamDeck.setTitle(name,context);
     }
@@ -261,6 +274,29 @@ export class PlaylistControl{
                 }
                 this.updateAll();
             }
+            else if (playlistType == 'incDecVol' || playlistType == 'setVol') {
+                const value = settings.trackVolumeValue ? parseFloat(settings.trackVolumeValue) : 0.1;
+                let playlist = this.getPlaylist(playlistNr);
+                if (playlist != undefined){
+                    if (playlistMode != 'track') return;
+                    const track = playlist.sounds.contents[trackNr];
+                    if (track != undefined){
+                        let newVolume = playlistType == 'incDecVol' ? AudioHelper.volumeToInput(track.volume) + value : value;
+                        if (newVolume > 1) newVolume = 1;
+                        else if (newVolume < 0) newVolume = 0;
+                        track.updateSource({volume:AudioHelper.inputToVolume(newVolume)})
+                        track.sound?.fade(track.effectiveVolume, {duration: PlaylistSound.VOLUME_DEBOUNCE_MS});
+                        if ( track.isOwner ) track.debounceVolume(AudioHelper.inputToVolume(newVolume));
+                        for (let elmnt of document.getElementById('currently-playing').getElementsByClassName('sound')) {
+                            if (elmnt.getAttribute('data-sound-id') == track.id) {
+                                elmnt.getElementsByClassName('sound-volume')[0].value = newVolume;
+                                return;
+                            }
+                        }
+                        this.updateAll();
+                    }
+                }
+            }
         }
           
     }
@@ -280,14 +316,14 @@ export class PlaylistControl{
             return;
         }
         let mode = game.settings.get(moduleName,'playlists').playlistMode[playlistNr];
-        const originalPlayMode = playlist.mode;
-        await playlist.update({mode: CONST.PLAYLIST_MODES.SEQUENTIAL});
+        //const originalPlayMode = playlist.mode;
+        //await playlist.update({mode: CONST.PLAYLIST_MODES.SEQUENTIAL});
         if (mode == 0) {
             mode = game.settings.get(moduleName,'playlists').playMode;
             if (mode == 2) await this.stopAll(true);
         }
         playlist.playAll();
-        await playlist.update({mode: originalPlayMode});
+        //await playlist.update({mode: originalPlayMode});
     }
     
     async playTrack(track,playlist,playlistNr){

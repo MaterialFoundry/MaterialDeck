@@ -1,16 +1,44 @@
 import { compatibleCore } from "../misc.js";
 
 export class wfrp4e {
+    conf;
+
     constructor(){
         console.log("Material Deck: Using system 'Warhammer Fantasy Roleplaying 4e'");
+        this.conf = game.wfrp4e.config;
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value: 'Advantage', name: 'Advantage'},
+            {value: 'Corruption', name: 'Corruption'},
+            {value: 'CriticalWounds', name: 'Critical Wounds'},
+            {value: 'Encumbrance', name: 'Encumbrance'},
+            {value: 'Fate', name: 'Fate'},
+            {value: 'Fortune', name: 'Fortune'},
+            {value: 'Wounds', name: 'Wounds'},
+            {value: 'Movement', name: 'Movement'},
+            {value: 'Resilience', name: 'Resilience'},
+            {value: 'Resolve', name: 'Resolve'},
+            {value: 'Ability', name: 'Characteristics' } //value is ability to conform to the interface
+        ]
+    }
+
+    getAttackModes() {
+        return [
+        ]
+    }
+
+    getOnClickList() {
+        return []
     }
 
     getFate(token) {
@@ -27,7 +55,6 @@ export class wfrp4e {
             value: wounds.value,
             max: wounds.max
         } 
-        
     }
 
     getCriticalWounds(token) {
@@ -58,6 +85,13 @@ export class wfrp4e {
         return this.getCharacteristics(token, abilityName); 
     }
 
+    getAbilityList() {
+        const keys = Object.keys(this.conf.characteristics);
+        let abilities = [];
+        for (let k of keys) abilities.push({value:k, name:this.conf.characteristics?.[k]})
+        return abilities;
+    }
+
     getCharacteristics(token, characteristicName) {
         if (characteristicName == undefined ) characteristicName = `AG`;
         const characteristic = this.getActorData(token).characteristics[characteristicName.toLowerCase()]
@@ -71,13 +105,40 @@ export class wfrp4e {
         if (featureType == 'any') return allItems.filter(i => i.type == 'skill' || i.type == 'talent' || i.type == "career" || i.type == 'trait');
         return allItems.filter(i => i.type == featureType);
     }
-    getSpells(token,spellType) {
+
+    getFeatureTypes() {
+        return [
+            {value: 'skill', name: 'Skills'}
+        ]
+    }
+
+    getSpells(token,spellLevel,type) {
         const allItems = token.actor.items;
         return allItems.filter(i => i.type == 'spell')
     }
 
     getSpellUses(token,level,item) {
         return;
+    }
+
+    getSpellLevels() {
+        return [
+            {value:'0', name:'Cantrip'},
+            {value:'1', name:'1st Level'},
+            {value:'2', name:'2nd Level'},
+            {value:'3', name:'3rd Level'},
+            {value:'4', name:'4th Level'},
+            {value:'5', name:'5th Level'},
+            {value:'6', name:'6th Level'},
+            {value:'7', name:'7th Level'},
+            {value:'8', name:'8th Level'},
+            {value:'9', name:'9th Level'}
+        ]
+    }
+
+    getSpellTypes() {
+        return [
+        ]
     }
 
     getFeatureUses(item) {
@@ -90,6 +151,13 @@ export class wfrp4e {
 
     rollItem(item) {
         return game.wfrp4e.utility.rollItemMacro(item.name, item.type, false);
+    }
+
+    getRollTypes() {
+        return [
+            {value:'initiative', name:'Initiative'},
+            {value:'deathSave', name:'Death Save'}
+        ]
     }
 
     getSpeed(token) {
@@ -110,12 +178,16 @@ export class wfrp4e {
         return true;
     }
 
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) conditions.push({value:c.id, name:game.i18n.localize(c.label)});
+        return conditions;
+    }
+
     roll(token,roll,options,ability,skill,save) {
         if (ability == undefined) ability = 'ag';
         return game.wfrp4e.utility.rollItemMacro(ability, "characteristic", false);
     }
-
-
 
     getItems(token,itemType) {
         if (itemType == undefined) itemType = 'any';
@@ -129,7 +201,6 @@ export class wfrp4e {
         }
     }
 
-
     getItemUses(item) {
         if ( item.type == 'ammunition') {
             return {available: this.getItemData(item).quantity.value};
@@ -137,6 +208,20 @@ export class wfrp4e {
         else {
             return;
         }
+    }
+
+    getItemTypes() {
+        return [
+            {value:'weapon', name: "Weapons"},
+            {value:'ammunition', name: "Ammunition"},
+            {value:'trapping', name: "Trapping"},
+            {value:'armour', name: "Armour"},
+            {value:'cargo', name: "Cargo"}
+        ]
+    }
+
+    getSkillList() {
+        return this.getAbilityList();
     }
 
     
@@ -171,6 +256,14 @@ export class wfrp4e {
 
     getTempHP(token) {
         return;
+    }
+
+    getSavesList() {
+        return [];
+    }
+
+    getWeaponRollModes() {
+        return []
     }
 
     /**

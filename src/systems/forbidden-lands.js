@@ -1,16 +1,41 @@
 import { compatibleCore } from "../misc.js";
 
 export class forbiddenlands{
+    conf;
+
     constructor(){
         console.log("Material Deck: Using system 'Forbidden Lands'");
+        this.conf = CONFIG.fbl;
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value:'HP', name:'Strength'},
+            {value:'HPbox', name:'Strength (box)'},
+            {value:'Agility', name:'Agility'},
+            {value:'Wits', name:'Wits'},
+            {value:'Empathy', name:'Empathy'},
+            {value:'WillPower', name:'Will Power'},
+            {value:'AC', name:'Armor'},
+            {value:'Skill', name:'Skill'}
+        ]
+    }
+
+    getAttackModes() {
+        return [
+        ]
+    }
+
+    getOnClickList() {
+        return []
     }
 
     getHP(token) {
@@ -103,11 +128,34 @@ export class forbiddenlands{
         return this.getAbility(token, ability);
     }
 
+    getAbilityList() {
+        const abilityList = this.conf.attributes;
+        let abilities = [];
+        for (let a of abilityList) abilities.push({value:a, name:a.charAt(0).toUpperCase() + a.slice(1)})
+        return abilities;
+    }
+
+    getSavesList() {
+        return this.getAbilityList();
+    }
+
     getSkill(token, skill) {
         if (skill == undefined) skill = 'might';
         let skillComp = token.actor.sheet.getSkill(skill);
         const val = skillComp.skill.value + skillComp.attribute.value;
         return game.i18n.localize(skillComp.skill.label)+`-${val}`;
+    }
+
+    getSkillList() {
+        const keys = Object.keys(this.conf.skillAttributeMap);
+        let skills = [];
+        for (let s of keys) {
+            const nameArr = s.split('-');
+            let name = '';
+            for (let p of nameArr) name += p.charAt(0).toUpperCase() + p.slice(1) + ' ';
+            skills.push({value:s, name})
+        }
+        return skills;
     }
 
     getProficiency(token) {
@@ -138,6 +186,12 @@ export class forbiddenlands{
         return true;
     }
 
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) conditions.push({value:c.id, name:game.i18n.localize(c.label)});
+        return conditions;
+    }
+
     /**
      * Roll
      */
@@ -157,6 +211,17 @@ export class forbiddenlands{
         else if (roll == 'rollArmor') token.actor.sheet.rollArmor();
         else if (roll == 'monsterAttack') token.actor.sheet.rollAttack();
         //else if (roll == 'initiative') token.actor.rollInitiative(options);
+    }
+
+    getRollTypes() {
+        return [
+            {value:'rollFood', name:'Roll Food'},
+            {value:'rollWater', name:'Roll Water'},
+            {value:'rollArrows', name:'Roll Arrows'},
+            {value:'rollTorches', name:'Roll Torches'},
+            {value:'rollArmor', name:'Roll Armor'},
+            {value:'monsterAttack', name:'Roll Monster Attack'}
+        ]
     }
 
     /**
@@ -180,6 +245,19 @@ export class forbiddenlands{
             maximum: this.getItemData(item).bonus.max};
     }
 
+    getItemTypes() {
+        return [
+            {value:'armor', name: "Armour"},
+            {value:'gear', name: "Gear"},
+            {value:'weapon', name: "Weapons"},
+            {value:'rawMaterial', name: "Raw Material"}
+        ]
+    }
+
+    getWeaponRollModes() {
+        return []
+    }
+
     /**
      * Features
      */
@@ -198,10 +276,14 @@ export class forbiddenlands{
         };
     }
 
+    getFeatureTypes() {
+        return []
+    }
+
     /**
      * Spells
      */
-     getSpells(token,level) {
+     getSpells(token,level,type) {
         if (level == undefined) level = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
@@ -215,6 +297,15 @@ export class forbiddenlands{
             available: this.getActorData(token).spells?.[`spell${level}`].value,
             maximum: this.getActorData(token).spells?.[`spell${level}`].max
         }
+    }
+
+    getSpellLevels() {
+        return [];
+    }
+
+    getSpellTypes() {
+        return [
+        ]
     }
 
     rollItem(item) {

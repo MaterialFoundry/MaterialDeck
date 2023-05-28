@@ -1,4 +1,4 @@
-import { compatibleCore } from "../misc.js";
+import { compatibleCore, compatibleSystem } from "../misc.js";
 
 const proficiencyColors = {
     0: "#000000",
@@ -8,16 +8,52 @@ const proficiencyColors = {
 }
 
 export class dnd5e{
+    conf;
+
     constructor(){
         console.log("Material Deck: Using system 'Dungeons & Dragons 5e'");
+        this.conf = game.system.config;
     }
 
     getActorData(token) {
-        return compatibleCore('10.0') ? token.actor.system : token.actor.data.data;
+        return token.actor.system;
     }
 
     getItemData(item) {
-        return compatibleCore('10.0') ? item.system : item.data.data;
+        return item.system;
+    }
+
+    getStatsList() {
+        return [
+            {value:'HP', name:'HP'},
+            {value:'HPbox', name:'HP (box)'},
+            {value:'TempHP', name:'Temp HP'},
+            {value:'AC', name:'AC'},
+            {value:'Speed', name:'Speed'},
+            {value:'Init', name:'Initiative'},
+            {value:'Ability', name:'Ability Score'},
+            {value:'AbilityMod', name:'Ability Score Modifier'},
+            {value:'Save', name:'Saving Throw Modifier'},
+            {value:'Skill', name:'Skill Modifier'},
+            {value:'PassivePerception', name:'Passive Perception'},
+            {value:'PassiveInvestigation', name:'Passive Investigation'},
+            {value:'Prof', name:'Proficiency'}
+        ]
+    }
+
+    getAttackModes() {
+        return [
+            {value:'attack', name:'Attack'},
+            {value:'damage', name:'Damage'},
+            {value:'damageCrit', name:'Critical Damage'},
+            {value:'versatile', name:'Versatile Damage'},
+            {value:'versatileCrit', name:'Versatile Critical Damage'},
+            {value:'otherFormula', name:'Other Formula'},
+        ]
+    }
+
+    getOnClickList() {
+        return []
     }
 
     getHP(token) {
@@ -107,10 +143,34 @@ export class dnd5e{
         return (val >= 0) ? `+${val}` : val;
     }
 
+    getAbilityList() {
+        const keys = Object.keys(this.conf.abilities);
+        let abilities = [];
+        if (compatibleSystem("2.2.0"))
+        for (let k of keys) abilities.push({value:this.conf.abilityAbbreviations?.[k], name:this.conf.abilities?.[k]})
+        else 
+            for (let k of keys) abilities.push({value:this.conf.abilities?.[k].abbreviation, name:this.conf.abilities?.[k].label})
+        return abilities;
+    }
+
+    getSavesList() {
+        return this.getAbilityList();
+    }
+
     getSkill(token, skill) {
         if (skill == undefined) skill = 'acr';
         const val = this.getActorData(token).skills?.[skill].total;
         return (val >= 0) ? `+${val}` : val;
+    }
+
+    getSkillList() {
+        const keys = Object.keys(this.conf.skills);
+        let skills = [];
+        for (let s of keys) {
+            const skill = this.conf.skills?.[s];
+            skills.push({value:s, name:skill.label})
+        }
+        return skills;
     }
 
     getProficiency(token) {
@@ -127,6 +187,12 @@ export class dnd5e{
     getConditionActive(token,condition) {
         if (condition == undefined) condition = 'removeAll';
         return token.actor.effects.find(e => e.isTemporary === condition) != undefined;
+    }
+
+    getConditionList() {
+        let conditions = [];
+        for (let c of CONFIG.statusEffects) conditions.push({value:c.id, name:game.i18n.localize(c.label)});
+        return conditions;
     }
 
     async toggleCondition(token,condition) {
@@ -161,6 +227,13 @@ export class dnd5e{
         else if (roll == 'deathSave') token.actor.rollDeathSave(options);
     }
 
+    getRollTypes() {
+        return [
+            {value:'initiative', name:'Initiative'},
+            {value:'deathSave', name:'Death Save'}
+        ]
+    }
+
     /**
      * Items
      */
@@ -173,6 +246,29 @@ export class dnd5e{
 
     getItemUses(item) {
         return {available: this.getItemData(item).quantity};
+    }
+
+    getItemTypes() {
+        return [
+            {value:'weapon', name:'Weapons'},
+            {value:'equipment', name:'Equipment'},
+            {value:'consumable', name:'Consumables'},
+            {value:'tool', name:'Tools'},
+            {value:'backpack', name:'Containers'},
+            {value:'loot', name:'Loot'}
+        ]
+    }
+
+    getWeaponRollModes() {
+        return [
+            {value:'default', name:'Default'},
+            {value:'attack', name:'Attack'},
+            {value:'damage', name:'Damage'},
+            {value:'damageCrit', name:'Damage (Critical)'},
+            {value:'versatile', name:'Versatile'},
+            {value:'versatileCrit', name:'Versatile (Critical)'},
+            {value:'otherFormula', name:'Other Formula'}
+        ]
     }
 
     /**
@@ -196,14 +292,26 @@ export class dnd5e{
         };
     }
 
+    getFeatureTypes() {
+        return [
+            {value:'class', name:'Class'},
+            {value:'feat', name:'Abilities'},
+            {value:'activeAbilities', name:'Active Abilities'},
+            {value:'passiveAbilities', name:'Passive Abilities'}
+        ]
+    }
+
     /**
      * Spells
      */
-     getSpells(token,level) {
+     getSpells(token,level,type) {
         if (level == undefined) level = 'any';
+        if (type == undefined) type = 'any';
         const allItems = token.actor.items;
         if (level == 'any') return allItems.filter(i => i.type == 'spell')
-        else return allItems.filter(i => i.type == 'spell' && this.getItemData(i).level == level)
+        else if (type == 'any') return allItems.filter(i => i.type == 'spell' && this.getItemData(i).level == level)
+        else if (type == 'prepared') return allItems.filter(i => i.type == 'spell' && this.getItemData(i).level == level && i.system.preparation.prepared == true)
+        else if (type == 'unprepared') return allItems.filter(i => i.type == 'spell' && this.getItemData(i).level == level && i.system.preparation.prepared == false)
     }
 
     getSpellUses(token,level,item) {
@@ -215,40 +323,47 @@ export class dnd5e{
         }
     }
 
-    rollItem(item, settings, rollOption) {
+    getSpellLevels() {
+        const keys = Object.keys(this.conf.spellLevels);
+        let levels = [];
+        for (let l of keys) levels.push({value:l, name:this.conf.spellLevels?.[l]});
+        return levels;
+    }
+
+    
+    getSpellTypes() {
+        return [
+            {value: 'prepared', name:'Prepared'},
+            {value: 'unprepared', name:'Unprepared'}
+        ]
+    }
+
+    rollItem(item, settings, rollOption, attackMode) {
         let options = {
             fastForward: rollOption != 'dialog',
             advantage: rollOption == 'advantage',
             disadvantage: rollOption == 'disadvantage'
         }
-        if (settings.inventoryType == 'weapon') {
-            if (settings.weaponRollMode == 'attack') {
+        if (settings.tokenMode == 'inventory' && settings.inventoryType == 'weapon') {
+            const mode = settings.weaponRollMode == 'default' ? attackMode : settings.weaponRollMode;
+            if (mode == 'attack') {
                 options.fastForward = true;
                 return item.rollAttack(options);
             }
-            else if (settings.weaponRollMode == 'damage' || settings.weaponRollMode == 'versatile') {
-                options.fastForward = true;
-                return item.rollDamage({
-                    options,
-                    critical:false,
-                    versatile: settings.weaponRollMode == 'versatile'
-                });
-            }
-            else if (settings.weaponRollMode == 'damageCrit' || settings.weaponRollMode == 'versatileCrit') {
-                options.fastForward = true;
-                return item.rollDamage({
-                    options,
-                    critical:true,
-                    versatile: settings.weaponRollMode == 'versatile' || settings.weaponRollMode == 'versatileCrit'
-                });
-            }
-            else if (settings.weaponRollMode == 'otherFormula') {
+            else if (mode == 'otherFormula') {
                 return item.rollFormula(options);
+            }
+            else if (mode != 'default' && mode != 'chat') {
+                options.fastForward = true;
+                return item.rollDamage({
+                    options,
+                    critical: (mode == 'damageCrit' || mode == 'versatileCrit'),
+                    versatile: (mode == 'versatile' || mode == 'versatileCrit')
+                });
             }
         }
 
-        if (compatibleCore('10.0')) item.use(options)
-        else item.roll(options)
+        item.use(options)
     }
 
     /**
