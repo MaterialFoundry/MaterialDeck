@@ -1,58 +1,64 @@
 {
-  "name": "MaterialDeck",
-  "id": "MaterialDeck",
-  "title": "Material Deck",
-  "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
-  "version": "1.5.0",
-  "author": "CDeenen",
-  "authors": [
-    {
-      "name": "CDeenen",
-      "email": "cdeenen@outlook.com",
-      "discord": "Cris#6864",
-      "patreon": "MaterialFoundry",
-      "reddit": "CDeenen123"
-    }
-  ],
-  "esmodules": ["./MaterialDeck.js"],
-  "styles": ["./css/style.css"],
-  "socket": true,
-  "minimumCoreVersion": "10",
-  "compatibleCoreVersion": "11",
-  "compatibility": {
-    "minimum": "10",
-    "verified": "11"
-  },
-  "flags": {
-    "minimumMSVersion": "1.1.0",
-    "minimumPluginVersion": "1.5.0"
-  },
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
+    "name": "MaterialDeck",
+    "id": "MaterialDeck",
+    "title": "Material Deck",
+    "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
+    "version": "1.5.1",
+    "author": "CDeenen",
+    "authors": [
+        {
+            "name": "CDeenen",
+            "email": "cdeenen@outlook.com",
+            "discord": "Cris#6864",
+            "patreon": "MaterialFoundry",
+            "reddit": "CDeenen123"
+        }
+    ],
+    "esmodules": [
+        "./MaterialDeck.js"
+    ],
+    "styles": [
+        "./css/style.css"
+    ],
+    "socket": true,
+    "minimumCoreVersion": "10",
+    "compatibleCoreVersion": "11",
+    "compatibility": {
+        "minimum": "10",
+        "verified": "11"
     },
-    {
-      "lang": "ja",
-      "name": "日本語",
-      "path": "lang/ja.json"
-    }
-  ],
-  "media": [
-    {
-      "type": "icon",
-      "url": "modules/MaterialDeck/img/MaterialFoundry512x512.png"
-    },{
-			"type": "setup",
-			"url": "modules/MaterialDeck/img/MaterialFoundry2560x1440.jpg"
-		},{
-			"type": "cover",
-			"url": "modules/MaterialDeck/img/MaterialFoundry2560x1440.jpg"
-		}
-  ],
-  "manifestPlusVersion": "1.1.0",
-  "url": "https://github.com/CDeenen/MaterialDeck",
-  "manifest": "https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json",
-  "download": "https://github.com/CDeenen/MaterialDeck/archive/Master.zip"
+    "flags": {
+        "minimumMSVersion": "1.1.0",
+        "minimumPluginVersion": "1.5.0"
+    },
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        },
+        {
+            "lang": "ja",
+            "name": "日本語",
+            "path": "lang/ja.json"
+        }
+    ],
+    "media": [
+        {
+            "type": "icon",
+            "url": "modules/MaterialDeck/img/MaterialFoundry512x512.png"
+        },
+        {
+            "type": "setup",
+            "url": "modules/MaterialDeck/img/MaterialFoundry2560x1440.jpg"
+        },
+        {
+            "type": "cover",
+            "url": "modules/MaterialDeck/img/MaterialFoundry2560x1440.jpg"
+        }
+    ],
+    "manifestPlusVersion": "1.1.0",
+    "url": "https://github.com/CDeenen/MaterialDeck",
+    "manifest": "https://github.com/CDeenen/MaterialDeck/releases/latest/download/module.json",
+    "download": "https://github.com/CDeenen/MaterialDeck/releases/download/v1.5.1/module.zip"
 }

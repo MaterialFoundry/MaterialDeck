@@ -1,4 +1,18 @@
 # Changelog Material Deck Module
+### v1.5.1 - 28-06-2023
+Fixes:
+<ul>
+    <li>Token Action => Toggle Condition: Fixed PF2e conditions</li>
+    <li>Macro Action => Macro by name: Fixed macro arguments not working in v10</li>
+    <li>Download Utility: Latest module version is now displayed correctly</li>
+</ul>
+
+Additions: 
+<ul>
+    <li>Other Actions => Open Journal: Added option to open journal pages by page name or number</li>
+    <li>Playlist Action: Added option to select playlists and tracks by name</li>
+</ul>
+
 ### v1.5.0 - 28-05-2023
 Additions:
 <ul>

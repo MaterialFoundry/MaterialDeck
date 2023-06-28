@@ -1194,7 +1194,7 @@ export class downloadUtility extends FormApplication {
         }
         else if (reqType == 'Module') {
             elementId = 'materialDeck_dlUtil_masterModuleVersion';
-            url = game.modules.get('MaterialDeck').manifest;
+            url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json';
         }
 
         var request = new XMLHttpRequest();

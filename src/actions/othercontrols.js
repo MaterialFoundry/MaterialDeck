@@ -780,11 +780,21 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateJournal(settings,context,device,options={}){
-        const name = settings.compendiumName;
-        if (name == undefined) return;
+        const name = settings.journalName;
+        const pageName = settings.journalPageName;
+        let pageId;
+        let journalMode = settings.journalMode ? settings.journalMode : 'openJournal';
+        let txt = '';
+        if (name == undefined) {
+            streamDeck.setTitle('',context);
+            return;
+        }
 
         const journal = game.journal.getName(name);
-        if (journal == undefined) return;
+        if (journal == undefined) {
+            streamDeck.setTitle('',context);
+            return;
+        }
 
         if (getPermission('OTHER','JOURNAL') == false ) {
             streamDeck.noPermission(context,device);
@@ -803,11 +813,30 @@ export class OtherControls{
         else 
             if (document.getElementById("journalentry-sheet-"+journal.id) != null) rendered = true;
 
+        txt = settings.displayJournalName == 'journal' ? name : '';
+        
+        if (journalMode == 'openPageNr') {
+            pageId = journal.pages.contents[pageName]?.id
+        }
+        if (journalMode == 'openPageName') {
+            pageId = journal.pages.getName(pageName)?.id;
+        }
+        if (pageId != undefined) {
+            const page = journal.pages.get(pageId);
+            if (settings.displayJournalName == 'page') txt = page.name;
+            else if (settings.displayJournalName == 'journal+page') txt = name + ' - ' + page.name
+            
+            if (rendered && page != undefined) {
+                const currentPage = journal.pages.contents[journal.sheet.pageIndex]
+                if (currentPage.id != pageId) rendered = false;
+            }
+        }
+
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const ringColor = rendered ? ringOnColor : ringOffColor;
-        const txt = settings.displayCompendiumName ? name : '';
+        //const txt = settings.displayCompendiumName ? name : '';
 
         streamDeck.setTitle(txt,context);
         let src = '';
@@ -815,18 +844,46 @@ export class OtherControls{
         streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
-    keyPressJournal(settings){
-        const name = settings.compendiumName;
+    async keyPressJournal(settings){
+        const name = settings.journalName;
+        const pageName = settings.journalPageName;
+        let pageId;
+        let journalMode = settings.journalMode ? settings.journalMode : 'openJournal';
         if (name == undefined) return;
 
         const journal = game.journal.getName(name);
         if (journal == undefined) return;
-
         if (getPermission('OTHER','JOURNAL') == false ) return;
         if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) return;
-
-        if (journal.sheet.rendered == false) journal.sheet.render(true);
-        else journal.sheet.close();
+        if (journal.sheet.rendered == false) {
+            if (journalMode == 'openPageNr') pageId = journal.pages.contents[pageName]?.id
+            else if (journalMode == 'openPageName') pageId = journal.pages.getName(pageName)?.id
+            else {
+                await journal.sheet.render(true);
+                return;
+            }
+            const page = journal.pages.get(pageId);
+            if (page == undefined) return;
+            await journal.sheet.render(true);
+            setTimeout(() => {
+                journal.sheet.goToPage(pageId)
+            },10)
+        }
+        else {
+            if (journalMode == 'openPageNr') pageId = journal.pages.contents[pageName]?.id
+            else if (journalMode == 'openPageName') pageId = journal.pages.getName(pageName)?.id
+            else {
+                await journal.sheet.close();
+                return;
+            }
+            
+            const currentPage = journal.pages.contents[journal.sheet.pageIndex]
+            if (currentPage.id == pageId) journal.sheet.close();
+            else {
+                let page = journal.pages.get(pageId)
+                if (page != undefined) journal.sheet.goToPage(pageId)
+            }
+        }
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////

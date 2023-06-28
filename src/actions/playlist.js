@@ -27,10 +27,10 @@ export class PlaylistControl{
         this.active = true;
         const mode = settings.playlistMode ? settings.playlistMode : 'playlist';
         
-        if (mode == 'playlist'){
+        if (mode == 'playlist' || mode == 'playlistName'){
             this.updatePlaylist(settings,context,device);
         }
-        else if (mode == 'track'){
+        else if (mode == 'track' || mode == 'trackName'){
             this.updateTrack(settings,context,device);
         }
         else {
@@ -50,22 +50,30 @@ export class PlaylistControl{
     }
 
     updatePlaylist(settings,context,device){
+        
         let name = "";
         let ringColor = "#000000"
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#FF0000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const playlistType = settings.playlistType ? settings.playlistType : 'playStop';
+        const playlistMode = settings.playlistMode ? settings.playlistMode : 'playlist';
         let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
         if (playlistType == 'playStop'){
-            let playlistNr = parseInt(settings.playlistNr);
-            if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
-            playlistNr--;
-            playlistNr += this.playlistOffset;
-
-            let playlist = this.getPlaylist(playlistNr);
+            let playlist;
+            if (playlistMode == 'playlist') {
+                let playlistNr = parseInt(settings.playlistNr);
+                if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
+                playlistNr--;
+                playlistNr += this.playlistOffset;
+    
+                playlist = this.getPlaylist(playlistNr);
+            }
+            else {
+                playlist = game.playlists.getName(settings.playlistNr);
+            }
             
             if (playlist != undefined){
                 if (playlist.playing) 
@@ -106,22 +114,33 @@ export class PlaylistControl{
         const ringOffColor = settings.offRing ? settings.offRing : '#FF0000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const playlistType = settings.playlistType ? settings.playlistType : 'playStop';
+        const playlistMode = settings.playlistMode ? settings.playlistMode : 'playlist';
         let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
         if (playlistType == 'playStop' || playlistType == 'incDecVol' || playlistType == 'setVol'){
-            let playlistNr = parseInt(settings.playlistNr);
-            if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
-            playlistNr--;
-            playlistNr += this.playlistOffset;
-            let trackNr = parseInt(settings.trackNr);
-            if (isNaN(trackNr) || trackNr < 1) trackNr = 1;
-            trackNr--;
-            trackNr += this.trackOffset;
+            let playlist;
+            let trackNr;
+            if (playlistMode == 'track') {
+                let playlistNr = parseInt(settings.playlistNr);
+                if (isNaN(playlistNr) || playlistNr < 1) playlistNr = 1;
+                playlistNr--;
+                playlistNr += this.playlistOffset;
+                trackNr = parseInt(settings.trackNr);
+                if (isNaN(trackNr) || trackNr < 1) trackNr = 1;
+                trackNr--;
+                trackNr += this.trackOffset;
+                
+                playlist = this.getPlaylist(playlistNr);
+            }
+            else {
+                playlist = game.playlists.getName(settings.playlistNr);
+            }
             
-            let playlist = this.getPlaylist(playlistNr);
             if (playlist != undefined){
-                const track = playlist.sounds.contents[trackNr];
+                let track;
+                if (playlistMode == 'track') track = playlist.sounds.contents[trackNr];
+                else track = playlist.sounds.getName(settings.trackNr);
                 if (track != undefined){
                     if (track.playing) 
                         ringColor = ringOnColor;
@@ -227,8 +246,11 @@ export class PlaylistControl{
             this.pauseAll();
         } 
         else {
-            if (playlistType == 'playStop') {
-                let playlist = this.getPlaylist(playlistNr);
+            let playlist;
+            if (playlistMode == 'playlist' || playlistMode == 'track') playlist = this.getPlaylist(playlistNr);
+            else playlist = game.playlists.getName(settings.playlistNr);
+            
+            if (playlistType == 'playStop' && (playlistMode == 'playlist' || playlistMode == 'track')) {
                 if (playlist != undefined){
                     if (playlistMode == 'playlist')
                         this.playPlaylist(playlist,playlistNr);
@@ -240,11 +262,28 @@ export class PlaylistControl{
                     }
                 }
             }
+            else if (playlistType == 'playStop') {
+                if (playlist != undefined) {
+                    if (playlistMode == 'playlistName' && playlist.playing)
+                        playlist.stopAll();
+                    else if (playlistMode == 'playlistName')
+                        playlist.playAll();
+                    else {
+                        const track = playlist.sounds.getName(settings.trackNr);
+                        if (track != undefined && track.playing){
+                           playlist.stopSound(track);
+                        }
+                        else if (track != undefined) {
+                            playlist.playSound(track);
+                        }
+                    }
+                }
+            }
             else if (playlistType == 'playNext') {
-                this.getPlaylist(playlistNr).playNext();
+                playlist.playNext();
             }
             else if (playlistType == 'playPrev') {
-                this.getPlaylist(playlistNr).playNext(null,{direction:-1});
+                playlist.playNext(null,{direction:-1});
             }
             else if (playlistType == 'offset'){
                 if (playlistMode == 'playlist') {
@@ -275,11 +314,12 @@ export class PlaylistControl{
                 this.updateAll();
             }
             else if (playlistType == 'incDecVol' || playlistType == 'setVol') {
+                
                 const value = settings.trackVolumeValue ? parseFloat(settings.trackVolumeValue) : 0.1;
-                let playlist = this.getPlaylist(playlistNr);
+                let playlist = playlistMode == 'track' ? this.getPlaylist(playlistNr) : game.playlists.getName(settings.playlistNr);
                 if (playlist != undefined){
-                    if (playlistMode != 'track') return;
-                    const track = playlist.sounds.contents[trackNr];
+                    if (playlistMode != 'track' && playlistMode != 'trackName') return;
+                    const track = playlistMode == 'track' ? playlist.sounds.contents[trackNr] : playlist.sounds.getName(settings.trackNr);
                     if (track != undefined){
                         let newVolume = playlistType == 'incDecVol' ? AudioHelper.volumeToInput(track.volume) + value : value;
                         if (newVolume > 1) newVolume = 1;

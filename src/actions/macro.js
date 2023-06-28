@@ -211,7 +211,7 @@ export class MacroControl{
                     let chatData = {
                         user: game.user._id,
                         speaker: ChatMessage.getSpeaker(),
-                        content: "/amacro '" + macro.name + "' " + args[macroNumber]
+                        content: "/amacro '" + macro.name + "' " + args
                     };
                     ChatMessage.create(chatData, {});
                 }

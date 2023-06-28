@@ -233,7 +233,7 @@ export class pf2e{
         if (condition == undefined || condition == 'removeAll') return undefined;
         const Condition = this.getConditionName(condition);
         const effects = token.actor.items.filter(i => i.type == 'condition');
-        return effects.find(e => e.name === Condition);
+        return effects.find(e => e.name.split(' ')[0] === Condition);
     }
 
     getConditionIcon(condition) {
@@ -260,7 +260,8 @@ export class pf2e{
             const effect = this.getConditionValue(token,condition);
             if (effect == undefined) {
                 if (delta > 0) {
-                    await game.pf2e.ConditionManager.addConditionToToken(condition, token);
+                    const newEffect = game.pf2e.ConditionManager.conditions.get(condition).toObject();
+                    await token.actor?.createEmbeddedDocuments("Item", [newEffect]);
                 }
             } else {
                 try {
@@ -282,16 +283,17 @@ export class pf2e{
     async toggleCondition(token,condition) {
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll'){
-            for( let existing of token.actor.items.filter(i => i.type == 'condition'))
-                await game.pf2e.ConditionManager.removeConditionFromToken(existing.data._id, token);
+            for( let effect of token.actor.items.filter(i => i.type == 'condition'))
+                await effect.delete();
         }
         else {
             const effect = this.getCondition(token,condition);
             if (effect == undefined) {
-                await game.pf2e.ConditionManager.addConditionToToken(condition, token);
+                const newEffect = game.pf2e.ConditionManager.conditions.get(condition).toObject();
+                await token.actor?.createEmbeddedDocuments("Item", [newEffect]);
             }
             else {
-                await game.pf2e.ConditionManager.removeConditionFromToken(effect.data._id, token);
+                effect.delete();
             }
         }
         return true;
