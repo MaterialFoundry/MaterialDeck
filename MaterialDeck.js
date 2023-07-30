@@ -55,6 +55,11 @@ async function analyzeWSmessage(msg){
     const data = JSON.parse(msg);
     //console.log("Received",data);
 
+    // Ping
+    if (data.T == "P") {
+        return;
+    }
+
     if ((data.type == "connected" || data.type == "version") && data.data == "SD"){
         transmitInitData();
         let sdNok = false;
