@@ -166,7 +166,11 @@ async function analyzeWSmessage(msg){
         if (action == 'token')
             tokenControl.keyPress(settings);
         else if (action == 'macro')
-            macroControl.keyPress(settings);
+            macroControl.keyPress({
+                device,
+                context,
+                ...settings,
+            });
         else if (action == 'combattracker')
             combatTracker.keyPress(settings,context,device);
         else if (action == 'playlist')
