@@ -710,3 +710,44 @@ Hooks.on('globalInterfaceVolumeChanged', () => {
     if (enableModule == false || ready == false || otherControls == undefined) return;
     otherControls.updateAll();
 })
+
+
+// Hook to update the state of a button
+Hooks.on('MaterialDeck', (data) => {
+    switch (data.action) {
+        case 'updateButton':
+            let buttonContext = data.buttonContext;
+            let deviceContext = data.deviceContext;
+
+            if (!buttonContext) {
+                // Find the button context via the buttonId
+                if (data.buttonId) {
+                    const devices = streamDeck.buttonContext;
+                    deviceContext = devices.find((device) => device.buttons.find((button) => {
+                        if (button?.settings.buttonId === data.buttonId.toString()) {
+                            buttonContext = button.context;
+                            return true;
+                        }
+                    })).device;
+                } else {
+                    // No button context, so we can't update the button
+                    console.warn('No button context found for button', data.buttonId);
+                    return;
+                }
+            }
+            //Set icon on SD
+            streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
+            //Set text on SD
+            streamDeck.setTitle(data.text, buttonContext);
+            // Set state so that the button can be updated when loaded
+            streamDeck.setButtonState(buttonContext, deviceContext, {
+                text: data.text,
+                icon: data.icon || '<empty>',
+                options: data.options || {},
+            });
+            break;
+        default:
+            console.warn('Unhandled action', data.action);
+            break;
+    }
+});
