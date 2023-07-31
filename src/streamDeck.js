@@ -7,7 +7,7 @@ export class StreamDeck{
         this.tokenNameContext;
         this.tokenACContext;
         this.buttonContext = [];
-        
+        this.buttonsState = {};
         this.playlistTrackBuffer = [];
         this.playlistSelector = 0;
         this.trackSelector = 0;
@@ -347,6 +347,20 @@ export class StreamDeck{
             state: state
         };
         sendWS(JSON.stringify(msg));
+    }
+
+    setButtonState(buttonContext, deviceContext, state) {
+        // Store button state as
+        // {
+        //   "deviceContext": {
+        //     "buttonContext": {
+        //       ...state
+        //     }
+        //   }
+        if (!this.buttonsState[deviceContext]) {
+            this.buttonsState[deviceContext] = {};
+        }
+        this.buttonsState[deviceContext][buttonContext] = state;
     }
 
     setProfile(action,device){
