@@ -202,15 +202,16 @@ export class StreamDeck{
         return txtNew;
     }
 
-    setTitle(txt,context){
-        if (txt == null || txt == undefined) txt = '';
-        txt = this.formatTitle(txt);
-        
+    setTitle(txt, context) {
+        let btnText;
         for (let device of this.buttonContext) {
             if (device == undefined) continue;
             const btn = device.buttons.find(b => b?.context == context);
             if (btn == undefined) continue;
-            btn.txt = txt;
+            // Fallback to state value, if it exists
+            const deviceState = this.buttonsState[device.device];
+            btnText = txt || (deviceState && deviceState[context]?.text) || '';
+            btn.txt = btnText;
         }
 
         let msg = {
@@ -218,7 +219,7 @@ export class StreamDeck{
             event: 'setTitle',
             context: context,
             payload: {
-                title: txt,
+                title: this.formatTitle(btnText),
                 target: 0
             }
         };
@@ -269,16 +270,16 @@ export class StreamDeck{
     }
 
     setIcon(context,device,src='',options = {}){
-        if (src == null || src == undefined) src = '';
-        if (src == '') src = 'modules/MaterialDeck/img/black.png';
-        let background = options.background ? options.background : '#000000';
-        let ring = options.ring ? options.ring : 0;
-        let ringColor = options.ringColor ? options.ringColor : '#000000';
-        let overlay = options.overlay ? options.overlay : false;
-        let uses = options.uses ? options.uses : undefined;
-        let clock = options.clock ? options.clock : false;
-        
-        //if (src != 'modules/MaterialDeck/img/black.png')
+        const deviceState = this.buttonsState[device];
+
+        src = src || deviceState && deviceState[context]?.icon || 'modules/MaterialDeck/img/black.png';
+        let background = options.background || deviceState && deviceState[context]?.options.background || '#000000';
+        let ring = options.ring || deviceState && deviceState[context]?.options.ring || 0;
+        let ringColor = options.ringColor || deviceState && deviceState[context]?.options.ringColor || '#000000';
+        let overlay = options.overlay || false;
+        let uses = options.uses || undefined;
+        let clock = options.clock || false;
+
         for (let d of this.buttonContext) {
             if (d?.device == device) {
                 for (let i=0; i<d.buttons.length; i++){

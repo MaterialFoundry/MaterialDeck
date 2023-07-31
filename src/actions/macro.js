@@ -25,19 +25,20 @@ export class MacroControl{
         const displayName = settings.displayName ? settings.displayName : false;
         const displayIcon = settings.displayIcon ? settings.displayIcon : false;
         const displayUses = settings.displayUses ? settings.displayUses : false;
-        let background = settings.background ? settings.background : '#000000';
         let macroNumber = settings.macroNumber;
         if (macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 0;
         macroNumber = parseInt(macroNumber);
 
-        let ringColor = "#000000";
-        let ring = 0;
-        let name = "";
-        let src = ""; 
+        let background;
+        let ringColor;
+        let ring;
+        let name;
+        let src;
+
         let macroId = undefined;
         let uses = undefined;
         let macroLabel = "";
-        
+
         if (mode == 'macroBoard') {  //Macro board
             if ((getPermission('MACRO','MACROBOARD') == false )) {
                 streamDeck.noPermission(context,device);
@@ -46,10 +47,10 @@ export class MacroControl{
             if (settings.macroBoardMode == 'offset') {  //Offset
                 const ringOffColor = settings.offRing ? settings.offRing : '#000000';
                 const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-                
+
                 let macroOffset = parseInt(settings.macroOffset);
                 if (macroOffset == undefined || isNaN(macroOffset)) macroOffset = 0;
-                
+
                 ringColor = (macroOffset == parseInt(this.offset)) ? ringOnColor : ringOffColor;
                 ring = 2;
                 src = "modules/MaterialDeck/img/transparant.png";
@@ -67,7 +68,7 @@ export class MacroControl{
                 if ((macroLabel == undefined || macroLabel == "") && game.macros.get(macroId)) macroLabel = game.macros.get(macroId).name;
                 if (background == undefined) background = '#000000';
                 ring = 0;
-            }  
+            }
         }
         else if (mode == 'name') {  //macro by name
             const macroName = settings.macroNumber;
@@ -93,7 +94,7 @@ export class MacroControl{
 
         if (macroId != undefined){
             let macro = game.macros._source.find(p => p._id == macroId);
-            
+
             if (macro != undefined) {
                 if (displayName && mode == 'macroBoard') name = macroLabel;
                 else if (displayName) name = macro.name;
@@ -101,13 +102,14 @@ export class MacroControl{
                 if (hotbarUses && displayUses) uses = await this.getUses(macro);
             }
         }
-        else {
-            if (displayName) name = "";
-            if (displayIcon) src = "modules/MaterialDeck/img/black.png";
-        }
-        
+
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
+        streamDeck.setIcon(context, device, src, {
+            background,
+            ring,
+            ringColor,
+            uses,
+        });
         streamDeck.setTitle(name,context);
     }
 
