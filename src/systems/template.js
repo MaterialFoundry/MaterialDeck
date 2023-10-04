@@ -10,7 +10,7 @@
  * return compatibleSystem('1.6.3') ? [value in v1.6.3+] : [value pre v1.6.3];
  */
 
-import { compatibleCore, compatibleSystem } from "../misc";
+import { compatibleCore, compatibleSystem } from "../misc.js";
 
 /**
  * Proficiency colors to show if a token is proficient in for example a skill
