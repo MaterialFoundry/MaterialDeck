@@ -1,5 +1,5 @@
 import { moduleName, isEmpty } from "../MaterialDeck.js";
-import { playlistConfigForm, macroConfigForm, soundboardConfigForm, downloadUtility, deviceConfig } from "./misc.js";
+import { playlistConfigForm, macroConfigForm, soundboardConfigForm, downloadUtility } from "./misc.js";
 
 let userPermissions = {};
 const defaultEnable = [true,true,true,true];
@@ -171,21 +171,6 @@ export const registerSettings = async function() {
         label: "MaterialDeck.DownloadUtility.Title",
         type: downloadUtility,
         restricted: false
-    });
-
-    game.settings.registerMenu(moduleName, 'deviceConfig',{
-        name: "MaterialDeck.DeviceConfig.Title",
-        label: "MaterialDeck.DeviceConfig.Title",
-        type: deviceConfig,
-        restricted: false
-    });
-
-    game.settings.register(moduleName, 'devices', {
-        name: "devices",
-        scope: "client",
-        type: Object,
-        config: false,
-        default: {}
     });
 
     game.settings.registerMenu(moduleName, 'permissionConfig',{
