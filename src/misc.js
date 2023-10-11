@@ -1,4 +1,4 @@
-import { sdVersion, msVersion, moduleName, getPermission, enableModule, streamDeck, macroControl,soundboard,playlistControl, minimumMSversion, minimumSDversion } from "../MaterialDeck.js";
+import { moduleName, getPermission, enableModule, macroControl, soundboard, playlistControl, releaseURLs, versions } from "../MaterialDeck.js";
 
 export function compareVersions(checkedVersion, requiredVersion) {
     requiredVersion = requiredVersion.split(".");
@@ -1041,21 +1041,7 @@ export class importConfigForm extends FormApplication {
 export class downloadUtility extends FormApplication {
     constructor(data, options) {
         super(data, options);
-        this.localSDversion = sdVersion;
-        this.masterSDversion;
-        this.localMSversion = msVersion;
-        this.masterMSversion;
-        this.masterModuleVersion;
-        this.releaseAssets = [];
-        this.profiles = [];
-
-        let parent = this;
-        setTimeout(function(){
-            parent.checkForUpdate('SD');
-            parent.checkForUpdate('MS');
-            parent.checkForUpdate('Module');
-            parent.getReleaseData();
-        },100)
+        this.releases = {}
     }
 
     /**
@@ -1074,33 +1060,20 @@ export class downloadUtility extends FormApplication {
     /**
      * Provide data to the template
      */
-    getData() {
+    async getData() {
         let dlDisabled = true;
 
-        this.profiles = [];
-        let iteration = 0;
-        for (let asset of this.releaseAssets) {
-            let split = asset.name.split('.');
-            if (split[split.length-1] == 'streamDeckProfile') {
-                this.profiles.push({id: iteration, label:split[0], url:asset.browser_download_url});
-                iteration++;
-                dlDisabled = false;
-            }
+        this.releases = {
+            module: await this.checkForUpdate('module'),
+            plugin: await this.checkForUpdate('plugin'),
+            materialCompanion: await this.checkForUpdate('materialCompanion')
         }
-        if (this.localMSversion == undefined) this.localMSversion = 'unknown';
 
         return {
-            minimumSdVersion: minimumSDversion,
-            localSdVersion: this.localSDversion,
-            masterSdVersion: this.masterSDversion,
-            sdDlDisable: this.masterSDversion == undefined,
-            minimumMsVersion: minimumMSversion,
-            localMsVersion: this.localMSversion,
-            masterMsVersion: this.masterMSversion,
-            msDlDisable: this.masterMSversion == undefined,
-            localModuleVersion: game.modules.get('MaterialDeck').version,
-            masterModuleVersion: this.masterModuleVersion,
-            profiles: this.profiles,
+            releases: this.releases,
+            versions,
+            sdDlDisable: this.releases.plugin == undefined,
+            msDlDisable: this.releases.materialCompanion == undefined,
             profileDlDisable: dlDisabled
         } 
     }
@@ -1118,38 +1091,22 @@ export class downloadUtility extends FormApplication {
         super.activateListeners(html);
 
         const downloadSd = html.find("button[id='materialDeck_dlUtil_downloadSd']");
-        const downloadMs = html.find("button[id='materialDeck_dlUtil_downloadMs']");
+        const downloadMc = html.find("button[id='materialDeck_dlUtil_downloadMc']");
         const downloadProfile = html.find("button[name='downloadProfile']")
         const refresh = html.find("button[id='materialDeck_dlUtil_refresh']");
 
+        //releaseURLs
+
         downloadSd.on('click', () => {
-            const version = document.getElementById('materialDeck_dlUtil_masterSdVersion').innerHTML;
-            if (version == '' || version == undefined || version == 'Error') return;
-            const url = `https://github.com/CDeenen/MaterialDeck_SD/releases/download/v${version}/com.cdeenen.materialdeck.streamDeckPlugin`;
-            this.downloadURI(url,'com.cdeenen.materialdeck.streamDeckPlugin')
+            this.downloadURI(this.releases.plugin.url)
         })
-        downloadMs.on('click', () => {
-            const version = document.getElementById('materialDeck_dlUtil_masterMsVersion').innerHTML;
+        downloadMc.on('click', () => {
             const os = document.getElementById('materialDeck_dlUtil_os').value;
-            if (version == '' || version == undefined || version == 'Error') return;
-            let name = `MaterialServer-${os}.zip`;
-            let url;
-            if (os == 'source') url = `https://github.com/CDeenen/MaterialServer/archive/refs/tags/v${version}.zip`;
-            else url = `https://github.com/CDeenen/MaterialServer/releases/download/v${version}/${name}`;
-            this.downloadURI(url,name)
+            this.downloadURI(this.releases.materialCompanion.variants.find(v => v.name.includes(os)).url)
         })
         downloadProfile.on('click',(event) => {
-            let id = event.currentTarget.id.replace('materialDeck_dlUtil_dlProfile-','');
-            this.downloadURI(this.profiles[id].url,`${this.profiles[id].label}.streamDeckProfile`);
-        })
-        refresh.on('click', () => {
-            document.getElementById('materialDeck_dlUtil_masterSdVersion').value = 'Getting data';
-            this.checkForUpdate('SD');
-            document.getElementById('materialDeck_dlUtil_masterMsVersion').value = 'Getting data';
-            this.checkForUpdate('MS');
-            document.getElementById('materialDeck_dlUtil_masterModuleVersion').value = 'Getting data';
-            this.checkForUpdate('Module');
-            this.getReleaseData();
+            let name = event.currentTarget.id.replace('materialDeck_dlUtil_dlProfile-','');
+            this.downloadURI(this.releases.plugin.profiles.find(p => p.name.includes(name)).url);
         })
     }
 
@@ -1181,8 +1138,53 @@ export class downloadUtility extends FormApplication {
     }
 
     checkForUpdate(reqType) {
-        let parent = this;
-        let url;
+        return new Promise((resolve) => {
+            const url = releaseURLs?.[reqType].api;
+            if (url == undefined) return;
+    
+            $.getJSON(url).done(function(releases) {
+                const release = releases[0];
+                if (reqType == 'plugin') {
+                    const url = release.assets.find(a => a.name.includes('streamDeckPlugin'))?.browser_download_url;
+                    let profiles  = [];
+                    for (let profile of release.assets.filter(a => a.name.includes('streamDeckProfile'))) {
+                        profiles.push({
+                            name: profile.name.replace('.streamDeckProfile', ''),
+                            url: profile.browser_download_url
+                        })
+                    }
+                    resolve({
+                        release: releases[0],
+                        version: release.tag_name,
+                        url,
+                        profiles
+                    });
+                }
+                else if (reqType == 'materialCompanion') {
+                    let variants = [];
+                    for (let variant of release.assets) {
+                        variants.push({
+                            name: variant.name,
+                            url: variant.browser_download_url
+                        })
+                    }
+                    resolve({
+                        release: releases[0],
+                        version: release.tag_name,
+                        url,
+                        variants
+                    });
+                }
+                else if (reqType == 'module') {
+                    resolve({
+                        release: releases[0],
+                        version: release.tag_name
+                    });
+                }
+            });
+        });  
+
+        /*
         let elementId;
         if (reqType == 'SD') {
             elementId = 'materialDeck_dlUtil_masterSdVersion';
@@ -1194,7 +1196,7 @@ export class downloadUtility extends FormApplication {
         }
         else if (reqType == 'Module') {
             elementId = 'materialDeck_dlUtil_masterModuleVersion';
-            url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json';
+            url = game.modules.get('MaterialDeck').manifest;
         }
 
         var request = new XMLHttpRequest();
@@ -1215,92 +1217,6 @@ export class downloadUtility extends FormApplication {
         request.onerror = function () {
             document.getElementById(elementId).innerHTML = 'Error';
         }
+        */
     }     
-}
-
-export class deviceConfig extends FormApplication {
-    constructor(data, options) {
-        super(data, options);
-
-        this.devices = [];
-    }
-
-    /**
-     * Default Options for this FormApplication
-     */
-    static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            id: "materialDeck_deviceConfig",
-            title: "Material Deck: " + game.i18n.localize("MaterialDeck.DeviceConfig.Title"),
-            template: "./modules/MaterialDeck/templates/deviceConfig.html",
-            width: 500,
-            height: "auto"
-        });
-    }
-
-    /**
-     * Provide data to the template
-     */
-    getData() {
-        this.devices = [];
-        let dConfig = game.settings.get(moduleName, 'devices');
-        if (Object.prototype.toString.call(game.settings.get('MaterialDeck', 'devices')) === "[object String]") {
-            dConfig = {};
-            game.settings.set(moduleName, 'devices', dConfig);
-        }
-        for (let d of streamDeck.buttonContext) {
-            if (d == undefined) continue;
-            let type;
-            if (d.type == 0) type = 'Stream Deck';
-            else if (d.type == 1) type = 'Stream Deck Mini';
-            else if (d.type == 2) type = 'Stream Deck XL';
-            else if (d.type == 3) type = 'Stream Deck Mobile';
-            else if (d.type == 4) type = 'Corsair G Keys';
-
-            const name = d.name;
-            const id = d.device;
-            let enable;
-            if (dConfig?.[id] == undefined) enable = true;
-            else enable = dConfig?.[id].enable;
-
-            const device = {
-                id,
-                name,
-                type,
-                en: enable
-            }
-            this.devices.push(device);
-        }
-        
-        return {
-            devices: this.devices
-        } 
-    }
-
-    /**
-     * Update on form submit
-     * @param {*} event 
-     * @param {*} formData 
-     */
-    async _updateObject(event, formData) {
-   
-    }
-
-    activateListeners(html) {
-        super.activateListeners(html);
-
-        html.find("input[name='enable']").on('change', (event) => {
-            const id = event.currentTarget.id.replace('materialDeck_devConf_','');;
-            for (let d of this.devices) {
-                if (d.id == id) {
-                    let dConfig = game.settings.get(moduleName, 'devices');
-                    delete dConfig[id];
-                    dConfig[id] = {enable: event.currentTarget.checked}
-                    game.settings.set(moduleName, 'devices', dConfig);
-                }
-            }
-        })
-    }
-
-    
 }

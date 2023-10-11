@@ -1,4 +1,18 @@
 # Changelog Material Deck Module
+### v1.5.2 - xx-xx-2023
+<b>Starting from this version you have to use <a href="https://github.com/MaterialFoundry/MaterialCompanion">Material Companion</a> instead of Material Server.</b>
+
+Fixes:
+<ul>
+    <li>(PF2e) Token Action => Toggle Condition: Condition icons work again</li>
+</ul>
+
+Other:
+<ul>
+    <li>Material Deck is no longer compatible with Material Server, you now have to use Material Companion</li>
+    <li>Removed 'Device Config' because this is now handled by Material Companion</li>
+</ul>
+
 ### v1.5.1 - 28-06-2023
 Fixes:
 <ul>

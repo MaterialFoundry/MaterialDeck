@@ -8,8 +8,37 @@ import { SoundboardControl } from "./src/actions/soundboard.js";
 import { OtherControls } from "./src/actions/othercontrols.js";
 import { ExternalModules } from "./src/actions/external.js";
 import { SceneControl } from "./src/actions/scene.js";
-import { downloadUtility, compareVersions, compatibleCore } from "./src/misc.js";
+import { downloadUtility, compareVersions } from "./src/misc.js";
 import { TokenHelper } from "./src/systems/tokenHelper.js";
+
+export const releaseURLs = {
+    module: {
+        api: "https://api.github.com/repos/MaterialFoundry/MaterialDeck/releases",
+        url: "https://github.com/MaterialFoundry/MaterialDeck/releases"
+    },
+    plugin: {
+        api: "https://api.github.com/repos/MaterialFoundry/MaterialDeck_SD/releases",
+        url: "https://github.com/MaterialFoundry/MaterialDeck_SD/releases"
+    },
+    materialCompanion: {
+        api: "https://api.github.com/repos/MaterialFoundry/MaterialCompanion/releases",
+        url: "https://github.com/MaterialFoundry/MaterialCompanion/releases"
+    } 
+}
+
+export let versions = {
+    materialCompanion: {
+        current: 'Unknown',
+        minimum: 'Unknown'
+    },
+    plugin: {
+        current: 'Unknown',
+        minimum: 'Unknown'
+    },
+    module: {
+        current: 'Unknown'
+    }
+}
 
 export var streamDeck;
 export var tokenControl;
@@ -25,14 +54,9 @@ export const moduleName = "MaterialDeck";
 export let gamingSystem = "dnd5e";
 export let hotbarUses = false;
 export let calculateHotbarUses;
-export let sdVersion;
-export let msVersion;
 
 let ready = false;
 let controlTokenTimer;
-let updateDialog;
-export let minimumMSversion;
-export let minimumSDversion;
 
 export var enableModule;
 
@@ -54,20 +78,24 @@ async function analyzeWSmessage(msg){
     if (enableModule == false) return;
     const data = JSON.parse(msg);
     //console.log("Received",data);
+    if (data.type == 'connected') {
+        console.log('rec',data)
+    }
 
-    if ((data.type == "connected" || data.type == "version") && data.data == "SD"){
-        transmitInitData();
+    if (data.type == "connected" && data.source == "MaterialCompanion"){
+        //console.log('data',data)
+        //transmitInitData();
         let sdNok = false;
         let msNok = false;
-        if (data.MSversion) {
-            msVersion = data.MSversion;
-            if (!compareVersions(minimumMSversion,msVersion)) {
+        if (data.materialCompanionVersion) {
+            versions.materialCompanion.current = data.materialCompanionVersion;
+            if (!compareVersions(versions.materialCompanion.minimum, versions.materialCompanion.current)) {
                 msNok = true;
             }
         }
-        if (data.SDversion) {
-            sdVersion = data.SDversion;
-            if (!compareVersions(minimumSDversion,sdVersion)) {
+        if (data.pluginVersion) {
+            versions.plugin.current = data.pluginVersion;
+            if (!compareVersions(versions.plugin.minimum, versions.plugin.current)) {
                 sdNok = true;
             }
         }
@@ -75,15 +103,15 @@ async function analyzeWSmessage(msg){
             let content = '';
             if (sdNok && msNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.Both")}<br><br>`;
             else if (sdNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.SD")}<br><br>`;
-            else if (msNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.MS")}<br><br>`;
+            else if (msNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.MC")}<br><br>`;
 
             content += `${game.i18n.localize("MaterialDeck.UpdateRequired.Update")}<br><br>`;
 
-            if (sdNok) content += `<a href="https://github.com/CDeenen/MaterialDeck_SD/releases">${game.i18n.localize("MaterialDeck.UpdateRequired.SDdownload")}</a><br>`;
-            if (msNok) content += `<a href="https://github.com/CDeenen/MaterialServer/releases">Material Server</a><br>`;
+            if (sdNok) content += `<a href="${releaseURLs.plugin.url}">${game.i18n.localize("MaterialDeck.UpdateRequired.SDdownload")}</a><br>`;
+            if (msNok) content += `<a href="${releaseURLs.materialCompanion.url}">Material Companion</a><br>`;
             content += "<br>"
 
-            const myDialog = new Dialog({
+            new Dialog({
                 title: game.i18n.localize("MaterialDeck.UpdateRequired.Title"),
               content,
               buttons: {
@@ -101,7 +129,7 @@ async function analyzeWSmessage(msg){
             }).render(true);
         }
 
-        console.log("streamdeck connected to server", msVersion);
+        console.log("streamdeck connected to server", versions.materialCompanion.current);
         streamDeck.resetImageBuffer();
     }
 
@@ -127,8 +155,6 @@ async function analyzeWSmessage(msg){
         if (coordinates == undefined) return;
         streamDeck.setScreen(action);
         await streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings,name,type);
-
-        if (game.settings.get(moduleName, 'devices')?.[device]?.enable == false) return;
 
         if (action == 'token'){
             tokenControl.active = true;
@@ -156,7 +182,6 @@ async function analyzeWSmessage(msg){
     }
 
     else if (event == 'keyDown'){
-        if (game.settings.get(moduleName, 'devices')?.[device]?.enable == false) return;
 
         if (action == 'token')
             tokenControl.keyPress(settings);
@@ -177,7 +202,6 @@ async function analyzeWSmessage(msg){
     }
 
     else if (event == 'keyUp'){
-        if (game.settings.get(moduleName, 'devices')?.[device]?.enable == false) return;
 
         if (action == 'soundboard'){
             soundboard.keyPressUp(settings);
@@ -211,8 +235,13 @@ function startWebsocket() {
         ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+address);
         wsOpen = true;
         const msg = {
-            target: "server",
-            module: "MD"
+            target: "MaterialCompanion",
+            source: "MaterialDeck_Foundry",
+            sourceTarget: "MaterialDeck_Device",
+            type: "connected",
+            userId: game.userId,
+            userName: game.user.name,
+            version: game.modules.get(moduleName).version
         }
         ws.send(JSON.stringify(msg));
         transmitInitData();
@@ -228,8 +257,9 @@ let messageCount = 0;
 function transmitInitData() {
     
     const msg = {
-        target: "SD",
+        target: "MaterialDeck_Device",
         type: "init",
+        userId: game.userId,
         system: getGamingSystem(),
         systemData: {
             conditions: tokenHelper.getConditionList(),
@@ -343,8 +373,9 @@ Hooks.once('ready', async()=>{
     enableModule = (game.settings.get(moduleName,'Enable')) ? true : false; 
   
     getGamingSystem();
-    minimumMSversion = game.modules.get(moduleName).flags.minimumMSVersion;
-    minimumSDversion = game.modules.get(moduleName).flags.minimumPluginVersion;
+    versions.module.current = game.modules.get('MaterialDeck').version;
+    versions.materialCompanion.minimum = game.modules.get(moduleName).flags.minimumMaterialCompanionVersion;
+    versions.plugin.minimum = game.modules.get(moduleName).flags.minimumPluginVersion;
 
     soundboard = new SoundboardControl();
     streamDeck = new StreamDeck();
@@ -447,7 +478,8 @@ Hooks.once('ready', async()=>{
 });
 
 function updateActor(id) {
-    const token = tokenHelper.getTokenFromActorId(id)
+    const token = tokenHelper.getTokenFromActorId(id);
+    if (token == undefined) return;
     tokenControl.update(token.id);
 }
 
@@ -705,3 +737,20 @@ Hooks.on('globalInterfaceVolumeChanged', () => {
     if (enableModule == false || ready == false || otherControls == undefined) return;
     otherControls.updateAll();
 })
+
+Hooks.on('MaterialDeck', (data) => {
+    if (data.type == 'setButton') {
+        //Get the buttonContext and device from streamDeck.buttonContext using data.buttonId
+        const buttonContext = streamDeck.buttonContext[0]?.buttons[data.button]?.context;
+        const device = streamDeck.buttonContext[0]?.device;
+
+        //Set icon on SD
+        streamDeck.setIcon(buttonContext, device, data.icon, data.options);
+    
+        //Set text on SD
+        streamDeck.setTitle(data.text, buttonContext);
+    }
+    else {
+        //reserved for future MD hooks
+    }
+});
