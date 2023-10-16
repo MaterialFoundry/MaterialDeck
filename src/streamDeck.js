@@ -208,6 +208,7 @@ export class StreamDeck{
             if (device == undefined) continue;
             const btn = device.buttons.find(b => b?.context == context);
             if (btn == undefined) continue;
+          
             // Fallback to state value, if it exists
             const deviceState = this.buttonsState[device.device];
             btnText = txt || (deviceState && deviceState[context]?.text) || '';
@@ -215,7 +216,10 @@ export class StreamDeck{
         }
 
         let msg = {
-            target: "SD",
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
+            device: thisDevice,
             event: 'setTitle',
             context: context,
             payload: {
@@ -227,8 +231,16 @@ export class StreamDeck{
     }
     
     setColor(context,color = '#000000'){
+let thisDevice;
+        for (let device of this.buttonContext) {
+            if (device == undefined) continue;
+            thisDevice = device.buttons.find(b => b?.context == context);
+        }
         let msg = {
-            target: "SD",
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
+            device: thisDevice,
             event: 'setIcon',
             context: context,
             url: '',
@@ -240,7 +252,9 @@ export class StreamDeck{
 
     setImage(image,context,device,nr,id){
         var json = {
-            target: "SD",
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
             event: "setImage",
             context: context,
             device: device,
@@ -256,7 +270,9 @@ export class StreamDeck{
 
     setBufferImage(context,device,nr,id){
         var json = {
-            target: "SD",
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
             event: "setBufferImage",
             context: context,
             device: device,
@@ -323,7 +339,9 @@ export class StreamDeck{
         let split2 = split[0].split('-');
         if (split2[0] == 'fa') format = 'icon';
         let msg = {
-            target: "SD",
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
             event: 'setIcon',
             context: context,
             device: device,
@@ -340,9 +358,17 @@ export class StreamDeck{
     }
 
     setState(state,context,action){
+        let thisDevice;
+        for (let device of this.buttonContext) {
+            if (device == undefined) continue;
+            thisDevice = device.buttons.find(b => b?.context == context);
+        }
         let msg = {
-            target: "SD",
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
             event: 'setStateCustom',
+            device: thisDevice,
             context: context,
             action: action,
             state: state
@@ -369,8 +395,9 @@ export class StreamDeck{
         if (action == 'playlistcontrol')
             profile = 'MaterialDeck-Playlist'
         var json = {
-            target: "SD",
-            source: 1,
+            target: "MaterialDeck_Device",
+            source: "MaterialDeck_Foundry",
+            userId: game.userId,
             event: "switchToProfile",
             context: this.pluginId,
             device: device,

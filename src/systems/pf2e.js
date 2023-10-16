@@ -239,7 +239,7 @@ export class pf2e{
     getConditionIcon(condition) {
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll') return window.CONFIG.controlIcons.effects;
-        else return `${CONFIG.PF2E.statusEffects.effectsIconFolder}${condition}.webp`;
+        else return `${CONFIG.PF2E.statusEffects.iconDir}${condition}.webp`;
     }
 
     getConditionActive(token,condition) {
@@ -281,6 +281,7 @@ export class pf2e{
     }
 
     async toggleCondition(token,condition) {
+        console.log(token,condition)
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll'){
             for( let effect of token.actor.items.filter(i => i.type == 'condition'))
@@ -288,6 +289,7 @@ export class pf2e{
         }
         else {
             const effect = this.getCondition(token,condition);
+            console.log('eff',effect)
             if (effect == undefined) {
                 const newEffect = game.pf2e.ConditionManager.conditions.get(condition).toObject();
                 await token.actor?.createEmbeddedDocuments("Item", [newEffect]);

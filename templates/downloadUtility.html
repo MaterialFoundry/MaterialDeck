@@ -13,9 +13,9 @@
 
         <tr>
           <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.module"}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>{{localModuleVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.module.current}}</td>
           <td class='materialDeck_dlUtil_columnVersion'></td>
-          <td class='materialDeck_dlUtil_columnVersion' id='materialDeck_dlUtil_masterModuleVersion'>{{masterModuleVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{releases.module.version}}</td>
           <td class='materialDeck_dlUtil_columnOS'></td>
           <td class='materialDeck_dlUtil_columnButton'><button type="button" class='materialDeck_dlUtil_button' style="visibility:hidden">
               <i class="fas fa-download"></i>
@@ -25,9 +25,9 @@
 
         <tr>
           <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.SDplugin"}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>{{localSdVersion}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>{{minimumSdVersion}}</td>
-          <td class='materialDeck_dlUtil_columnVersion' id='materialDeck_dlUtil_masterSdVersion'>{{masterSdVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.plugin.current}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.plugin.minimum}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{releases.plugin.version}}</td>
           <td class='materialDeck_dlUtil_columnOS'></td>
           <td class='materialDeck_dlUtil_columnButton'>
             <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_downloadSd' {{#if sdDlDisable}}disabled{{/if}}>
@@ -38,20 +38,22 @@
 
         <tr>
           <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.MSserver"}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>{{localMsVersion}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>{{minimumMsVersion}}</td>
-          <td class='materialDeck_dlUtil_columnVersion' id='materialDeck_dlUtil_masterMsVersion'>{{masterMsVersion}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.materialCompanion.current}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.materialCompanion.minimum}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{releases.materialCompanion.version}}</td>
           <td class='materialDeck_dlUtil_columnOS'>
             <select id="materialDeck_dlUtil_os" default="" {{#if msDlDisable}}disabled{{/if}}>
                 <option value="win32-x64">{{localize "MaterialDeck.DownloadUtility.Windows"}}</option>
-                <option value="macos-x64">{{localize "MaterialDeck.DownloadUtility.MacosIntel"}}</option>
-                <option value="macos-arm64">{{localize "MaterialDeck.DownloadUtility.MacosM1"}}</option>
+                <option value="macos-x64.dmg">{{localize "MaterialDeck.DownloadUtility.MacosIntel"}} - dmg</option>
+                <option value="macos-x64.zip">{{localize "MaterialDeck.DownloadUtility.MacosIntel"}} - zip</option>
+                <option value="macos-arm64.dmg">{{localize "MaterialDeck.DownloadUtility.MacosM1"}} - dmg</option>
+                <option value="macos-arm64.zip">{{localize "MaterialDeck.DownloadUtility.MacosM1"}} - zip</option>
                 <option value="linux-x64">{{localize "MaterialDeck.DownloadUtility.Linux"}}</option>
                 <option value="source">{{localize "MaterialDeck.DownloadUtility.Source"}}</option>
             </select>
           </td>
           <td class='materialDeck_dlUtil_columnButton'>
-            <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_downloadMs' {{#if msDlDisable}}disabled{{/if}}>
+            <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_downloadMc' {{#if msDlDisable}}disabled{{/if}}>
                 <i class="fas fa-download"></i>
             </button>
           </td>
@@ -66,11 +68,11 @@
           <th class='materialDeck_dlUtil_columnButton'>{{localize "MaterialDeck.DownloadUtility.Download"}}</th>
         </tr>
         <div id='profileContents'>
-          {{#each profiles as |p|}}
+          {{#each releases.plugin.profiles as |p|}}
             <tr>
-              <td>{{p.label}}</td>
+              <td>{{p.name}}</td>
               <td class='materialDeck_dlUtil_columnButton'>
-                <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_dlProfile-{{p.id}}' name='downloadProfile' {{#if ../profileDlDisable}}disabled{{/if}}>
+                <button type="button" class='materialDeck_dlUtil_button' id='materialDeck_dlUtil_dlProfile-{{p.name}}' name='downloadProfile'>
                     <i class="fas fa-download"></i>
                 </button>
               </td>
@@ -78,10 +80,4 @@
           {{/each}}
         </div>
       </table> 
-      
-      <button type="button" id='materialDeck_dlUtil_refresh'>
-        <i class="fas fa-redo"></i>
-        {{localize "MaterialDeck.DownloadUtility.Refresh"}}
-    </button>
-
 </form>

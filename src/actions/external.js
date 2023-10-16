@@ -916,8 +916,10 @@ export class ExternalModules{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     updateMonksActiveTiles(settings,context,device) {
         const id = settings.monksActiveTilesId;
+
         if (id == undefined || id == '') return;
         let tile = canvas.tiles.placeables.find(t => t.id == id);
+
         if (tile == undefined) return;
         const tileData = tile.document.flags?.['monks-active-tiles'];
         if (tileData == undefined) return;
@@ -929,7 +931,7 @@ export class ExternalModules{
             ring = 2;
             ringColor = '#00ff00'
         }
-        let src =  tile.document.texture.sr;
+        let src =  tile.document.texture.src;
 
         streamDeck.setTitle('',context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
@@ -946,6 +948,7 @@ export class ExternalModules{
         if (tileData == undefined) return;
 
         if (mode == 'toggle') tile.document.setFlag('monks-active-tiles','active',!tileData.active);
+        else tile.document.setFlag('monks-active-tiles','active',mode == 'enable');
     }
 }
 
