@@ -5,6 +5,7 @@ import { demonlord } from "./demonlord.js";
 import { wfrp4e } from "./wfrp4e.js";
 import { forbiddenlands } from "./forbidden-lands.js";
 import { starfinder } from "./starfinder.js";
+import { starwarsffg } from "./starwarsffg.js";
 import { compatibleCore } from "../misc.js";
 import { gamingSystem } from "../../MaterialDeck.js";
 
@@ -21,6 +22,7 @@ export class TokenHelper{
         else if (gamingSystem == 'wfrp4e') this.system = new wfrp4e();
         else if (gamingSystem == 'forbidden-lands') this.system = new forbiddenlands();
         else if (gamingSystem == 'sfrpg') this.system = new starfinder();
+        else if (gamingSystem == "starwarsffg") this.system = new starwarsffg();
         else this.system = new dnd5e();     //default to dnd5e
     }
 
@@ -286,6 +288,28 @@ export class TokenHelper{
     getKinAC(token) {
         return this.system.getKinAC(token);
     }
+
+    /* starwarsffg */
+    getDefenseMelee(token){
+        return this.system.getDefenseMelee(token);
+    }
+    /* starwarsffg */
+    getDefenseRanged(token){
+        return this.system.getDefenseRanged(token);
+    } 
+    /* starwarsffg */
+    getEncumbrance(token){
+        return this.system.getEncumbrance(token);
+    } 
+    /* starwarsffg */
+    getForcePool(token){
+        return this.system.getForcePool(token);
+    } 
+
+    /* starwarsffg */
+    getStrain(token){
+        return this.system.getStrain(token);
+    } 
     
 
     /**
@@ -373,8 +397,8 @@ export class TokenHelper{
         return this.system.getSpellUses(token,level,item);
     }
 
-    rollItem(item, settings, rollOption, attackMode) {
-        return this.system.rollItem(item, settings, rollOption, attackMode);
+    rollItem(item, settings, rollOption, attackMode, token) {
+        return this.system.rollItem(item, settings, rollOption, attackMode, token);
     }
 
     getSpellLevels() {
@@ -393,5 +417,9 @@ export class TokenHelper{
     }
     getSaveRingColor(token,save) {
         return this.system.getSaveRingColor(token,save);
+    }
+
+    getAttackModes(){
+        return;
     }
 }

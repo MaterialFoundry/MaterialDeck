@@ -214,6 +214,21 @@ export class TokenControl{
                         txt += valuedCondition?.value;
                     }
                 }
+                else if (stats == 'DefenseMelee') txt += tokenHelper.getDefenseMelee(token); /* SWFFG */
+                else if (stats == 'DefenseRanged') txt += tokenHelper.getDefenseRanged(token); /* SWFFG */
+                else if (stats == 'Encumbrance') { /* SWFFG */
+                    const encumbrance = tokenHelper.getEncumbrance(token);
+                    txt += `${encumbrance.value}/${encumbrance.max}`;
+                } 
+                else if (stats == 'Force Pool') { /* SWFFG */   
+                    const encumbrance = tokenHelper.getForcePool(token);
+                    txt += `${encumbrance.value}/${encumbrance.max}`;
+                } /* SWFFG */
+                   
+                else if (stats == 'Strain') { /* SWFFG */
+                    const strain = tokenHelper.getStrain(token);
+                    txt += `${strain.value}/${strain.max}`;
+                }
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (getPermission('TOKEN','VISIBILITY') == false ) {
@@ -921,7 +936,7 @@ export class TokenControl{
             else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
             else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
             if (item != undefined) {
-                tokenHelper.rollItem(item, settings, otherControls.rollOption, otherControls.attackMode);
+                tokenHelper.rollItem(item, settings, otherControls.rollOption, otherControls.attackMode, token);
             }
             
         }
