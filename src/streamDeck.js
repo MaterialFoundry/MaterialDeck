@@ -7,7 +7,7 @@ export class StreamDeck{
         this.tokenNameContext;
         this.tokenACContext;
         this.buttonContext = [];
-        
+        this.buttonsState = {};
         this.playlistTrackBuffer = [];
         this.playlistSelector = 0;
         this.trackSelector = 0;
@@ -202,16 +202,17 @@ export class StreamDeck{
         return txtNew;
     }
 
-    setTitle(txt,context){
-        if (txt == null || txt == undefined) txt = '';
-        txt = this.formatTitle(txt);
-        let thisDevice;
+    setTitle(txt, context) {
+        let btnText;
         for (let device of this.buttonContext) {
             if (device == undefined) continue;
             const btn = device.buttons.find(b => b?.context == context);
             if (btn == undefined) continue;
-            btn.txt = txt;
-            thisDevice = device;
+          
+            // Fallback to state value, if it exists
+            const deviceState = this.buttonsState[device.device];
+            btnText = txt || (deviceState && deviceState[context]?.text) || '';
+            btn.txt = btnText;
         }
 
         let msg = {
@@ -222,7 +223,7 @@ export class StreamDeck{
             event: 'setTitle',
             context: context,
             payload: {
-                title: txt,
+                title: this.formatTitle(btnText),
                 target: 0
             }
         };
@@ -285,16 +286,16 @@ let thisDevice;
     }
 
     setIcon(context,device,src='',options = {}){
-        if (src == null || src == undefined) src = '';
-        if (src == '') src = 'modules/MaterialDeck/img/black.png';
-        let background = options.background ? options.background : '#000000';
-        let ring = options.ring ? options.ring : 0;
-        let ringColor = options.ringColor ? options.ringColor : '#000000';
-        let overlay = options.overlay ? options.overlay : false;
-        let uses = options.uses ? options.uses : undefined;
-        let clock = options.clock ? options.clock : false;
-        
-        //if (src != 'modules/MaterialDeck/img/black.png')
+        const deviceState = this.buttonsState[device];
+
+        src = src || deviceState && deviceState[context]?.icon || 'modules/MaterialDeck/img/black.png';
+        let background = options.background || deviceState && deviceState[context]?.options.background || '#000000';
+        let ring = options.ring || deviceState && deviceState[context]?.options.ring || 0;
+        let ringColor = options.ringColor || deviceState && deviceState[context]?.options.ringColor || '#000000';
+        let overlay = options.overlay || false;
+        let uses = options.uses || undefined;
+        let clock = options.clock || false;
+
         for (let d of this.buttonContext) {
             if (d?.device == device) {
                 for (let i=0; i<d.buttons.length; i++){
@@ -373,6 +374,20 @@ let thisDevice;
             state: state
         };
         sendWS(JSON.stringify(msg));
+    }
+
+    setButtonState(buttonContext, deviceContext, state) {
+        // Store button state as
+        // {
+        //   "deviceContext": {
+        //     "buttonContext": {
+        //       ...state
+        //     }
+        //   }
+        if (!this.buttonsState[deviceContext]) {
+            this.buttonsState[deviceContext] = {};
+        }
+        this.buttonsState[deviceContext][buttonContext] = state;
     }
 
     setProfile(action,device){
