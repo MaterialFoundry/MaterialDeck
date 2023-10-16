@@ -29,7 +29,8 @@ export class TokenHelper{
      ***********************************************************************/
     getToken(type,identifier) {
         if (type == 'selected') return this.getSelectedToken();
-        else if (type != 'selected' && identifier == '') return;
+        else if (type == 'user') return this.getUserCharacter();
+        else if (identifier == '') return;
         else if (type == 'tokenName') return this.getTokenFromTokenName(identifier);
         else if (type == 'actorName') return this.getTokenFromActorName(identifier);
         else if (type == 'tokenId') return this.getTokenFromTokenId(identifier);
@@ -40,19 +41,23 @@ export class TokenHelper{
     }
 
     getTokenFromTokenName(name) {
-        return canvas.tokens.children[0].children.find(p => p.name == name);
+        return canvas.tokens.placeables.find(p => p.name == name);
     }
 
     getTokenFromActorId(id) {
-        return canvas.tokens.children[0].children.find(p => p.actor.id == id);
+        return canvas.tokens.placeables.find(p => p.actor.id == id);
     }
 
     getTokenFromActorName(name) {
-        return canvas.tokens.children[0].children.find(p => p.actor.name == name);
+        return canvas.tokens.placeables.find(p => p.actor.name == name);
     }
 
     getSelectedToken() {
         return canvas.tokens.controlled[0];
+    }
+
+    getUserCharacter() {
+        return canvas.tokens.placeables.find(p => p.actor.id == game.user.character.id);
     }
 
     moveToken(token,dir){

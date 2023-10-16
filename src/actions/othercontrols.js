@@ -67,6 +67,8 @@ export class OtherControls{
             this.updateRollMode(settings,context,device,options);
         else if (mode == 'globalVolumeControls')
             this.updateGlobalVolumeControls(settings, context, device, options);
+        else if (mode == 'openPartySheet')
+            this.updateOpenPartySheet(settings, context, device, options);
     }
 
     keyPress(settings,context,device){
@@ -102,6 +104,8 @@ export class OtherControls{
             this.keyPressRollMode(settings);
         else if (mode == 'globalVolumeControls')
             this.keyPressGlobalVolumeControls(settings);
+        else if (mode == 'openPartySheet')
+            this.keyPressOpenPartySheet(settings);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1030,6 +1034,42 @@ export class OtherControls{
         document.getElementsByName(settingLabel)[0].value = newVolume;
 
         this.updateAll();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    async updateOpenPartySheet(settings,context,device,options={}){
+        if (game.system.id != 'pf2e') return;
+        const actor = game.actors.find(a => a.type === "party");
+        if (actor == undefined) return;
+        
+        const background = settings.background ? settings.background : '#000000';
+        const ringOffColor = settings.offRing ? settings.offRing : '#000000';
+        const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringColor = (actor.sheet.rendered) ? ringOnColor : ringOffColor;
+
+        let iconSrc = "modules/MaterialDeck/img/transparant.png";
+        if (settings.displayIcon) {
+            iconSrc = actor.img;
+        }
+        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor});
+    }
+
+    async keyPressOpenPartySheet(settings){
+        if (game.system.id != 'pf2e') return;
+        const actor = game.actors.find(a => a.type === "party");
+        if (actor == undefined) return;
+
+        if (actor.sheet.rendered) 
+            actor.sheet.close();
+        else
+            actor.sheet.render(true);
+
+        const parent = this;
+        setTimeout(()=>{
+            this.updateAll();
+        },100)
+        
     }
 }
 

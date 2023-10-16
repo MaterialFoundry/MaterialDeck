@@ -3,7 +3,7 @@
     "id": "MaterialDeck",
     "title": "Material Deck",
     "description": "Material Deck allows you to control Foundry using an Elgato Stream Deck",
-    "version": "1.5.2_pre",
+    "version": "1.6.0",
     "author": "CDeenen",
     "authors": [
         {
@@ -29,7 +29,7 @@
     },
     "flags": {
         "minimumMaterialCompanionVersion": "1.0.2",
-        "minimumPluginVersion": "1.5.2"
+        "minimumPluginVersion": "1.6.0"
     },
     "languages": [
         {
@@ -58,7 +58,7 @@
         }
     ],
     "manifestPlusVersion": "1.1.0",
-    "url": "https://github.com/CDeenen/MaterialDeck",
-    "manifest": "https://github.com/CDeenen/MaterialDeck/releases/latest/download/module.json",
-    "download": "https://github.com/CDeenen/MaterialDeck/releases/download/v1.5.1/module.zip"
+    "url": "https://github.com/MaterialFoundry/MaterialDeck",
+    "manifest": "https://github.com/MaterialFoundry/MaterialDeck/releases/latest/download/module.json",
+    "download": "https://github.com/MaterialFoundry/MaterialDeck/releases/download/v1.5.2_pre/module.zip"
 }

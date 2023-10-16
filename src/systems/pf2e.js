@@ -239,7 +239,8 @@ export class pf2e{
     getConditionIcon(condition) {
         if (condition == undefined) condition = 'removeAll';
         if (condition == 'removeAll') return window.CONFIG.controlIcons.effects;
-        else return `${CONFIG.PF2E.statusEffects.iconDir}${condition}.webp`;
+        //else return `${CONFIG.PF2E.statusEffects.iconDir}${condition}.webp`;
+        else return CONFIG.statusEffects.find(e => e.id === condition).icon;
     }
 
     getConditionActive(token,condition) {

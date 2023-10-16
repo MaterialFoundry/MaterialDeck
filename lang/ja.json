@@ -18,8 +18,8 @@
     "MaterialDeck.Sett.ImageBufferHint": "画像キャッシュに保存する画像のデータ量を設定します。画像キャッシュは、ストリームデッキに送信されたすべての画像をローカルに保存します。これにより更新速度は向上しますが、メモリ使用量は増加します。",
     "MaterialDeck.Sett.ImageBrightness": "画像の明るさ",
     "MaterialDeck.Sett.ImageBrightnessHint": "デフォルトの画像の明るさを設定します。画像キャッシュサイズが0より大きい場合、更新を実行してください。",
-    "MaterialDeck.Sett.NrOfConnMessages": "接続警告回数",
-    "MaterialDeck.Sett.NrOfConnMessagesHint": "Material DeckがMaterial Serverに接続できない場合に表示される接続警告回数を設定します。０に設定すると､無制限となります。",
+    "MaterialDeck.Sett.MaxAttempts": "接続警告回数",
+    "MaterialDeck.Sett.MaxAttemptsHint": "Material DeckがMaterial Serverに接続できない場合に表示される接続警告回数を設定します。０に設定すると､無制限となります。",
 
     "MaterialDeck.PL.Unrestricted": "無制限",
     "MaterialDeck.PL.OneTrackPlaylist": "プレイリストごとに1つのトラック",

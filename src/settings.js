@@ -148,8 +148,8 @@ export const registerSettings = async function() {
     });
 
     game.settings.register(moduleName, 'nrOfConnMessages', {
-        name: "MaterialDeck.Sett.NrOfConnMessages",
-        hint: "MaterialDeck.Sett.NrOfConnMessagesHint",
+        name: "MaterialDeck.Sett.MaxAttempts",
+        hint: "MaterialDeck.Sett.MaxAttemptsHint",
         default: 5,
         type: Number,
         scope: 'client',

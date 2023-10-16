@@ -5,6 +5,7 @@
     "MaterialDeck.Notifications.Soundboard.NoPermission": "You do not have permission to configure the soundboard",
     "MaterialDeck.Notifications.Macroboard.NoPermission": "You do not have permission to configure the macroboard",
     "MaterialDeck.Notifications.Playlist.NoPermission": "You do not have permission to configure the playlists",
+    "MaterialDeck.Notifications.MaxAttemptsReached": "The maximum number of connection attempts has been reached",
 
     "MaterialDeck.EnableDialog.Title": "Material Deck: Enable for this Client",
     "MaterialDeck.EnableDialog.Content": "Do you want to enable Material Deck for this client?<br><br>If you don't have a Stream Deck connected, or don't want to use it for Material Deck, please click no.<br><br>You can always change this in the Material Deck module settings.<br><br>Foundry will refresh after this.<br>",
@@ -31,8 +32,8 @@
     "MaterialDeck.Sett.ImageBufferHint": "Sets the amount of images to store in the image cache. The image cache will locally store all images sent to the Stream Deck. This improves the update speed, but increases memory usage.",
     "MaterialDeck.Sett.ImageBrightness": "Image Brightness",
     "MaterialDeck.Sett.ImageBrightnessHint": "Sets the brightness of the default white images. If the Image Cache Size is bigger than 0, perform a refresh for instant results.",
-    "MaterialDeck.Sett.NrOfConnMessages": "Number of Connection Warnings",
-    "MaterialDeck.Sett.NrOfConnMessagesHint": "Sets the number of times a connection warning is displayed if Material Deck cannot connect to Material Companion. If set to 0, it will give not be limited.",
+    "MaterialDeck.Sett.MaxAttempts": "Maximum Connection Attempts",
+    "MaterialDeck.Sett.MaxAttemptsHint": "The maximum amount of times Material Plane will attempt to connect to Material Companion.",
     "MaterialDeck.Sett.SystemOverride": "System Override",
     "MaterialDeck.Sett.SystemOverrideHint": "Overrides the automatic gaming system detection. Unsupported systems default to dnd5e, but if an unsupported system is similar to a different system you can specify that system here.",
 

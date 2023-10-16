@@ -65,7 +65,8 @@ var ws;                         //Websocket variable
 let wsOpen = false;             //Bool for checking if websocket has ever been opened => changes the warning message if there's no connection
 let wsInterval;                 //Interval timer to detect disconnections
 let WSconnected = false;
-
+let connectFailedMsg = false;
+let connectionAttempts = 0;
 
 //CONFIG.debug.hooks = true;
 
@@ -84,7 +85,7 @@ async function analyzeWSmessage(msg){
 
     if (data.type == "connected" && data.source == "MaterialCompanion"){
         //console.log('data',data)
-        //transmitInitData();
+        transmitInitData();
         let sdNok = false;
         let msNok = false;
         if (data.materialCompanionVersion) {
@@ -230,7 +231,7 @@ function startWebsocket() {
     }
 
     ws.onopen = function() {
-        messageCount = 0;
+        connectionAttempts = 0;
         WSconnected = true;
         ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+address);
         wsOpen = true;
@@ -252,7 +253,6 @@ function startWebsocket() {
     clearInterval(wsInterval);
     wsInterval = setInterval(resetWS, 10000);
 }
-let messageCount = 0;
 
 function transmitInitData() {
     
@@ -285,22 +285,34 @@ function transmitInitData() {
  * Try to reset the websocket if a connection is lost
  */
 function resetWS(){
-    const maxMessages = game.settings.get(moduleName, 'nrOfConnMessages');
+    const maxAttempts = game.settings.get(moduleName, 'nrOfConnMessages');
+
+    if (connectionAttempts >= maxAttempts+1) return;
+
     if (wsOpen) {
         ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
         wsOpen = false;
-        messageCount = 0;
+        connectionAttempts = 0;
         WSconnected = false;
         startWebsocket();
     }
     else if (ws.readyState == 3){
-        if (maxMessages == 0 || maxMessages > messageCount) {
-            messageCount++;
-            const countString = maxMessages == 0 ? "" : " (" + messageCount + "/" + maxMessages + ")";
-            ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + countString);
-        }
         WSconnected = false;
-        startWebsocket();
+        if (!connectFailedMsg) {
+            if (connectionAttempts == maxAttempts) {
+                connectionAttempts++;
+                ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.MaxAttemptsReached"));
+            }
+            else {
+                connectionAttempts++;
+                ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + ` (${connectionAttempts}/${maxAttempts})` );
+                connectFailedMsg = true;
+                setTimeout(()=>{
+                    connectFailedMsg = false;
+                    startWebsocket();
+                },10000)
+            }
+        }
     }
 }
 

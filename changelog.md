@@ -2,6 +2,13 @@
 ### v1.5.2 - xx-xx-2023
 <b>Starting from this version you have to use <a href="https://github.com/MaterialFoundry/MaterialCompanion">Material Companion</a> instead of Material Server.</b>
 
+Additions:
+<ul>
+<li>Token Action => Added option to select token by user character</li>
+<li>(PF2e) Other Controls => Added option to open/close the party sheet</li>
+<li>Button icon and text can now be updated from within Foundry using macros</li>
+</ul>
+
 Fixes:
 <ul>
     <li>(PF2e) Token Action => Toggle Condition: Condition icons work again</li>
@@ -26,6 +33,10 @@ Additions:
     <li>Other Actions => Open Journal: Added option to open journal pages by page name or number</li>
     <li>Playlist Action: Added option to select playlists and tracks by name</li>
 </ul>
+
+<b>Compatible Material Companion and SD plugin:</b><br>
+Material Companion v1.0.2 (<b>must be updated!</b>): https://github.com/MaterialFoundry/MaterialCompanion/releases <br>
+SD plugin v1.6.0 (<b>must be updated!</b>): https://github.com/MaterialFoundry/MaterialDeck_SD/releases<br>
 
 ### v1.5.0 - 28-05-2023
 Additions:
