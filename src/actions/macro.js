@@ -25,19 +25,20 @@ export class MacroControl{
         const displayName = settings.displayName ? settings.displayName : false;
         const displayIcon = settings.displayIcon ? settings.displayIcon : false;
         const displayUses = settings.displayUses ? settings.displayUses : false;
-        let background = settings.background ? settings.background : '#000000';
         let macroNumber = settings.macroNumber;
         if (macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 0;
         macroNumber = parseInt(macroNumber);
 
-        let ringColor = "#000000";
-        let ring = 0;
-        let name = "";
-        let src = ""; 
+        let background;
+        let ringColor;
+        let ring;
+        let name;
+        let src;
+
         let macroId = undefined;
         let uses = undefined;
         let macroLabel = "";
-        
+
         if (mode == 'macroBoard') {  //Macro board
             if ((getPermission('MACRO','MACROBOARD') == false )) {
                 streamDeck.noPermission(context,device);
@@ -46,10 +47,10 @@ export class MacroControl{
             if (settings.macroBoardMode == 'offset') {  //Offset
                 const ringOffColor = settings.offRing ? settings.offRing : '#000000';
                 const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
-                
+
                 let macroOffset = parseInt(settings.macroOffset);
                 if (macroOffset == undefined || isNaN(macroOffset)) macroOffset = 0;
-                
+
                 ringColor = (macroOffset == parseInt(this.offset)) ? ringOnColor : ringOffColor;
                 ring = 2;
                 src = "modules/MaterialDeck/img/transparant.png";
@@ -67,7 +68,7 @@ export class MacroControl{
                 if ((macroLabel == undefined || macroLabel == "") && game.macros.get(macroId)) macroLabel = game.macros.get(macroId).name;
                 if (background == undefined) background = '#000000';
                 ring = 0;
-            }  
+            }
         }
         else if (mode == 'name') {  //macro by name
             const macroName = settings.macroNumber;
@@ -93,7 +94,7 @@ export class MacroControl{
 
         if (macroId != undefined){
             let macro = game.macros._source.find(p => p._id == macroId);
-            
+
             if (macro != undefined) {
                 if (displayName && mode == 'macroBoard') name = macroLabel;
                 else if (displayName) name = macro.name;
@@ -101,13 +102,14 @@ export class MacroControl{
                 if (hotbarUses && displayUses) uses = await this.getUses(macro);
             }
         }
-        else {
-            if (displayName) name = "";
-            if (displayIcon) src = "modules/MaterialDeck/img/black.png";
-        }
-        
+
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,uses:uses});
+        streamDeck.setIcon(context, device, src, {
+            background,
+            ring,
+            ringColor,
+            uses,
+        });
         streamDeck.setTitle(name,context);
     }
 
@@ -116,6 +118,17 @@ export class MacroControl{
         const command = macro.command;
         const uses = await hbUses.calculateUses(command);
         return uses;
+    }
+
+    /**
+     * This function checks if the current client supports macro arguments
+     * Either through the Advanced Macros module or through Foundry v11.0+
+     * @private
+     *
+     * @returns {boolean} Whether the current client supports macro arguments
+     */
+    supportsMacroArguments() {
+        return compatibleCore('11.0') || game.modules.get("advanced-macros")?.active;
     }
 
     async hotbar(){
@@ -136,13 +149,13 @@ export class MacroControl{
                 if ((getPermission('MACRO','HOTBAR') == false )) {
                     streamDeck.noPermission(context,device);
                     return;
-                } 
+                }
 
                 let src = "";
                 let name = "";
 
                 if (mode == 'Macro Board') continue;
-                
+
                 let macroId;
                 if (mode == 'hotbar'){
                     macroId = game.user.hotbar[macroNumber];
@@ -165,44 +178,41 @@ export class MacroControl{
             }
         }
     }
-   
+
     keyPress(settings){
         const mode = settings.macroMode ? settings.macroMode : 'hotbar';
         let macroNumber = settings.macroNumber;
         if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 0;
         let target = settings.target ? settings.target : undefined;
-        
+
         if (mode == 'hotbar' || mode == 'visibleHotbar' || mode == 'customHotbar'){
             if ((getPermission('MACRO','HOTBAR') == false )) return;
-            this.executeHotbar(macroNumber,mode,target);
-        } 
+            this.executeHotbar(macroNumber,mode,target, settings);
+        }
         else if (mode == 'name') {
-            if ((getPermission('MACRO','BY_NAME') == false )) return;
+            if ((getPermission('MACRO', 'BY_NAME') == false)) return;
+
             const macroName = settings.macroNumber;
             const macro = game.macros.getName(macroName);
-
             if (macro == undefined) return;
-           
-            const args = settings.macroArgs ? settings.macroArgs : "";
 
-            let advancedMacrosEnabled = false;
-            if (compatibleCore('11.0')) {
-                advancedMacrosEnabled = true;
+            let advancedMacrosEnabled = this.supportsMacroArguments();
+
+            if (advancedMacrosEnabled == false) {
+                macro.execute({ token: target });
             }
             else {
-                let advancedMacros = game.modules.get("advanced-macros");
-                if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
-            }
-            
-            if (args == "" || args == " ") advancedMacrosEnabled = false;
-
-            if (advancedMacrosEnabled == false) macro.execute({token:target});
-            else {
+                const args = settings.macroArgs || "{}";
                 if (compatibleCore('11.0')) {
                     let argument;
                     try {
                         argument = JSON.parse(args)
-                        macro.execute(argument);
+                        macro.execute({
+                            ...argument,
+                            // Add additional arguments for device updates
+                            deviceContext: settings.device,
+                            buttonContext: settings.context,
+                        });
                     } catch (err) {
                         console.error(err)
                     }
@@ -227,12 +237,12 @@ export class MacroControl{
                 this.updateAll();
             }
             else 
-                this.executeBoard(macroNumber);
+                this.executeBoard(macroNumber, settings);
         }
     }
 
-    executeHotbar(macroNumber,mode,target){
-        let macroId 
+    executeHotbar(macroNumber,mode,target, macroSettings){
+        let macroId;
         if (mode == 'hotbar') macroId = game.user.hotbar[macroNumber];
         else {
             let macros;
@@ -243,12 +253,19 @@ export class MacroControl{
             if (macroNumber > 9) macroNumber = 0;
             macroId = game.macros.apps[0].macros.find(m => m.key == macroNumber).macro?.id
         }
-        if (macroId == undefined) return;
+
+        if (!macroId) return;
         let macro = game.macros.get(macroId);
-        macro.execute({token:target});
+
+        macro.execute({
+            token: target,
+            // Add additional arguments for device updates
+            deviceContext: macroSettings.device,
+            buttonContext: macroSettings.context,
+        });
     }
 
-    executeBoard(macroNumber){
+    executeBoard(macroNumber, macroSettings){
         macroNumber = parseInt(macroNumber);
         macroNumber += this.offset - 1;
         if (macroNumber < 0) macroNumber = 0;
@@ -257,37 +274,36 @@ export class MacroControl{
         if (macroId != undefined){
             let macro = game.macros.get(macroId);
             if (macro != undefined && macro != null) {
-                const args = game.settings.get(moduleName,'macroSettings').args;
-                let advancedMacrosEnabled = false;
-                if (compatibleCore('11.0')) {
-                    advancedMacrosEnabled = true;
-                }
-                else {
-                    let advancedMacros = game.modules.get("advanced-macros");
-                    if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
-                }
-                
-                if (args == undefined || args[macroNumber] == undefined || args[macroNumber] == "") advancedMacrosEnabled = false;
-                
+                // Check if macro arguments are supported
+                let advancedMacrosEnabled = this.supportsMacroArguments();
                 if (advancedMacrosEnabled == false) macro.execute();
+
+                // Parse macro arguments
+                const args = game.settings.get(moduleName, 'macroSettings').args;
+
+                if (compatibleCore('11.0')) {
+                    // v11 macro arguments handling
+                    let argument;
+                    try {
+                        argument = JSON.parse(args[macroNumber] || "{}")
+                        macro.execute({
+                            ...argument,
+                            // Add additional arguments for device updates
+                            deviceContext: macroSettings.device,
+                            buttonContext: macroSettings.context,
+                        });
+                    } catch (err) {
+                        console.error(err)
+                    }
+                }
                 else {
-                    if (compatibleCore('11.0')) {
-                        let argument;
-                        try {
-                            argument = JSON.parse(args[macroNumber])
-                            macro.execute(argument);
-                        } catch (err) {
-                            console.error(err)
-                        }
-                    }
-                    else {
-                        let chatData = {
-                            user: game.user._id,
-                            speaker: ChatMessage.getSpeaker(),
-                            content: "/amacro '" + macro.name + "' " + args[macroNumber]
-                        };
-                        ChatMessage.create(chatData, {});
-                    }
+                    // Advanced macros handling
+                    let chatData = {
+                        user: game.user._id,
+                        speaker: ChatMessage.getSpeaker(),
+                        content: "/amacro '" + macro.name + "' " + args[macroNumber]
+                    };
+                    ChatMessage.create(chatData, {});
                 }
             }
         }

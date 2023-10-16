@@ -82,9 +82,14 @@ async function analyzeWSmessage(msg){
         console.log('rec',data)
     }
 
-    if (data.type == "connected" && data.source == "MaterialCompanion"){
-        //console.log('data',data)
-        //transmitInitData();
+    // Ping
+    if (data.T == "P") {
+        return;
+    }
+
+    if ((data.type == "connected" || data.type == "version") && data.data == "SD"){
+        transmitInitData();
+
         let sdNok = false;
         let msNok = false;
         if (data.materialCompanionVersion) {
@@ -186,7 +191,11 @@ async function analyzeWSmessage(msg){
         if (action == 'token')
             tokenControl.keyPress(settings);
         else if (action == 'macro')
-            macroControl.keyPress(settings);
+            macroControl.keyPress({
+                device,
+                context,
+                ...settings,
+            });
         else if (action == 'combattracker')
             combatTracker.keyPress(settings,context,device);
         else if (action == 'playlist')
@@ -738,19 +747,42 @@ Hooks.on('globalInterfaceVolumeChanged', () => {
     otherControls.updateAll();
 })
 
+// Hook to update the state of a button
 Hooks.on('MaterialDeck', (data) => {
-    if (data.type == 'setButton') {
-        //Get the buttonContext and device from streamDeck.buttonContext using data.buttonId
-        const buttonContext = streamDeck.buttonContext[0]?.buttons[data.button]?.context;
-        const device = streamDeck.buttonContext[0]?.device;
+    switch (data.action) {
+        case 'updateButton':
+            let buttonContext = data.buttonContext;
+            let deviceContext = data.deviceContext;
 
-        //Set icon on SD
-        streamDeck.setIcon(buttonContext, device, data.icon, data.options);
-    
-        //Set text on SD
-        streamDeck.setTitle(data.text, buttonContext);
-    }
-    else {
-        //reserved for future MD hooks
+            if (!buttonContext) {
+                // Find the button context via the buttonId
+                if (data.buttonId) {
+                    const devices = streamDeck.buttonContext;
+                    deviceContext = devices.find((device) => device.buttons.find((button) => {
+                        if (button?.settings.buttonId === data.buttonId.toString()) {
+                            buttonContext = button.context;
+                            return true;
+                        }
+                    })).device;
+                } else {
+                    // No button context, so we can't update the button
+                    console.warn('No button context found for button', data.buttonId);
+                    return;
+                }
+            }
+            //Set icon on SD
+            streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
+            //Set text on SD
+            streamDeck.setTitle(data.text, buttonContext);
+            // Set state so that the button can be updated when loaded
+            streamDeck.setButtonState(buttonContext, deviceContext, {
+                text: data.text,
+                icon: data.icon || '<empty>',
+                options: data.options || {},
+            });
+            break;
+        default:
+            console.warn('Unhandled action', data.action);
+            break;
     }
 });
