@@ -1,5 +1,5 @@
 # Changelog Material Deck Module
-### v1.6.0 - 19-10-2023
+### v1.6.0 - xx-xx-2023
 <b>Starting from this version you have to use <a href="https://github.com/MaterialFoundry/MaterialCompanion">Material Companion</a> instead of Material Server.</b>
 
 Additions:
