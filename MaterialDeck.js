@@ -393,6 +393,38 @@ async function enableSettingDialog() {
 Hooks.once('ready', async()=>{
     await registerSettings();
 
+    if (!game.settings.get(moduleName,'v1.6.0_update_notification')) {
+        let d = new Dialog({
+            title: "Material Deck Update Note",
+            content: `<p>Material Server has been replaced with Material Companion.<br>
+            This means that Material Server is no longer compatible.<br>
+            <br>
+            You can download Material Companion <a href="https://github.com/MaterialFoundry/MaterialCompanion/releases">here</a><br>
+            Documentation can be found <a href="https://github.com/MaterialFoundry/MaterialCompanion/wiki">here</a>
+            </p>
+            
+            <div style="display:flex">
+            <label>Do not show again</label>
+            <div class="form-value">
+              <input type="checkbox" id="MD_v1.6.0_DoNotShowAgain">
+            </div>
+            </div>
+            `,
+            buttons: {
+             one: {
+              icon: '',
+              label: "Ok",
+              callback: () => {
+                if (document.getElementById("MD_v1.6.0_DoNotShowAgain").checked) game.settings.set(moduleName,'v1.6.0_update_notification', true)
+              }
+             }
+            },
+            default: "one"
+           });
+           d.render(true);
+           
+    }
+
     if (game.settings.get(moduleName, 'Enable')) game.settings.set(moduleName,'EnableDialogShown',true);
     else if (!game.settings.get(moduleName,'EnableDialogShown')) {
         const response = await enableSettingDialog();

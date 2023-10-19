@@ -69,6 +69,12 @@ export const registerSettings = async function() {
      */
     //world,global,client
 
+    game.settings.register(moduleName,'v1.6.0_update_notification', {
+        scope: "world",
+        default: false,
+        type: Boolean
+    });
+
     //Enabled the module
     game.settings.register(moduleName,'Enable', {
         name: "MaterialDeck.Sett.Enable",

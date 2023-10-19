@@ -1,4 +1,10 @@
 # Changelog Material Deck Module
+### v1.6.1 - 20-10-2023
+Additions:
+<ul>
+<li>Added update popup to notify users to switch to Material Companion</li>
+</ul>
+
 ### v1.6.0 - 20-10-2023
 <b>Starting from this version you have to use <a href="https://github.com/MaterialFoundry/MaterialCompanion">Material Companion</a> instead of Material Server.</b>
 
