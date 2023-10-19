@@ -13,7 +13,7 @@
 
         <tr>
           <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.module"}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.module.current}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{versions.module.current}}</td>
           <td class='materialDeck_dlUtil_columnVersion'></td>
           <td class='materialDeck_dlUtil_columnVersion'>{{releases.module.version}}</td>
           <td class='materialDeck_dlUtil_columnOS'></td>
@@ -25,8 +25,8 @@
 
         <tr>
           <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.SDplugin"}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.plugin.current}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.plugin.minimum}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{versions.plugin.current}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{versions.plugin.minimum}}</td>
           <td class='materialDeck_dlUtil_columnVersion'>{{releases.plugin.version}}</td>
           <td class='materialDeck_dlUtil_columnOS'></td>
           <td class='materialDeck_dlUtil_columnButton'>
@@ -38,8 +38,8 @@
 
         <tr>
           <td class='materialDeck_dlUtil_columnLabel'>{{localize "MaterialDeck.DownloadUtility.MSserver"}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.materialCompanion.current}}</td>
-          <td class='materialDeck_dlUtil_columnVersion'>v{{versions.materialCompanion.minimum}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{versions.materialCompanion.current}}</td>
+          <td class='materialDeck_dlUtil_columnVersion'>{{versions.materialCompanion.minimum}}</td>
           <td class='materialDeck_dlUtil_columnVersion'>{{releases.materialCompanion.version}}</td>
           <td class='materialDeck_dlUtil_columnOS'>
             <select id="materialDeck_dlUtil_os" default="" {{#if msDlDisable}}disabled{{/if}}>

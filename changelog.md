@@ -1,12 +1,14 @@
 # Changelog Material Deck Module
-### v1.5.2 - xx-xx-2023
+### v1.6.0 - 19-10-2023
 <b>Starting from this version you have to use <a href="https://github.com/MaterialFoundry/MaterialCompanion">Material Companion</a> instead of Material Server.</b>
 
 Additions:
 <ul>
+<li>Added a new 'Custom' action, which allows the user to customize the behavior of a button. See the <a href="https://github.com/MaterialFoundry/MaterialDeck/wiki/Custom-Action">documentation</a></li>
 <li>Token Action => Added option to select token by user character</li>
 <li>(PF2e) Other Controls => Added option to open/close the party sheet</li>
-<li>Button icon and text can now be updated from within Foundry using macros</li>
+<li>Macro button icon and text can now be updated from within Foundry using macros (Thanks to RHeynsZa)</li>
+<li>Added support for Star Wars FFG system (thanks to anthonyscorrea)</li>
 </ul>
 
 Fixes:

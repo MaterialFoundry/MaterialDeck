@@ -5,7 +5,7 @@
 
 I created a <a href="https://discord.gg/3hd4G6TkmA">Discord server</a> to discuss this and other hardware-based Foundry modules. Feel free to join if you'd like to join the discussion and be updated on this module.
 
-[![Youtube Video](https://github.com/CDeenen/MaterialDeck/blob/Master/wiki/img/Youtube.png)](https://youtu.be/7h5Ew8cJYxg "FoundryVTT Material Deck Demonstration")
+[![Youtube Video](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/wiki/img/Youtube.png)](https://youtu.be/7h5Ew8cJYxg "FoundryVTT Material Deck Demonstration")
 
 # Material Deck
 Material Deck is a Foundry VTT module that allows you to control certain Foundry functions using an Elgato Stream Deck. A Stream Deck is a device that has physical buttons with displays behind them. Material Deck uses this to, for example, control playlists, execute macros, display and control the combat tracker.<br><br>
@@ -56,14 +56,14 @@ The functions are categorized into actions. Here is a list of the available acti
 </ul>
   
 ## Instructions and More Info
-Instructions and more info can be found in the <a href="https://github.com/CDeenen/MaterialDeck/wiki">wiki</a>.
+Instructions and more info can be found in the <a href="https://github.com/MaterialFoundry/MaterialDeck/wiki">wiki</a>.
 
 ## Latest releases
-<a href="https://github.com/CDeenen/MaterialDeck/releases">Module</a><br>
-<a href="https://github.com/CDeenen/MaterialDeck_SD/releases">Stream Deck</a><br>
-<a href="https://github.com/CDeenen/MaterialServer/releases">Server</a><br>
+<a href="https://github.com/MaterialFoundry/MaterialDeck/releases">Module</a><br>
+<a href="https://github.com/MaterialFoundry/MaterialDeck_SD/releases">Stream Deck</a><br>
+<a href="https://github.com/MaterialFoundry/MaterialCompanion/releases">Material Companion</a><br>
 <br>
-Module manifest: https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/module.json
+Module manifest: https://github.com/MaterialFoundry/MaterialDeck/releases/latest/download/module.json
 
 ## Software Versions & Module Incompatibilities
 <b>Foundry VTT:</b> v10 - v11<br>
@@ -73,7 +73,7 @@ Module manifest: https://raw.githubusercontent.com/CDeenen/MaterialDeck/Master/m
 See the [developer guide](./DEVGUIDE.md) for a guide on how to add new systems to `MaterialDeck`.
 
 ## Feedback
-If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: cdeenen@outlook.com.
+If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: info@materialfoundry.nl.
 
 ## Credits
 <b>Author:</b> Cristian Deenen (Cris#6864 on Discord)<br>

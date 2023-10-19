@@ -320,7 +320,6 @@ export class starwarsffg{
         if (roll == 'ability') {}
         else if (roll == 'save') {}
         else if (roll == 'skill') { 
-            console.log(skill)
             const skill_obj = this.getActorData(token).skills[skill];
             const characteristic = this.getActorData(token).characteristics[skill_obj.characteristic];
             game.ffg.DiceHelpers.rollSkillDirect(

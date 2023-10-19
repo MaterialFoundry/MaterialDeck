@@ -1069,9 +1069,18 @@ export class downloadUtility extends FormApplication {
             materialCompanion: await this.checkForUpdate('materialCompanion')
         }
 
+        let versionsCopy = JSON.parse(JSON.stringify(versions));
+        versionsCopy.module.current = 'v' + versionsCopy.module.current;
+        versionsCopy.materialCompanion.minimum = 'v' + versionsCopy.materialCompanion.minimum;
+        if (versionsCopy.materialCompanion.current == '') versionsCopy.materialCompanion.current = '?';
+        else versionsCopy.materialCompanion.current = 'v' + versionsCopy.materialCompanion.current;
+        versionsCopy.plugin.minimum = 'v' + versionsCopy.plugin.minimum;
+        if (versionsCopy.plugin.current == '') versionsCopy.plugin.current = '?';
+        else versionsCopy.plugin.current = 'v' + versionsCopy.plugin.current;
+
         return {
             releases: this.releases,
-            versions,
+            versions: versionsCopy,
             sdDlDisable: this.releases.plugin == undefined,
             msDlDisable: this.releases.materialCompanion == undefined,
             profileDlDisable: dlDisabled
@@ -1121,7 +1130,7 @@ export class downloadUtility extends FormApplication {
 
       getReleaseData() {
         let parent = this;
-        const url = 'https://api.github.com/repos/CDeenen/MaterialDeck_SD/releases/latest';
+        const url = 'https://api.github.com/repos/MaterialFoundry/MaterialDeck_SD/releases/latest';
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.send(null);
@@ -1143,6 +1152,7 @@ export class downloadUtility extends FormApplication {
             if (url == undefined) return;
     
             $.getJSON(url).done(function(releases) {
+                releases = releases.filter(r => !r.prerelease);
                 const release = releases[0];
                 if (reqType == 'plugin') {
                     const url = release.assets.find(a => a.name.includes('streamDeckPlugin'))?.browser_download_url;
@@ -1188,11 +1198,11 @@ export class downloadUtility extends FormApplication {
         let elementId;
         if (reqType == 'SD') {
             elementId = 'materialDeck_dlUtil_masterSdVersion';
-            url = 'https://raw.githubusercontent.com/CDeenen/MaterialDeck_SD/master/Plugin/com.cdeenen.materialdeck.sdPlugin/manifest.json';
+            url = 'https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck_SD/master/Plugin/com.cdeenen.materialdeck.sdPlugin/manifest.json';
         }
         else if (reqType == 'MS') {
             elementId = 'materialDeck_dlUtil_masterMsVersion';
-            url = 'https://raw.githubusercontent.com/CDeenen/MaterialServer/master/package.json';
+            url = 'https://raw.githubusercontent.com/MaterialFoundry/MaterialServer/master/package.json';
         }
         else if (reqType == 'Module') {
             elementId = 'materialDeck_dlUtil_masterModuleVersion';

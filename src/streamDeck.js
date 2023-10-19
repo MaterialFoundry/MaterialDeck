@@ -204,6 +204,8 @@ export class StreamDeck{
 
     setTitle(txt, context) {
         let btnText;
+        txt = this.formatTitle(txt);
+        let thisDevice;
         for (let device of this.buttonContext) {
             if (device == undefined) continue;
             const btn = device.buttons.find(b => b?.context == context);
@@ -231,7 +233,7 @@ export class StreamDeck{
     }
     
     setColor(context,color = '#000000'){
-let thisDevice;
+        let thisDevice;
         for (let device of this.buttonContext) {
             if (device == undefined) continue;
             thisDevice = device.buttons.find(b => b?.context == context);
@@ -388,6 +390,15 @@ let thisDevice;
             this.buttonsState[deviceContext] = {};
         }
         this.buttonsState[deviceContext][buttonContext] = state;
+    }
+
+    getButtonState(buttonId) {
+        for (const [device, buttons] of Object.entries(this.buttonsState)) {
+            for (const [key, value] of Object.entries(buttons)) {
+                if (value?.buttonId === buttonId) return value;
+              }
+        }
+        return undefined;
     }
 
     setProfile(action,device){

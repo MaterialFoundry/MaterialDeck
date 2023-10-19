@@ -44,18 +44,8 @@
             <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Installing the Stream Deck Software and Plugin</h2>
             <div class="materialDeck_helpMenu_collapsed">
                 You have to download and install the <a href="https://www.elgato.com/en/gaming/downloads">Stream Deck software</a>. 
-                You then need to install the plugin. There is a delay between when the plugin get's updated and the update being pushed in the store. 
-                If you try to install the plugin right after an update, you might not have the latest version. Manual installation is better in that case.
+                You then need to install the plugin as explained below.
                 <br>
-                <h3>Stream Deck Store</h3>
-                <ol>
-                    <li>Open the Stream Deck application</li>
-                    <li>Press 'More Actions' in the lower right</li>
-                    <li>Search (top right) or scroll to find Material Deck</li>
-                    <li>Press the 'Install' button</li>
-                </ol>
-        
-                <h3>Manually</h3>
                 <ol>
                     <li>Download the latest plugin file using the download utility in the module settings, or download it (com.cdeenen.materialdeck.streamDeckPlugin) from <a href="https://github.com/MaterialFoundry/MaterialDeck_SD/releases">here</a></li>
                     <li>Double-click the file, this should open the Stream Deck software</li>
@@ -65,35 +55,46 @@
     
             <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Installing a Stream Deck Profile (optional)</h2>
             <div class="materialDeck_helpMenu_collapsed">
-                You can create your own profile, but it is recommended to start with one of the pre-made profiles. Currently, there is a profile for the normal and XL Stream Deck variants.
+                You can create your own profile, but it is recommended to start with one of the pre-made profiles. Profiles with 'XL' in their name are made for the XL Stream Deck, the other profiles are made for the normal Stream Deck. Unless otherwise specified, the profiles are made for dnd5e, but many functions will work on other systems.
                 <ol>
                     <li>Download the latest plugin file using the download utility in the module settings, or download one (ending with .streamDeckProfile) from <a href="https://github.com/MaterialFoundry/MaterialDeck_SD/releases">here</a></li>
                     <li>Double-click the file, this should load the profile into the Stream Deck software</li>
                 </ol>
             </div>
     
-            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Downloading and Starting Material Companion</h2>
+            <h2 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:15px">Downloading, Starting and Configuring Material Companion</h2>
             <div class="materialDeck_helpMenu_collapsed">
-                Material Companion acts as a bridge application, bridging the communication between the Stream Deck and Material Deck.
+                <img src="modules/MaterialDeck/wiki/img/MaterialCompanion.png" align="right" HSPACE="5" width="600">
+                Material Companion acts as a bridge application, bridging the communication between the Stream Deck and Material Deck.<br>
+                To install:
                 <ol>
                     <li>Download the latest version for your operating system <a href="https://github.com/MaterialFoundry/MaterialCompanion/releases">here</a> or through the download utility</li>
                     <li>Extract the archive</li>
                     <li>Run 'MaterialCompanion.exe' (Windows) or 'MaterialCompanion' (MacOS and Linux)</li>
                 </ol>
-                <b>You need to always have Material Companion running when you want to use Material Deck</b><br>
+                You need to always have Material Companion running when you want to use Material Deck.<br>
+                If multiple users access Foundry from the same computer, Material Companion needs to only run once, and you can configure how Stream Decks connect to which user/client.<br>
+                If multiple users access Foundry from separate computers, they each need to run Material Companion on their computer if they want to use Material Deck.<br>
                 <br>
-                <a href="https://github.com/MaterialFoundry/MaterialCompanion/wiki">Material Companion documentation</a>
+                The Material Deck tab of Material Companion is divided into 3 sections.<br>
+                At the top you can see if Material Companion has connected to the Stream Deck app and the Foundry module (see below on how to configure the module).<br>
+                The middle section displays the connected Foundry clients (users) and what Stream Deck they are connected to. Green means the Stream Deck is connected to that client, red means it is not. You can change this by clicking on the Stream Deck.<br>
+                The bottom section lists the Stream Decks connected to the computer.<br>
+                <br>
+                <a href="https://github.com/MaterialFoundry/MaterialCompanion/wiki">Full Material Companion documentation</a>
+
+                <BR CLEAR="right" />
             </div>
             
         </div>
         <h1 class="materialDeck_helpMenu_expandable"><img src="modules/MaterialDeck/img/right.png" class="materialDeck_helpMenu_expandableIcon" style="width:20px">Module Setup</h1>
         <div class="materialDeck_helpMenu_collapsed">
             <img src="modules/MaterialDeck/wiki/img/ModuleSettings.png" align="right" HSPACE="5" width="450">
-            There are four buttons at the top:
+            There are 6 buttons at the top:
             <ul>
                 <li>Help</li>
-                <li>User Permission Configuration</li>
                 <li>Download Utility</li>
+                <li>User Permission Configuration</li>
                 <li>Playlist Configuration</li>
                 <li>Macro Configuration</li>
                 <li>Soundboard Configuration</li>
@@ -102,7 +103,8 @@
             <br>
             Below the buttons you will find the following settings:
             <ul>
-                <li><b>Enable Module</b> - Ticking this box enabled the module for the client</li>
+                <li><b>Enable Module for this Client</b> - Ticking this box enabled the module for the client</li>
+                <li><b>System Override</b> - Overrides the automatic game system detection. Unsupported systems default to dnd5e, but a different system can be selected in case it is more similar to your gaming system</li>
                 <li><b>Material Companion Address</b> - Fill in the address of Material Companion (usually if you run it on the same computer as 
                     you're using for Foundry, this can be localhost:3001). This is not necessarily the IP address of Foundry! It is the IP 
                     address of the computer that's running Material Companion. The default value will work for 99% of people, only change it if 
@@ -111,7 +113,7 @@
                     This improves the update speed, but increases memory usage.</li>
                 <li><b>Image Brightness</b> - Sets the brightness of the default white images for better readibility of the text. If Image Cache Size is large, it'll take a while for 
                     the new brightness setting to be applied. A refresh will give instantaneous results.</li>
-                <li><b>Number of Connection Warnings</b> - Sets the number of times you will get a warning when Material Deck cannot connect to Material Companion. Will be unlimited if set to 0.</li>
+                <li><b>Number of Connection Attempts</b> - Sets the number of times Material Deck will attempt to connect to Material Companion. Will be unlimited if set to 0.</li>
             </ul>
     
             <BR CLEAR="right" />
@@ -132,7 +134,6 @@
             <div class="materialDeck_helpMenu_collapsed">
                 <img src="modules/MaterialDeck/wiki/img/DownloadUtility.png" align="right" HSPACE="5" width="350">
                 The download utility allows you to easily check the current version of the Stream Deck plugin and Material Companion, and gives you the option to download the latest version.<br>
-                Please note that the current version of Material Companion is at the moment not supported.<br>
                 <br>
                 At the bottom you can also download the default profiles from <a href="https://github.com/MaterialFoundry/MaterialDeck_SD/releases">Github</a>.<div class=""></div><br>
         
@@ -270,6 +271,7 @@
                 <li><a href="https://github.com/MaterialFoundry/MaterialDeck/wiki/Scene-Action">Scene Action</a></li>
                 <li><a href="https://github.com/MaterialFoundry/MaterialDeck/wiki/Soundboard-Action">Soundboard Action</a></li>
                 <li><a href="https://github.com/MaterialFoundry/MaterialDeck/wiki/Token-Action">Token Action</a></li>
+                <li><a href="https://github.com/MaterialFoundry/MaterialDeck/wiki/Custom-Action">Custom Action</a></li>
             </ul>
         </div>
         

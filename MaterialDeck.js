@@ -8,6 +8,7 @@ import { SoundboardControl } from "./src/actions/soundboard.js";
 import { OtherControls } from "./src/actions/othercontrols.js";
 import { ExternalModules } from "./src/actions/external.js";
 import { SceneControl } from "./src/actions/scene.js";
+import { CustomControl } from "./src/actions/custom.js";
 import { downloadUtility, compareVersions } from "./src/misc.js";
 import { TokenHelper } from "./src/systems/tokenHelper.js";
 
@@ -28,15 +29,15 @@ export const releaseURLs = {
 
 export let versions = {
     materialCompanion: {
-        current: 'Unknown',
-        minimum: 'Unknown'
+        current: '',
+        minimum: ''
     },
     plugin: {
-        current: 'Unknown',
-        minimum: 'Unknown'
+        current: '',
+        minimum: ''
     },
     module: {
-        current: 'Unknown'
+        current: ''
     }
 }
 
@@ -49,6 +50,7 @@ export var soundboard;
 export var otherControls;
 export var externalModules;
 export var sceneControl;
+export var customControl;
 export var tokenHelper;
 export const moduleName = "MaterialDeck";
 export let gamingSystem = "dnd5e";
@@ -80,7 +82,7 @@ async function analyzeWSmessage(msg){
     const data = JSON.parse(msg);
     //console.log("Received",data);
     if (data.type == 'connected') {
-        console.log('rec',data)
+        //console.log('rec',data)
     }
 
     // Ping
@@ -88,7 +90,7 @@ async function analyzeWSmessage(msg){
         return;
     }
 
-    if ((data.type == "connected" || data.type == "version") && data.data == "SD"){
+    if (data.type == "connected"){
         transmitInitData();
 
         let sdNok = false;
@@ -135,7 +137,7 @@ async function analyzeWSmessage(msg){
             }).render(true);
         }
 
-        console.log("streamdeck connected to server", versions.materialCompanion.current);
+        console.log("streamdeck connected to Material Companion", versions.materialCompanion.current);
         streamDeck.resetImageBuffer();
     }
 
@@ -157,6 +159,7 @@ async function analyzeWSmessage(msg){
     if (data.data == 'init'){
 
     }
+
     if (event == 'willAppear' || event == 'didReceiveSettings'){
         if (coordinates == undefined) return;
         streamDeck.setScreen(action);
@@ -180,9 +183,13 @@ async function analyzeWSmessage(msg){
             externalModules.update(settings,context,device);
         else if (action == 'scene')
             sceneControl.update(settings,context,device);
+        else if (action == 'custom')
+            customControl.appear(settings, context, device);
     }
     
     else if (event == 'willDisappear'){
+        if (action == 'custom')
+            customControl.disappear(settings, context, device);
         if (coordinates == undefined) return;
         streamDeck.clearContext(device,action,coordinates,context);
     }
@@ -209,6 +216,8 @@ async function analyzeWSmessage(msg){
             externalModules.keyPress(settings,context,device);
         else if (action == 'scene')
             sceneControl.keyPress(settings);
+        else if (action == 'custom')
+            customControl.keyDown(settings, context, device);
     }
 
     else if (event == 'keyUp'){
@@ -216,6 +225,8 @@ async function analyzeWSmessage(msg){
         if (action == 'soundboard'){
             soundboard.keyPressUp(settings);
         }
+        else if (action == 'custom')
+            customControl.keyUp(settings, context, device);
     }
 };
 
@@ -296,7 +307,7 @@ function transmitInitData() {
 function resetWS(){
     const maxAttempts = game.settings.get(moduleName, 'nrOfConnMessages');
 
-    if (connectionAttempts >= maxAttempts+1) return;
+    if (maxAttempts != 0 && connectionAttempts >= maxAttempts+1) return;
 
     if (wsOpen) {
         ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
@@ -308,13 +319,13 @@ function resetWS(){
     else if (ws.readyState == 3){
         WSconnected = false;
         if (!connectFailedMsg) {
-            if (connectionAttempts == maxAttempts) {
+            if (maxAttempts != 0 && connectionAttempts == maxAttempts) {
                 connectionAttempts++;
-                ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.MaxAttemptsReached"));
+                ui.notifications.warn("Material Deck: " + game.i18n.localize("MaterialDeck.Notifications.MaxAttemptsReached"));
             }
             else {
                 connectionAttempts++;
-                ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + ` (${connectionAttempts}/${maxAttempts})` );
+                ui.notifications.warn("Material Deck: " + game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + (maxAttempts != 0 ? ` (${connectionAttempts}/${maxAttempts})` : ``));
                 connectFailedMsg = true;
                 setTimeout(()=>{
                     connectFailedMsg = false;
@@ -408,6 +419,7 @@ Hooks.once('ready', async()=>{
     externalModules = new ExternalModules();
     sceneControl = new SceneControl();
     tokenHelper = new TokenHelper();
+    customControl = new CustomControl();
 
     game.socket.on(`module.MaterialDeck`, async(payload) =>{
         //console.log(payload);
@@ -762,7 +774,7 @@ Hooks.on('globalInterfaceVolumeChanged', () => {
 // Hook to update the state of a button
 Hooks.on('MaterialDeck', (data) => {
     switch (data.action) {
-        case 'updateButton':
+        case 'updateButton': {
             let buttonContext = data.buttonContext;
             let deviceContext = data.deviceContext;
 
@@ -775,7 +787,7 @@ Hooks.on('MaterialDeck', (data) => {
                             buttonContext = button.context;
                             return true;
                         }
-                    })).device;
+                    }))?.device;
                 } else {
                     // No button context, so we can't update the button
                     console.warn('No button context found for button', data.buttonId);
@@ -790,9 +802,59 @@ Hooks.on('MaterialDeck', (data) => {
             streamDeck.setButtonState(buttonContext, deviceContext, {
                 text: data.text,
                 icon: data.icon || '<empty>',
-                options: data.options || {},
+                options: data.options || {}
             });
             break;
+        } 
+        case 'custom': {
+            let buttonContext;
+            let deviceContext;
+            if (data.buttonId) {
+                const devices = streamDeck.buttonContext;
+                deviceContext = devices.find((device) => device.buttons.find((button) => {
+                    if (button?.settings.buttonId === data.buttonId.toString()) {
+                        buttonContext = button.context;
+                        return true;
+                    }
+                }))?.device;
+            } else {
+                // No button context, so we can't update the button
+                console.warn('No button context found for button', data.buttonId);
+                return;
+            }
+
+            //Set icon on SD
+            streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
+            //Set text on SD
+            streamDeck.setTitle(data.text, buttonContext);
+            // Set state so that the button can be updated when loaded
+
+            customControl.registerButton({
+                buttonId: data.buttonId,
+                text: data.text,
+                icon: data.icon || '<empty>',
+                options: data.options || {},
+                keyUp: data.keyUp,
+                keyDown: data.keyDown,
+                appear: data.appear,
+                disappear: data.disappear
+            });
+
+            /*
+            streamDeck.setButtonState(buttonContext, deviceContext, {
+                buttonId: data.buttonId,
+                text: data.text,
+                icon: data.icon || '<empty>',
+                options: data.options || {},
+                keyUp: data.keyUp,
+                keyDown: data.keyDown,
+                appear: data.appear,
+                disappear: data.disappear
+            });
+            */
+            break;
+        }
+            
         default:
             console.warn('Unhandled action', data.action);
             break;
