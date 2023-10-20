@@ -1,4 +1,7 @@
 # Changelog Material Deck Module
+### v1.6.2 - 20-10-2023
+Fixed issue with GitHub actions that caused the module.json version to be empty.
+
 ### v1.6.1 - 20-10-2023
 Additions:
 <ul>
