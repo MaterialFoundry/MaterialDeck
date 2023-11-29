@@ -8,6 +8,7 @@ import { starfinder } from "./starfinder.js";
 import { starwarsffg } from "./starwarsffg.js";
 import { compatibleCore } from "../misc.js";
 import { gamingSystem } from "../../MaterialDeck.js";
+import { swade } from "./swade.js";
 
 export class TokenHelper{
     constructor(){
@@ -23,6 +24,7 @@ export class TokenHelper{
         else if (gamingSystem == 'forbidden-lands') this.system = new forbiddenlands();
         else if (gamingSystem == 'sfrpg') this.system = new starfinder();
         else if (gamingSystem == "starwarsffg") this.system = new starwarsffg();
+        else if (gamingSystem == "swade") this.system = new swade();
         else this.system = new dnd5e();     //default to dnd5e
     }
 
@@ -89,7 +91,7 @@ export class TokenHelper{
             y += gridSize;
         }
         else if (dir == 'center') {
-            let location = token.getCenter(x,y); 
+            let location = token.getCenter(x,y);
             canvas.animatePan(location);
         }
         if (game.user.isGM == false && game.paused) return;
@@ -107,7 +109,7 @@ export class TokenHelper{
         let rotationVal;
         if (move == 'by') rotationVal = token.document.rotation + value;
         else rotationVal = value;
-        
+
         token.document.update({rotation: rotationVal});
     }
 
@@ -234,7 +236,7 @@ export class TokenHelper{
     getFortune(token) {
         return this.system.getFortune(token)
     }
-    
+
     /* WFRP 4E */
     getCriticalWounds(token) {
         return this.system.getCriticalWounds(token)
@@ -268,7 +270,7 @@ export class TokenHelper{
     /* forbidden-lands */
     getAgility(token) {
         return this.system.getAgility(token)
-    }    
+    }
 
     /* forbidden-lands */
     getWits(token) {
@@ -301,21 +303,21 @@ export class TokenHelper{
     /* starwarsffg */
     getDefenseRanged(token){
         return this.system.getDefenseRanged(token);
-    } 
+    }
     /* starwarsffg */
     getEncumbrance(token){
         return this.system.getEncumbrance(token);
-    } 
+    }
     /* starwarsffg */
     getForcePool(token){
         return this.system.getForcePool(token);
-    } 
+    }
 
     /* starwarsffg */
     getStrain(token){
         return this.system.getStrain(token);
-    } 
-    
+    }
+
 
     /**
      * Conditions
