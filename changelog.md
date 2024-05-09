@@ -1,4 +1,30 @@
 # Changelog Material Deck Module
+### v1.6.3 - 09-05-2024
+
+Additions:
+<ul>
+<li>Combat Tracker Action: Combats on non-viewed scenes can now be displayed with further selection options, such as displaying unlinked combats</li>
+<li>Combat Tracker Action: Added function to add or remove selected tokens to/from the combat tracker</li>
+<li>Token & Combat Tracker Action: Added 'HP (bar)' stats option which displays an HP bar</li>
+<li>Other Actions: Added function to cycle through all, owned or friendly tokens</li>
+<li>Playlist Action: Tracks and playlists can now be paused</li>
+<li>External Modules Action => Monk's Active Tile Triggers: If no tile ID has been specified, the ID of a selected tile will be posted as a notification and to the console</li>
+<li>Token Action => On Click: Roll = > Added 'Roll Mode' option to set the privacy of a roll (private, public, GM, blind), not to be confused with the old 'Roll Mode', which has been renamed to 'Roll Type' (advantage, disadvantage, etc)</li>
+</ul>
+
+Fixes:
+<ul>
+<li>Macro Action: Fixed issue where a macro would not be called if macro arguments have never been entered</li>
+<li>Token Action: Token movement on hex grids now works properly</li>
+<li>External Modules: Fixed 'Not Your Turn' integration</li>
+</ul>
+
+Other:
+<ul>
+<li>All system dependent code has been moved to different modules, where each system is its own module</li>
+<li>Token Action => On Click: Roll => Renamed 'Roll Mode' to 'Roll Type' to make place for the new 'Roll Mode' function (which sets roll privacy)</li>
+</ul>
+
 ### v1.6.2 - 20-10-2023
 Fixed issue with GitHub actions that caused the module.json version to be empty.
 

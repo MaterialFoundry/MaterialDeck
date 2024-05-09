@@ -1,4 +1,4 @@
-import { moduleName, streamDeck, getPermission } from "../../MaterialDeck.js";
+import { moduleName, materialDeck, getPermission } from "../../MaterialDeck.js";
 
 export class SoundboardControl{
     constructor(){
@@ -9,7 +9,7 @@ export class SoundboardControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -21,7 +21,7 @@ export class SoundboardControl{
 
     update(settings,context,device){
         if (getPermission('SOUNDBOARD','PLAY') == false ) {
-            streamDeck.noPermission(context,device);
+            materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         this.active = true;
@@ -44,9 +44,9 @@ export class SoundboardControl{
             if (settings.displayName && soundboardSettings.name != undefined) txt = soundboardSettings.name[soundNr];
             if (settings.displayIcon && soundboardSettings.img != undefined) src = soundboardSettings.img[soundNr];
 
-            streamDeck.setTitle(txt,context);
+            materialDeck.streamDeck.setTitle(txt,context);
             if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-            streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+            materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'offset') { //Offset
             const ringOffColor = settings.offRing ? settings.offRing : '#000000';
@@ -57,10 +57,10 @@ export class SoundboardControl{
             if (offset == this.offset) ringColor = ringOnColor;
             else ringColor = ringOffColor;
 
-            streamDeck.setTitle(txt,context);
+            materialDeck.streamDeck.setTitle(txt,context);
             let src = '';
             if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-            streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+            materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
         }
         else if (mode == 'stopAll') {   //Stop all sounds
             let src = 'modules/MaterialDeck/img/playlist/stop.png';
@@ -71,9 +71,9 @@ export class SoundboardControl{
                     soundPlaying = true;
             if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
             if (soundPlaying)
-                streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:'#00FF00',overlay:true});
+                materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:'#00FF00',overlay:true});
             else
-                streamDeck.setIcon(context,device,src,{background:background,ring:1,ringColor:'#000000',overlay:true});
+                materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:1,ringColor:'#000000',overlay:true});
         }
     }
 

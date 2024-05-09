@@ -9,23 +9,14 @@ import { OtherControls } from "./src/actions/othercontrols.js";
 import { ExternalModules } from "./src/actions/external.js";
 import { SceneControl } from "./src/actions/scene.js";
 import { CustomControl } from "./src/actions/custom.js";
-import { downloadUtility, compareVersions } from "./src/misc.js";
-import { TokenHelper } from "./src/systems/tokenHelper.js";
+import { compatibleSystem } from "./src/misc.js";
+import { SystemHelper } from "./src/systemHelper.js";
+import { startWebsocket } from "./src/websocket.js"
 
-export const releaseURLs = {
-    module: {
-        api: "https://api.github.com/repos/MaterialFoundry/MaterialDeck/releases",
-        url: "https://github.com/MaterialFoundry/MaterialDeck/releases"
-    },
-    plugin: {
-        api: "https://api.github.com/repos/MaterialFoundry/MaterialDeck_SD/releases",
-        url: "https://github.com/MaterialFoundry/MaterialDeck_SD/releases"
-    },
-    materialCompanion: {
-        api: "https://api.github.com/repos/MaterialFoundry/MaterialCompanion/releases",
-        url: "https://github.com/MaterialFoundry/MaterialCompanion/releases"
-    } 
-}
+//CONFIG.debug.hooks = true;
+
+export const moduleName = "MaterialDeck";
+export let materialDeck = {enableModule: false};
 
 export let versions = {
     materialCompanion: {
@@ -41,304 +32,47 @@ export let versions = {
     }
 }
 
-export var streamDeck;
-export var tokenControl;
-export var macroControl;
-export var combatTracker;
-export var playlistControl;
-export var soundboard;
-export var otherControls;
-export var externalModules;
-export var sceneControl;
-export var customControl;
-export var tokenHelper;
-export const moduleName = "MaterialDeck";
-export let gamingSystem = "dnd5e";
+let controlTokenTimer;
 export let hotbarUses = false;
 export let calculateHotbarUses;
 
-let ready = false;
-let controlTokenTimer;
+class MaterialDeck {
+    gamingSystem = "dnd5e";
+    ready = false;
 
-export var enableModule;
+    constructor(enable) {
+        this.enableModule = enable;
 
-//Websocket variables
-var ws;                         //Websocket variable
-let wsOpen = false;             //Bool for checking if websocket has ever been opened => changes the warning message if there's no connection
-let wsInterval;                 //Interval timer to detect disconnections
-let WSconnected = false;
-let connectFailedMsg = false;
-let connectionAttempts = 0;
+        //if (!enable) return;
 
-//CONFIG.debug.hooks = true;
+        this.soundboard = new SoundboardControl();
+        this.streamDeck = new StreamDeck();
+        this.tokenControl = new TokenControl();
+        this.macroControl = new MacroControl();
+        this.combatTracker = new CombatTracker();
+        this.playlistControl = new PlaylistControl();
+        this.otherControls = new OtherControls();
+        this.externalModules = new ExternalModules();
+        this.sceneControl = new SceneControl();
+        this.systemHelper = new SystemHelper();
+        this.customControl = new CustomControl();
 
-/*
- * Analyzes the message received 
- * 
- * @param {*} msg Message received
- */
-async function analyzeWSmessage(msg){
-    if (enableModule == false) return;
-    const data = JSON.parse(msg);
-    //console.log("Received",data);
-    if (data.type == 'connected') {
-        //console.log('rec',data)
+        this.getGamingSystem();
     }
 
-    // Ping
-    if (data.T == "P") {
-        return;
+    registerSystem(data) {
+        this.systemHelper?.registerSystem(data);
     }
 
-    if (data.type == "connected"){
-        transmitInitData();
-
-        let sdNok = false;
-        let msNok = false;
-        if (data.materialCompanionVersion) {
-            versions.materialCompanion.current = data.materialCompanionVersion;
-            if (!compareVersions(versions.materialCompanion.minimum, versions.materialCompanion.current)) {
-                msNok = true;
-            }
-        }
-        if (data.pluginVersion) {
-            versions.plugin.current = data.pluginVersion;
-            if (!compareVersions(versions.plugin.minimum, versions.plugin.current)) {
-                sdNok = true;
-            }
-        }
-        if (msNok || sdNok) {
-            let content = '';
-            if (sdNok && msNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.Both")}<br><br>`;
-            else if (sdNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.SD")}<br><br>`;
-            else if (msNok) content += `${game.i18n.localize("MaterialDeck.UpdateRequired.MC")}<br><br>`;
-
-            content += `${game.i18n.localize("MaterialDeck.UpdateRequired.Update")}<br><br>`;
-
-            if (sdNok) content += `<a href="${releaseURLs.plugin.url}">${game.i18n.localize("MaterialDeck.UpdateRequired.SDdownload")}</a><br>`;
-            if (msNok) content += `<a href="${releaseURLs.materialCompanion.url}">Material Companion</a><br>`;
-            content += "<br>"
-
-            new Dialog({
-                title: game.i18n.localize("MaterialDeck.UpdateRequired.Title"),
-              content,
-              buttons: {
-                download: {
-                 icon: '<i class="fas fa-download"></i>',
-                 label: "Download Utility",
-                 callback: () => new downloadUtility()
-                },
-                ignore: {
-                 icon: '<i class="fas fa-times"></i>',
-                 label: "Ignore"
-                }
-               },
-               default: "download"
-            }).render(true);
-        }
-
-        console.log("streamdeck connected to Material Companion", versions.materialCompanion.current);
-        streamDeck.resetImageBuffer();
+    compatibleSystem(version) {
+        return compatibleSystem(version)
     }
 
-    if (data.type == 'newDevice') {
-        streamDeck.newDevice(data.iteration,data.device);
-        return;
+    getGamingSystem() {
+        const systemOverride = game.settings.get(moduleName,'systemOverride');
+        this.gamingSystem = (systemOverride == undefined || systemOverride == null || systemOverride == '') ? game.system.id : systemOverride;
+        return this.gamingSystem;
     }
-
-    if (data == undefined || data.payload == undefined) return;
-    const action = data.action;
-    const event = data.event;
-    const context = data.context;
-    const coordinates = data.payload.coordinates;
-    const settings = data.payload.settings;
-    const device = data.device;
-    const name = data.deviceName;
-    const type = data.deviceType;
-
-    if (data.data == 'init'){
-
-    }
-
-    if (event == 'willAppear' || event == 'didReceiveSettings'){
-        if (coordinates == undefined) return;
-        streamDeck.setScreen(action);
-        await streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings,name,type);
-
-        if (action == 'token'){
-            tokenControl.active = true;
-            tokenControl.pushData(canvas.tokens.controlled[0]?.id,settings,context,device);
-        }  
-        else if (action == 'macro')
-            macroControl.update(settings,context,device);
-        else if (action == 'combattracker')
-            combatTracker.update(settings,context,device);
-        else if (action == 'playlist')
-            playlistControl.update(settings,context,device);
-        else if (action == 'soundboard')
-            soundboard.update(settings,context,device); 
-        else if (action == 'other')
-            otherControls.update(settings,context,device);
-        else if (action == 'external')
-            externalModules.update(settings,context,device);
-        else if (action == 'scene')
-            sceneControl.update(settings,context,device);
-        else if (action == 'custom')
-            customControl.appear(settings, context, device);
-    }
-    
-    else if (event == 'willDisappear'){
-        if (action == 'custom')
-            customControl.disappear(settings, context, device);
-        if (coordinates == undefined) return;
-        streamDeck.clearContext(device,action,coordinates,context);
-    }
-
-    else if (event == 'keyDown'){
-
-        if (action == 'token')
-            tokenControl.keyPress(settings);
-        else if (action == 'macro')
-            macroControl.keyPress({
-                device,
-                context,
-                ...settings,
-            });
-        else if (action == 'combattracker')
-            combatTracker.keyPress(settings,context,device);
-        else if (action == 'playlist')
-            playlistControl.keyPress(settings,context,device);
-        else if (action == 'soundboard')
-            soundboard.keyPressDown(settings);
-        else if (action == 'other')
-            otherControls.keyPress(settings,context,device);
-        else if (action == 'external')
-            externalModules.keyPress(settings,context,device);
-        else if (action == 'scene')
-            sceneControl.keyPress(settings);
-        else if (action == 'custom')
-            customControl.keyDown(settings, context, device);
-    }
-
-    else if (event == 'keyUp'){
-
-        if (action == 'soundboard'){
-            soundboard.keyPressUp(settings);
-        }
-        else if (action == 'custom')
-            customControl.keyUp(settings, context, device);
-    }
-};
-
-/**
- * Start a new websocket
- * Start a 10s interval, if no connection is made, run resetWS()
- * If connection is made, set interval to 1.5s to check for disconnects
- * If message is received, reset the interval, and send the message to analyzeWSmessage()
- */
-function startWebsocket() {
-    const address = game.settings.get(moduleName,'address');
-    
-    const url = address.startsWith('wss://') ? address : ('ws://'+address+'/');
-
-    ws = new WebSocket(url);
-
-    ws.onmessage = function(msg){
-        //console.log(msg);
-        analyzeWSmessage(msg.data);
-        clearInterval(wsInterval);
-        wsInterval = setInterval(resetWS, 5000);
-    }
-
-    ws.onopen = function() {
-        connectionAttempts = 0;
-        WSconnected = true;
-        ui.notifications.info("Material Deck "+game.i18n.localize("MaterialDeck.Notifications.Connected") +": "+address);
-        wsOpen = true;
-        const msg = {
-            target: "MaterialCompanion",
-            source: "MaterialDeck_Foundry",
-            sourceTarget: "MaterialDeck_Device",
-            type: "connected",
-            userId: game.userId,
-            userName: game.user.name,
-            version: game.modules.get(moduleName).version
-        }
-        ws.send(JSON.stringify(msg));
-        transmitInitData();
-        clearInterval(wsInterval);
-        wsInterval = setInterval(resetWS, 5000);
-    }
-  
-    clearInterval(wsInterval);
-    wsInterval = setInterval(resetWS, 10000);
-}
-
-function transmitInitData() {
-    
-    const msg = {
-        target: "MaterialDeck_Device",
-        type: "init",
-        userId: game.userId,
-        system: getGamingSystem(),
-        systemData: {
-            conditions: tokenHelper.getConditionList(),
-            abilities: tokenHelper.getAbilityList(),
-            saves: tokenHelper.getSavesList(),
-            skills: tokenHelper.getSkillList(),
-            itemTypes: tokenHelper.getItemTypes(),
-            weaponRollModes: tokenHelper.getWeaponRollModes(),
-            featureTypes: tokenHelper.getFeatureTypes(),
-            spellLevels: tokenHelper.getSpellLevels(),
-            spellTypes: tokenHelper.getSpellTypes(),
-            stats: tokenHelper.getStatsList(),
-            onClick: tokenHelper.getOnClickList(),
-            rollTypes: tokenHelper.getRollTypes(),
-            attackModes: tokenHelper.getAttackModes()
-        },
-        coreVersion: game.version.split('.')[0]
-    }
-    ws.send(JSON.stringify(msg));
-}
-
-/**
- * Try to reset the websocket if a connection is lost
- */
-function resetWS(){
-    const maxAttempts = game.settings.get(moduleName, 'nrOfConnMessages');
-
-    if (maxAttempts != 0 && connectionAttempts >= maxAttempts+1) return;
-
-    if (wsOpen) {
-        ui.notifications.warn("Material Deck: "+game.i18n.localize("MaterialDeck.Notifications.Disconnected"));
-        wsOpen = false;
-        connectionAttempts = 0;
-        WSconnected = false;
-        startWebsocket();
-    }
-    else if (ws.readyState == 3){
-        WSconnected = false;
-        if (!connectFailedMsg) {
-            if (maxAttempts != 0 && connectionAttempts == maxAttempts) {
-                connectionAttempts++;
-                ui.notifications.warn("Material Deck: " + game.i18n.localize("MaterialDeck.Notifications.MaxAttemptsReached"));
-            }
-            else {
-                connectionAttempts++;
-                ui.notifications.warn("Material Deck: " + game.i18n.localize("MaterialDeck.Notifications.ConnectFail") + (maxAttempts != 0 ? ` (${connectionAttempts}/${maxAttempts})` : ``));
-                connectFailedMsg = true;
-                setTimeout(()=>{
-                    connectFailedMsg = false;
-                    startWebsocket();
-                },10000)
-            }
-        }
-    }
-}
-
-export function sendWS(txt){
-    if (WSconnected)
-        ws.send(txt);
 }
 
 export function isEmpty(obj) {
@@ -356,17 +90,6 @@ export function getPermission(action,func) {
     else return settings.permissions?.[action]?.[func]?.[role];
 }
 
-function getGamingSystem() {
-    const systemOverride = game.settings.get(moduleName,'systemOverride');
-    gamingSystem = (systemOverride == undefined || systemOverride == null || systemOverride == '') ? game.system.id : systemOverride;
-    return gamingSystem;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Hooks
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async function enableSettingDialog() {
     return new Promise((resolve, reject) => {
 
@@ -385,6 +108,11 @@ async function enableSettingDialog() {
     });
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Hooks
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Ready hook
@@ -393,82 +121,75 @@ async function enableSettingDialog() {
 Hooks.once('ready', async()=>{
     await registerSettings();
 
-    if (!game.settings.get(moduleName,'v1.6.0_update_notification')) {
-        let d = new Dialog({
-            title: "Material Deck Update Note",
-            content: `<p>Material Server has been replaced with Material Companion.<br>
-            This means that Material Server is no longer compatible.<br>
-            <br>
-            You can download Material Companion <a href="https://github.com/MaterialFoundry/MaterialCompanion/releases">here</a><br>
-            Documentation can be found <a href="https://github.com/MaterialFoundry/MaterialCompanion/wiki">here</a>
-            </p>
-            
-            <div style="display:flex">
-            <label>Do not show again</label>
-            <div class="form-value">
-              <input type="checkbox" id="MD_v1.6.0_DoNotShowAgain">
-            </div>
-            </div>
-            `,
-            buttons: {
-             one: {
-              icon: '',
-              label: "Ok",
-              callback: () => {
-                if (document.getElementById("MD_v1.6.0_DoNotShowAgain").checked) game.settings.set(moduleName,'v1.6.0_update_notification', true)
-              }
-             }
-            },
-            default: "one"
-           });
-           d.render(true);
-           
-    }
-
     if (game.settings.get(moduleName, 'Enable')) game.settings.set(moduleName,'EnableDialogShown',true);
     else if (!game.settings.get(moduleName,'EnableDialogShown')) {
         const response = await enableSettingDialog();
         await game.settings.set(moduleName,'EnableDialogShown',true);
         if (response == "yes") await game.settings.set(moduleName, 'Enable', true);
         else await game.settings.set(moduleName, 'Enable', false);
-        
     }
 
-    enableModule = (game.settings.get(moduleName,'Enable')) ? true : false; 
+    const enableModule = (game.settings.get(moduleName,'Enable')) ? true : false; 
   
-    getGamingSystem();
     versions.module.current = game.modules.get('MaterialDeck').version;
     versions.materialCompanion.minimum = game.modules.get(moduleName).flags.minimumMaterialCompanionVersion;
     versions.plugin.minimum = game.modules.get(moduleName).flags.minimumPluginVersion;
 
-    soundboard = new SoundboardControl();
-    streamDeck = new StreamDeck();
-    tokenControl = new TokenControl();
-    macroControl = new MacroControl();
-    combatTracker = new CombatTracker();
-    playlistControl = new PlaylistControl();
-    otherControls = new OtherControls();
-    externalModules = new ExternalModules();
-    sceneControl = new SceneControl();
-    tokenHelper = new TokenHelper();
-    customControl = new CustomControl();
+    materialDeck = new MaterialDeck(enableModule);
 
+    if (!game.settings.get(moduleName,'v1.6.3_update_notification') && enableModule) {
+        let d = new Dialog({
+            title: "Material Deck Update Note",
+            content: 
+            `
+                <p>
+                    <b>Important changes to how Material Deck handles gaming systems</b><br>
+                    <br>
+                    Anything related to how Material Deck handles gaming systems has been split into separate modules.<br>
+                    This means that you have to install and enable the specific Material Deck system module for your gaming system.<br>
+                    <br>
+                    Click <a href='https://github.com/MaterialFoundry/MaterialDeck/wiki/Gaming-Systems'>here</a> for more info.<br>
+                    <br>
+                </p>
+                
+                <div style="display:flex">
+                    <label>Do not show again</label>
+                    <div class="form-value">
+                        <input type="checkbox" id="MD_v1.6.3_DoNotShowAgain">
+                    </div>
+                </div>
+            `,
+            buttons: {
+             one: {
+              icon: '',
+              label: "Ok",
+              callback: () => {
+                if (document.getElementById("MD_v1.6.3_DoNotShowAgain").checked) game.settings.set(moduleName,'v1.6.3_update_notification', true)
+              }
+             }
+            },
+            default: "one"
+           });
+           d.render(true);
+    }
+
+    
     game.socket.on(`module.MaterialDeck`, async(payload) =>{
         //console.log(payload);
-        if (payload.msgType == "playSound") soundboard.playSound(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
+        if (payload.msgType == "playSound") materialDeck.soundboard.playSound(payload.trackNr,payload.src,payload.play,payload.repeat,payload.volume);  
         else if (game.user.isGM && payload.msgType == "playPlaylist") {
-            const playlist = playlistControl.getPlaylist(payload.playlistNr);
-            playlistControl.playPlaylist(playlist,payload.playlistNr);
+            const playlist = materialDeck.playlistControl.getPlaylist(payload.playlistNr);
+            materialDeck.playlistControl.playPlaylist(playlist,payload.playlistNr);
         }
         else if (game.user.isGM && payload.msgType == "playTrack") {
-            const playlist = playlistControl.getPlaylist(payload.playlistNr);
+            const playlist = materialDeck.playlistControl.getPlaylist(payload.playlistNr);
             const sounds = playlist.data.sounds;
             for (let track of sounds)
                 if (track._id == payload.trackId)
-                    playlistControl.playTrack(track,playlist,payload.playlistNr)
+                    materialDeck.playlistControl.playTrack(track,playlist,payload.playlistNr)
         }
         else if (game.user.isGM && payload.msgType == "stopAllPlaylists")
-            playlistControl.stopAll(payload.force);
+            materialDeck.playlistControl.stopAll(payload.force);
         else if (game.user.isGM && payload.msgType == "soundboardUpdate") {
             await game.settings.set(moduleName,'soundboardSettings',payload.settings);
             const payloadNew = {
@@ -476,8 +197,8 @@ Hooks.once('ready', async()=>{
             };
             game.socket.emit(`module.MaterialDeck`, payloadNew);
         }
-        else if (game.user.isGM == false && payload.msgType == "soundboardRefresh" && enableModule)
-            soundboard.updateAll();
+        else if (game.user.isGM == false && payload.msgType == "soundboardRefresh" && materialDeck.enableModule)
+            materialDeck.soundboard.updateAll();
         else if (game.user.isGM && payload.msgType == "macroboardUpdate") {
             await game.settings.set(moduleName,'macroSettings',payload.settings);
             const payloadNew = {
@@ -485,8 +206,8 @@ Hooks.once('ready', async()=>{
             };
             game.socket.emit(`module.MaterialDeck`, payloadNew);
         }
-        else if (game.user.isGM == false && payload.msgType == "macroboardRefresh" && enableModule)
-            macroControl.updateAll();
+        else if (game.user.isGM == false && payload.msgType == "macroboardRefresh" && materialDeck.enableModule)
+            materialDeck.macroControl.updateAll();
         else if (game.user.isGM && payload.msgType == "playlistUpdate") {
             await game.settings.set(moduleName,'playlists',payload.settings);
             const payloadNew = {
@@ -494,8 +215,8 @@ Hooks.once('ready', async()=>{
             };
             game.socket.emit(`module.MaterialDeck`, payloadNew);
         }
-        else if (game.user.isGM == false && payload.msgType == "playlistRefresh" && enableModule)
-            playlistControl.updateAll();
+        else if (game.user.isGM == false && payload.msgType == "playlistRefresh" && materialDeck.enableModule)
+            materialDeck.playlistControl.updateAll();
             
     });
 
@@ -532,121 +253,127 @@ Hooks.once('ready', async()=>{
 
     if (enableModule == false) return;
     if (getPermission('ENABLE') == false) {
-        ready = true;
+        materialDeck.ready = false;
         return;
     }
-
+    materialDeck.ready = true;
     startWebsocket();
 
     const hotbarUsesTemp = game.modules.get("illandril-hotbar-uses");
     if (hotbarUsesTemp != undefined) hotbarUses = true;
+
+    Hooks.call('MaterialDeck_Ready');
 });
 
 function updateActor(id) {
-    const token = tokenHelper.getTokenFromActorId(id);
+    const token = materialDeck.systemHelper.getTokenFromActorId(id);
     if (token == undefined) return;
-    tokenControl.update(token.id);
+    materialDeck.tokenControl.update(token.id);
 }
 
+Hooks.on('refreshToken', (token)=> {
+    materialDeck.tokenControl.update(token.id);
+});
+
 Hooks.on('updateToken',(document,changes)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     let tokenId = changes._id;
-    if (tokenId == canvas.tokens.controlled[0]?.id) tokenControl.update(canvas.tokens.controlled[0]?.id);
-    if (macroControl != undefined) macroControl.updateAll();
-    if (changes.hidden != undefined && combatTracker != undefined) combatTracker.updateAll();
+    if (tokenId == canvas.tokens.controlled[0]?.id) materialDeck.tokenControl.update(canvas.tokens.controlled[0]?.id);
+    if (materialDeck.macroControl != undefined) materialDeck.macroControl.updateAll();
+    if (changes.hidden != undefined && materialDeck.combatTracker != undefined) materialDeck.combatTracker.updateAll();
 });
 
 Hooks.on('updateActor',(actor)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     updateActor(actor.id);
-    if (macroControl != undefined) macroControl.updateAll();
+    if (materialDeck.macroControl != undefined) materialDeck.macroControl.updateAll();
 });
 
 Hooks.on('createActiveEffect',(data)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     updateActor(data.parent.id);
     return;
 });
 
 Hooks.on('deleteActiveEffect',(data)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     updateActor(data.parent.id);
     return;
 });
 
 Hooks.on('onActorSetCondition',(data)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     updateActor(data.actor.id);
     return;
 });
 
 Hooks.on('controlToken',(token,controlled)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     if (controlled) {
-        tokenControl.update(token.id);
+        materialDeck.tokenControl.update(token.id);
         if (controlTokenTimer != undefined) {
             clearTimeout(controlTokenTimer);
             controlTokenTimer = undefined;
         }
     }
     else {
-        controlTokenTimer = setTimeout(function(){tokenControl.update(canvas.tokens.controlled[0]?.id);},10)
+        controlTokenTimer = setTimeout(function(){materialDeck.tokenControl.update(canvas.tokens.controlled[0]?.id);},10)
     }
     
-    if (macroControl != undefined) macroControl.updateAll();
+    if (materialDeck.macroControl != undefined) materialDeck.macroControl.updateAll();
 });
 
 Hooks.on('updateOwnedItem',()=>{
-    if (macroControl != undefined) macroControl.updateAll();
+    if (materialDeck.macroControl != undefined) materialDeck.macroControl.updateAll();
 })
 
 Hooks.on('renderHotbar', (hotbar)=>{
-    if (enableModule == false || ready == false) return;
-    if (macroControl != undefined) macroControl.hotbar(hotbar.macros);
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.macroControl != undefined) materialDeck.macroControl.hotbar(hotbar.macros);
 });
 
 Hooks.on('render', (app)=>{
-    if (enableModule == false || ready == false) return;
-    if (app.id == "hotbar" && macroControl != undefined)  macroControl.hotbar(app.macros);
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (app.id == "hotbar" && materialDeck.macroControl != undefined)  materialDeck.macroControl.hotbar(app.macros);
 });
 
 Hooks.on('renderCombatTracker',()=>{
-    if (enableModule == false || ready == false) return;
-    if (combatTracker != undefined) {
-        combatTracker.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.combatTracker != undefined) {
+        materialDeck.combatTracker.updateAll();
     }
-    if (tokenControl != undefined) tokenControl.update(canvas.tokens.controlled[0]?.id);
+    if (materialDeck.tokenControl != undefined) materialDeck.tokenControl.update(canvas.tokens.controlled[0]?.id);
 });
 
 Hooks.on('renderActorSheet',()=>{
-    if (enableModule == false || ready == false) return;
-    if (tokenControl != undefined) tokenControl.update();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.tokenControl != undefined) materialDeck.tokenControl.update();
 });
 
 Hooks.on('renderPlaylistDirectory', (playlistDirectory)=>{
-    if (enableModule == false || ready == false) return;
-    if (playlistControl != undefined) playlistControl.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.playlistControl != undefined) materialDeck.playlistControl.updateAll();
 });
 
 Hooks.on('closeplaylistConfigForm', (form)=>{
-    if (enableModule == false || ready == false) return;
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
     if (form.template == "./modules/MaterialDeck/templates/playlistConfig.html")
-        playlistControl.updateAll();
+        materialDeck.playlistControl.updateAll();
 });
 
 Hooks.on('updatePlaylistSound', ()=>{
-    if (enableModule == false || ready == false) return;
-    if (playlistControl != undefined) playlistControl.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.playlistControl != undefined) materialDeck.playlistControl.updateAll();
 });
 
 Hooks.on('lightingRefresh',()=>{
-    if (enableModule == false || ready == false) return;
-    if (tokenControl != undefined) tokenControl.update();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.tokenControl != undefined) materialDeck.tokenControl.update();
 });
 
 Hooks.on('pauseGame',()=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll();
 });
 
 Hooks.on('renderSidebarTab',(app)=>{
@@ -654,12 +381,12 @@ Hooks.on('renderSidebarTab',(app)=>{
         sidebarTab: app.tabName,
         renderPopout: app.popOut
     }
-    if (enableModule == false || ready == false) return;
-    if (otherControls != undefined) otherControls.updateAll(options);
-    if (sceneControl != undefined) sceneControl.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.otherControls != undefined) materialDeck.otherControls.updateAll(options);
+    if (materialDeck.sceneControl != undefined) materialDeck.sceneControl.updateAll();
     if (document.getElementsByClassName("roll-type-select")[0] != undefined)
         document.getElementsByClassName("roll-type-select")[0].addEventListener('change',function(){
-            if (otherControls != undefined) otherControls.updateAll(options);
+            if (materialDeck.otherControls != undefined) materialDeck.otherControls.updateAll(options);
         })
 });
 
@@ -668,139 +395,133 @@ Hooks.on('closeSidebarTab',(app)=>{
         sidebarTab: app.tabName,
         renderPopout: false
     }
-    if (otherControls != undefined) otherControls.updateAll(options);
+    if (materialDeck.otherControls != undefined) materialDeck.otherControls.updateAll(options);
 });
 
 Hooks.on('changeSidebarTab',()=>{
-    if (enableModule == false || ready == false) return;
-    if (otherControls != undefined) otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (materialDeck.otherControls != undefined) materialDeck.otherControls.updateAll();
 });
 
 Hooks.on('updateScene',()=>{
-    if (enableModule == false || ready == false) return;
-    sceneControl.updateAll();
-    externalModules.updateAll();
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.sceneControl.updateAll();
+    materialDeck.externalModules.updateAll();
+    materialDeck.otherControls.updateAll();
 });
 
 Hooks.on('renderSceneControls',()=>{
-    if (enableModule == false || ready == false || otherControls == undefined) return;
-    otherControls.updateAll();
-    externalModules.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false || materialDeck.otherControls == undefined) return;
+    materialDeck.otherControls.updateAll();
+    materialDeck.externalModules.updateAll();
 });
 
 Hooks.on('targetToken',(user,token,targeted)=>{
-    if (enableModule == false || ready == false) return;
-    if (token.id == canvas.tokens.controlled[0]?.id) tokenControl.update(canvas.tokens.controlled[0]?.id);
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    if (token.id == canvas.tokens.controlled[0]?.id) materialDeck.tokenControl.update(canvas.tokens.controlled[0]?.id);
 });
 
 Hooks.on('sidebarCollapse',()=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll();
 });
 
 Hooks.on('renderCompendium',()=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll();
 });
 
 Hooks.on('closeCompendium',()=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll();
 });
 
 Hooks.on('renderCompendiumBrowser',()=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll({renderCompendiumBrowser:true});
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll({renderCompendiumBrowser:true});
 });
 
 Hooks.on('closeCompendiumBrowser',()=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll({renderCompendiumBrowser:false});
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll({renderCompendiumBrowser:false});
 });
 
 Hooks.on('renderJournalSheet',(sheet)=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll({
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll({
         hook:'renderJournalSheet',
         sheet:sheet
     });
 });
 
 Hooks.on('closeJournalSheet',(sheet)=>{
-    if (enableModule == false || ready == false) return;
-    otherControls.updateAll({
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.otherControls.updateAll({
         hook:'closeJournalSheet',
         sheet:sheet
     });
 });
 
 Hooks.on('gmScreenOpenClose',(html,isOpen)=>{
-    if (enableModule == false || ready == false) return;
-    externalModules.updateAll({gmScreen:isOpen});
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.externalModules.updateAll({gmScreen:isOpen});
 });
 
 Hooks.on('ShareVision', ()=>{
-    if (enableModule == false || ready == false) return;
-    externalModules.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.externalModules.updateAll();
 })
 
 Hooks.on('NotYourTurn', ()=>{
-    if (enableModule == false || ready == false) return;
-    externalModules.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.externalModules.updateAll();
 })
 
 Hooks.on('simple-calendar-date-time-change', ()=>{
-    if (enableModule == false || ready == false) return;
-    externalModules.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.externalModules.updateAll();
 })
 
 Hooks.on('simple-calendar-clock-start-stop', ()=>{
-    if (enableModule == false || ready == false) return;
-    externalModules.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.externalModules.updateAll();
 })
 
 Hooks.on('updateTile',()=>{
-    if (enableModule == false || ready == false) return;
-    externalModules.updateAll();
-});
-
-Hooks.once('init', ()=>{
-    //CONFIG.debug.hooks = true;
-    //registerSettings(); //in ./src/settings.js
-    
+    if (materialDeck.enableModule == false || materialDeck.ready == false) return;
+    materialDeck.externalModules.updateAll();
 });
 
 Hooks.once('canvasReady',()=>{
-    ready = true;
+    materialDeck.ready = true;
 });
 
 Hooks.on("soundscape", (data) => {
-    externalModules.newSoundscapeData(data);
+    materialDeck.externalModules.newSoundscapeData(data);
 });
 
 Hooks.on("globalAmbientVolumeChanged", (volume) => {
-    soundboard.ambientVolumeChanged(volume);
+    materialDeck.soundboard.ambientVolumeChanged(volume);
 })
 
 Hooks.on('updateMacro', () => {
-    if (enableModule == false || ready == false || macroControl == undefined) return;
-    macroControl.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false || materialDeck.macroControl == undefined) return;
+    materialDeck.macroControl.updateAll();
 })
 
 Hooks.on('globalPlaylistVolumeChanged', () => {
-    if (enableModule == false || ready == false || otherControls == undefined) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false || materialDeck.otherControls == undefined) return;
+    materialDeck.otherControls.updateAll();
 })
 
 Hooks.on('globalAmbientVolumeChanged', () => {
-    if (enableModule == false || ready == false || otherControls == undefined) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false || materialDeck.otherControls == undefined) return;
+    materialDeck.otherControls.updateAll();
 })
 
 Hooks.on('globalInterfaceVolumeChanged', () => {
-    if (enableModule == false || ready == false || otherControls == undefined) return;
-    otherControls.updateAll();
+    if (materialDeck.enableModule == false || materialDeck.ready == false || materialDeck.otherControls == undefined) return;
+    materialDeck.otherControls.updateAll();
 })
 
 // Hook to update the state of a button
@@ -813,7 +534,7 @@ Hooks.on('MaterialDeck', (data) => {
             if (!buttonContext) {
                 // Find the button context via the buttonId
                 if (data.buttonId) {
-                    const devices = streamDeck.buttonContext;
+                    const devices = materialDeck.streamDeck.buttonContext;
                     deviceContext = devices.find((device) => device.buttons.find((button) => {
                         if (button?.settings.buttonId === data.buttonId.toString()) {
                             buttonContext = button.context;
@@ -827,11 +548,11 @@ Hooks.on('MaterialDeck', (data) => {
                 }
             }
             //Set icon on SD
-            streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
+            materialDeck.streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
             //Set text on SD
-            streamDeck.setTitle(data.text, buttonContext);
+            materialDeck.streamDeck.setTitle(data.text, buttonContext);
             // Set state so that the button can be updated when loaded
-            streamDeck.setButtonState(buttonContext, deviceContext, {
+            materialDeck.streamDeck.setButtonState(buttonContext, deviceContext, {
                 text: data.text,
                 icon: data.icon || '<empty>',
                 options: data.options || {}
@@ -842,7 +563,7 @@ Hooks.on('MaterialDeck', (data) => {
             let buttonContext;
             let deviceContext;
             if (data.buttonId) {
-                const devices = streamDeck.buttonContext;
+                const devices = materialDeck.streamDeck.buttonContext;
                 deviceContext = devices.find((device) => device.buttons.find((button) => {
                     if (button?.settings.buttonId === data.buttonId.toString()) {
                         buttonContext = button.context;
@@ -856,12 +577,12 @@ Hooks.on('MaterialDeck', (data) => {
             }
 
             //Set icon on SD
-            streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
+            materialDeck.streamDeck.setIcon(buttonContext, deviceContext, data.icon || '<empty>', data.options);
             //Set text on SD
-            streamDeck.setTitle(data.text, buttonContext);
+            materialDeck.streamDeck.setTitle(data.text, buttonContext);
             // Set state so that the button can be updated when loaded
 
-            customControl.registerButton({
+            materialDeck.customControl.registerButton({
                 buttonId: data.buttonId,
                 text: data.text,
                 icon: data.icon || '<empty>',
@@ -873,7 +594,7 @@ Hooks.on('MaterialDeck', (data) => {
             });
 
             /*
-            streamDeck.setButtonState(buttonContext, deviceContext, {
+            materialDeck.streamDeck.setButtonState(buttonContext, deviceContext, {
                 buttonId: data.buttonId,
                 text: data.text,
                 icon: data.icon || '<empty>',

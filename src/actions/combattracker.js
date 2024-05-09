@@ -1,5 +1,4 @@
-import { streamDeck, tokenControl, getPermission } from "../../MaterialDeck.js";
-import {  } from "../misc.js";
+import { materialDeck, getPermission } from "../../MaterialDeck.js";
 
 export class CombatTracker{
     constructor(){
@@ -9,7 +8,7 @@ export class CombatTracker{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -46,7 +45,30 @@ export class CombatTracker{
         const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
         const mode = settings.combatTrackerMode ? settings.combatTrackerMode : 'combatants';
         settings.combatTrackerMode = mode;
-        const combat = game.combat;
+        const sceneMode = settings.sceneMode ? settings.sceneMode : 'current';
+        const sceneName = settings.sceneName ? settings.sceneName : '';
+        const encounterNr = settings.encounterNr ? settings.encounterNr : '';
+
+        let combats;
+        if (sceneMode == 'current') combats = [game.combat];
+        else if (sceneMode == 'active') {combats = game.combats.contents.filter(c => c.scene?.active == true || c.scene == null)}
+        else if (sceneMode == 'name') {combats = game.combats.contents.filter(c => c.scene?.name == sceneName)}
+        else if (sceneMode == 'unlinked') {combats = game.combats.contents.filter(c => c.scene == null)}
+
+        let combat;
+        if (encounterNr == '') {
+            combat = combats.filter(c => c.id == game.combats.viewed.id)[0];
+            if (combat == undefined)
+            combat = combats[0];
+        }
+        else if (parseInt(encounterNr) != NaN) {
+            
+            combat = combats[parseInt(encounterNr)-1];
+        }
+        else {
+            combat = null;
+        }
+            
         let src = "modules/MaterialDeck/img/black.png";
         let txt = "";
         let background = "#000000";
@@ -54,7 +76,7 @@ export class CombatTracker{
         settings.icon = settings.displayIcon ? 'tokenIcon' : 'none';
         if (mode == 'combatants'){
             if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                streamDeck.noPermission(context,device,device,false,"combat tracker");
+                materialDeck.streamDeck.noPermission(context,device,device,false,"combat tracker");
                 return;
             }
             if (combat != null && combat != undefined && combat.turns.length != 0){
@@ -69,52 +91,78 @@ export class CombatTracker{
                 const nr = settings.combatantNr ? settings.combatantNr - 1 : 0;
                 const combatant = initiativeOrder[nr]
                 const combatantState = (combatant?.token.id == combat.current.tokenId) ? 2 : 1;
+
                 if (combatant != undefined){
                     const filterConfig = this.applyFilter(combatant, settings);
                     const tokenId = combatant.token.id;
-                    tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00', filterConfig.forceIcon, filterConfig.hideName);
+                    //materialDeck.tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00', filterConfig.forceIcon, filterConfig.hideName);
+
+                    materialDeck.tokenControl.pushData({
+                        token: combatant.token,
+                        tokenId,
+                        settings,
+                        context,
+                        device,
+                        ring: combatantState,
+                        ringColor: '#cccc00',
+                        forceIcon : filterConfig.forceIcon,
+                        hideName: filterConfig.hideName
+                    });
                     return;
                 }
                 else {
                     if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                    streamDeck.setIcon(context,device,src,{background:background});
-                    streamDeck.setTitle(txt,context);
+                    materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+                    materialDeck.streamDeck.setTitle(txt,context);
                 } 
             }
             else {
                 if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                streamDeck.setIcon(context,device,src,{background:background});
-                streamDeck.setTitle(txt,context);
+                materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+                materialDeck.streamDeck.setTitle(txt,context);
             }
         }
         else if (mode == 'currentCombatant'){
             if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                streamDeck.noPermission(context,device,device);
+                materialDeck.streamDeck.noPermission(context,device,device);
                 return;
             }
             if (combat != null && combat != undefined && combat.started){
                 const filterConfig = this.applyFilter(combat.combatant, settings);
                 const tokenId = combat.combatant.token.id;
-                tokenControl.pushData(tokenId,settings,context,device,undefined,undefined, filterConfig.forceIcon, filterConfig.hideName);
+                //materialDeck.tokenControl.pushData(tokenId,settings,context,device,undefined,undefined, filterConfig.forceIcon, filterConfig.hideName);
+                materialDeck.tokenControl.pushData({
+                    token: undefined,
+                    tokenId,
+                    settings,
+                    context,
+                    device,
+                    forceIcon : filterConfig.forceIcon,
+                    hideName: filterConfig.hideName
+                });
             }
             else {
                 if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                streamDeck.setIcon(context,device,src,{background:background});
-                streamDeck.setTitle(txt,context);
+                materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+                materialDeck.streamDeck.setTitle(txt,context);
             }
         }
         else if (mode == 'function'){
 
             if (ctFunction == 'turnDisplay' && getPermission('COMBAT','TURN_DISPLAY') == false) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'endTurn' && getPermission('COMBAT','END_TURN') == false) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
+                return;
+            }
+            else if (ctFunction == 'addTokens' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
 
@@ -134,21 +182,17 @@ export class CombatTracker{
                     }
                 }
             }
-            else if (ctFunction == 'endTurn') {
+            else if (ctFunction == 'endTurn') 
                 src = "modules/MaterialDeck/img/combattracker/nextturn.png";
-            }
-            else if (ctFunction == 'nextTurn') {
+            else if (ctFunction == 'nextTurn') 
                 src = "modules/MaterialDeck/img/combattracker/nextturn.png";
-            }
-            else if (ctFunction == 'prevTurn') {
+            
+            else if (ctFunction == 'prevTurn') 
                 src = "modules/MaterialDeck/img/combattracker/previousturn.png";
-            }
-            else if (ctFunction == 'nextRound') {
+            else if (ctFunction == 'nextRound') 
                 src = "modules/MaterialDeck/img/combattracker/nextround.png";
-            }
-            else if (ctFunction == 'prevRound') {
+            else if (ctFunction == 'prevRound')
                 src = "modules/MaterialDeck/img/combattracker/previousround.png";
-            }
             else if (ctFunction == 'turnDisplay'){
                 src = "modules/MaterialDeck/img/black.png";
                 let round = 0;
@@ -163,14 +207,16 @@ export class CombatTracker{
             }
             else if (ctFunction == 'rollInitiative' || ctFunction == 'rollInitiativeNPC')
                 src = "modules/MaterialDeck/img/token/init.png";
+            else if (ctFunction == 'addTokens') 
+                src = window.CONFIG.controlIcons.combat;
 
             if (settings.iconOverride != '' && settings.iconOverride != undefined) {
                 src = settings.iconOverride;
                 background = settings.background ? settings.background : '#000000'
             }
 
-            streamDeck.setIcon(context,device,src,{background:background});
-            streamDeck.setTitle(txt,context);
+            materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+            materialDeck.streamDeck.setTitle(txt,context);
         }
     }
 
@@ -184,20 +230,18 @@ export class CombatTracker{
             const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
 
             if (ctFunction == 'turnDisplay' && getPermission('COMBAT','TURN_DISPLAY') == false) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'endTurn' && getPermission('COMBAT','END_TURN') == false) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'startStop'){
-                let src;
-                let background;
                 if (game.combat.started){
                     game.combat.endCombat();
                 }
@@ -208,6 +252,10 @@ export class CombatTracker{
             }
             else if (ctFunction == 'rollInitiative' && getPermission('COMBAT','OTHER_FUNCTIONS')) game.combat.rollAll();
             else if (ctFunction == 'rollInitiativeNPC' && getPermission('COMBAT','OTHER_FUNCTIONS')) game.combat.rollNPC();
+            else if (ctFunction == 'addTokens' && getPermission('COMBAT','OTHER_FUNCTIONS')) {
+                const controlledToken = canvas.tokens.controlled[0];
+                if (controlledToken != undefined) controlledToken.toggleCombat();
+            }
             
             if (game.combat.started == false) return;
             if (ctFunction == 'nextTurn') await game.combat.nextTurn();

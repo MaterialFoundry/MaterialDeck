@@ -1,5 +1,4 @@
-import { streamDeck, macroControl, otherControls, tokenHelper, getPermission } from "../../MaterialDeck.js";
-import {  } from "../misc.js";
+import { materialDeck, getPermission } from "../../MaterialDeck.js";
 
 export class TokenControl{
     constructor(){
@@ -10,17 +9,33 @@ export class TokenControl{
 
     async update(tokenId=null){
         if (this.active == false) return;
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
                 if (data == undefined || data.action != 'token') continue;
-                await this.pushData(tokenId,data.settings,data.context,device.device);
+                //await this.pushData(tokenId,data.settings,data.context,device.device);
+                await this.pushData({
+                    token: undefined,
+                    tokenId,
+                    settings: data.settings,
+                    context: data.context,
+                    device: device.device
+                });
             }
         }
     }
 
-    async pushData(tokenId,settings,context,device,ring=0,ringColor='#000000',forceIcon,hideName=false){
+    async pushData(data){ 
+        const tokenId = data.tokenId;   
+        const settings = data.settings;
+        const context = data.context;
+        const device = data.device;
+        let ring = data.ring ? data.ring : 0;
+        let ringColor = data.ringColor ? data.ringColor : '#000000';
+        const forceIcon = data.forceIcon;
+        const hideName = data.hideName ? data.hideName : false;
+
         const name = settings.displayName ? settings.displayName : false;
         const icon = settings.icon ? settings.icon : 'none';
         let stats =  settings.stats ? settings.stats : 'none';
@@ -30,29 +45,34 @@ export class TokenControl{
         const mode = settings.tokenMode ? settings.tokenMode : 'token';
         const background = (mode == 'inventory') ? (settings.inventoryBackground ? settings.inventoryBackground : "#000000") : (settings.background ? settings.background : "#000000");
 
-        let validToken = false;
         let token;
-        if (settings.combatTrackerMode) token = tokenHelper.getTokenFromTokenId(tokenId);
-        else token = tokenHelper.getToken(selection,tokenIdentifier);
-        if (token != undefined) validToken = true;
+        if (data.token == undefined) {
+            if (settings.combatTrackerMode) token = materialDeck.systemHelper.getTokenFromTokenId(tokenId);
+            else token = materialDeck.systemHelper.getToken(selection,tokenIdentifier);
+        }
+        else
+            token = data.token;
+        
+        let validToken = token != undefined;
         let txt = "";
         let iconSrc = "";
         let overlay = false;
         let statsOld;
         let uses = undefined;
         let hp = undefined;
+
         if (validToken) {
             if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             if (token.owner == false && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
 
             if (mode == 'token') {
-                if (name) txt += tokenHelper.getTokenName(token);
+                if (name) txt += materialDeck.systemHelper.getTokenName(token);
                 txt += prependTitle;
     
                 const permission = token.actor?.permission;
@@ -71,8 +91,8 @@ export class TokenControl{
                     stats = 'none';
                 }
     
-                if (icon == 'tokenIcon') iconSrc = tokenHelper.getTokenIcon(token);
-                else if (icon == 'actorIcon') iconSrc = tokenHelper.getActorIcon(token);
+                if (icon == 'tokenIcon') iconSrc = materialDeck.systemHelper.getTokenIcon(token);
+                else if (icon == 'actorIcon') iconSrc = materialDeck.systemHelper.getActorIcon(token);
                 if (name && stats != 'none' && stats != 'HPbox') txt += "\n";
                 
                 if (stats == 'custom'){
@@ -81,7 +101,7 @@ export class TokenControl{
                 }
                 
                 if (stats == 'HP' || stats == 'Wounds') {
-                    const hp = tokenHelper.getHP(token);
+                    const hp = materialDeck.systemHelper.getHP(token);
                     txt += hp.value + "/" + hp.max;
                     
                     if (icon == 'stats')
@@ -94,7 +114,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'Agility') { /* forbidden-lands */
-                    const wits = tokenHelper.getAgility(token);
+                    const wits = materialDeck.systemHelper.getAgility(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -107,7 +127,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'Wits') { /* forbidden-lands */
-                    const wits = tokenHelper.getWits(token);
+                    const wits = materialDeck.systemHelper.getWits(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -120,7 +140,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'Empathy') { /* forbidden-lands */
-                    const wits = tokenHelper.getEmpathy(token);
+                    const wits = materialDeck.systemHelper.getEmpathy(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -133,7 +153,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'WillPower') { /* forbidden-lands */
-                    const wits = tokenHelper.getWillPower(token);
+                    const wits = materialDeck.systemHelper.getWillPower(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -146,7 +166,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'CriticalWounds') { /* WFRP4e */
-                    const criticalWounds = tokenHelper.getCriticalWounds(token);
+                    const criticalWounds = materialDeck.systemHelper.getCriticalWounds(token);
                     txt += criticalWounds.value + "/" + criticalWounds.max;
                     
                     if (icon == 'stats')
@@ -157,15 +177,16 @@ export class TokenControl{
                         };
                         
                 }
-                else if (stats == 'HPbox') {
-                    const hp = tokenHelper.getHP(token);
+                else if (stats == 'HPbox' || stats == 'HPbar') {
+                    const hp = materialDeck.systemHelper.getHP(token);
                     uses = {
                         available: hp.value,
-                        maximum: hp.max
+                        maximum: hp.max,
+                        bar: stats == 'HPbar'
                     }
                 }
                 else if (stats == 'TempHP') {
-                    const tempHP = tokenHelper.getTempHP(token);
+                    const tempHP = materialDeck.systemHelper.getTempHP(token);
                     txt += (tempHP.max == 0) ? tempHP.value : `${tempHP.value}/${tempHP.max}`;
                     
                     if (icon == 'stats') 
@@ -176,63 +197,63 @@ export class TokenControl{
                         };
                 }
                 else if (stats == 'Stamina') {    //starfinder
-                    const stamina = tokenHelper.getStamina(token);
+                    const stamina = materialDeck.systemHelper.getStamina(token);
                     txt += `${stamina.value}/${stamina.max}`;
                 }
                 else if (stats == 'KinAC') {    //starfinder
-                    txt += tokenHelper.getKinAC(token);
+                    txt += materialDeck.systemHelper.getKinAC(token);
                 }
-                else if (stats == 'AC') txt += tokenHelper.getAC(token);
-                else if (stats == 'ShieldHP') txt += tokenHelper.getShieldHP(token);
-                else if (stats == 'Speed') txt += tokenHelper.getSpeed(token);
-                else if (stats == 'Init') txt += tokenHelper.getInitiative(token);
-                else if (stats == 'PassivePerception') txt += tokenHelper.getPassivePerception(token);
-                else if (stats == 'PassiveInvestigation') txt += tokenHelper.getPassiveInvestigation(token);
-                else if (stats == 'Ability') txt += tokenHelper.getAbility(token, settings.ability);
-                else if (stats == 'AbilityMod') txt += tokenHelper.getAbilityModifier(token, settings.ability);
+                else if (stats == 'AC') txt += materialDeck.systemHelper.getAC(token);
+                else if (stats == 'ShieldHP') txt += materialDeck.systemHelper.getShieldHP(token);
+                else if (stats == 'Speed') txt += materialDeck.systemHelper.getSpeed(token);
+                else if (stats == 'Init') txt += materialDeck.systemHelper.getInitiative(token);
+                else if (stats == 'PassivePerception') txt += materialDeck.systemHelper.getPassivePerception(token);
+                else if (stats == 'PassiveInvestigation') txt += materialDeck.systemHelper.getPassiveInvestigation(token);
+                else if (stats == 'Ability') txt += materialDeck.systemHelper.getAbility(token, settings.ability);
+                else if (stats == 'AbilityMod') txt += materialDeck.systemHelper.getAbilityModifier(token, settings.ability);
                 else if (stats == 'Save') {
-                    txt += tokenHelper.getAbilitySave(token, settings.save);
-                    ringColor = tokenHelper.getSaveRingColor(token, settings.save);
+                    txt += materialDeck.systemHelper.getAbilitySave(token, settings.save);
+                    ringColor = materialDeck.systemHelper.getSaveRingColor(token, settings.save);
                     if (ringColor != undefined) ring = 2;
                 }
                 else if (stats == 'Skill') {
-                    txt += tokenHelper.getSkill(token, settings.skill);
-                    ringColor = tokenHelper.getSkillRingColor(token, settings.skill);
+                    txt += materialDeck.systemHelper.getSkill(token, settings.skill);
+                    ringColor = materialDeck.systemHelper.getSkillRingColor(token, settings.skill);
                     if (ringColor != undefined) ring = 2;
                 }
-                else if (stats == 'Prof') txt += tokenHelper.getProficiency(token);
-                else if (stats == 'Fate') txt += tokenHelper.getFate(token) /* WFRP4e */
-                else if (stats == 'Fortune') txt += tokenHelper.getFortune(token) /* WFRP4e */
-                else if (stats == 'Corruption') txt += tokenHelper.getCorruption(token) /* WFRP4e */
-                else if (stats == 'Advantage') txt += tokenHelper.getAdvantage(token) /* WFRP4e */
-                else if (stats == 'Resolve') txt += tokenHelper.getResolve(token) /* WFRP4e */
-                else if (stats == 'Resilience') txt += tokenHelper.getResilience(token) /* WFRP4e */
-                else if (stats == 'Perception') txt += tokenHelper.getPerception(token) /* PF2E */
+                else if (stats == 'Prof') txt += materialDeck.systemHelper.getProficiency(token);
+                else if (stats == 'Fate') txt += materialDeck.systemHelper.getFate(token) /* WFRP4e */
+                else if (stats == 'Fortune') txt += materialDeck.systemHelper.getFortune(token) /* WFRP4e */
+                else if (stats == 'Corruption') txt += materialDeck.systemHelper.getCorruption(token) /* WFRP4e */
+                else if (stats == 'Advantage') txt += materialDeck.systemHelper.getAdvantage(token) /* WFRP4e */
+                else if (stats == 'Resolve') txt += materialDeck.systemHelper.getResolve(token) /* WFRP4e */
+                else if (stats == 'Resilience') txt += materialDeck.systemHelper.getResilience(token) /* WFRP4e */
+                else if (stats == 'Perception') txt += materialDeck.systemHelper.getPerception(token) /* PF2E */
                 else if (stats == 'Condition') { /* PF2E */
-                    const valuedCondition = tokenHelper.getConditionValue(token, settings.condition);
+                    const valuedCondition = materialDeck.systemHelper.getConditionValue(token, settings.condition);
                     if (valuedCondition != undefined) {
                         txt += valuedCondition?.value;
                     }
                 }
-                else if (stats == 'DefenseMelee') txt += tokenHelper.getDefenseMelee(token); /* SWFFG */
-                else if (stats == 'DefenseRanged') txt += tokenHelper.getDefenseRanged(token); /* SWFFG */
+                else if (stats == 'DefenseMelee') txt += materialDeck.systemHelper.getDefenseMelee(token); /* SWFFG */
+                else if (stats == 'DefenseRanged') txt += materialDeck.systemHelper.getDefenseRanged(token); /* SWFFG */
                 else if (stats == 'Encumbrance') { /* SWFFG */
-                    const encumbrance = tokenHelper.getEncumbrance(token);
+                    const encumbrance = materialDeck.systemHelper.getEncumbrance(token);
                     txt += `${encumbrance.value}/${encumbrance.max}`;
                 } 
                 else if (stats == 'Force Pool') { /* SWFFG */   
-                    const encumbrance = tokenHelper.getForcePool(token);
+                    const encumbrance = materialDeck.systemHelper.getForcePool(token);
                     txt += `${encumbrance.value}/${encumbrance.max}`;
                 } /* SWFFG */
                    
                 else if (stats == 'Strain') { /* SWFFG */
-                    const strain = tokenHelper.getStrain(token);
+                    const strain = materialDeck.systemHelper.getStrain(token);
                     txt += `${strain.value}/${strain.max}`;
                 }
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (getPermission('TOKEN','VISIBILITY') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
@@ -247,7 +268,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'combatState') { //toggle combat state
                     if (getPermission('TOKEN','COMBAT') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
@@ -272,14 +293,14 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'condition') { //handle condition
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
                     overlay = true;
                     if (icon == 'stats') {
-                        iconSrc = tokenHelper.getConditionIcon(settings.condition);
-                        if (tokenHelper.getConditionActive(token,settings.condition)) {
+                        iconSrc = materialDeck.systemHelper.getConditionIcon(settings.condition);
+                        if (materialDeck.systemHelper.getConditionActive(token,settings.condition)) {
                             ring = 2;
                             ringColor = "#FF7B00";
                         }
@@ -287,7 +308,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
@@ -296,7 +317,7 @@ export class TokenControl{
                     if (condition == undefined || condition == '') return;
                     if (icon == 'stats') {
                         iconSrc = CONFIG.statusEffects.find(e => e.label === condition).icon;
-                        if (tokenHelper.getConditionActive(token,condition)){
+                        if (materialDeck.systemHelper.getConditionActive(token,condition)){
                             ring = 2;
                             ringColor = "#FF7B00";
                         } 
@@ -304,7 +325,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'wildcard') { //wildcard images
                     if (getPermission('TOKEN','WILDCARD') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     if (icon != 'stats') return;
@@ -316,7 +337,7 @@ export class TokenControl{
                     let currentImgNr = 0
                     let imgNr;
                     for (let i=0; i<images.length; i++) 
-                        if (images[i] == tokenHelper.getTokenIcon(token)){
+                        if (images[i] == materialDeck.systemHelper.getTokenIcon(token)){
                             currentImgNr = i;
                             break;
                         }
@@ -375,29 +396,29 @@ export class TokenControl{
                 let items = allItems;
                 let item;
                 if (mode == 'inventory') {
-                    items = tokenHelper.getItems(token,settings.inventoryType);
+                    items = materialDeck.systemHelper.getItems(token,settings.inventoryType);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
                     else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
                     
-                    if (item != undefined && displayUses) uses = tokenHelper.getItemUses(item);
+                    if (item != undefined && displayUses) uses = materialDeck.systemHelper.getItemUses(item);
                 }
                 else if (mode == 'features') {
-                    items = tokenHelper.getFeatures(token,settings.featureType);
+                    items = materialDeck.systemHelper.getFeatures(token,settings.featureType);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
                     else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
-                    if (item != undefined && displayUses) uses = tokenHelper.getFeatureUses(item);
+                    if (item != undefined && displayUses) uses = materialDeck.systemHelper.getFeatureUses(item);
                 }
                 else if (mode == 'spellbook') {
-                    items = tokenHelper.getSpells(token,settings.spellType,settings.spellMode);
+                    items = materialDeck.systemHelper.getSpells(token,settings.spellType,settings.spellMode);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
                     else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
-                    if (displayUses && item != undefined) uses = tokenHelper.getSpellUses(token,settings.spellType,item);
+                    if (displayUses && item != undefined) uses = materialDeck.systemHelper.getSpellUses(token,settings.spellType,item);
                 }
                 if (item != undefined) {
                     if (displayIcon) iconSrc = item.img;
@@ -412,7 +433,7 @@ export class TokenControl{
                 iconSrc += "";
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (getPermission('TOKEN','VISIBILITY') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     if (icon == 'stats') {
@@ -423,7 +444,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'combatState') { //toggle combat state
                     if (getPermission('TOKEN','COMBAT') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     if (icon == 'stats') {
@@ -441,16 +462,16 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'condition') { //toggle condition
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
                     overlay = true;
-                    if (icon == 'stats') iconSrc = tokenHelper.getConditionIcon(settings.condition);
+                    if (icon == 'stats') iconSrc = materialDeck.systemHelper.getConditionIcon(settings.condition);
                 }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        streamDeck.noPermission(context,device);
+                        materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     const condition = settings.cubConditionName;
@@ -495,9 +516,8 @@ export class TokenControl{
             }
             else if (stats == 'Skill') {
                 overlay = true;
-                let skill = settings.skill;
-                if (skill == undefined) skill = 'acr';
-                else iconSrc = "modules/MaterialDeck/img/token/skills/" + (skill.startsWith('lor')? 'lor' : skill) + ".png";
+                let skill = settings.skill ? settings.skill : 'acr';
+                iconSrc = "modules/MaterialDeck/img/token/skills/" + (skill.startsWith('lor')? 'lor' : skill) + ".png";
             }
             else if (settings.onClick == 'center' || settings.onClick == 'centerSelect') {
                 overlay = true;
@@ -539,8 +559,8 @@ export class TokenControl{
         }
         else if (hideName) txt = "";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) iconSrc = settings.iconOverride;
-        streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
+        materialDeck.streamDeck.setTitle(txt,context);
     }
 
     sortItems(items) {
@@ -558,7 +578,7 @@ export class TokenControl{
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
         const mode = settings.tokenMode ? settings.tokenMode : 'token';
         
-        let token = tokenHelper.getToken(selection,tokenIdentifier);
+        let token = materialDeck.systemHelper.getToken(selection,tokenIdentifier);
 
         if (token == undefined) return;
         if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) return;
@@ -583,10 +603,10 @@ export class TokenControl{
                 token.control();
             }
             else if (onClick == 'move') {    //move token
-                tokenHelper.moveToken(token,settings.dir);
+                materialDeck.systemHelper.moveToken(token,settings.dir,settings.grid);
             }
             else if (onClick == 'rotate') {    //rotate token
-                tokenHelper.rotateToken(token,settings.rot,settings.rotValue);
+                materialDeck.systemHelper.rotateToken(token,settings.rot,settings.rotValue);
             }
             else if (onClick == 'charSheet'){ //Open character sheet
                 const element = document.getElementById(token.actor.sheet.id);
@@ -614,15 +634,15 @@ export class TokenControl{
                 const func = settings.conditionFunction ? settings.conditionFunction : 'toggle';
 
                 if (func == 'toggle'){ //toggle
-                    await tokenHelper.toggleCondition(token,settings.condition);
+                    await materialDeck.systemHelper.toggleCondition(token,settings.condition);
                     this.update(tokenId);
                 }
                 else if (func == 'increase'){ //increase
-                    await tokenHelper.modifyConditionValue(token, settings.condition, +1)
+                    await materialDeck.systemHelper.modifyConditionValue(token, settings.condition, +1)
                     this.update(tokenId);
                 }
                 else if (func == 'decrease'){ //decrease
-                    await tokenHelper.modifyConditionValue(token, settings.condition, -1)
+                    await materialDeck.systemHelper.modifyConditionValue(token, settings.condition, -1)
                     this.update(tokenId);
                 }
 
@@ -719,7 +739,7 @@ export class TokenControl{
                 token.document.update(data);
             }
             else if (onClick == 'initiative'){
-                tokenHelper.toggleInitiative(token);
+                materialDeck.systemHelper.toggleInitiative(token);
             }
             else if (onClick == 'wildcard') { //wildcard images
                 if (getPermission('TOKEN','WILDCARD') == false ) return;
@@ -733,7 +753,7 @@ export class TokenControl{
                 if (method == 'iterate'){
                     let currentImgNr = 0
                     for (let i=0; i<images.length; i++) 
-                        if (images[i] == tokenHelper.getTokenIcon(token)){
+                        if (images[i] == materialDeck.systemHelper.getTokenIcon(token)){
                             currentImgNr = i;
                             break;
                         }
@@ -763,22 +783,27 @@ export class TokenControl{
                     macroNumber: settings.macroId,
                     macroArgs: settings.macroArgs
                 }
-                macroControl.keyPress(settingsNew);
+                materialDeck.macroControl.keyPress(settingsNew);
             }
             else if (onClick == 'roll') {   //roll skill/save/ability
                 const rollMode = settings.rollMode ? settings.rollMode : 'default';
+                const rollPrivacyMode = settings.rollPrivacyMode ? settings.rollPrivacyMode : 'default';
+
                 let options;
+                
                 if (rollMode == 'default')
                     options = {
-                        fastForward: (otherControls.rollOption != 'dialog'),
-                        advantage: (otherControls.rollOption == 'advantage'),
-                        disadvantage: (otherControls.rollOption == 'disadvantage')
+                        fastForward: (materialDeck.otherControls.rollOption != 'dialog'),
+                        advantage: (materialDeck.otherControls.rollOption == 'advantage'),
+                        disadvantage: (materialDeck.otherControls.rollOption == 'disadvantage')
                     }
                 else if (rollMode == 'normal') options = {fastForward:true}
                 else if (rollMode == 'advantage') options = {fastForward:true,advantage:true}
                 else if (rollMode == 'disadvantage') options = {fastForward:true,disadvantage:true}
-                tokenHelper.roll(token,settings.roll,options,settings.rollAbility,settings.rollSkill,settings.rollSave)
-                if (otherControls.rollOption != 'dialog') otherControls.setRollOption('normal');
+
+                if (rollPrivacyMode != 'default') options['rollMode'] = rollPrivacyMode;
+                materialDeck.systemHelper.roll(token,settings.roll,options,settings.rollAbility,settings.rollSkill,settings.rollSave)
+                if (materialDeck.otherControls.rollOption != 'dialog') materialDeck.otherControls.setRollOption('normal');
             }
             else if (onClick == 'custom') {//custom onClick function
                 if (getPermission('TOKEN','CUSTOM') == false ) return;
@@ -819,7 +844,7 @@ export class TokenControl{
                             macroNumber: targetArray[1],
                             macroArgs: furnaceArguments
                         }
-                        macroControl.keyPress(settingsNew);
+                        materialDeck.macroControl.keyPress(settingsNew);
                         continue;
                     }
                     let formulaArray = this.splitCustom(formulaArrayTemp);
@@ -922,13 +947,13 @@ export class TokenControl{
             const selectionMode = settings.inventorySelection ? settings.inventorySelection : 'order';
             let items = allItems;
             if (mode == 'inventory') {
-                items = tokenHelper.getItems(token,settings.inventoryType);
+                items = materialDeck.systemHelper.getItems(token,settings.inventoryType);
             }
             else if (mode == 'features') {
-                items = tokenHelper.getFeatures(token,settings.featureType);
+                items = materialDeck.systemHelper.getFeatures(token,settings.featureType);
             }
             else if (mode == 'spellbook') {
-                items = tokenHelper.getSpells(token,settings.spellType);
+                items = materialDeck.systemHelper.getSpells(token,settings.spellType);
             }
             items = this.sortItems(items);
             let item;
@@ -936,7 +961,7 @@ export class TokenControl{
             else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
             else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
             if (item != undefined) {
-                tokenHelper.rollItem(item, settings, otherControls.rollOption, otherControls.attackMode, token);
+                materialDeck.systemHelper.rollItem(item, settings, materialDeck.otherControls.rollOption, materialDeck.otherControls.attackMode, token);
             }
             
         }

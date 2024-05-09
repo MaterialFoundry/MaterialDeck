@@ -1,4 +1,4 @@
-import { streamDeck } from "../../MaterialDeck.js";
+import { materialDeck } from "../../MaterialDeck.js";
 
 let customButtons = [];
 
@@ -62,11 +62,11 @@ export class CustomControl{
     }
 
     setText(text) {
-        streamDeck.setTitle(text,this.context.button);
+        materialDeck.streamDeck.setTitle(text,this.context.button);
     }
 
     setIcon(icon, options) {
-        streamDeck.setIcon(this.context.button, this.context.device, icon || '<empty>', options);
+        materialDeck.streamDeck.setIcon(this.context.button, this.context.device, icon || '<empty>', options);
     }
     
 }

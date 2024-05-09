@@ -1,5 +1,4 @@
-import { streamDeck } from "../../MaterialDeck.js";
-import { } from "../misc.js";
+import { materialDeck } from "../../MaterialDeck.js";
 
 export class ExternalModules{
     soundscapeSettings = {
@@ -47,7 +46,7 @@ export class ExternalModules{
             this.gmScreenOpen = data.gmScreen.isOpen;
         }
         if (this.active == false) return;
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -148,10 +147,10 @@ export class ExternalModules{
         }
 
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:ring,ringColor:ringColor});
-        else streamDeck.setIcon(context,device, "", {background:background,ring:ring,ringColor:ringColor});
+        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:ring,ringColor:ringColor});
+        else materialDeck.streamDeck.setIcon(context,device, "", {background:background,ring:ring,ringColor:ringColor});
         if (displayName == 0) name = ""; 
-        streamDeck.setTitle(name,context);
+        materialDeck.streamDeck.setTitle(name,context);
     }
 
     keyPressFxMaster(settings,context,device){
@@ -244,9 +243,9 @@ export class ExternalModules{
         
         if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
         if (settings.displayGmScreenName) txt = game.i18n.localize(`GMSCR.gmScreen.Open`); 
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressGMScreen(settings,context,device){
@@ -272,11 +271,11 @@ export class ExternalModules{
         let txt = '';
         let src = "fas fa-grin-squint-tears";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        if (displayIcon) streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Trigger Happy';
         
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressTriggerHappy(settings,context,device){
@@ -315,10 +314,10 @@ export class ExternalModules{
         let txt = '';
         let src = "fas fa-eye";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        if (displayIcon) streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Shared Vision';
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressSharedVision(settings,context,device) {
@@ -360,10 +359,10 @@ export class ExternalModules{
             ringColor = game.settings.get('NotYourTurn','nonCombat') ?  "#A600FF": "#340057" ;
         }
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setTitle(txt,context);
     }
 
     async keyPressNotYourTurn(settings,context,device) {
@@ -372,12 +371,12 @@ export class ExternalModules{
 
         const mode = settings.notYourTurnMode ? settings.notYourTurnMode : 'toggle';
 
-        if (mode == 'toggle') Hooks.call("setNotYourTurn",{combat:'toggle'});
-        else if (mode == 'enable') Hooks.call("setNotYourTurn",{combat:true});
-        else if (mode == 'disable') Hooks.call("setNotYourTurn",{combat:false});
-        else if (mode == 'toggleNonCombat') Hooks.call("setNotYourTurn",{nonCombat:'toggle'});
-        else if (mode == 'enableNonCombat') Hooks.call("setNotYourTurn",{nonCombat:true});
-        else if (mode == 'disableNonCombat') Hooks.call("setNotYourTurn",{nonCombat:false});
+        if (mode == 'toggle') Hooks.call("NotYourTurn",{combat:'toggle'});
+        else if (mode == 'enable') Hooks.call("NotYourTurn",{combat:true});
+        else if (mode == 'disable') Hooks.call("NotYourTurn",{combat:false});
+        else if (mode == 'toggleNonCombat') Hooks.call("NotYourTurn",{nonCombat:'toggle'});
+        else if (mode == 'enableNonCombat') Hooks.call("NotYourTurn",{nonCombat:true});
+        else if (mode == 'disableNonCombat') Hooks.call("NotYourTurn",{nonCombat:false});
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -415,10 +414,10 @@ export class ExternalModules{
         }
         
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        if (displayIcon) streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
-        else streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setTitle(txt,context);
     }
 
     async keyPressLockView(settings,context,device) {
@@ -520,8 +519,8 @@ export class ExternalModules{
             ring = 2;
         }
         
-        streamDeck.setTitle(txt.toString(),context);
-        streamDeck.setIcon(context,device,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
+        materialDeck.streamDeck.setTitle(txt.toString(),context);
+        materialDeck.streamDeck.setIcon(context,device,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
     }
 
     keyPressSimpleCalendar(settings,context,device) {
@@ -707,9 +706,9 @@ export class ExternalModules{
             }
         }
        
-        streamDeck.setTitle(txt,context);
+        materialDeck.streamDeck.setTitle(txt,context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     async keyPressSoundscape(settings,context,device) {
@@ -931,17 +930,29 @@ export class ExternalModules{
             ring = 2;
             ringColor = '#00ff00'
         }
-        let src =  tile.document.texture.src;
 
-        streamDeck.setTitle('',context);
+        let src = '';
+        if (settings.iconOverride != '' && settings.iconOverride != undefined) {
+            src = settings.iconOverride;
+        }
+        else if (settings.monksActiveTilesIcon) src = tile.document.texture.src;
+
+        materialDeck.streamDeck.setTitle('',context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     keyPressMonksActiveTiles(settings,context,device) {
         const mode = settings.monksActiveTilesMode ? settings.monksActiveTilesMode : 'toggle';
         const id = settings.monksActiveTilesId;
-        if (id == undefined || id == '') return;
+        if (id == undefined || id == '') {
+            const id = game.canvas.tiles.controlled[0]?.id
+            if (id != undefined) {
+                ui.notifications.info(`Material Deck: ${game.i18n.localize("MaterialDeck.Notifications.TileId")}: ${id}`);
+                console.log(`Selected tile id: ${id}`)
+            }
+            return;
+        }
         let tile = canvas.tiles.placeables.find(t => t.id == id);
         if (tile == undefined) return;
         const tileData = tile.document.flags?.['monks-active-tiles'];

@@ -1,4 +1,5 @@
-import { moduleName, sendWS, tokenControl, macroControl, combatTracker, playlistControl, soundboard, otherControls, externalModules, sceneControl } from "../MaterialDeck.js";
+import { moduleName, materialDeck } from "../MaterialDeck.js";
+import { sendWS } from "./websocket.js";
 
 export class StreamDeck{
     constructor() {
@@ -27,7 +28,6 @@ export class StreamDeck{
         
         this.imageBuffer = [];
         this.imageBufferCounter = 0;
-        
     }
 
     setScreen(action){
@@ -94,14 +94,14 @@ export class StreamDeck{
         }
 
         if (this.getActive(action) == false){
-            if (action == 'token') tokenControl.active = false; 
-            else if (action == 'macro') macroControl.active = false; 
-            else if (action == 'combattracker') combatTracker.active = false; 
-            else if (action == 'playlist') playlistControl.active = false;
-            else if (action == 'soundboard') soundboard.active = false;
-            else if (action == 'other') otherControls.active = false;
-            else if (action == 'external') externalModules.active = false;
-            else if (action == 'scene') sceneControl.active = false;
+            if (action == 'token') materialDeck.tokenControl.active = false; 
+            else if (action == 'macro') materialDeck.macroControl.active = false; 
+            else if (action == 'combattracker') materialDeck.combatTracker.active = false; 
+            else if (action == 'playlist') materialDeck.playlistControl.active = false;
+            else if (action == 'soundboard') materialDeck.soundboard.active = false;
+            else if (action == 'other') materialDeck.otherControls.active = false;
+            else if (action == 'external') materialDeck.externalModules.active = false;
+            else if (action == 'scene') materialDeck.sceneControl.active = false;
         }
     }
 
@@ -121,6 +121,7 @@ export class StreamDeck{
     }
 
     formatTitle(txt=''){
+        if (txt == '' || txt == null) return '';
         let txtArrayOriginal = txt.split("\n");
         let txtArray = [];
         let counter = 0;
@@ -481,6 +482,7 @@ export class StreamDeck{
         else {
             
         }
+        
         if (uses != undefined && uses.heart != undefined && (uses.available > 0 || uses.maximum != undefined)) {
             const percentage = 102*uses.available/uses.maximum;
             ctx.fillStyle = uses.heart;
@@ -544,7 +546,7 @@ export class StreamDeck{
                 yStart = 0;
             }
             ctx.drawImage(img, xStart+margin, yStart+margin, renderableWidth - 2*margin, renderableHeight - 2*margin);
-            if (uses != undefined && uses.heart == undefined) {
+            if (uses != undefined && uses.heart == undefined && uses.bar == false) {
                 
                 let txt = '';
                 let noMaxUses = false;
@@ -558,15 +560,11 @@ export class StreamDeck{
                 }
                 ctx.beginPath();
                 ctx.lineWidth = 4;
-                let green = Math.ceil(255*(uses.available/uses.maximum));
-                let red = 255-green;
-                green = green.toString(16);
-                if (green.length == 1) green = "0"+green;
-                red = red.toString(16);
-                if (red.length == 1) red = "0"+red;
+
                 if (noMaxUses) ctx.strokeStyle = "#c000000";
                 else if (uses.available == 0) ctx.strokeStyle = "#c80000";
-                else ctx.strokeStyle = "#"+red.toString(16)+green.toString(16)+"00";
+                else ctx.strokeStyle = this.rgbToHex(Math.round(255*(1-uses.available/uses.maximum)), Math.round(255*uses.available/uses.maximum), 0);
+
                 const rect = {height:35, paddingSides:20, paddingBottom: 4}
                 ctx.rect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*rect.paddingSides,rect.height);
                 ctx.globalAlpha = 0.5;
@@ -575,6 +573,31 @@ export class StreamDeck{
                 ctx.fillStyle = "white";
                 ctx.font = "24px Arial";
                 ctx.fillText(txt, (canvas.width  - ctx.measureText(txt).width) / 2, 144-rect.height-rect.paddingBottom+25);
+                ctx.stroke();
+            }
+            else if (uses != undefined && uses.bar && (uses.available > 0 || uses.maximum != undefined)) {
+                
+                const rect = {height:15, paddingSides:15, paddingBottom: 4, radius: 4, lineWidth: 5}
+                const percentage = (144-2*rect.paddingSides)*uses.available/uses.maximum;
+                const color = this.rgbToHex(Math.round(255*(1-uses.available/uses.maximum)), Math.round(255*uses.available/uses.maximum), 0);
+
+                ctx.strokeStyle = "#000000";
+                ctx.lineWidth = rect.lineWidth;
+                ctx.fillStyle = '#000000';
+                ctx.globalAlpha = 0.75;
+                ctx.fillRect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*(rect.paddingSides),rect.height);
+                
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = color;
+                
+                ctx.fillRect(rect.paddingSides, 144-rect.height-rect.paddingBottom,percentage,rect.height);
+                ctx.globalAlpha = 1;
+                ctx.roundRect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*rect.paddingSides,rect.height,rect.radius);
+                ctx.stroke();
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.roundRect(rect.paddingSides, 144-rect.height-rect.paddingBottom,144-2*rect.paddingSides,rect.height,rect.radius);
                 ctx.stroke();
             }
             
@@ -675,5 +698,14 @@ export class StreamDeck{
         const txt = showTxt ? 'no\npermission' : '';
         this.setIcon(context,device,url,{background:background});
         this.setTitle(txt,context);
+    }
+
+    componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+      
+    rgbToHex(r, g, b) {
+        return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 }

@@ -1,4 +1,4 @@
-import { moduleName, streamDeck, getPermission, hotbarUses } from "../../MaterialDeck.js";
+import { moduleName, materialDeck, getPermission, hotbarUses } from "../../MaterialDeck.js";
 import { compatibleCore } from "../misc.js";
 
 export class MacroControl{
@@ -9,7 +9,7 @@ export class MacroControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -41,7 +41,7 @@ export class MacroControl{
 
         if (mode == 'macroBoard') {  //Macro board
             if ((getPermission('MACRO','MACROBOARD') == false )) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             if (settings.macroBoardMode == 'offset') {  //Offset
@@ -77,7 +77,7 @@ export class MacroControl{
         }
         else { //Macro Hotbar
             if ((getPermission('MACRO','HOTBAR') == false )) {
-                streamDeck.noPermission(context,device);
+                materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             if (mode == 'hotbar') macroId = game.user.hotbar[macroNumber];
@@ -104,13 +104,13 @@ export class MacroControl{
         }
 
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context, device, src, {
+        materialDeck.streamDeck.setIcon(context, device, src, {
             background,
             ring,
             ringColor,
             uses,
         });
-        streamDeck.setTitle(name,context);
+        materialDeck.streamDeck.setTitle(name,context);
     }
 
     async getUses(macro) {
@@ -132,7 +132,7 @@ export class MacroControl{
     }
 
     async hotbar(){
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -147,7 +147,7 @@ export class MacroControl{
                 if(macroNumber == undefined || isNaN(parseInt(macroNumber))) macroNumber = 1;
 
                 if ((getPermission('MACRO','HOTBAR') == false )) {
-                    streamDeck.noPermission(context,device);
+                    materialDeck.streamDeck.noPermission(context,device);
                     return;
                 }
 
@@ -173,8 +173,8 @@ export class MacroControl{
                     if (hotbarUses && displayUses) uses = await this.getUses(macro);
                 }
                 if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                streamDeck.setIcon(context,device,src,{background:background,uses:uses});
-                streamDeck.setTitle(name,context);
+                materialDeck.streamDeck.setIcon(context,device,src,{background:background,uses:uses});
+                materialDeck.streamDeck.setTitle(name,context);
             }
         }
     }
@@ -207,15 +207,15 @@ export class MacroControl{
                     let argument;
                     try {
                         argument = JSON.parse(args)
-                        macro.execute({
-                            ...argument,
-                            // Add additional arguments for device updates
-                            deviceContext: settings.device,
-                            buttonContext: settings.context,
-                        });
                     } catch (err) {
-                        console.error(err)
+                        //console.error(err)
                     }
+                    macro.execute({
+                        ...argument,
+                        // Add additional arguments for device updates
+                        deviceContext: settings.device,
+                        buttonContext: settings.context,
+                    });
                 }
                 else {
                     let chatData = {
@@ -286,15 +286,15 @@ export class MacroControl{
                     let argument;
                     try {
                         argument = JSON.parse(args[macroNumber] || "{}")
-                        macro.execute({
-                            ...argument,
-                            // Add additional arguments for device updates
-                            deviceContext: macroSettings.device,
-                            buttonContext: macroSettings.context,
-                        });
                     } catch (err) {
-                        console.error(err)
+                        //console.error(err)
                     }
+                    macro.execute({
+                        ...argument,
+                        // Add additional arguments for device updates
+                        deviceContext: macroSettings.device,
+                        buttonContext: macroSettings.context,
+                    });
                 }
                 else {
                     // Advanced macros handling

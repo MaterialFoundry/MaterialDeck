@@ -1,4 +1,4 @@
-import { moduleName, streamDeck, getPermission } from "../../MaterialDeck.js";
+import { moduleName, materialDeck, getPermission } from "../../MaterialDeck.js";
 
 export class PlaylistControl{
     constructor(){
@@ -9,7 +9,7 @@ export class PlaylistControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of streamDeck.buttonContext) {
+        for (let device of materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -21,7 +21,7 @@ export class PlaylistControl{
 
     update(settings,context,device){
         if (getPermission('PLAYLIST','PLAY') == false ) {
-            streamDeck.noPermission(context,device);
+            materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         this.active = true;
@@ -44,8 +44,8 @@ export class PlaylistControl{
                 src = settings.iconOverride;
                 overlay = false;
             }
-            streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay});
-            streamDeck.setTitle(txt,context);
+            materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay});
+            materialDeck.streamDeck.setTitle(txt,context);
         }
     }
 
@@ -61,7 +61,7 @@ export class PlaylistControl{
         let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
-        if (playlistType == 'playStop'){
+        if (playlistType == 'playStop' || playlistType == 'playPause'){
             let playlist;
             if (playlistMode == 'playlist') {
                 let playlistNr = parseInt(settings.playlistNr);
@@ -103,8 +103,8 @@ export class PlaylistControl{
         }
 
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        streamDeck.setTitle(name,context);
+        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        materialDeck.streamDeck.setTitle(name,context);
     }
 
     updateTrack(settings,context,device){
@@ -113,12 +113,13 @@ export class PlaylistControl{
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#FF0000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
+        const ringPauseColor = '#0000FF';
         const playlistType = settings.playlistType ? settings.playlistType : 'playStop';
         const playlistMode = settings.playlistMode ? settings.playlistMode : 'playlist';
         let src = "modules/MaterialDeck/img/transparant.png";
 
         //Play/Stop
-        if (playlistType == 'playStop' || playlistType == 'incDecVol' || playlistType == 'setVol'){
+        if (playlistType == 'playStop' || playlistType == 'playPause' || playlistType == 'incDecVol' || playlistType == 'setVol'){
             let playlist;
             let trackNr;
             if (playlistMode == 'track') {
@@ -142,8 +143,8 @@ export class PlaylistControl{
                 if (playlistMode == 'track') track = playlist.sounds.contents[trackNr];
                 else track = playlist.sounds.getName(settings.trackNr);
                 if (track != undefined){
-                    if (track.playing) 
-                        ringColor = ringOnColor;
+                    if (track.playing && track.sound.playing) 
+                        ringColor = ringOnColor;  
                     else
                         ringColor = ringOffColor;
                     if (settings.displayName)
@@ -166,8 +167,8 @@ export class PlaylistControl{
         else if (playlistType == 'relativeOffset') {
         }
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        streamDeck.setTitle(name,context);
+        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        materialDeck.streamDeck.setTitle(name,context);
     }
 
     stopAll(force=false){
@@ -205,15 +206,6 @@ export class PlaylistControl{
             game.socket.emit(`module.MaterialDeck`, payload);
             return;
         }
-
-        /*
-        let playing = game.playlists.playing;
-        for (let i=0; i<playing.length; i++){
-            for (let sound of playing[i].sounds.contents) {
-                if (sound.playing) sound.sound.pause();
-            }
-        }
-        */
         for (let elmnt of document.getElementsByClassName('sound-control pause'))
             elmnt.click();
     }
@@ -250,14 +242,14 @@ export class PlaylistControl{
             if (playlistMode == 'playlist' || playlistMode == 'track') playlist = this.getPlaylist(playlistNr);
             else playlist = game.playlists.getName(settings.playlistNr);
             
-            if (playlistType == 'playStop' && (playlistMode == 'playlist' || playlistMode == 'track')) {
+            if ((playlistType == 'playStop' || playlistType == 'playPause') && (playlistMode == 'playlist' || playlistMode == 'track')) {
                 if (playlist != undefined){
                     if (playlistMode == 'playlist')
-                        this.playPlaylist(playlist,playlistNr);
+                        this.playPlaylist(playlist, playlistNr, playlistType == 'playPause');
                     else {
                         const track = playlist.sounds.contents[trackNr];
                         if (track != undefined){
-                            this.playTrack(track,playlist,playlistNr);
+                            this.playTrack(track, playlist, playlistNr, playlistType == 'playPause');
                         }
                     }
                 }
@@ -265,13 +257,15 @@ export class PlaylistControl{
             else if (playlistType == 'playStop') {
                 if (playlist != undefined) {
                     if (playlistMode == 'playlistName' && playlist.playing)
-                        playlist.stopAll();
+                        for (let elmnt of document.querySelectorAll('[data-action="sound-stop"]')) {
+                            if (elmnt.parentElement.parentElement.dataset.playlistId == playlist.id) elmnt.click();
+                        }
                     else if (playlistMode == 'playlistName')
                         playlist.playAll();
                     else {
                         const track = playlist.sounds.getName(settings.trackNr);
                         if (track != undefined && track.playing){
-                           playlist.stopSound(track);
+                           //playlist.pauseSound(track);
                         }
                         else if (track != undefined) {
                             playlist.playSound(track);
@@ -341,7 +335,7 @@ export class PlaylistControl{
           
     }
 
-    async playPlaylist(playlist,playlistNr){
+    async playPlaylist(playlist,playlistNr,pause=false){
         if (game.user.isGM == false) {
             const payload = {
                 "msgType": "playPlaylist", 
@@ -351,22 +345,29 @@ export class PlaylistControl{
             game.socket.emit(`module.MaterialDeck`, payload);
             return;
         }
-        if (playlist.playing) {
-            playlist.stopAll();
+        
+        if (playlist.playing && !pause) {
+            for (let elmnt of document.querySelectorAll('[data-action="sound-stop"]')) {
+                if (elmnt.parentElement.parentElement.dataset.playlistId == playlist.id) elmnt.click();
+            }
+            return;
+        }
+        else if (playlist.playing) {
+            for (let elmnt of document.getElementsByClassName('sound-control pause')) {
+                if (elmnt.parentElement.parentElement.dataset.playlistId == playlist.id) elmnt.click();
+            }
             return;
         }
         let mode = game.settings.get(moduleName,'playlists').playlistMode[playlistNr];
-        //const originalPlayMode = playlist.mode;
-        //await playlist.update({mode: CONST.PLAYLIST_MODES.SEQUENTIAL});
+
         if (mode == 0) {
             mode = game.settings.get(moduleName,'playlists').playMode;
             if (mode == 2) await this.stopAll(true);
         }
         playlist.playAll();
-        //await playlist.update({mode: originalPlayMode});
     }
     
-    async playTrack(track,playlist,playlistNr){
+    async playTrack(track,playlist,playlistNr,pause=false){
         if (game.user.isGM == false) {
             const payload = {
                 "msgType": "playTrack", 
@@ -394,7 +395,15 @@ export class PlaylistControl{
         }
         
         if (play) await playlist.playSound(track);
-        else await playlist.stopSound(track);
+        else if (!pause) await playlist.stopSound(track);
+        else {
+            if (track.sound.playing) {
+                for (let elmnt of document.getElementsByClassName('sound-control pause')) {
+                    if (elmnt.parentElement.parentElement.dataset.soundId == track.id) elmnt.click();
+                }
+            }
+            else playlist.playSound(track);
+        }
         
         playlist.update({playing: play});
         await playlist.update({mode: originalPlayMode});
