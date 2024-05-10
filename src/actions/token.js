@@ -1,4 +1,4 @@
-import { materialDeck, getPermission } from "../../MaterialDeck.js";
+import { getPermission } from "../../MaterialDeck.js";
 
 export class TokenControl{
     constructor(){
@@ -9,7 +9,7 @@ export class TokenControl{
 
     async update(tokenId=null){
         if (this.active == false) return;
-        for (let device of materialDeck.streamDeck.buttonContext) {
+        for (let device of game.materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -47,8 +47,8 @@ export class TokenControl{
 
         let token;
         if (data.token == undefined) {
-            if (settings.combatTrackerMode) token = materialDeck.systemHelper.getTokenFromTokenId(tokenId);
-            else token = materialDeck.systemHelper.getToken(selection,tokenIdentifier);
+            if (settings.combatTrackerMode) token = game.materialDeck.systemHelper.getTokenFromTokenId(tokenId);
+            else token = game.materialDeck.systemHelper.getToken(selection,tokenIdentifier);
         }
         else
             token = data.token;
@@ -63,16 +63,16 @@ export class TokenControl{
 
         if (validToken) {
             if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             if (token.owner == false && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
 
             if (mode == 'token') {
-                if (name) txt += materialDeck.systemHelper.getTokenName(token);
+                if (name) txt += game.materialDeck.systemHelper.getTokenName(token);
                 txt += prependTitle;
     
                 const permission = token.actor?.permission;
@@ -91,8 +91,8 @@ export class TokenControl{
                     stats = 'none';
                 }
     
-                if (icon == 'tokenIcon') iconSrc = materialDeck.systemHelper.getTokenIcon(token);
-                else if (icon == 'actorIcon') iconSrc = materialDeck.systemHelper.getActorIcon(token);
+                if (icon == 'tokenIcon') iconSrc = game.materialDeck.systemHelper.getTokenIcon(token);
+                else if (icon == 'actorIcon') iconSrc = game.materialDeck.systemHelper.getActorIcon(token);
                 if (name && stats != 'none' && stats != 'HPbox') txt += "\n";
                 
                 if (stats == 'custom'){
@@ -101,7 +101,7 @@ export class TokenControl{
                 }
                 
                 if (stats == 'HP' || stats == 'Wounds') {
-                    const hp = materialDeck.systemHelper.getHP(token);
+                    const hp = game.materialDeck.systemHelper.getHP(token);
                     txt += hp.value + "/" + hp.max;
                     
                     if (icon == 'stats')
@@ -114,7 +114,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'Agility') { /* forbidden-lands */
-                    const wits = materialDeck.systemHelper.getAgility(token);
+                    const wits = game.materialDeck.systemHelper.getAgility(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -127,7 +127,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'Wits') { /* forbidden-lands */
-                    const wits = materialDeck.systemHelper.getWits(token);
+                    const wits = game.materialDeck.systemHelper.getWits(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -140,7 +140,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'Empathy') { /* forbidden-lands */
-                    const wits = materialDeck.systemHelper.getEmpathy(token);
+                    const wits = game.materialDeck.systemHelper.getEmpathy(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -153,7 +153,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'WillPower') { /* forbidden-lands */
-                    const wits = materialDeck.systemHelper.getWillPower(token);
+                    const wits = game.materialDeck.systemHelper.getWillPower(token);
                     txt += wits.value + "/" + wits.max;
                     
                     if (icon == 'stats')
@@ -166,7 +166,7 @@ export class TokenControl{
                 }
 
                 if (stats == 'CriticalWounds') { /* WFRP4e */
-                    const criticalWounds = materialDeck.systemHelper.getCriticalWounds(token);
+                    const criticalWounds = game.materialDeck.systemHelper.getCriticalWounds(token);
                     txt += criticalWounds.value + "/" + criticalWounds.max;
                     
                     if (icon == 'stats')
@@ -178,7 +178,7 @@ export class TokenControl{
                         
                 }
                 else if (stats == 'HPbox' || stats == 'HPbar') {
-                    const hp = materialDeck.systemHelper.getHP(token);
+                    const hp = game.materialDeck.systemHelper.getHP(token);
                     uses = {
                         available: hp.value,
                         maximum: hp.max,
@@ -186,7 +186,7 @@ export class TokenControl{
                     }
                 }
                 else if (stats == 'TempHP') {
-                    const tempHP = materialDeck.systemHelper.getTempHP(token);
+                    const tempHP = game.materialDeck.systemHelper.getTempHP(token);
                     txt += (tempHP.max == 0) ? tempHP.value : `${tempHP.value}/${tempHP.max}`;
                     
                     if (icon == 'stats') 
@@ -197,63 +197,63 @@ export class TokenControl{
                         };
                 }
                 else if (stats == 'Stamina') {    //starfinder
-                    const stamina = materialDeck.systemHelper.getStamina(token);
+                    const stamina = game.materialDeck.systemHelper.getStamina(token);
                     txt += `${stamina.value}/${stamina.max}`;
                 }
                 else if (stats == 'KinAC') {    //starfinder
-                    txt += materialDeck.systemHelper.getKinAC(token);
+                    txt += game.materialDeck.systemHelper.getKinAC(token);
                 }
-                else if (stats == 'AC') txt += materialDeck.systemHelper.getAC(token);
-                else if (stats == 'ShieldHP') txt += materialDeck.systemHelper.getShieldHP(token);
-                else if (stats == 'Speed') txt += materialDeck.systemHelper.getSpeed(token);
-                else if (stats == 'Init') txt += materialDeck.systemHelper.getInitiative(token);
-                else if (stats == 'PassivePerception') txt += materialDeck.systemHelper.getPassivePerception(token);
-                else if (stats == 'PassiveInvestigation') txt += materialDeck.systemHelper.getPassiveInvestigation(token);
-                else if (stats == 'Ability') txt += materialDeck.systemHelper.getAbility(token, settings.ability);
-                else if (stats == 'AbilityMod') txt += materialDeck.systemHelper.getAbilityModifier(token, settings.ability);
+                else if (stats == 'AC') txt += game.materialDeck.systemHelper.getAC(token);
+                else if (stats == 'ShieldHP') txt += game.materialDeck.systemHelper.getShieldHP(token);
+                else if (stats == 'Speed') txt += game.materialDeck.systemHelper.getSpeed(token);
+                else if (stats == 'Init') txt += game.materialDeck.systemHelper.getInitiative(token);
+                else if (stats == 'PassivePerception') txt += game.materialDeck.systemHelper.getPassivePerception(token);
+                else if (stats == 'PassiveInvestigation') txt += game.materialDeck.systemHelper.getPassiveInvestigation(token);
+                else if (stats == 'Ability') txt += game.materialDeck.systemHelper.getAbility(token, settings.ability);
+                else if (stats == 'AbilityMod') txt += game.materialDeck.systemHelper.getAbilityModifier(token, settings.ability);
                 else if (stats == 'Save') {
-                    txt += materialDeck.systemHelper.getAbilitySave(token, settings.save);
-                    ringColor = materialDeck.systemHelper.getSaveRingColor(token, settings.save);
+                    txt += game.materialDeck.systemHelper.getAbilitySave(token, settings.save);
+                    ringColor = game.materialDeck.systemHelper.getSaveRingColor(token, settings.save);
                     if (ringColor != undefined) ring = 2;
                 }
                 else if (stats == 'Skill') {
-                    txt += materialDeck.systemHelper.getSkill(token, settings.skill);
-                    ringColor = materialDeck.systemHelper.getSkillRingColor(token, settings.skill);
+                    txt += game.materialDeck.systemHelper.getSkill(token, settings.skill);
+                    ringColor = game.materialDeck.systemHelper.getSkillRingColor(token, settings.skill);
                     if (ringColor != undefined) ring = 2;
                 }
-                else if (stats == 'Prof') txt += materialDeck.systemHelper.getProficiency(token);
-                else if (stats == 'Fate') txt += materialDeck.systemHelper.getFate(token) /* WFRP4e */
-                else if (stats == 'Fortune') txt += materialDeck.systemHelper.getFortune(token) /* WFRP4e */
-                else if (stats == 'Corruption') txt += materialDeck.systemHelper.getCorruption(token) /* WFRP4e */
-                else if (stats == 'Advantage') txt += materialDeck.systemHelper.getAdvantage(token) /* WFRP4e */
-                else if (stats == 'Resolve') txt += materialDeck.systemHelper.getResolve(token) /* WFRP4e */
-                else if (stats == 'Resilience') txt += materialDeck.systemHelper.getResilience(token) /* WFRP4e */
-                else if (stats == 'Perception') txt += materialDeck.systemHelper.getPerception(token) /* PF2E */
+                else if (stats == 'Prof') txt += game.materialDeck.systemHelper.getProficiency(token);
+                else if (stats == 'Fate') txt += game.materialDeck.systemHelper.getFate(token) /* WFRP4e */
+                else if (stats == 'Fortune') txt += game.materialDeck.systemHelper.getFortune(token) /* WFRP4e */
+                else if (stats == 'Corruption') txt += game.materialDeck.systemHelper.getCorruption(token) /* WFRP4e */
+                else if (stats == 'Advantage') txt += game.materialDeck.systemHelper.getAdvantage(token) /* WFRP4e */
+                else if (stats == 'Resolve') txt += game.materialDeck.systemHelper.getResolve(token) /* WFRP4e */
+                else if (stats == 'Resilience') txt += game.materialDeck.systemHelper.getResilience(token) /* WFRP4e */
+                else if (stats == 'Perception') txt += game.materialDeck.systemHelper.getPerception(token) /* PF2E */
                 else if (stats == 'Condition') { /* PF2E */
-                    const valuedCondition = materialDeck.systemHelper.getConditionValue(token, settings.condition);
+                    const valuedCondition = game.materialDeck.systemHelper.getConditionValue(token, settings.condition);
                     if (valuedCondition != undefined) {
                         txt += valuedCondition?.value;
                     }
                 }
-                else if (stats == 'DefenseMelee') txt += materialDeck.systemHelper.getDefenseMelee(token); /* SWFFG */
-                else if (stats == 'DefenseRanged') txt += materialDeck.systemHelper.getDefenseRanged(token); /* SWFFG */
+                else if (stats == 'DefenseMelee') txt += game.materialDeck.systemHelper.getDefenseMelee(token); /* SWFFG */
+                else if (stats == 'DefenseRanged') txt += game.materialDeck.systemHelper.getDefenseRanged(token); /* SWFFG */
                 else if (stats == 'Encumbrance') { /* SWFFG */
-                    const encumbrance = materialDeck.systemHelper.getEncumbrance(token);
+                    const encumbrance = game.materialDeck.systemHelper.getEncumbrance(token);
                     txt += `${encumbrance.value}/${encumbrance.max}`;
                 } 
                 else if (stats == 'Force Pool') { /* SWFFG */   
-                    const encumbrance = materialDeck.systemHelper.getForcePool(token);
+                    const encumbrance = game.materialDeck.systemHelper.getForcePool(token);
                     txt += `${encumbrance.value}/${encumbrance.max}`;
                 } /* SWFFG */
                    
                 else if (stats == 'Strain') { /* SWFFG */
-                    const strain = materialDeck.systemHelper.getStrain(token);
+                    const strain = game.materialDeck.systemHelper.getStrain(token);
                     txt += `${strain.value}/${strain.max}`;
                 }
                 
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (getPermission('TOKEN','VISIBILITY') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
@@ -268,7 +268,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'combatState') { //toggle combat state
                     if (getPermission('TOKEN','COMBAT') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
@@ -293,14 +293,14 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'condition') { //handle condition
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
                     overlay = true;
                     if (icon == 'stats') {
-                        iconSrc = materialDeck.systemHelper.getConditionIcon(settings.condition);
-                        if (materialDeck.systemHelper.getConditionActive(token,settings.condition)) {
+                        iconSrc = game.materialDeck.systemHelper.getConditionIcon(settings.condition);
+                        if (game.materialDeck.systemHelper.getConditionActive(token,settings.condition)) {
                             ring = 2;
                             ringColor = "#FF7B00";
                         }
@@ -308,7 +308,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
@@ -317,7 +317,7 @@ export class TokenControl{
                     if (condition == undefined || condition == '') return;
                     if (icon == 'stats') {
                         iconSrc = CONFIG.statusEffects.find(e => e.label === condition).icon;
-                        if (materialDeck.systemHelper.getConditionActive(token,condition)){
+                        if (game.materialDeck.systemHelper.getConditionActive(token,condition)){
                             ring = 2;
                             ringColor = "#FF7B00";
                         } 
@@ -325,7 +325,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'wildcard') { //wildcard images
                     if (getPermission('TOKEN','WILDCARD') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     if (icon != 'stats') return;
@@ -337,7 +337,7 @@ export class TokenControl{
                     let currentImgNr = 0
                     let imgNr;
                     for (let i=0; i<images.length; i++) 
-                        if (images[i] == materialDeck.systemHelper.getTokenIcon(token)){
+                        if (images[i] == game.materialDeck.systemHelper.getTokenIcon(token)){
                             currentImgNr = i;
                             break;
                         }
@@ -396,29 +396,29 @@ export class TokenControl{
                 let items = allItems;
                 let item;
                 if (mode == 'inventory') {
-                    items = materialDeck.systemHelper.getItems(token,settings.inventoryType);
+                    items = game.materialDeck.systemHelper.getItems(token,settings.inventoryType);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
                     else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
                     
-                    if (item != undefined && displayUses) uses = materialDeck.systemHelper.getItemUses(item);
+                    if (item != undefined && displayUses) uses = game.materialDeck.systemHelper.getItemUses(item);
                 }
                 else if (mode == 'features') {
-                    items = materialDeck.systemHelper.getFeatures(token,settings.featureType);
+                    items = game.materialDeck.systemHelper.getFeatures(token,settings.featureType);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
                     else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
-                    if (item != undefined && displayUses) uses = materialDeck.systemHelper.getFeatureUses(item);
+                    if (item != undefined && displayUses) uses = game.materialDeck.systemHelper.getFeatureUses(item);
                 }
                 else if (mode == 'spellbook') {
-                    items = materialDeck.systemHelper.getSpells(token,settings.spellType,settings.spellMode);
+                    items = game.materialDeck.systemHelper.getSpells(token,settings.spellType,settings.spellMode);
                     items = this.sortItems(items);
                     if (selectionMode == 'order')       item = items[itemNr];
                     else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
                     else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
-                    if (displayUses && item != undefined) uses = materialDeck.systemHelper.getSpellUses(token,settings.spellType,item);
+                    if (displayUses && item != undefined) uses = game.materialDeck.systemHelper.getSpellUses(token,settings.spellType,item);
                 }
                 if (item != undefined) {
                     if (displayIcon) iconSrc = item.img;
@@ -433,7 +433,7 @@ export class TokenControl{
                 iconSrc += "";
                 if (settings.onClick == 'visibility') { //toggle visibility
                     if (getPermission('TOKEN','VISIBILITY') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     if (icon == 'stats') {
@@ -444,7 +444,7 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'combatState') { //toggle combat state
                     if (getPermission('TOKEN','COMBAT') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     if (icon == 'stats') {
@@ -462,16 +462,16 @@ export class TokenControl{
                 }
                 else if (settings.onClick == 'condition') { //toggle condition
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     ring = 1;
                     overlay = true;
-                    if (icon == 'stats') iconSrc = materialDeck.systemHelper.getConditionIcon(settings.condition);
+                    if (icon == 'stats') iconSrc = game.materialDeck.systemHelper.getConditionIcon(settings.condition);
                 }
                 else if (settings.onClick == 'cubCondition') { //Combat Utility Belt conditions
                     if (getPermission('TOKEN','CONDITIONS') == false ) {
-                        materialDeck.streamDeck.noPermission(context,device);
+                        game.materialDeck.streamDeck.noPermission(context,device);
                         return;
                     }
                     const condition = settings.cubConditionName;
@@ -559,8 +559,8 @@ export class TokenControl{
         }
         else if (hideName) txt = "";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) iconSrc = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:ring,ringColor:ringColor,overlay:overlay,uses:uses,hp:hp});
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     sortItems(items) {
@@ -578,7 +578,7 @@ export class TokenControl{
         const tokenIdentifier = settings.tokenName ? settings.tokenName : '';
         const mode = settings.tokenMode ? settings.tokenMode : 'token';
         
-        let token = materialDeck.systemHelper.getToken(selection,tokenIdentifier);
+        let token = game.materialDeck.systemHelper.getToken(selection,tokenIdentifier);
 
         if (token == undefined) return;
         if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) return;
@@ -603,10 +603,10 @@ export class TokenControl{
                 token.control();
             }
             else if (onClick == 'move') {    //move token
-                materialDeck.systemHelper.moveToken(token,settings.dir,settings.grid);
+                game.materialDeck.systemHelper.moveToken(token,settings.dir,settings.grid);
             }
             else if (onClick == 'rotate') {    //rotate token
-                materialDeck.systemHelper.rotateToken(token,settings.rot,settings.rotValue);
+                game.materialDeck.systemHelper.rotateToken(token,settings.rot,settings.rotValue);
             }
             else if (onClick == 'charSheet'){ //Open character sheet
                 const element = document.getElementById(token.actor.sheet.id);
@@ -634,15 +634,15 @@ export class TokenControl{
                 const func = settings.conditionFunction ? settings.conditionFunction : 'toggle';
 
                 if (func == 'toggle'){ //toggle
-                    await materialDeck.systemHelper.toggleCondition(token,settings.condition);
+                    await game.materialDeck.systemHelper.toggleCondition(token,settings.condition);
                     this.update(tokenId);
                 }
                 else if (func == 'increase'){ //increase
-                    await materialDeck.systemHelper.modifyConditionValue(token, settings.condition, +1)
+                    await game.materialDeck.systemHelper.modifyConditionValue(token, settings.condition, +1)
                     this.update(tokenId);
                 }
                 else if (func == 'decrease'){ //decrease
-                    await materialDeck.systemHelper.modifyConditionValue(token, settings.condition, -1)
+                    await game.materialDeck.systemHelper.modifyConditionValue(token, settings.condition, -1)
                     this.update(tokenId);
                 }
 
@@ -739,7 +739,7 @@ export class TokenControl{
                 token.document.update(data);
             }
             else if (onClick == 'initiative'){
-                materialDeck.systemHelper.toggleInitiative(token);
+                game.materialDeck.systemHelper.toggleInitiative(token);
             }
             else if (onClick == 'wildcard') { //wildcard images
                 if (getPermission('TOKEN','WILDCARD') == false ) return;
@@ -753,7 +753,7 @@ export class TokenControl{
                 if (method == 'iterate'){
                     let currentImgNr = 0
                     for (let i=0; i<images.length; i++) 
-                        if (images[i] == materialDeck.systemHelper.getTokenIcon(token)){
+                        if (images[i] == game.materialDeck.systemHelper.getTokenIcon(token)){
                             currentImgNr = i;
                             break;
                         }
@@ -783,7 +783,7 @@ export class TokenControl{
                     macroNumber: settings.macroId,
                     macroArgs: settings.macroArgs
                 }
-                materialDeck.macroControl.keyPress(settingsNew);
+                game.materialDeck.macroControl.keyPress(settingsNew);
             }
             else if (onClick == 'roll') {   //roll skill/save/ability
                 const rollMode = settings.rollMode ? settings.rollMode : 'default';
@@ -793,17 +793,17 @@ export class TokenControl{
                 
                 if (rollMode == 'default')
                     options = {
-                        fastForward: (materialDeck.otherControls.rollOption != 'dialog'),
-                        advantage: (materialDeck.otherControls.rollOption == 'advantage'),
-                        disadvantage: (materialDeck.otherControls.rollOption == 'disadvantage')
+                        fastForward: (game.materialDeck.otherControls.rollOption != 'dialog'),
+                        advantage: (game.materialDeck.otherControls.rollOption == 'advantage'),
+                        disadvantage: (game.materialDeck.otherControls.rollOption == 'disadvantage')
                     }
                 else if (rollMode == 'normal') options = {fastForward:true}
                 else if (rollMode == 'advantage') options = {fastForward:true,advantage:true}
                 else if (rollMode == 'disadvantage') options = {fastForward:true,disadvantage:true}
 
                 if (rollPrivacyMode != 'default') options['rollMode'] = rollPrivacyMode;
-                materialDeck.systemHelper.roll(token,settings.roll,options,settings.rollAbility,settings.rollSkill,settings.rollSave)
-                if (materialDeck.otherControls.rollOption != 'dialog') materialDeck.otherControls.setRollOption('normal');
+                game.materialDeck.systemHelper.roll(token,settings.roll,options,settings.rollAbility,settings.rollSkill,settings.rollSave)
+                if (game.materialDeck.otherControls.rollOption != 'dialog') game.materialDeck.otherControls.setRollOption('normal');
             }
             else if (onClick == 'custom') {//custom onClick function
                 if (getPermission('TOKEN','CUSTOM') == false ) return;
@@ -844,7 +844,7 @@ export class TokenControl{
                             macroNumber: targetArray[1],
                             macroArgs: furnaceArguments
                         }
-                        materialDeck.macroControl.keyPress(settingsNew);
+                        game.materialDeck.macroControl.keyPress(settingsNew);
                         continue;
                     }
                     let formulaArray = this.splitCustom(formulaArrayTemp);
@@ -947,13 +947,13 @@ export class TokenControl{
             const selectionMode = settings.inventorySelection ? settings.inventorySelection : 'order';
             let items = allItems;
             if (mode == 'inventory') {
-                items = materialDeck.systemHelper.getItems(token,settings.inventoryType);
+                items = game.materialDeck.systemHelper.getItems(token,settings.inventoryType);
             }
             else if (mode == 'features') {
-                items = materialDeck.systemHelper.getFeatures(token,settings.featureType);
+                items = game.materialDeck.systemHelper.getFeatures(token,settings.featureType);
             }
             else if (mode == 'spellbook') {
-                items = materialDeck.systemHelper.getSpells(token,settings.spellType);
+                items = game.materialDeck.systemHelper.getSpells(token,settings.spellType);
             }
             items = this.sortItems(items);
             let item;
@@ -961,7 +961,7 @@ export class TokenControl{
             else if (selectionMode == 'name')   item = items.filter(i => i.name == settings.itemName)[0];
             else if (selectionMode == 'id')     item = items.filter(i => i.id == settings.itemName)[0];
             if (item != undefined) {
-                materialDeck.systemHelper.rollItem(item, settings, materialDeck.otherControls.rollOption, materialDeck.otherControls.attackMode, token);
+                game.materialDeck.systemHelper.rollItem(item, settings, game.materialDeck.otherControls.rollOption, game.materialDeck.otherControls.attackMode, token);
             }
             
         }

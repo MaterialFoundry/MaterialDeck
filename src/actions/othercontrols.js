@@ -1,4 +1,4 @@
-import { getPermission, materialDeck } from "../../MaterialDeck.js";
+import { getPermission } from "../../MaterialDeck.js";
 
 export class OtherControls{
     constructor(){
@@ -22,7 +22,7 @@ export class OtherControls{
 
     async updateAll(options={}){
         if (this.active == false) return;
-        for (let device of materialDeck.streamDeck.buttonContext) {
+        for (let device of game.materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -115,7 +115,7 @@ export class OtherControls{
 
     updatePause(settings,context,device,options={}){
         if (getPermission('OTHER','PAUSE') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
 
@@ -139,8 +139,8 @@ export class OtherControls{
             src = settings.iconOverride;
             overlay = false;
         }
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor,overlay});
-        materialDeck.streamDeck.setTitle('',context);
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor,overlay});
+        game.materialDeck.streamDeck.setTitle('',context);
     }
 
     keyPressPause(settings){
@@ -194,8 +194,8 @@ export class OtherControls{
             url = settings.iconOverride;
             overlay = false;
         }
-        materialDeck.streamDeck.setIcon(context,device,url,{background:background,overlay});
-        materialDeck.streamDeck.setTitle('',context);
+        game.materialDeck.streamDeck.setIcon(context,device,url,{background:background,overlay});
+        game.materialDeck.streamDeck.setTitle('',context);
     }
 
     keyPressMove(settings){
@@ -250,7 +250,7 @@ export class OtherControls{
     
     updateControl(settings,context,device,options={}){
         if (getPermission('OTHER','CONTROL') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const control = settings.control ? settings.control : 'dispControls';
@@ -274,7 +274,7 @@ export class OtherControls{
             
             if (selectedControl != undefined){
                 if (selectedControl.visible == false) {
-                    materialDeck.streamDeck.noPermission(context,device,false);
+                    game.materialDeck.streamDeck.noPermission(context,device,false);
                     return;
                 }
                 //if (tool == 'open'){  //open category
@@ -296,7 +296,7 @@ export class OtherControls{
                 const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
                     if (selectedControl.visible == false || selectedTool.visible == false) {
-                        materialDeck.streamDeck.noPermission(context,device,false);
+                        game.materialDeck.streamDeck.noPermission(context,device,false);
                         return;
                     }
                     txt = game.i18n.localize(selectedTool.title);
@@ -326,7 +326,7 @@ export class OtherControls{
             const selectedControl = ui.controls.controls.find(c => c.name == control);
             if (selectedControl != undefined){
                 if (selectedControl.visible == false) {
-                    materialDeck.streamDeck.noPermission(context,device,false);
+                    game.materialDeck.streamDeck.noPermission(context,device,false);
                     return;
                 }
                 if (tool == 'open'){  //open category
@@ -339,7 +339,7 @@ export class OtherControls{
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
                     if (selectedTool != undefined){
                         if (selectedTool.visible == false) {
-                            materialDeck.streamDeck.noPermission(context,device,false);
+                            game.materialDeck.streamDeck.noPermission(context,device,false);
                             return;
                         }
                         txt = game.i18n.localize(selectedTool.title);
@@ -355,8 +355,8 @@ export class OtherControls{
             }
         }
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressControl(settings){
@@ -373,7 +373,7 @@ export class OtherControls{
             
             if (selectedControl != undefined){
                 if (selectedControl.visible == false) {
-                    materialDeck.streamDeck.noPermission(context,device,false);
+                    game.materialDeck.streamDeck.noPermission(context,device,false);
                     return;
                 }
                 ui.controls.initialize({layer: selectedControl.layer});
@@ -387,13 +387,13 @@ export class OtherControls{
             const selectedControl = ui.controls.controls.find(c => c.name == ui.controls.activeControl);
             if (selectedControl != undefined){
                 if (selectedControl.visible == false) {
-                    materialDeck.streamDeck.noPermission(context,device,false);
+                    game.materialDeck.streamDeck.noPermission(context,device,false);
                     return;
                 }
                 const selectedTool = selectedControl.tools[controlNr];
                 if (selectedTool != undefined){
                     if (selectedTool.visible == false) {
-                        materialDeck.streamDeck.noPermission(context,device,false);
+                        game.materialDeck.streamDeck.noPermission(context,device,false);
                         return;
                     }
                     if (selectedTool.toggle) {
@@ -425,7 +425,7 @@ export class OtherControls{
             const selectedControl = ui.controls.controls.find(c => c.name == control);
             if (selectedControl != undefined){
                 if (selectedControl.visible == false) {
-                    materialDeck.streamDeck.noPermission(context,device,false);
+                    game.materialDeck.streamDeck.noPermission(context,device,false);
                     return;
                 }
                 if (tool == 'open'){  //open category
@@ -436,7 +436,7 @@ export class OtherControls{
                     const selectedTool = selectedControl.tools.find(t => t.name == tool);
                     if (selectedTool != undefined){
                         if (selectedTool.visible == false) {
-                            materialDeck.streamDeck.noPermission(context,device,false);
+                            game.materialDeck.streamDeck.noPermission(context,device,false);
                             return;
                         }
                         if (selectedTool.toggle) {
@@ -467,7 +467,7 @@ export class OtherControls{
 
     updateDarkness(settings,context,device,options={}){
         if (getPermission('OTHER','DARKNESS') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const func = settings.darknessFunction ? settings.darknessFunction : 'value';
@@ -489,13 +489,13 @@ export class OtherControls{
             const darkness = canvas.scene != null ? Math.floor(canvas.scene.darkness*100)/100 : '';
             txt += darkness;
         }
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         let overlay = true;
         if (settings.iconOverride != '' && settings.iconOverride != undefined) {
             src = settings.iconOverride;
             overlay = false;
         }
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,overlay});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,overlay});
     }
 
     keyPressDarkness(settings) {
@@ -525,7 +525,7 @@ export class OtherControls{
 
     updateRollDice(settings,context,device,options={}){
         if (getPermission('OTHER','DICE') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const background = settings.background ? settings.background : '#000000';
@@ -534,10 +534,10 @@ export class OtherControls{
 
         if (settings.displayDiceName) txt = 'Roll: ' + formula;
 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
     }
 
     keyPressRollDice(settings,context,device){
@@ -567,7 +567,7 @@ export class OtherControls{
         else if (rollFunction == 'sd'){
             let txt = settings.displayDiceName ? 'Roll: '+formula + '\nResult: ' : '';
             txt += r.total;
-            materialDeck.streamDeck.setTitle(txt,context);
+            game.materialDeck.streamDeck.setTitle(txt,context);
             let data = this.rollData
             data[context] = {
                 formula: formula,
@@ -583,7 +583,7 @@ export class OtherControls{
         const name = settings.rollTableName;
         if (name == undefined) return;
         if (getPermission('OTHER','TABLES') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
 
@@ -600,14 +600,14 @@ export class OtherControls{
         }
         else {
             if (table.permission < 2 && getPermission('OTHER','TABLES_ALL') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
         }
 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
     }
 
     keyPressRollTable(settings){
@@ -670,7 +670,7 @@ export class OtherControls{
     
     updateSidebar(settings,context,device,options={}){
         if (getPermission('OTHER','SIDEBAR') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const popOut = settings.sidebarPopOut ? settings.sidebarPopOut : false;
@@ -688,9 +688,9 @@ export class OtherControls{
         const name = settings.displaySidebarName ? this.getSidebarName(sidebarTab) : '';
         let icon = settings.displaySidebarIcon ? this.getSidebarIcon(sidebarTab) : '';
 
-        materialDeck.streamDeck.setTitle(name,context);
+        game.materialDeck.streamDeck.setTitle(name,context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressSidebar(settings){
@@ -715,7 +715,7 @@ export class OtherControls{
 
     updateCompendiumBrowser(settings,context,device,options={}){
         let rendered = options.renderCompendiumBrowser;
-        if (rendered == undefined && materialDeck.gamingSystem == "pf2e") rendered = (document.getElementById("app-1") != null);
+        if (rendered == undefined && game.materialDeck.gamingSystem == "pf2e") rendered = (document.getElementById("app-1") != null);
         else if (rendered == undefined) rendered = (document.getElementById("compendium-popout") != null);
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
@@ -723,21 +723,21 @@ export class OtherControls{
         const ringColor = rendered ? ringOnColor : ringOffColor;
         const txt = settings.displayCompendiumName ? name : '';
 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressCompendiumBrowser(settings){
         let element = null;
-        if (materialDeck.gamingSystem == "pf2e") element = document.getElementById("app-1")
+        if (game.materialDeck.gamingSystem == "pf2e") element = document.getElementById("app-1")
         else element = document.getElementById("compendium-popout");
         const rendered = (element != null);
 
         if (rendered) 
             element.getElementsByClassName("close")[0].click();
-        else if (materialDeck.gamingSystem == "pf2e")
+        else if (game.materialDeck.gamingSystem == "pf2e")
             document.getElementsByClassName("compendium-browser-btn")[0].click()
         else
             ui.compendium.renderPopout();
@@ -749,13 +749,13 @@ export class OtherControls{
         const name = settings.compendiumName;
         if (name == undefined) return;
         if (getPermission('OTHER','COMPENDIUM') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const compendium = game.packs.find(p=>p.metadata.label == name);
         if (compendium == undefined) return;
         if (compendium.private && getPermission('OTHER','COMPENDIUM_ALL') == false) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const rendered = compendium.apps[0].rendered;
@@ -765,10 +765,10 @@ export class OtherControls{
         const ringColor = rendered ? ringOnColor : ringOffColor;
         const txt = settings.displayCompendiumName ? name : '';
 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
     keyPressCompendium(settings){
@@ -793,22 +793,22 @@ export class OtherControls{
         let journalMode = settings.journalMode ? settings.journalMode : 'openJournal';
         let txt = '';
         if (name == undefined) {
-            materialDeck.streamDeck.setTitle('',context);
+            game.materialDeck.streamDeck.setTitle('',context);
             return;
         }
 
         const journal = game.journal.getName(name);
         if (journal == undefined) {
-            materialDeck.streamDeck.setTitle('',context);
+            game.materialDeck.streamDeck.setTitle('',context);
             return;
         }
 
         if (getPermission('OTHER','JOURNAL') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         let rendered = false;
@@ -845,10 +845,10 @@ export class OtherControls{
         const ringColor = rendered ? ringOnColor : ringOffColor;
         //const txt = settings.displayCompendiumName ? name : '';
 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
     }
 
     async keyPressJournal(settings){
@@ -897,14 +897,14 @@ export class OtherControls{
 
     updateChatMessage(settings,context,device,options={}){
         if (getPermission('OTHER','CHAT') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         const background = settings.background ? settings.background : '#000000';
-        materialDeck.streamDeck.setTitle("",context);
+        game.materialDeck.streamDeck.setTitle("",context);
         let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
     }
 
     keyPressChatMessage(settings){
@@ -928,13 +928,13 @@ export class OtherControls{
         let iconSrc = "modules/MaterialDeck/img/other/d20.png";
         const rollOption = settings.rollOptionFunction ? settings.rollOptionFunction : 'dialog';
         const ringColor = (rollOption == this.rollOption) ? ringOnColor : ringOffColor;
-        materialDeck.streamDeck.setTitle("",context);
+        game.materialDeck.streamDeck.setTitle("",context);
         let overlay = true;
         if (settings.iconOverride != '' && settings.iconOverride != undefined) {
             iconSrc = settings.iconOverride;
             overlay = false;
         }
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
     }
 
     keyPressRollOptions(settings){
@@ -955,13 +955,13 @@ export class OtherControls{
         let iconSrc = "modules/MaterialDeck/img/other/d20.png";
         const attackMode = settings.attackMode ? settings.attackMode : 'chat';
         const ringColor = (attackMode == this.attackMode) ? ringOnColor : ringOffColor;
-        materialDeck.streamDeck.setTitle("",context);
+        game.materialDeck.streamDeck.setTitle("",context);
         let overlay = true;
         if (settings.iconOverride != '' && settings.iconOverride != undefined) {
             iconSrc = settings.iconOverride;
             overlay = false;
         }
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
     }
 
     keyPressAttackMode(settings){
@@ -980,14 +980,14 @@ export class OtherControls{
         let iconSrc = "modules/MaterialDeck/img/other/d20.png";
         const rollMode = settings.rollMode ? settings.rollMode : 'roll';
         const ringColor = (rollMode == game.settings.get('core','rollMode')) ? ringOnColor : ringOffColor;
-        materialDeck.streamDeck.setTitle("",context);
+        game.materialDeck.streamDeck.setTitle("",context);
         let overlay = true;
         let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) {
             iconSrc = settings.iconOverride;
             overlay = false;
         }
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor,overlay});
     }
 
     async keyPressRollMode(settings){
@@ -1010,11 +1010,11 @@ export class OtherControls{
             else if (type == 'interface') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalInterfaceVolume"))*100)/100;
         }
 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) {
             iconSrc = settings.iconOverride;
         }
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background});
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background});
     }
 
     async keyPressGlobalVolumeControls(settings){
@@ -1055,7 +1055,7 @@ export class OtherControls{
         if (settings.displayIcon) {
             iconSrc = actor.img;
         }
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background,ring:2,ringColor:ringColor});
     }
 
     async keyPressOpenPartySheet(settings){
@@ -1080,7 +1080,7 @@ export class OtherControls{
     async updateCycleTokens(settings,context,device,options={}){
         const iconSrc = "modules/MaterialDeck/img/other/rotatecw.png";
         const background = settings.background ? settings.background : '#000000';
-        materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background});  
+        game.materialDeck.streamDeck.setIcon(context,device,iconSrc,{background:background});  
     }
 
     async keyPressCycleTokens(settings){

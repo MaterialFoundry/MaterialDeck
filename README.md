@@ -69,9 +69,6 @@ Module manifest: https://github.com/MaterialFoundry/MaterialDeck/releases/latest
 <b>Foundry VTT:</b> v10 - v11<br>
 <b>Module Incompatibilities:</b> None known.<br>
 
-## Developer Guide
-See the [developer guide](./DEVGUIDE.md) for a guide on how to add new systems to `MaterialDeck`.
-
 ## Feedback
 If you have any suggestions or bugs to report, feel free to create an issue, contact me on Discord (Cris#6864), or send me an email: info@materialfoundry.nl.
 

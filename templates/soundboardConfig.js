@@ -1,4 +1,4 @@
-import { moduleName, getPermission, materialDeck } from "../MaterialDeck.js";
+import { moduleName, getPermission } from "../MaterialDeck.js";
 import { importDialogForm } from "./importDialog.js";
 import { exportDialogForm } from "./exportDialog.js";
 
@@ -361,7 +361,7 @@ export class soundboardConfigForm extends FormApplication {
     async updateSettings(settings){
         if (game.user.isGM) {
             await game.settings.set(moduleName,'soundboardSettings',settings);
-            if (materialDeck.enableModule) materialDeck.soundboard.updateAll();
+            if (game.materialDeck.enableModule) game.materialDeck.soundboard.updateAll();
         }
         else {
             const payload = {

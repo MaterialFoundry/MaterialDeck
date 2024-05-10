@@ -1,5 +1,3 @@
-import { materialDeck } from "../../MaterialDeck.js";
-
 export class ExternalModules{
     soundscapeSettings = {
         channels: [],
@@ -46,7 +44,7 @@ export class ExternalModules{
             this.gmScreenOpen = data.gmScreen.isOpen;
         }
         if (this.active == false) return;
-        for (let device of materialDeck.streamDeck.buttonContext) {
+        for (let device of game.materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -147,10 +145,10 @@ export class ExternalModules{
         }
 
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:ring,ringColor:ringColor});
-        else materialDeck.streamDeck.setIcon(context,device, "", {background:background,ring:ring,ringColor:ringColor});
+        if (displayIcon) game.materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:ring,ringColor:ringColor});
+        else game.materialDeck.streamDeck.setIcon(context,device, "", {background:background,ring:ring,ringColor:ringColor});
         if (displayName == 0) name = ""; 
-        materialDeck.streamDeck.setTitle(name,context);
+        game.materialDeck.streamDeck.setTitle(name,context);
     }
 
     keyPressFxMaster(settings,context,device){
@@ -243,9 +241,9 @@ export class ExternalModules{
         
         if (settings.displayGmScreenIcon) src = "fas fa-book-reader";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
         if (settings.displayGmScreenName) txt = game.i18n.localize(`GMSCR.gmScreen.Open`); 
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressGMScreen(settings,context,device){
@@ -271,11 +269,11 @@ export class ExternalModules{
         let txt = '';
         let src = "fas fa-grin-squint-tears";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        else game.materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Trigger Happy';
         
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressTriggerHappy(settings,context,device){
@@ -314,10 +312,10 @@ export class ExternalModules{
         let txt = '';
         let src = "fas fa-eye";
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        else game.materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName) txt = 'Shared Vision';
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     keyPressSharedVision(settings,context,device) {
@@ -359,10 +357,10 @@ export class ExternalModules{
             ringColor = game.settings.get('NotYourTurn','nonCombat') ?  "#A600FF": "#340057" ;
         }
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
-        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) game.materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        else game.materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     async keyPressNotYourTurn(settings,context,device) {
@@ -414,10 +412,10 @@ export class ExternalModules{
         }
         
         if (settings.iconOverride != '' && settings.iconOverride != undefined) icon = settings.iconOverride;
-        if (displayIcon) materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
-        else materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
+        if (displayIcon) game.materialDeck.streamDeck.setIcon(context,device,icon,{background:background,ring:2,ringColor:ringColor});
+        else game.materialDeck.streamDeck.setIcon(context,device,'',{background:'#000000'});
         if (displayName == false) txt = '';
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
     }
 
     async keyPressLockView(settings,context,device) {
@@ -519,8 +517,8 @@ export class ExternalModules{
             ring = 2;
         }
         
-        materialDeck.streamDeck.setTitle(txt.toString(),context);
-        materialDeck.streamDeck.setIcon(context,device,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
+        game.materialDeck.streamDeck.setTitle(txt.toString(),context);
+        game.materialDeck.streamDeck.setIcon(context,device,'',{background:background,ring:ring,ringColor:ringColor, clock:clock});
     }
 
     keyPressSimpleCalendar(settings,context,device) {
@@ -706,9 +704,9 @@ export class ExternalModules{
             }
         }
        
-        materialDeck.streamDeck.setTitle(txt,context);
+        game.materialDeck.streamDeck.setTitle(txt,context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     async keyPressSoundscape(settings,context,device) {
@@ -937,9 +935,9 @@ export class ExternalModules{
         }
         else if (settings.monksActiveTilesIcon) src = tile.document.texture.src;
 
-        materialDeck.streamDeck.setTitle('',context);
+        game.materialDeck.streamDeck.setTitle('',context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     keyPressMonksActiveTiles(settings,context,device) {

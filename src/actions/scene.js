@@ -1,4 +1,4 @@
-import { materialDeck, getPermission } from "../../MaterialDeck.js";
+import { getPermission } from "../../MaterialDeck.js";
 
 export class SceneControl{
     constructor(){
@@ -9,7 +9,7 @@ export class SceneControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of materialDeck.streamDeck.buttonContext) {
+        for (let device of game.materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -34,7 +34,7 @@ export class SceneControl{
         let name = "";
         if (func == 'visible') { //visible scenes
             if (getPermission('SCENE','VISIBLE') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             let nr = parseInt(settings.sceneNr);
@@ -52,7 +52,7 @@ export class SceneControl{
         }
         else if (func == 'dir') {   //from directory
             if (getPermission('SCENE','DIRECTORY') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             let nr = parseInt(settings.sceneNr);
@@ -83,7 +83,7 @@ export class SceneControl{
         }
         else if (func == 'any') {   //by name
             if (getPermission('SCENE','NAME') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             if (settings.sceneName == undefined || settings.sceneName == '') return;
@@ -101,7 +101,7 @@ export class SceneControl{
         }
         else if (func == 'active'){
             if (getPermission('SCENE','ACTIVE') == false ) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             const scene = game.scenes.active;
@@ -116,9 +116,9 @@ export class SceneControl{
             ringColor = (offset == this.sceneOffset) ? ringOnColor : ringOffColor;
             src = "modules/MaterialDeck/img/transparant.png";
         }
-        materialDeck.streamDeck.setTitle(name,context);
+        game.materialDeck.streamDeck.setTitle(name,context);
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor});
     }
 
     keyPress(settings){

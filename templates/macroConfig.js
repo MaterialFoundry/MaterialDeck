@@ -1,4 +1,4 @@
-import { moduleName, getPermission, materialDeck } from "../MaterialDeck.js";
+import { moduleName, getPermission } from "../MaterialDeck.js";
 import { compatibleCore } from "../src/misc.js";
 import { importDialogForm } from "./importDialog.js";
 import { exportDialogForm } from "./exportDialog.js";
@@ -248,7 +248,7 @@ export class macroConfigForm extends FormApplication {
     async updateSettings(settings){
         if (game.user.isGM) {
             await game.settings.set(moduleName,'macroSettings',settings);
-            if (materialDeck.enableModule) materialDeck.macroControl.updateAll();
+            if (game.materialDeck.enableModule) game.materialDeck.macroControl.updateAll();
         }
         else {
             const payload = {

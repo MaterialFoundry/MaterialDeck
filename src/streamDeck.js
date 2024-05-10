@@ -1,4 +1,4 @@
-import { moduleName, materialDeck } from "../MaterialDeck.js";
+import { moduleName } from "../MaterialDeck.js";
 import { sendWS } from "./websocket.js";
 
 export class StreamDeck{
@@ -94,14 +94,14 @@ export class StreamDeck{
         }
 
         if (this.getActive(action) == false){
-            if (action == 'token') materialDeck.tokenControl.active = false; 
-            else if (action == 'macro') materialDeck.macroControl.active = false; 
-            else if (action == 'combattracker') materialDeck.combatTracker.active = false; 
-            else if (action == 'playlist') materialDeck.playlistControl.active = false;
-            else if (action == 'soundboard') materialDeck.soundboard.active = false;
-            else if (action == 'other') materialDeck.otherControls.active = false;
-            else if (action == 'external') materialDeck.externalModules.active = false;
-            else if (action == 'scene') materialDeck.sceneControl.active = false;
+            if (action == 'token') game.materialDeck.tokenControl.active = false; 
+            else if (action == 'macro') game.materialDeck.macroControl.active = false; 
+            else if (action == 'combattracker') game.materialDeck.combatTracker.active = false; 
+            else if (action == 'playlist') game.materialDeck.playlistControl.active = false;
+            else if (action == 'soundboard') game.materialDeck.soundboard.active = false;
+            else if (action == 'other') game.materialDeck.otherControls.active = false;
+            else if (action == 'external') game.materialDeck.externalModules.active = false;
+            else if (action == 'scene') game.materialDeck.sceneControl.active = false;
         }
     }
 

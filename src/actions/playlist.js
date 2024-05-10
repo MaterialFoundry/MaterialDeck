@@ -1,4 +1,4 @@
-import { moduleName, materialDeck, getPermission } from "../../MaterialDeck.js";
+import { moduleName, getPermission } from "../../MaterialDeck.js";
 
 export class PlaylistControl{
     constructor(){
@@ -9,7 +9,7 @@ export class PlaylistControl{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of materialDeck.streamDeck.buttonContext) {
+        for (let device of game.materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -21,7 +21,7 @@ export class PlaylistControl{
 
     update(settings,context,device){
         if (getPermission('PLAYLIST','PLAY') == false ) {
-            materialDeck.streamDeck.noPermission(context,device);
+            game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
         this.active = true;
@@ -44,8 +44,8 @@ export class PlaylistControl{
                 src = settings.iconOverride;
                 overlay = false;
             }
-            materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay});
-            materialDeck.streamDeck.setTitle(txt,context);
+            game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:ring,ringColor:ringColor,overlay});
+            game.materialDeck.streamDeck.setTitle(txt,context);
         }
     }
 
@@ -103,8 +103,8 @@ export class PlaylistControl{
         }
 
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        materialDeck.streamDeck.setTitle(name,context);
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setTitle(name,context);
     }
 
     updateTrack(settings,context,device){
@@ -167,8 +167,8 @@ export class PlaylistControl{
         else if (playlistType == 'relativeOffset') {
         }
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
-        materialDeck.streamDeck.setTitle(name,context);
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setTitle(name,context);
     }
 
     stopAll(force=false){

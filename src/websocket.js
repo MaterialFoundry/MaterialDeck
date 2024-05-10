@@ -1,4 +1,4 @@
-import { moduleName, materialDeck, versions } from "../MaterialDeck.js";
+import { moduleName, versions } from "../MaterialDeck.js";
 import { compareVersions } from "./misc.js";
 
 //Websocket variables
@@ -15,7 +15,7 @@ let connectionAttempts = 0;
  * @param {*} msg Message received
  */
 async function analyzeWSmessage(msg){
-    if (materialDeck.enableModule == false) return;
+    if (game.materialDeck.enableModule == false) return;
     const data = JSON.parse(msg);
     //console.log("Received",data);
 
@@ -72,11 +72,11 @@ async function analyzeWSmessage(msg){
         }
 
         console.log("streamdeck connected to Material Companion", versions.materialCompanion.current);
-        materialDeck.streamDeck.resetImageBuffer();
+        game.materialDeck.streamDeck.resetImageBuffer();
     }
 
     if (data.type == 'newDevice') {
-        materialDeck.streamDeck.newDevice(data.iteration,data.device);
+        game.materialDeck.streamDeck.newDevice(data.iteration,data.device);
         return;
     }
 
@@ -96,13 +96,13 @@ async function analyzeWSmessage(msg){
 
     if (event == 'willAppear' || event == 'didReceiveSettings'){
         if (coordinates == undefined) return;
-        materialDeck.streamDeck.setScreen(action);
-        await materialDeck.streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings,name,type);
+        game.materialDeck.streamDeck.setScreen(action);
+        await game.materialDeck.streamDeck.setContext(device,data.size,data.deviceIteration,action,context,coordinates,settings,name,type);
 
         if (action == 'token'){
-            materialDeck.tokenControl.active = true;
-            //materialDeck.tokenControl.pushData(canvas.tokens.controlled[0]?.id,settings,context,device);
-            materialDeck.tokenControl.pushData({
+            game.materialDeck.tokenControl.active = true;
+            //game.materialDeck.tokenControl.pushData(canvas.tokens.controlled[0]?.id,settings,context,device);
+            game.materialDeck.tokenControl.pushData({
                 tokenId: canvas.tokens.controlled[0]?.id,
                 settings,
                 context,
@@ -110,61 +110,61 @@ async function analyzeWSmessage(msg){
             });
         }  
         else if (action == 'macro')
-            materialDeck.macroControl.update(settings,context,device);
+            game.materialDeck.macroControl.update(settings,context,device);
         else if (action == 'combattracker')
-            materialDeck.combatTracker.update(settings,context,device);
+            game.materialDeck.combatTracker.update(settings,context,device);
         else if (action == 'playlist')
-            materialDeck.playlistControl.update(settings,context,device);
+            game.materialDeck.playlistControl.update(settings,context,device);
         else if (action == 'soundboard')
-            materialDeck.soundboard.update(settings,context,device); 
+            game.materialDeck.soundboard.update(settings,context,device); 
         else if (action == 'other')
-            materialDeck.otherControls.update(settings,context,device);
+            game.materialDeck.otherControls.update(settings,context,device);
         else if (action == 'external')
-            materialDeck.externalModules.update(settings,context,device);
+            game.materialDeck.externalModules.update(settings,context,device);
         else if (action == 'scene')
-            materialDeck.sceneControl.update(settings,context,device);
+            game.materialDeck.sceneControl.update(settings,context,device);
         else if (action == 'custom')
-            materialDeck.customControl.appear(settings, context, device);
+            game.materialDeck.customControl.appear(settings, context, device);
     }
     
     else if (event == 'willDisappear'){
         if (action == 'custom')
-            materialDeck.customControl.disappear(settings, context, device);
+            game.materialDeck.customControl.disappear(settings, context, device);
         if (coordinates == undefined) return;
-        materialDeck.streamDeck.clearContext(device,action,coordinates,context);
+        game.materialDeck.streamDeck.clearContext(device,action,coordinates,context);
     }
 
     else if (event == 'keyDown'){
 
         if (action == 'token')
-            materialDeck.tokenControl.keyPress(settings);
+            game.materialDeck.tokenControl.keyPress(settings);
         else if (action == 'macro')
-            materialDeck.macroControl.keyPress({
+            game.materialDeck.macroControl.keyPress({
                 device,
                 context,
                 ...settings,
             });
         else if (action == 'combattracker')
-            materialDeck.combatTracker.keyPress(settings,context,device);
+            game.materialDeck.combatTracker.keyPress(settings,context,device);
         else if (action == 'playlist')
-            materialDeck.playlistControl.keyPress(settings,context,device);
+            game.materialDeck.playlistControl.keyPress(settings,context,device);
         else if (action == 'soundboard')
-            materialDeck.soundboard.keyPressDown(settings);
+            game.materialDeck.soundboard.keyPressDown(settings);
         else if (action == 'other')
-            materialDeck.otherControls.keyPress(settings,context,device);
+            game.materialDeck.otherControls.keyPress(settings,context,device);
         else if (action == 'external')
-            materialDeck.externalModules.keyPress(settings,context,device);
+            game.materialDeck.externalModules.keyPress(settings,context,device);
         else if (action == 'scene')
-            materialDeck.sceneControl.keyPress(settings);
+            game.materialDeck.sceneControl.keyPress(settings);
         else if (action == 'custom')
-            materialDeck.customControl.keyDown(settings, context, device);
+            game.materialDeck.customControl.keyDown(settings, context, device);
     }
 
     else if (event == 'keyUp'){
         if (action == 'soundboard')
-            materialDeck.soundboard.keyPressUp(settings);
+            game.materialDeck.soundboard.keyPressUp(settings);
         else if (action == 'custom')
-            materialDeck.customControl.keyUp(settings, context, device);
+            game.materialDeck.customControl.keyUp(settings, context, device);
     }
 };
 
@@ -175,7 +175,7 @@ async function analyzeWSmessage(msg){
  * If message is received, reset the interval, and send the message to analyzeWSmessage()
  */
 export function startWebsocket() {
-    if (materialDeck.enableModule == false) return;
+    if (game.materialDeck.enableModule == false) return;
     const address = game.settings.get(moduleName,'address');
     
     const url = address.startsWith('wss://') ? address : ('ws://'+address+'/');
@@ -218,8 +218,8 @@ export function transmitInitData() {
         target: "MaterialDeck_Device",
         type: "init",
         userId: game.userId,
-        system: materialDeck.systemHelper?.systemLoaded ? materialDeck.getGamingSystem() : undefined,
-        systemData: materialDeck.systemHelper?.systemData,
+        system: game.materialDeck.systemHelper?.systemLoaded ? game.materialDeck.getGamingSystem() : undefined,
+        systemData: game.materialDeck.systemHelper?.systemData,
         coreVersion: game.version.split('.')[0]
     }
     sendWS(JSON.stringify(msg));

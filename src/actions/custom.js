@@ -1,5 +1,3 @@
-import { materialDeck } from "../../MaterialDeck.js";
-
 let customButtons = [];
 
 export class CustomControl{
@@ -62,11 +60,11 @@ export class CustomControl{
     }
 
     setText(text) {
-        materialDeck.streamDeck.setTitle(text,this.context.button);
+        game.materialDeck.streamDeck.setTitle(text,this.context.button);
     }
 
     setIcon(icon, options) {
-        materialDeck.streamDeck.setIcon(this.context.button, this.context.device, icon || '<empty>', options);
+        game.materialDeck.streamDeck.setIcon(this.context.button, this.context.device, icon || '<empty>', options);
     }
     
 }

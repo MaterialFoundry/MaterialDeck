@@ -1,4 +1,4 @@
-import { materialDeck, getPermission } from "../../MaterialDeck.js";
+import { getPermission } from "../../MaterialDeck.js";
 
 export class CombatTracker{
     constructor(){
@@ -8,7 +8,7 @@ export class CombatTracker{
 
     async updateAll(){
         if (this.active == false) return;
-        for (let device of materialDeck.streamDeck.buttonContext) {
+        for (let device of game.materialDeck.streamDeck.buttonContext) {
             if (device?.buttons == undefined) continue;
             for (let i=0; i<device.buttons.length; i++){   
                 const data = device.buttons[i];
@@ -76,7 +76,7 @@ export class CombatTracker{
         settings.icon = settings.displayIcon ? 'tokenIcon' : 'none';
         if (mode == 'combatants'){
             if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                materialDeck.streamDeck.noPermission(context,device,device,false,"combat tracker");
+                game.materialDeck.streamDeck.noPermission(context,device,device,false,"combat tracker");
                 return;
             }
             if (combat != null && combat != undefined && combat.turns.length != 0){
@@ -95,9 +95,9 @@ export class CombatTracker{
                 if (combatant != undefined){
                     const filterConfig = this.applyFilter(combatant, settings);
                     const tokenId = combatant.token.id;
-                    //materialDeck.tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00', filterConfig.forceIcon, filterConfig.hideName);
+                    //game.materialDeck.tokenControl.pushData(tokenId,settings,context,device,combatantState,'#cccc00', filterConfig.forceIcon, filterConfig.hideName);
 
-                    materialDeck.tokenControl.pushData({
+                    game.materialDeck.tokenControl.pushData({
                         token: combatant.token,
                         tokenId,
                         settings,
@@ -112,26 +112,26 @@ export class CombatTracker{
                 }
                 else {
                     if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                    materialDeck.streamDeck.setIcon(context,device,src,{background:background});
-                    materialDeck.streamDeck.setTitle(txt,context);
+                    game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+                    game.materialDeck.streamDeck.setTitle(txt,context);
                 } 
             }
             else {
                 if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                materialDeck.streamDeck.setIcon(context,device,src,{background:background});
-                materialDeck.streamDeck.setTitle(txt,context);
+                game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+                game.materialDeck.streamDeck.setTitle(txt,context);
             }
         }
         else if (mode == 'currentCombatant'){
             if (getPermission('COMBAT','DISPLAY_COMBATANTS') == false) {
-                materialDeck.streamDeck.noPermission(context,device,device);
+                game.materialDeck.streamDeck.noPermission(context,device,device);
                 return;
             }
             if (combat != null && combat != undefined && combat.started){
                 const filterConfig = this.applyFilter(combat.combatant, settings);
                 const tokenId = combat.combatant.token.id;
-                //materialDeck.tokenControl.pushData(tokenId,settings,context,device,undefined,undefined, filterConfig.forceIcon, filterConfig.hideName);
-                materialDeck.tokenControl.pushData({
+                //game.materialDeck.tokenControl.pushData(tokenId,settings,context,device,undefined,undefined, filterConfig.forceIcon, filterConfig.hideName);
+                game.materialDeck.tokenControl.pushData({
                     token: undefined,
                     tokenId,
                     settings,
@@ -143,26 +143,26 @@ export class CombatTracker{
             }
             else {
                 if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-                materialDeck.streamDeck.setIcon(context,device,src,{background:background});
-                materialDeck.streamDeck.setTitle(txt,context);
+                game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+                game.materialDeck.streamDeck.setTitle(txt,context);
             }
         }
         else if (mode == 'function'){
 
             if (ctFunction == 'turnDisplay' && getPermission('COMBAT','TURN_DISPLAY') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'endTurn' && getPermission('COMBAT','END_TURN') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'addTokens' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
 
@@ -215,8 +215,8 @@ export class CombatTracker{
                 background = settings.background ? settings.background : '#000000'
             }
 
-            materialDeck.streamDeck.setIcon(context,device,src,{background:background});
-            materialDeck.streamDeck.setTitle(txt,context);
+            game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
+            game.materialDeck.streamDeck.setTitle(txt,context);
         }
     }
 
@@ -230,15 +230,15 @@ export class CombatTracker{
             const ctFunction = settings.combatTrackerFunction ? settings.combatTrackerFunction : 'startStop';
 
             if (ctFunction == 'turnDisplay' && getPermission('COMBAT','TURN_DISPLAY') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'endTurn' && getPermission('COMBAT','END_TURN') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction != 'turnDisplay' && ctFunction != 'endTurn' && getPermission('COMBAT','OTHER_FUNCTIONS') == false) {
-                materialDeck.streamDeck.noPermission(context,device);
+                game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
             else if (ctFunction == 'startStop'){

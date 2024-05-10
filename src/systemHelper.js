@@ -1,4 +1,3 @@
-import { materialDeck } from "../MaterialDeck.js";
 import { transmitInitData } from "./websocket.js";
 
 export class SystemHelper {
@@ -18,7 +17,7 @@ export class SystemHelper {
     async registerSystem(data) {
         console.log(`Material Deck system registered: '${data.systemName}'`);
         
-        if (materialDeck.gamingSystem == data.systemId) {
+        if (game.materialDeck.gamingSystem == data.systemId) {
             this.systemLoaded = true;
             this.system = await new data.system();
             this.systemData = {

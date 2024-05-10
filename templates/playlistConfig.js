@@ -1,4 +1,4 @@
-import { moduleName, getPermission, materialDeck } from "../MaterialDeck.js";
+import { moduleName, getPermission } from "../MaterialDeck.js";
 
 export class playlistConfigForm extends FormApplication {
     constructor(data, options) {
@@ -115,7 +115,7 @@ export class playlistConfigForm extends FormApplication {
     async updateSettings(settings,render){
         if (game.user.isGM) {
             await game.settings.set(moduleName,'playlists', settings);
-            if (materialDeck.enableModule) materialDeck.playlistControl.updateAll();
+            if (game.materialDeck.enableModule) game.materialDeck.playlistControl.updateAll();
             if (render) this.render();
         }
         else {
