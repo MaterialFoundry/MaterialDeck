@@ -1,3 +1,5 @@
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
+
 export class helpMenu extends FormApplication {
     constructor(data, options) {
         super(data, options);
@@ -7,12 +9,21 @@ export class helpMenu extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
+            id: "helpMenu",
+            title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.Help"),
+            template: "./modules/MaterialDeck/templates/helpMenu.html",
+            width: "500px"
+        });
+
+        /*
         return mergeObject(super.defaultOptions, {
             id: "helpMenu",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.Help"),
             template: "./modules/MaterialDeck/templates/helpMenu.html",
             width: "500px"
         });
+        */
     }
   
     /**

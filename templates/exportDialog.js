@@ -1,3 +1,5 @@
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
+
 export class exportDialogForm extends FormApplication {
     constructor(data, options) {
         super(data, options);
@@ -10,13 +12,22 @@ export class exportDialogForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
             id: "materialDeck_Export",
             title: "Material Deck: " + game.i18n.localize("MaterialDeck.ExportDialog.Title"),
             template: "./modules/MaterialDeck/templates/exportDialog.html",
             width: 500,
             height: "auto"
         });
+
+        /*
+        return mergeObject(super.defaultOptions, {
+            id: "materialDeck_Export",
+            title: "Material Deck: " + game.i18n.localize("MaterialDeck.ExportDialog.Title"),
+            template: "./modules/MaterialDeck/templates/exportDialog.html",
+            width: 500,
+            height: "auto"
+        });*/
     }
 
     setData(data,source) {

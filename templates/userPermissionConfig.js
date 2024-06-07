@@ -1,4 +1,5 @@
 import { moduleName } from "../MaterialDeck.js";
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
 
 const defaultEnable = [true,true,true,true];
 const defaultUserPermissions = {
@@ -64,7 +65,7 @@ const defaultUserPermissions = {
 export function configureUserPermissions() {
     let permissionSettings = game.settings.get(moduleName,'userPermission');
     
-    if (permissionSettings == undefined || permissionSettings == null || isEmpty(permissionSettings)) {
+    if (permissionSettings == undefined || permissionSettings == null || compatibilityHandler('isEmpty', permissionSettings)) {
         permissionSettings = {
             enable: defaultEnable,
             permissions: defaultUserPermissions
@@ -88,6 +89,16 @@ export class userPermission extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
+            id: "materialDeck_userPermissionConfig",
+            title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.Permission"),
+            template: "./modules/MaterialDeck/templates/userPermissionConfig.html",
+            width: 660,
+            height: "auto",
+            scrollY: [".permissions-list"],
+        });
+
+        /*
         return mergeObject(super.defaultOptions, {
             id: "materialDeck_userPermissionConfig",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.Permission"),
@@ -96,6 +107,7 @@ export class userPermission extends FormApplication {
             height: "auto",
             scrollY: [".permissions-list"],
         });
+        */
     }
   
     /**
@@ -103,7 +115,7 @@ export class userPermission extends FormApplication {
      */
     async getData() {
         let settings = game.settings.get(moduleName,'userPermission');
-        if (settings == undefined || settings == null || isEmpty(settings)) {
+        if (settings == undefined || settings == null || compatibilityHandler('isEmpty', settings)) {
             settings = {
                 enable: defaultEnable,
                 permissions: defaultUserPermissions

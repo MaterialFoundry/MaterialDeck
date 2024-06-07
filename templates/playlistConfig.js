@@ -1,4 +1,5 @@
 import { moduleName, getPermission } from "../MaterialDeck.js";
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
 
 export class playlistConfigForm extends FormApplication {
     constructor(data, options) {
@@ -11,6 +12,16 @@ export class playlistConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
+            id: "playlist-config",
+            title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.PlaylistConfig"),
+            template: "./modules/MaterialDeck/templates/playlistConfig.html",
+            classes: ["sheet"],
+            width: 500,
+            height: "auto"
+        });
+        
+        /*
         return mergeObject(super.defaultOptions, {
             id: "playlist-config",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.PlaylistConfig"),
@@ -19,6 +30,7 @@ export class playlistConfigForm extends FormApplication {
             width: 500,
             height: "auto"
         });
+        */
     }
 
     /**

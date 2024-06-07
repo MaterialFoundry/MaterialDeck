@@ -488,22 +488,22 @@ export class ExternalModules{
         }
         if (displayTime != 'none' && displayTime != 'clock' && displayDate != 'none') txt += '\n';
 
-        if (displayDate == 'day') txt += currentTime.day;
+        if (displayDate == 'day') txt += `${currentTime.day+1}`;
         else if (displayDate == 'dayName') txt += SimpleCalendar.api.getCurrentWeekday().name;
-        else if (displayDate == 'month') txt += currentTime.month;
+        else if (displayDate == 'month') txt += `${currentTime.month+1}`;
         else if (displayDate == 'monthName') txt += SimpleCalendar.api.getCurrentMonth().name;
         else if (displayDate == 'year') txt += currentTime.year;
-        else if (displayDate == 'small') txt += currentTime.day + '-' + currentTime.month;
-        else if (displayDate == 'smallInv') txt += currentTime.month + '-' + currentTime.day;
-        else if (displayDate == 'full') txt += currentTime.day + '-' + currentTime.month + '-' + currentTime.year;
-        else if (displayDate == 'fullInv') txt += currentTime.month + '-' + currentTime.day + '-' + currentTime.year;
+        else if (displayDate == 'small') txt += `${currentTime.day+1}-${currentTime.month+1}`;
+        else if (displayDate == 'smallInv') txt += `${currentTime.month+1}-${currentTime.day+1}`;
+        else if (displayDate == 'full') txt += `${currentTime.day+1}-${currentTime.month+1}-${currentTime.year}`;
+        else if (displayDate == 'fullInv') txt += `${currentTime.month+1}-${currentTime.day+1}-${currentTime.year}`;
         else if (displayDate == 'text' || displayDate == 'textDay' || displayDate == 'textAbbr' || displayDate == 'textDayAbbr') {
             if (displayDate == 'textDay') txt += SimpleCalendar.api.getCurrentWeekday().name + ' ';
             else if (displayDate == 'textDayAbbr') txt += SimpleCalendar.api.getCurrentWeekday().abbreviation + ' ';
-            txt += currentTime.day;
-            if (currentTime.day % 10 == 1 && currentTime != 11) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.First");
-            else if (currentTime.day % 10 == 2 && currentTime != 12) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Second");
-            else if (currentTime.day % 10 == 3 && currentTime != 13) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Third");
+            txt += `${currentTime.day+1}`;
+            if ((currentTime.day+1) % 10 == 1 && currentTime.day != 10) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.First");
+            else if ((currentTime.day+1) % 10 == 2 && currentTime.day != 11) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Second");
+            else if ((currentTime.day+1) % 10 == 3 && currentTime.day != 12) txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Third");
             else txt += game.i18n.localize("MaterialDeck.SimpleCalendar.Fourth");
             txt += ' ' + game.i18n.localize("MaterialDeck.SimpleCalendar.Of") + ' '
             if (displayDate == 'textAbbr' || displayDate == 'textDayAbbr') txt += SimpleCalendar.api.getCurrentMonth().abbreviation

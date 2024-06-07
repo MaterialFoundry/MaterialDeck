@@ -1,4 +1,5 @@
 import { getPermission } from "../../MaterialDeck.js";
+import { compatibilityHandler } from "../compatibilityHandler.js";
 
 export class TokenControl{
     constructor(){
@@ -62,11 +63,11 @@ export class TokenControl{
         let hp = undefined;
 
         if (validToken) {
-            if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) {
+            if (!compatibilityHandler('tokenOwner', token) && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) {
                 game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
-            if (token.owner == false && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) {
+            if (!compatibilityHandler('tokenOwner', token) && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) {
                 game.materialDeck.streamDeck.noPermission(context,device);
                 return;
             }
@@ -581,8 +582,8 @@ export class TokenControl{
         let token = game.materialDeck.systemHelper.getToken(selection,tokenIdentifier);
 
         if (token == undefined) return;
-        if (token.owner == false && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) return;
-        if (token.owner == false && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) return;
+        if (!compatibilityHandler('tokenOwner', token) && token.observer == true && getPermission('TOKEN','OBSERVER') == false ) return;
+        if (!compatibilityHandler('tokenOwner', token) && token.observer == false && getPermission('TOKEN','NON_OWNED') == false ) return;
         
         if (mode == 'token') {
 
@@ -594,11 +595,11 @@ export class TokenControl{
                 token.control();
             }
             else if (onClick == 'center'){ //center on token
-                let location = token.getCenter(token.x,token.y); 
+                const location = compatibilityHandler('tokenCenter', token)
                 canvas.animatePan(location);
             }
             else if (onClick == 'centerSelect'){ //center on token and select
-                const location = token.getCenter(token.x,token.y); 
+                const location = compatibilityHandler('tokenCenter', token)
                 canvas.animatePan(location);
                 token.control();
             }
@@ -624,7 +625,7 @@ export class TokenControl{
             }
             else if (onClick == 'combatState') {    //Toggle combat state
                 if (getPermission('TOKEN','COMBAT') == false ) return;
-                token.toggleCombat();
+                compatibilityHandler('toggleCombatant', token);
             }
             else if (onClick == 'target') {    //Target token
                 token.setTarget(!token.isTargeted,{releaseOthers:false});

@@ -30,11 +30,11 @@
                     </div>
                     <div>
                         <select name="playlist" class="playlist-select" default="" style="width:100%;" id="materialDeck_sbConfig_playlists{{this.iteration}}">
-                            {{#select this.selectedPlaylist}}
+                            {{#selectMP this.selectedPlaylist}}
                                 {{#each ../../playlists}}
                                 <option value="{{this.id}}">{{this.name}}</option>
                                 {{/each}}
-                            {{/select}}
+                            {{/selectMP}}
                         </select>
                     </div>
 
@@ -43,12 +43,12 @@
                     </div>
                     <div class="form-fields" id="materialDeck_sbConfig_ss{{this.iteration}}" style="{{this.styleSS}}">
                         <select name="sounds" class="sounds-select" default="" style="width:100%;" id="materialDeck_sbConfig_soundSelect{{this.iteration}}">
-                            {{#select this.sound}}
+                            {{#selectMP this.sound}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each sounds}}
                                 <option value="{{this.id}}">{{this.name}}</option>
                                 {{/each}}
-                            {{/select}}
+                            {{/selectMP}}
                         </select>
                     </div>
                     <div class="form-fields" id="materialDeck_sbConfig_fp{{this.iteration}}" style="{{this.styleFP}}">
@@ -76,11 +76,11 @@
                     <div class="form-group options">
                         <label>{{localize "MaterialDeck.Playback"}}</label>
                         <select name="mode" id="materialDeck_sbConfig_playmode{{this.iteration}}" style="flex:1">
-                            {{#select this.mode}}
+                            {{#selectMP this.mode}}
                             <option value="0">{{localize "MaterialDeck.Once"}}</option>
                             <option value="1">{{localize "MaterialDeck.Repeat"}}</option>
                             <option value="2">{{localize "MaterialDeck.Hold"}}</option>
-                            {{/select}}
+                            {{/selectMP}}
                         </select>  
                     </div>
                     <div class="form-group options">

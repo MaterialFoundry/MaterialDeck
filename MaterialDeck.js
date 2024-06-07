@@ -11,7 +11,8 @@ import { SceneControl } from "./src/actions/scene.js";
 import { CustomControl } from "./src/actions/custom.js";
 import { compatibleSystem } from "./src/misc.js";
 import { SystemHelper } from "./src/systemHelper.js";
-import { startWebsocket } from "./src/websocket.js"
+import { startWebsocket } from "./src/websocket.js";
+import { compatibilityInit } from "./src/compatibilityHandler.js";
 
 //CONFIG.debug.hooks = true;
 
@@ -74,14 +75,6 @@ class MaterialDeck {
     }
 }
 
-export function isEmpty(obj) {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
-            return false;
-    }
-    return true;
-}
-
 export function getPermission(action,func) {
     const role = game.user.role-1;
     const settings = game.settings.get(moduleName,'userPermission');
@@ -124,6 +117,7 @@ Hooks.once('setup', ()=> {
  * Attempt to open the websocket
  */
 Hooks.once('ready', async()=>{
+    compatibilityInit();
     await registerSettings();
 
     if (game.settings.get(moduleName, 'Enable')) game.settings.set(moduleName,'EnableDialogShown',true);

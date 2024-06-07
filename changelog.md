@@ -1,5 +1,39 @@
 # Changelog Material Deck Module
-### v1.6.3 - 09-05-2024
+
+### v1.7.2 - 07-06-2024
+
+<b>The module is now compatible with Foundry v12, removed compatibility with v10.</b>
+
+Additions:
+<ul>
+<li>Other Actions -> Compendium: Added 'Display Icon'</li>
+<li>Scene Action: If the background of a scene is a video or unsupported format, the thumbnail of the background will be displayed instead.</li>
+</ul>
+
+Fixes:
+<ul>
+<li>External Modules => Simple Calendar: Fixed day and month display (was offset by -1 due to 0-based numbering)</li>
+</ul>
+
+Other:
+<ul>
+<li>Some changes have been made to how documents (tokens, scenes, macros, etc) can be selected. Previously you had to tell the plugin whether you wanted to select by name or ID (if ID was even available), these are now merged into a single 'Name/ID' field. The module will use whatever is filled in to first search for a document with that id, then for a document with that name. In case of scenes it will also search for navigation names.
+You can now also use the ID with prepending document class (e.g. 'Actor.t1N7jqdTYr7Dww1E'). This means you can simply copy the ID from within the Foundry UI (by pressing the 'Copy Document UUID' button at the top of many windows).</li>
+</ul>
+
+<b>Compatible Material Companion and SD plugin:</b><br>
+Material Companion v1.0.2+ (unchanged): https://github.com/MaterialFoundry/MaterialCompanion/releases <br>
+SD plugin v1.7.2 (<b>must be updated!</b>): https://github.com/MaterialFoundry/MaterialDeck_SD/releases<br>
+
+### v1.7.1 - 11-05-2024
+
+Fixed issue where the Forge could not load system modules.
+
+<b>Compatible Material Companion and SD plugin:</b><br>
+Material Companion v1.0.2+ (unchanged): https://github.com/MaterialFoundry/MaterialCompanion/releases <br>
+SD plugin v1.7.0 (unchanged): https://github.com/MaterialFoundry/MaterialDeck_SD/releases<br>
+
+### v1.7.0 - 09-05-2024
 
 Additions:
 <ul>
@@ -24,6 +58,10 @@ Other:
 <li>All system dependent code has been moved to different modules, where each system is its own module</li>
 <li>Token Action => On Click: Roll => Renamed 'Roll Mode' to 'Roll Type' to make place for the new 'Roll Mode' function (which sets roll privacy)</li>
 </ul>
+
+<b>Compatible Material Companion and SD plugin:</b><br>
+Material Companion v1.0.2+ (unchanged): https://github.com/MaterialFoundry/MaterialCompanion/releases <br>
+SD plugin v1.7.0 (<b>must be updated!</b>): https://github.com/MaterialFoundry/MaterialDeck_SD/releases<br>
 
 ### v1.6.2 - 20-10-2023
 Fixed issue with GitHub actions that caused the module.json version to be empty.

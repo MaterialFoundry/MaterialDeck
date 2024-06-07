@@ -5,11 +5,11 @@
     <div class="form-group">     
         <label>{{localize "MaterialDeck.PL.Mode"}}</label>
         <select name="playMode" class="materialDeck_plConfig_select" default="">
-            {{#select playMode}}
+            {{#selectMP playMode}}
                 <option value="0">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
                 <option value="1">{{localize "MaterialDeck.PL.OneTrackPlaylist"}}</option>
                 <option value="2">{{localize "MaterialDeck.PL.OneTrackTotal"}}</option>
-            {{/select}}
+            {{/selectMP}}
         </select>
     </div>
     <div class="form-group">     
@@ -23,20 +23,20 @@
         <div class="form-group">
             <label>{{localize "MaterialDeck.Playlist"}} {{this.iteration}}</label>
             <select name="selectedPlaylist" class="materialDeck_plConfig_select" id="playlist{{this.iteration}}" default="">
-                {{#select this.playlist}}
+                {{#selectMP this.playlist}}
                     <option value="">{{localize "MaterialDeck.None"}}</option>
                     {{#each ../playlists}}
                     <option value="{{this.id}}">{{this.name}}</option>
                     {{/each}}
-                {{/select}}
+                {{/selectMP}}
             </select>
             &nbsp;
             <select name="playlistMode" class="materialDeck_plConfig_select" id="playlistMode{{this.iteration}}" default="">
-                {{#select this.playlistMode}}
+                {{#selectMP this.playlistMode}}
                     <option value="0">{{localize "MaterialDeck.PL.Mode"}}</option>
                     <option value="1">{{localize "MaterialDeck.PL.Unrestricted"}}</option>
                     <option value="2">{{localize "MaterialDeck.PL.OneTrack"}}</option>
-                {{/select}}
+                {{/selectMP}}
             </select>
         </div>
     {{/each}}

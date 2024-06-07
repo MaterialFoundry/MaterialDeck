@@ -1,4 +1,5 @@
 import { getPermission } from "../../MaterialDeck.js";
+import { compatibilityHandler } from "../compatibilityHandler.js";
 
 export class CombatTracker{
     constructor(){
@@ -57,9 +58,12 @@ export class CombatTracker{
 
         let combat;
         if (encounterNr == '') {
-            combat = combats.filter(c => c.id == game.combats.viewed.id)[0];
-            if (combat == undefined)
-            combat = combats[0];
+            if (game.combats.viewed == null) combat = combats[0];
+            else {
+                combat = combats.filter(c => c.id == game.combats.viewed.id)[0];
+                if (combat == undefined)
+                combat = combats[0];
+            }
         }
         else if (parseInt(encounterNr) != NaN) {
             
@@ -253,8 +257,8 @@ export class CombatTracker{
             else if (ctFunction == 'rollInitiative' && getPermission('COMBAT','OTHER_FUNCTIONS')) game.combat.rollAll();
             else if (ctFunction == 'rollInitiativeNPC' && getPermission('COMBAT','OTHER_FUNCTIONS')) game.combat.rollNPC();
             else if (ctFunction == 'addTokens' && getPermission('COMBAT','OTHER_FUNCTIONS')) {
-                const controlledToken = canvas.tokens.controlled[0];
-                if (controlledToken != undefined) controlledToken.toggleCombat();
+                for (let token of canvas.tokens.controlled)
+                    compatibilityHandler('toggleCombatant', token);
             }
             
             if (game.combat.started == false) return;

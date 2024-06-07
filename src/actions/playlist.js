@@ -1,4 +1,5 @@
 import { moduleName, getPermission } from "../../MaterialDeck.js";
+import { getDocument } from "../misc.js";
 
 export class PlaylistControl{
     constructor(){
@@ -72,7 +73,7 @@ export class PlaylistControl{
                 playlist = this.getPlaylist(playlistNr);
             }
             else {
-                playlist = game.playlists.getName(settings.playlistNr);
+                playlist = getDocument('playlist', settings.playlistNr);
             }
             
             if (playlist != undefined){
@@ -135,15 +136,16 @@ export class PlaylistControl{
                 playlist = this.getPlaylist(playlistNr);
             }
             else {
-                playlist = game.playlists.getName(settings.playlistNr);
+                playlist = getDocument('playlist', settings.playlistNr);
             }
             
             if (playlist != undefined){
                 let track;
                 if (playlistMode == 'track') track = playlist.sounds.contents[trackNr];
-                else track = playlist.sounds.getName(settings.trackNr);
+                else track = getDocument('track', settings.trackNr, settings.playlistNr);
+
                 if (track != undefined){
-                    if (track.playing && track.sound.playing) 
+                    if (track.playing && track.sound?.playing) 
                         ringColor = ringOnColor;  
                     else
                         ringColor = ringOffColor;
@@ -240,7 +242,7 @@ export class PlaylistControl{
         else {
             let playlist;
             if (playlistMode == 'playlist' || playlistMode == 'track') playlist = this.getPlaylist(playlistNr);
-            else playlist = game.playlists.getName(settings.playlistNr);
+            else playlist = getDocument('playlist', settings.playlistNr);
             
             if ((playlistType == 'playStop' || playlistType == 'playPause') && (playlistMode == 'playlist' || playlistMode == 'track')) {
                 if (playlist != undefined){
@@ -263,9 +265,9 @@ export class PlaylistControl{
                     else if (playlistMode == 'playlistName')
                         playlist.playAll();
                     else {
-                        const track = playlist.sounds.getName(settings.trackNr);
+                        const track = getDocument('track', settings.trackNr, settings.playlistNr);
                         if (track != undefined && track.playing){
-                           //playlist.pauseSound(track);
+                           playlist.stopSound(track);
                         }
                         else if (track != undefined) {
                             playlist.playSound(track);

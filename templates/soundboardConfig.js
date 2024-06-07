@@ -1,6 +1,7 @@
 import { moduleName, getPermission } from "../MaterialDeck.js";
 import { importDialogForm } from "./importDialog.js";
 import { exportDialogForm } from "./exportDialog.js";
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
 
 export class soundboardConfigForm extends FormApplication {
     constructor(data, options) {
@@ -14,6 +15,15 @@ export class soundboardConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
+            id: "materialDeck_soundboardConfig",
+            title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.SoundboardConfig"),
+            template: "./modules/MaterialDeck/templates/soundboardConfig.html",
+            classes: ["sheet"],
+            height: "auto"
+        });
+        
+        /*
         return mergeObject(super.defaultOptions, {
             id: "materialDeck_soundboardConfig",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.SoundboardConfig"),
@@ -21,6 +31,7 @@ export class soundboardConfigForm extends FormApplication {
             classes: ["sheet"],
             height: "auto"
         });
+        */
     }
 
     /**

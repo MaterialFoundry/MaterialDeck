@@ -28,18 +28,16 @@
                             {{localize "MaterialDeck.Macro"}}
                         </div>
                         <select name="macros" class="macros-select" id="materialDeck_macroConfig_macros{{this.iteration}}" default="" style="width:100%;">
-                            {{#select this.macro}}
+                            {{#selectMP this.macro}}
                                 <option value="">{{localize "MaterialDeck.None"}}</option>
                                 {{#each ../../macros}}
                                 <option value="{{this.id}}">{{this.name}}</option>
                                 {{/each}}
-                            {{/select}}
+                            {{/selectMP}}
                         </select>
                     </div>
-                    {{#if ../../furnace}}
-                        <label>{{localize "MaterialDeck.FurnaceArgs"}}</label>
-                        <input type="text" name="args" id="materialDeck_macroConfig_args{{this.iteration}}" value="{{this.args}}">
-                    {{/if}}
+                    <label>{{localize "MaterialDeck.MacroArgs"}}</label>
+                    <input type="text" name="args" id="materialDeck_macroConfig_args{{this.iteration}}" value="{{this.args}}">
                     
                     <div class="flex-container materialDeck_macroConfig_background">  
                         <label style="flex:1">{{localize "MaterialDeck.Background"}}</label>

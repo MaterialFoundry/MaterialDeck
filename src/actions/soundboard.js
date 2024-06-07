@@ -1,4 +1,5 @@
 import { moduleName, getPermission } from "../../MaterialDeck.js";
+import { compatibilityHandler } from "../compatibilityHandler.js";
 
 export class SoundboardControl{
     constructor(){
@@ -152,7 +153,7 @@ export class SoundboardControl{
         }
 
         let volume = game.settings.get(moduleName,'soundboardSettings').volume[soundNr]/100;
-        volume = AudioHelper.inputToVolume(volume);
+        volume = compatibilityHandler('audioHelper').inputToVolume(volume);
         
         let payload = {
             "msgType": "playSound", 
@@ -168,17 +169,20 @@ export class SoundboardControl{
     }
 
     async playSound(soundNr,src,play,repeat,volume){
+        
         if (play){
             volume *= game.settings.get("core", "globalAmbientVolume");
 
             let newSound = new Sound(src);
             if(newSound.loaded == false) await newSound.load({autoplay:true});
-            newSound.on('end', ()=>{
+
+            compatibilityHandler('onSoundEnd', newSound, ()=> {
                 if (repeat == false) {
                     this.activeSounds[soundNr] = undefined;
                     this.updateAll();
                 }
-            });
+            })
+            
             newSound.play({loop:repeat,volume:volume});
             this.activeSounds[soundNr] = newSound;
         }
@@ -194,7 +198,7 @@ export class SoundboardControl{
             let sound = this.activeSounds[i];
             if (sound == undefined) continue;
             let volume = game.settings.get(moduleName,'soundboardSettings').volume[i]/100;
-            volume = AudioHelper.inputToVolume(volume) * ambientVolume;
+            volume = compatibilityHandler('audioHelper').inputToVolume(volume) * ambientVolume;
             sound.gain.value = volume;
         }
     }

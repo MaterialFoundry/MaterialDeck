@@ -1,4 +1,5 @@
 import { transmitInitData } from "./websocket.js";
+import { getDocument } from "./misc.js";
 
 export class SystemHelper {
     systems = [];
@@ -57,12 +58,12 @@ export class SystemHelper {
         if (type == 'selected') return this.getSelectedToken();
         else if (type == 'user') return this.getUserCharacter();
         else if (identifier == '') return;
-        else if (type == 'tokenName') return this.getTokenFromTokenName(identifier);
-        else if (type == 'actorName') return this.getTokenFromActorName(identifier);
-        else if (type == 'tokenId') return this.getTokenFromTokenId(identifier);
-        else if (type == 'actorId') return this.getTokenFromActorId(identifier);
+        else if (type == 'tokenName') return getDocument('token',identifier);
+        else if (type == 'actorName') return getDocument('actor',identifier);
     }
     getTokenFromTokenId(id) {
+        const split = id.split('.');
+        if (split.length > 1) id = split[split.length-1];
         return canvas.tokens.get(id);
     }
 
@@ -71,6 +72,8 @@ export class SystemHelper {
     }
 
     getTokenFromActorId(id) {
+        const split = id.split('.');
+        if (split.length > 1) id = split[split.length-1];
         return canvas.tokens.placeables.find(p => p.actor.id == id);
     }
 
@@ -83,7 +86,7 @@ export class SystemHelper {
     }
 
     getUserCharacter() {
-        return canvas.tokens.placeables.find(p => p.actor.id == game.user.character.id);
+        return canvas.tokens.placeables.find(p => p.actor.id == game.user.character?.id);
     }
 
     moveToken(token,dir){

@@ -1,7 +1,7 @@
 import { moduleName, getPermission } from "../MaterialDeck.js";
-import { compatibleCore } from "../src/misc.js";
 import { importDialogForm } from "./importDialog.js";
 import { exportDialogForm } from "./exportDialog.js";
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
 
 export class macroConfigForm extends FormApplication {
     constructor(data, options) {
@@ -14,12 +14,21 @@ export class macroConfigForm extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
+            id: "materialDeck_macroConfig",
+            title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.MacroConfig"),
+            template: "./modules/MaterialDeck/templates/macroConfig.html",
+            classes: ["sheet"]
+        });
+        
+        /*
         return mergeObject(super.defaultOptions, {
             id: "materialDeck_macroConfig",
             title: "Material Deck: "+game.i18n.localize("MaterialDeck.Sett.MacroConfig"),
             template: "./modules/MaterialDeck/templates/macroConfig.html",
             classes: ["sheet"]
         });
+        */
     }
     
     /**
@@ -42,22 +51,6 @@ export class macroConfigForm extends FormApplication {
         if (color == undefined) color = [];
         if (args == undefined) args = [];
         if (labels == undefined) labels = [];
-
-        //Check if the Furnace is installed and enabled
-        let height = 95;
-        let advancedMacrosEnabled = false;
-        if (compatibleCore('11.0')) {
-            advancedMacrosEnabled = true;
-        }
-        else {
-            let advancedMacros = game.modules.get("advanced-macros");
-            if (advancedMacros != undefined && advancedMacros.active) advancedMacrosEnabled = true;
-            if (advancedMacrosEnabled) {
-                advancedMacrosEnabled = true;
-                height += 50;
-            }
-        }
-        
 
         let iteration = this.page*32;
         let macroData = [];
@@ -92,11 +85,9 @@ export class macroConfigForm extends FormApplication {
         }
        
         return {
-            height: height,
             macros: game.macros,
             selectedMacros: selectedMacros,
             macroData: macroData,
-            furnace: advancedMacrosEnabled,
             macroRange: `${this.page*32 + 1} - ${this.page*32 + 32}`,
             prevDisabled: this.page == 0 ? 'disabled' : '',
             totalMacros: Math.max(Math.ceil(selectedMacros.length/32)*32, this.page*32 + 32)

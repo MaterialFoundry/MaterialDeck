@@ -1,4 +1,5 @@
 import { versions } from "../MaterialDeck.js";
+import { compatibilityHandler } from "../src/compatibilityHandler.js";
 
 export const releaseURLs = {
     module: {
@@ -25,6 +26,15 @@ export class downloadUtility extends FormApplication {
      * Default Options for this FormApplication
      */
     static get defaultOptions() {
+        return compatibilityHandler('mergeObject', super.defaultOptions, {
+            id: "materialDeck_downloadUtility",
+            title: "Material Deck: " + game.i18n.localize("MaterialDeck.DownloadUtility.Title"),
+            template: "./modules/MaterialDeck/templates/downloadUtility.html",
+            width: 500,
+            height: "auto"
+        });
+    
+        /*
         return mergeObject(super.defaultOptions, {
             id: "materialDeck_downloadUtility",
             title: "Material Deck: " + game.i18n.localize("MaterialDeck.DownloadUtility.Title"),
@@ -32,6 +42,7 @@ export class downloadUtility extends FormApplication {
             width: 500,
             height: "auto"
         });
+        */
     }
 
     /**

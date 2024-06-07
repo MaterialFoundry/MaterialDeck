@@ -468,20 +468,7 @@ export class StreamDeck{
         let margin = 0;
         ctx.fillStyle = background;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (data.ring != undefined && data.ring > 0){
-            ctx.fillStyle = background;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            margin = 10;
-            if (data.ring == 2) {
-                ctx.fillStyle = data.ringColor;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = background;
-                ctx.fillRect(margin, margin, canvas.width-2*margin, canvas.height-2*margin);
-            }
-        }
-        else {
-            
-        }
+        if (data.ring != undefined && data.ring > 0) margin = 10;
         
         if (uses != undefined && uses.heart != undefined && (uses.available > 0 || uses.maximum != undefined)) {
             const percentage = 102*uses.available/uses.maximum;
@@ -507,7 +494,7 @@ export class StreamDeck{
 
         if (format != 'jpg' && format != 'jpeg' && format != 'png' && format != 'PNG' && format != 'webm' && format != 'webp' && format != 'gif' && format != 'svg') url = "modules/MaterialDeck/img/transparant.png";
         //if (url == "") url = "modules/MaterialDeck/img/transparant.png"
-        
+
         let resImageURL = url;
         let img = new Image();
         img.setAttribute('crossorigin', 'anonymous');
@@ -520,9 +507,17 @@ export class StreamDeck{
             var canvasAspectRatio = canvas.width / canvas.height;
             var renderableHeight, renderableWidth, xStart, yStart;
     
+            
+            if (data.options.fit == 'banner') {
+                renderableHeight = 0.75*canvas.height;
+                renderableWidth = img.width * (0.75*renderableHeight / img.height);
+                xStart = (canvas.width - renderableWidth) / 2;
+                yStart = (canvas.height - renderableHeight) / 2;
+            }
+
             // If image's aspect ratio is less than canvas's we fit on height
             // and place the image centrally along width
-            if(imageAspectRatio < canvasAspectRatio) {
+            else if(imageAspectRatio < canvasAspectRatio) {
                 renderableHeight = canvas.height;
                 renderableWidth = img.width * (renderableHeight / img.height);
                 xStart = (canvas.width - renderableWidth) / 2;
@@ -644,6 +639,15 @@ export class StreamDeck{
                     ctx.fill();
                     
                 }
+            }
+            if (data.ring != undefined && data.ring > 0){
+                if (data.ring == 2) ctx.fillStyle = data.ringColor;
+                else ctx.fillStyle = '#000000';
+
+                ctx.fillRect(0, 0, margin, canvas.width);
+                ctx.fillRect(0, 0, canvas.height, margin);
+                ctx.fillRect(canvas.width-margin, 0, margin, canvas.height);
+                ctx.fillRect(0, canvas.height-margin, canvas.height, margin);
             }
             
             var dataURL = canvas.toDataURL();

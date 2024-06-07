@@ -1,4 +1,6 @@
 import { getPermission } from "../../MaterialDeck.js";
+import { compatibilityHandler } from "../compatibilityHandler.js";
+import { cloneObject, getDocument } from "../misc.js";
 
 export class OtherControls{
     constructor(){
@@ -200,23 +202,20 @@ export class OtherControls{
 
     keyPressMove(settings){
         if (canvas.scene == null) return;
+        let viewPosition = cloneObject(canvas.scene._viewPosition);
+        viewPosition.duration = 100;
+
         const dir = settings.dir ? settings.dir : 'center';
         if (dir ==  'zoomIn') {//zoom in
-            let viewPosition = canvas.scene._viewPosition;
             viewPosition.scale = viewPosition.scale*1.05;
-            viewPosition.duration = 100;
             canvas.animatePan(viewPosition);
         }
         else if (dir == 'zoomOut') {//zoom out
-            let viewPosition = canvas.scene._viewPosition;
             viewPosition.scale = viewPosition.scale*0.95;
-            viewPosition.duration = 100;
             canvas.animatePan(viewPosition);
         }
         else {
-            let viewPosition = canvas.scene._viewPosition;
             const gridSize = canvas.scene.grid.size;
-            viewPosition.duration = 100;
             
             if (dir == 'up') viewPosition.y -= gridSize;
             else if (dir == 'down') viewPosition.y += gridSize;
@@ -486,7 +485,7 @@ export class OtherControls{
         }
         else if (func == 'disp'){    //display darkness
             src = 'modules/MaterialDeck/img/other/darkness/darkness.png';
-            const darkness = canvas.scene != null ? Math.floor(canvas.scene.darkness*100)/100 : '';
+            const darkness = canvas.scene != null ? Math.floor( compatibilityHandler('sceneDarkness')*100)/100 : '';
             txt += darkness;
         }
         game.materialDeck.streamDeck.setTitle(txt,context);
@@ -508,7 +507,7 @@ export class OtherControls{
         if (func == 'value') //value
             canvas.scene.update({darkness: value}, {animateDarkness});
         else if (func == 'incDec'){ //increase/decrease
-            let darkness = canvas.scene.darkness - value;
+            let darkness = compatibilityHandler('sceneDarkness') - value;
             if (darkness > 1) darkness = 1;
             if (darkness < 0) darkness = 0;
             canvas.scene.update({darkness: darkness}, {animateDarkness});
@@ -540,7 +539,7 @@ export class OtherControls{
         game.materialDeck.streamDeck.setIcon(context,device,src,{background:background});
     }
 
-    keyPressRollDice(settings,context,device){
+    async keyPressRollDice(settings,context,device){
         if (getPermission('OTHER','DICE') == false ) return;
         const formula = settings.rollDiceFormula ? settings.rollDiceFormula : '1d20 + 7';
         if (formula == '') return;
@@ -556,7 +555,7 @@ export class OtherControls{
         if (tokenControlled) r = new Roll(formula,actor.getRollData());
         else r = new Roll(formula);
 
-        r.evaluate({async:false});
+        await compatibilityHandler('rollDice', r);
         
         if (rollFunction == 'public') {
             r.toMessage(r,{rollMode:"roll"})
@@ -580,25 +579,20 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateRollTable(settings,context,device,options={}){
-        const name = settings.rollTableName;
-        if (name == undefined) return;
         if (getPermission('OTHER','TABLES') == false ) {
             game.materialDeck.streamDeck.noPermission(context,device);
             return;
         }
 
         const background = settings.background ? settings.background : '#000000';
-        const table = game.tables.getName(name);
-        if (table == undefined) return;
+        let txt = '';
+        let src = '';
 
-        let txt = settings.displayRollName ? table.name : '';
-        let src = settings.displayRollIcon ? table.img : '';
+        const table = getDocument('table', settings.rollTableName);
+        if (table != undefined) {
+            txt = settings.displayRollName ? table.name : '';
+            src = settings.displayRollIcon ? table.img : '';
 
-        if (table == undefined) {
-            src = '';
-            txt = '';
-        }
-        else {
             if (table.permission < 2 && getPermission('OTHER','TABLES_ALL') == false ) {
                 game.materialDeck.streamDeck.noPermission(context,device);
                 return;
@@ -612,24 +606,25 @@ export class OtherControls{
 
     keyPressRollTable(settings){
         if (getPermission('OTHER','TABLES') == false ) return;
-        const name = settings.rollTableName;
-        if (name == undefined) return;
 
         const func = settings.rolltableFunction ? settings.rolltableFunction : 'open';
-        const table = game.tables.getName(name);
+        const table = getDocument('table', settings.rollTableName);
 
-        if (table != undefined) {
-            if (table.permission < 2 && getPermission('OTHER','TABLES_ALL') == false ) return;
-            if (func == 'open'){ //open
-                const element = document.getElementById(table.sheet.id);
-                if (element == null) table.sheet.render(true);
-                else table.sheet.close();
-            }
-            else if (func == 'public') //Public roll
-                table.draw({rollMode:"roll"});
-            else if (func == 'private') //private roll
-                table.draw({rollMode:"selfroll"});
+        if (table == undefined) {
+            console.warn(`Could now find roll table: "${settings.rollTableName}"`);
+            return;
         }
+        
+        if (table.permission < 2 && getPermission('OTHER','TABLES_ALL') == false ) return;
+        if (func == 'open'){ //open
+            const element = document.getElementById(table.sheet.id);
+            if (element == null) table.sheet.render(true);
+            else table.sheet.close();
+        }
+        else if (func == 'public') //Public roll
+            table.draw({rollMode:"roll"});
+        else if (func == 'private') //private roll
+            table.draw({rollMode:"selfroll"});
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -746,40 +741,48 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateCompendium(settings,context,device,options={}){
-        const name = settings.compendiumName;
-        if (name == undefined) return;
-        if (getPermission('OTHER','COMPENDIUM') == false ) {
-            game.materialDeck.streamDeck.noPermission(context,device);
-            return;
+        const compendium = getDocument('compendium', settings.compendiumName);
+
+        if (compendium != undefined) {
+            if (getPermission('OTHER','COMPENDIUM') == false ) {
+                game.materialDeck.streamDeck.noPermission(context,device);
+                return;
+            }
+            if (compatibilityHandler('compendiumOwnership',compendium) && getPermission('OTHER','COMPENDIUM_ALL') == false) {
+                game.materialDeck.streamDeck.noPermission(context,device);
+                return;
+            }
         }
-        const compendium = game.packs.find(p=>p.metadata.label == name);
-        if (compendium == undefined) return;
-        if (compendium.private && getPermission('OTHER','COMPENDIUM_ALL') == false) {
-            game.materialDeck.streamDeck.noPermission(context,device);
-            return;
+
+        let src = '';
+        let txt = '';
+        if (compendium != undefined) {
+            txt = settings.displayCompendiumName ? compendium.metadata.label : '';
+            src = settings.displayCompendiumIcon ? compendium.banner : '';
         }
-        const rendered = compendium.apps[0].rendered;
+        const rendered = compendium?.apps[0].rendered;
         const background = settings.background ? settings.background : '#000000';
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const ringColor = rendered ? ringOnColor : ringOffColor;
-        const txt = settings.displayCompendiumName ? name : '';
-
+    
         game.materialDeck.streamDeck.setTitle(txt,context);
-        let src = '';
         if (settings.iconOverride != '' && settings.iconOverride != undefined) src = settings.iconOverride;
-        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor});
+        game.materialDeck.streamDeck.setIcon(context,device,src,{background:background,ring:2,ringColor:ringColor,fit:'banner'});
     }
 
     keyPressCompendium(settings){
-        let name = settings.compendiumName;
-        if (name == undefined) return;
+        const compendium = getDocument('compendium', settings.compendiumName);
+        if (compendium == undefined) {
+            console.warn(`Could now find compendium: "${settings.compendiumName}"`)
+            return;
+        }
+        
         if (getPermission('OTHER','COMPENDIUM') == false ) return;
 
-        const compendium = game.packs.find(p=>p.metadata.label == name);
         const rendered = compendium.apps[0].rendered;
         if (compendium == undefined) return;
-        if (compendium.private && getPermission('OTHER','COMPENDIUM_ALL') == false) return;
+        if (compatibilityHandler('compendiumOwnership',compendium) && getPermission('OTHER','COMPENDIUM_ALL') == false) return;
         else if (rendered) compendium.apps[0].close();
         else compendium.render(true);
     }
@@ -787,55 +790,49 @@ export class OtherControls{
     //////////////////////////////////////////////////////////////////////////////////////////
 
     updateJournal(settings,context,device,options={}){
-        const name = settings.journalName;
         const pageName = settings.journalPageName;
         let pageId;
         let journalMode = settings.journalMode ? settings.journalMode : 'openJournal';
         let txt = '';
-        if (name == undefined) {
-            game.materialDeck.streamDeck.setTitle('',context);
-            return;
-        }
-
-        const journal = game.journal.getName(name);
-        if (journal == undefined) {
-            game.materialDeck.streamDeck.setTitle('',context);
-            return;
-        }
-
-        if (getPermission('OTHER','JOURNAL') == false ) {
-            game.materialDeck.streamDeck.noPermission(context,device);
-            return;
-        }
-        if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) {
-            game.materialDeck.streamDeck.noPermission(context,device);
-            return;
-        }
         let rendered = false;
-        
-        if (options?.sheet?.title == name) {
-            if (options.hook == 'renderJournalSheet') rendered = true;
-            else if (options.hook == 'closeJournalSheet') rendered = false;
-        }
-        else 
-            if (document.getElementById("journalentry-sheet-"+journal.id) != null) rendered = true;
 
-        txt = settings.displayJournalName == 'journal' ? name : '';
-        
-        if (journalMode == 'openPageNr') {
-            pageId = journal.pages.contents[pageName]?.id
-        }
-        if (journalMode == 'openPageName') {
-            pageId = journal.pages.getName(pageName)?.id;
-        }
-        if (pageId != undefined) {
-            const page = journal.pages.get(pageId);
-            if (settings.displayJournalName == 'page') txt = page.name;
-            else if (settings.displayJournalName == 'journal+page') txt = name + ' - ' + page.name
+        const journal = getDocument('journal', settings.journalName);
+
+        if (journal != undefined)  {
+            const name = journal.name;
+            if (getPermission('OTHER','JOURNAL') == false ) {
+                game.materialDeck.streamDeck.noPermission(context,device);
+                return;
+            }
+            if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) {
+                game.materialDeck.streamDeck.noPermission(context,device);
+                return;
+            }
             
-            if (rendered && page != undefined) {
-                const currentPage = journal.pages.contents[journal.sheet.pageIndex]
-                if (currentPage.id != pageId) rendered = false;
+            if (options?.sheet?.title == name) {
+                if (options.hook == 'renderJournalSheet') rendered = true;
+                else if (options.hook == 'closeJournalSheet') rendered = false;
+            }
+            else 
+                if (document.getElementById("journalentry-sheet-"+journal.id) != null) rendered = true;
+    
+            txt = settings.displayJournalName == 'journal' ? name : '';
+            
+            if (journalMode == 'openPageNr') {
+                pageId = journal.pages.contents[pageName]?.id
+            }
+            if (journalMode == 'openPageName') {
+                pageId = journal.pages.getName(pageName)?.id;
+            }
+            if (pageId != undefined) {
+                const page = journal.pages.get(pageId);
+                if (settings.displayJournalName == 'page') txt = page.name;
+                else if (settings.displayJournalName == 'journal+page') txt = name + ' - ' + page.name
+                
+                if (rendered && page != undefined) {
+                    const currentPage = journal.pages.contents[journal.sheet.pageIndex]
+                    if (currentPage.id != pageId) rendered = false;
+                }
             }
         }
 
@@ -843,7 +840,6 @@ export class OtherControls{
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         const ringColor = rendered ? ringOnColor : ringOffColor;
-        //const txt = settings.displayCompendiumName ? name : '';
 
         game.materialDeck.streamDeck.setTitle(txt,context);
         let src = '';
@@ -852,14 +848,16 @@ export class OtherControls{
     }
 
     async keyPressJournal(settings){
-        const name = settings.journalName;
         const pageName = settings.journalPageName;
         let pageId;
         let journalMode = settings.journalMode ? settings.journalMode : 'openJournal';
-        if (name == undefined) return;
 
-        const journal = game.journal.getName(name);
-        if (journal == undefined) return;
+        const journal = getDocument('journal', settings.journalName);
+        if (journal == undefined) {
+            console.warn(`Could now find journal: "${settings.journalName}"`)
+            return;
+        }
+
         if (getPermission('OTHER','JOURNAL') == false ) return;
         if (journal.permission < 2 && getPermission('OTHER','JOURNAL_ALL') == false ) return;
         if (journal.sheet.rendered == false) {
@@ -978,7 +976,9 @@ export class OtherControls{
         const ringOffColor = settings.offRing ? settings.offRing : '#000000';
         const ringOnColor = settings.onRing ? settings.onRing : '#00FF00';
         let iconSrc = "modules/MaterialDeck/img/other/d20.png";
-        const rollMode = settings.rollMode ? settings.rollMode : 'roll';
+        let rollMode = settings.rollMode ? settings.rollMode : 'roll';
+
+        if (rollMode == 'roll') rollMode = 'publicroll'
         const ringColor = (rollMode == game.settings.get('core','rollMode')) ? ringOnColor : ringOffColor;
         game.materialDeck.streamDeck.setTitle("",context);
         let overlay = true;
@@ -991,7 +991,8 @@ export class OtherControls{
     }
 
     async keyPressRollMode(settings){
-        const rollMode = settings.rollMode ? settings.rollMode : 'roll';
+        let rollMode = settings.rollMode ? settings.rollMode : 'roll';
+        if (rollMode == 'roll') rollMode = 'publicroll'
         await game.settings.set('core','rollMode',rollMode);
         this.updateAll();
     }
@@ -1005,9 +1006,9 @@ export class OtherControls{
         let txt = "";
         
         if (settings.displayGlobalVolumeValue) {
-            if (type == 'playlists') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalPlaylistVolume"))*100)/100;
-            else if (type == 'ambient') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalAmbientVolume"))*100)/100;
-            else if (type == 'interface') txt += Math.round(AudioHelper.volumeToInput(await game.settings.get("core", "globalInterfaceVolume"))*100)/100;
+            if (type == 'playlists') txt += Math.round(compatibilityHandler('audioHelper').volumeToInput(await game.settings.get("core", "globalPlaylistVolume"))*100)/100;
+            else if (type == 'ambient') txt += Math.round(compatibilityHandler('audioHelper').volumeToInput(await game.settings.get("core", "globalAmbientVolume"))*100)/100;
+            else if (type == 'interface') txt += Math.round(compatibilityHandler('audioHelper').volumeToInput(await game.settings.get("core", "globalInterfaceVolume"))*100)/100;
         }
 
         game.materialDeck.streamDeck.setTitle(txt,context);
@@ -1027,13 +1028,13 @@ export class OtherControls{
         else if (type == 'ambient') settingLabel = "globalAmbientVolume";
         else if (type == 'interface') settingLabel = "globalInterfaceVolume";
         
-        if (mode == 'incDec') newVolume = AudioHelper.volumeToInput(await game.settings.get("core", settingLabel)) + parseFloat(value);
+        if (mode == 'incDec') newVolume = compatibilityHandler('audioHelper').volumeToInput(await game.settings.get("core", settingLabel)) + parseFloat(value);
         else if (mode == 'set') newVolume = value;
 
         if (newVolume > 1) newVolume = 1;
         else if (newVolume < 0) newVolume = 0;
 
-        await game.settings.set("core", settingLabel, AudioHelper.inputToVolume(newVolume));
+        await game.settings.set("core", settingLabel, compatibilityHandler('audioHelper').inputToVolume(newVolume));
         document.getElementsByName(settingLabel)[0].value = newVolume;
 
         this.updateAll();
@@ -1077,6 +1078,8 @@ export class OtherControls{
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
+    cycleTokensCounter = -1;
+
     async updateCycleTokens(settings,context,device,options={}){
         const iconSrc = "modules/MaterialDeck/img/other/rotatecw.png";
         const background = settings.background ? settings.background : '#000000';
@@ -1091,8 +1094,11 @@ export class OtherControls{
             tokens = tokens.filter(t => t.isOwner == true);
         else if (mode == 'friendly') 
             tokens = tokens.filter(t => t.document.disposition == 1);
-     
-        tokens[0].control(true);
+
+        this.cycleTokensCounter++;
+        if (this.cycleTokensCounter >= tokens.length) this.cycleTokensCounter = 0;
+
+        tokens[this.cycleTokensCounter].control(true);
     }
 }
 
