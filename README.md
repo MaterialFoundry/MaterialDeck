@@ -66,7 +66,7 @@ Instructions and more info can be found in the <a href="https://github.com/Mater
 Module manifest: https://github.com/MaterialFoundry/MaterialDeck/releases/latest/download/module.json
 
 ## Software Versions & Module Incompatibilities
-<b>Foundry VTT:</b> v10 - v11<br>
+<b>Foundry VTT:</b> v11 - v12<br>
 <b>Module Incompatibilities:</b> None known.<br>
 
 ## Feedback

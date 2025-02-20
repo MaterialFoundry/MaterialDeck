@@ -1,0 +1,99 @@
+site_name: Material Deck Documentation
+site_url: https://example.com
+nav:
+  - Home: index.md
+  - Getting Started: 
+    - Getting Started: gettingStarted/gettingStarted.md
+    - Requirements: gettingStarted/requirements.md
+    - Installation: gettingStarted/installation.md
+    - Gaming Systems: gettingStarted/gamingSystems.md
+  - Module Settings: 
+    - Module Settings: moduleSettings/moduleSettings.md
+    - Device Manager: moduleSettings/deviceManager.md
+    - Permission Config: moduleSettings/permissionConfig.md
+  - Actions:
+    - Actions: actions/actions.md
+    - Audio: 
+      - Audio: actions/audio/audio.md
+      - Soundboard: actions/audio/soundboard.md
+      - Playlist Control: actions/audio/playlistControl.md
+    - Combat Tracker: actions/combatTracker.md
+    - Custom: 
+      - Custom Action: actions/custom/custom.md
+      - Config Menu: actions/custom/config.md
+      - Writing Code: actions/custom/writingCode.md
+    - External Modules: actions/externalModules.md
+    - Macro: actions/macro.md
+    - Other Actions: actions/otherActions.md
+    - Scene: actions/scene.md
+    - Token: 
+      - Token: actions/token/token.md
+      - Custom Stats: actions/token/customStats.md
+      - Custom On-Click: actions/token/customOnClick.md
+  #- Troubleshooting: troubleshooting.md
+
+  #- System Development: 
+  #  - Getting Started: systemDevelopment/gettingStarted.md
+  #  - Creating a System Module: systemDevelopment/creatingSystem.md
+  #  - Actions: 
+  #    - Intro: systemDevelopment/actions.md
+  #    - Registering Settings:
+  #      - Registering Settings: systemDevelopment/registerSettings.md
+  #      - Setting Types: systemDevelopment/settingTypes.md
+  #      - Synchronized Settings: systemDevelopment/synchronizedSettings.md
+  #      - Visibility: systemDevelopment/visibility.md
+  #    - Registering Callbacks: systemDevelopment/registerCallback.md
+  #    - Permissions: systemDevelopment/permissions.md
+  #    - Useful Functions: systemDevelopment/usefulFunctions.md
+  #  - Publishing: systemDevelopment/publishing.md
+    
+theme:
+  name: material
+  palette:
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: black
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - scheme: default
+      primary: blue grey
+      toggle:
+        icon: material/brightness-7 
+        name: Switch to dark mode
+  
+  favicon: img/icon.ico
+  logo: img/MaterialFoundry.png
+
+  features:
+    - navigation.tracking
+    - navigation.tabs
+    - toc.integrate
+    - navigation.top
+
+plugins:
+  - search
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+
+extra:
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/3hd4G6TkmA
+    - icon: fontawesome/brands/patreon
+      link: https://www.patreon.com/materialfoundry
+
+extra_css:
+  - style.css

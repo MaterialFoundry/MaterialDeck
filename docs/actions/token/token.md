@@ -1,0 +1,89 @@
+# Token Action
+
+The Token Action allows you to control tokens and display data related to tokens, such as their hitpoints.
+
+<div class="warning">
+    <p class="header">Gaming System Dependency</p>
+    <p class="content">
+        Many interesting token related features are system dependent. This means that to take full advantage of this action you should install a suitable system module.<br>
+        <br>
+        This page of the documentation only handles features that are available in the core Material Deck module. For system-specific features please consult the documentation of the relevant system module.<br>
+        <br>
+        See <a href="../../../gettingStarted/gamingSystems">here</a> for more info.
+    </p>
+</div>
+
+## General Settings
+
+| Option            | Description   |
+|-------------------|---------------|
+| Title             | If configured, will set the title/text on the button. This will override any other text that would normally be displayed. |
+| Icon Override     | Url to a custom icon. If configured, this will override any icon that would normally be displayed. |
+| Page-Wide Token   | All token actions on the current page with this setting enabled will share the token selection. So if on one of these actions you select a token using 'Selected Token', all other of these actions will also select a token the same way. See [here](#page-wide-token) for more info. |
+| Selection Mode | Sets how to select the token:<br><b>-Selected Token</b>: Select the token that's currently selected in Foundry.<br><b>-User Character</b>: Select the token that's chosen as the user character in Foundry.<br><b>-Token Name/ID</b>: Select a token by its name or ID.<br><b>-Actor Name/ID</b>: Select a token by its actor's name or ID.<br><b>-Select Scene Token From List</b>: Select a token from a list of all tokens on the current scene.<br><b>-Select Actor From List</b>: Select a token from a list of all actors. |
+| Name/ID | (`Token Name/ID` and `Actor Name/ID` only) Name or ID of the token/actor to select |
+| Token             | (`Select Scene Token From List` only) Token to select.    |
+| Actor             | (`Select Actor From List` only) Actor to select.  |
+| Mode      | Sets the mode of the button:<br><b>-[Token](#token-mode)</b>: Functions related to the token itself, such as token movement, stats, etc.<br><i>Other modes may be provided through [gaming system modules](../../gettingStarted/gamingSystems.md)</i>|
+
+### Token & Actor Selection
+You select a token for the button using the above mentioned settings.<br>
+When you specify an actor and that actor has a token on the current scene, all features will be available.<br>
+When you specify an actor and that actor does not have a token on the current scene, not all features will be available, for example, you cannot perform the `On Click` `move` action, because there is no token to move.
+
+## Token Mode
+The token mode can be used to display stats and perform actions on the token, such as moving it, setting its vision, etc.
+
+| Option            | Description   |
+|-------------------|---------------|
+| Prepend Title     | Adds text after the token/actor name (if configured), but before any text displayed through the `stats` option. |
+| Stats             | Stat to display:<br><b>-None</b>: Don't display anything.<br><b>-[Custom](./customStats.md)</b>: Display a custom stat.<br><i>Other stats may be provided through [gaming system modules](../../gettingStarted/gamingSystems.md)</i>|
+| On Press/On Hold  | Sets what to do when the button is pressed/held down:<br><b>-[Custom](./customOnClick.md)</b>: Configure a custom on click action.<br><b>-Select Token</b>: Selects the configured token.<br><b>-Center on Token</b>: Pans the canvas to center on the configured token.<br><b>-Center on Token and Select Token</b>: Pans the canvas to center on the configured token and selects the token.<br><b>-Move Token</b>: Select a direction for the token to move to. The token will move 1 grid space in that direction when the button is pressed.<br><b>-[Rotate Token](#rotate-token)</b>: Rotates the configured token.<br><b>-Open Character Sheet</b>: Opens the character sheet of the configured token.<br><b>-Open Token Config</b>: Opens the token config of the configured token.<br><b>-Toggle Visibility</b>: Toggles the visibility of the configured token between hidden to visible.<br><b>-Toggle Combat State</b>: Toggles the combat state of the configured token.<br><b>-Target Token</b>: Targets the configured token.<br><b>-[Set Vision & Light](#set-vision-light)</b>: Sets the vision and light settings of the configured token.<br><b>-[Set Token Wildcard Image](#set-token-wildcard-image)</b>: Sets the image of the configured token if 'wildcard' token images are used.<br><b>-[Call Macro](#call-macro)</b>: Execute a macro.<br><i>Other options may be provided through [gaming system modules](../../gettingStarted/gamingSystems.md)</i> |
+| Display           | <b>-Name</b>: Display the token or actor name on the Stream Deck.<br><b>-Icon</b>: Display the token icon, actor icon, a relevant `Stat` icon or relevant `On Click` icon on the button. |
+| Colors           | <b>-On Color</b>: (Only for some configurations) A border is drawn on the Stream Deck of this color if the button's function is open or active.<br><b>-Off Color</b>: (Only for some configurations) A border is drawn on the Stream Deck of this color if the button's function is not open or inactive.<br><b>-Background</b>: Background color of the button. |
+
+### Page-Wide Token
+The `Page-Wide Token` setting allows you to synchronize the token selection between multiple buttons on the same page (where a page is all the buttons that are currently visible on the device). This allows you to quickly change which token is assigned to multiple (or all) Token Action buttons.
+
+For example, you might have a page (or folder) on the Stream Deck that displays a lot of stats of a token and you've enabled `Page-Wide Token` for all buttons. If you then set the `Token` option to `Select Actor From List` and you select an actor, for example `Akra`, this token will now be assigned to all buttons.
+
+### Rotate Token
+![Screenshot](../../img/token/Rotate.png){align=right}
+Allows you to rotate the token.<br>
+You can rotate it in one of two ways:
+
+<b>Rotate To Value</b><br>
+Set a value in degrees in the `Value` field and the token will rotate to that value.<br>
+For example, 0 is the normal orientation, 90 is rotated 90 degrees. 
+
+<b>Rotate by Value</b><br>
+Set a value in degrees in the 'Value' field and the token will rotate that value relative to it's current rotation.<br>
+For example, if it is currently rotated 90 degrees, setting the value to -10 will rotate it to 80 degrees. 
+
+### Set Vision & Light
+![Screenshot](../../img/token/SetVision&Light.png){align=right}
+Allows you to configure a token's vision and light settings.<br>
+Multiple submenus are available which can be expanded or collapsed by clicking on them.<br>
+Each submenu contains settings as you can find them in the token config.<br>
+
+The settings come in multiple variants:
+
+* <b>Selection Boxes</b>: If set to anything except `No Change`, the setting will be applied when you press the button.
+* <b>Number Boxes</b>: If not empty, the setting will be applied when you press the button.
+* <b>Sliders</b>: Sliders have a checkbox next to them, the setting will be applied when you press the button if the checkbox is selected.
+* <b>Color Pickers</b>: Color pickers have a checkbox next to them, the setting will be applied when you press the button if the checkbox is selected.
+
+### Set Token Wildcard Image
+![Screenshot](../../img/token/WildcardImages.png){align=right}
+You can change the token image if you use the wildcard image option that foundry provides (see [here](https://foundryvtt.com/article/tokens/) for more info on how to set up wildcard images).<br>
+When you set `On Click` to `Set Token Wildcard Image` you get the two new boxes: `Wildcard Image` and `Value`.
+
+With `Wildcard Image` you select what you want the button to do:<br>
+
+* <b>Iterate Image</b>: It will change the token image to a next one in the wildcard image list. How many images it iterates is set with the `Value` input box.
+* <b>Set Image</b>: It will set the image to the n'th image of the list, where 'n' is set using the `Value` input box.
+* <b>Offset</b>: You can offset the selected image by `Value`. So if on one button you have `Wildcard Image` set to `Set Image` and `Value` set to n, after pressing the button set to `Offset`, n will be n plus the offset value.
+
+### Call Macro
+You can call a macro that will be executed by the token.<br>
+This works identical to the [Macro Action](../macro.md).
