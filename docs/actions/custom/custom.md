@@ -1,5 +1,5 @@
-# Custom Action
-The custom action can be used to create a fully customized button.
+# Custom Actions
+Custom actions can be used to create a fully customized button.
 
 You can configure settings that show up in the Stream Deck's property inspector, and define functions that are called when, for example, the button is pressed.
 

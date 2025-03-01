@@ -1,5 +1,4 @@
-![Screenshot](../img/moduleSettings/moduleSettings.png){align=right width=50%}
-
+<div class="imgContainer"><img src="../../img/moduleSettings/moduleSettings.png"></div>
 The module settings can be accessed in Foundry by pressing the 'Game Settings' (cogs icon) in the sidebar on the right, and then pressing 'Configure Settings'. This will open the 'Configure Game Settings' menu, where you have to select 'Material Deck' in the left column.
 
 At the top you will find 5 buttons:

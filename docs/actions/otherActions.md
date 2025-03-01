@@ -1,5 +1,5 @@
-# Other Action
-The 'Other Action' is used for miscellaneous actions.
+# Other Actions
+Other Actions is used for miscellaneous actions.
 
 | Option            | Description   |
 |-------------------|---------------|

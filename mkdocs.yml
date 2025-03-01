@@ -1,7 +1,9 @@
 site_name: Material Deck Documentation
-site_url: https://example.com
+site_url: https://materialfoundry.github.io/MaterialDeck/
 nav:
-  - Home: index.md
+  - Home: 
+    - Home: index.md
+    - Changelog: changelog.md
   - Getting Started: 
     - Getting Started: gettingStarted/gettingStarted.md
     - Requirements: gettingStarted/requirements.md
@@ -18,8 +20,8 @@ nav:
       - Soundboard: actions/audio/soundboard.md
       - Playlist Control: actions/audio/playlistControl.md
     - Combat Tracker: actions/combatTracker.md
-    - Custom: 
-      - Custom Action: actions/custom/custom.md
+    - Custom Actions: 
+      - Custom Actions: actions/custom/custom.md
       - Config Menu: actions/custom/config.md
       - Writing Code: actions/custom/writingCode.md
     - External Modules: actions/externalModules.md
@@ -30,6 +32,10 @@ nav:
       - Token: actions/token/token.md
       - Custom Stats: actions/token/customStats.md
       - Custom On-Click: actions/token/customOnClick.md
+  - Profiles:
+    - Profiles: profiles/profiles.md
+    - MaterialDeck: profiles/MaterialDeck.md
+    - MaterialDeck XL: profiles/MaterialDeck_XL.md
   #- Troubleshooting: troubleshooting.md
 
   #- System Development: 

@@ -1,6 +1,6 @@
 Using 'Custom Stats' you can display customized stats on the Stream Deck by providing a formule in the `Formula` field. To do this, you will need to know some basic knowledge of the underlying data structure of your gaming system.
 
-![Screenshot](../../img/token/CustomStats.png){align=right}
+<div class="imgContainer"><img src="../../../img/token/CustomStats.png"></div>
 For example, the strength modifier of a token's actor in dnd5e is:<br>
 `actor.system.abilities.str.mod`<br>
 To display this on the Stream Deck you need to prefix `@` before any stat and surround it by square brackets: `[` `]`.<br>

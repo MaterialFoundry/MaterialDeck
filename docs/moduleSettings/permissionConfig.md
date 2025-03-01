@@ -1,4 +1,4 @@
-![Screenshot](../img/moduleSettings/permissionConfig.png){align=right width=50%}
+<div class="imgContainer"><img src="../../img/moduleSettings/permissionConfig.png"></div>
 The permission config allows you to configure what Material Deck features are available to which users.<br>
 It can be accessed from the [module settings](./moduleSettings.md).
 
@@ -14,8 +14,11 @@ The `Reset to Defaults` button will reset the config to the default permissions.
 <BR CLEAR="right" />
 
 ## Disabled Permissions
-![Screenshot](../img/moduleSettings/noPermissionNotification.png){align=right width=50%}
-![Screenshot](../img/moduleSettings/noPermission.png){align=right}
+<div style="float: right; max-width: 450px">
+<img style="max-width: 450px" src="../../img/moduleSettings/noPermissionNotification.png">
+<img style="max-width: 450px" src="../../img/moduleSettings/noPermission.png">
+</div>
+
 Disabling permissions has the following effects for a button that is configured to do something that is not permitted:
 
 * Pressing the button will notify the user that they are not allowed to perform that action (max once per 5 seconds)

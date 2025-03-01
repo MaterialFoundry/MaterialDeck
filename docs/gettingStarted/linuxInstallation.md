@@ -14,6 +14,7 @@ It is possible to get it to work by running a the Stream Deck app on a Windows v
         No support is provided for installations like these.
     </p>
 </div>
+<BR CLEAR="left">
 
 #### Important Notes
 

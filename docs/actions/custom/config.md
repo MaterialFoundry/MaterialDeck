@@ -1,5 +1,5 @@
 # Custom Action Config
-![Screenshot](../../img/custom/Config-Main.png){align=right width=33%}
+<div class="imgContainer"><img src="../../../img/custom/Config-Main.png"></div>
 The 'Custom Action Config' allows you to configure your [custom actions](custom.md). You can access this menu from the module settings.
 
 On the main screen you can see an overview of all the configured actions with their `id`, `description` and `active` state.<br>
@@ -10,7 +10,7 @@ New actions can be created by pressing the `+` button.
 When you press the `edit` or `+` button the [Edit Custom Action](#edit-custom-action-screen) screen will open.
 
 ## Edit Custom Action Screen
-![Screenshot](../../img/custom/EditCustomAction-Main.png){align=right width=33%}
+<div class="imgContainer"><img src="../../../img/custom/EditCustomAction-Main.png"></div>
 Here you can configure the custom action.<br>
 All sections with an arrow can be expanded by clicking on them.
 
@@ -28,8 +28,10 @@ Each custom action has the following options, of which only `id` is required:
 | On Hold           | (Optional) Configures what to do when the button is held down, see [here](#on-hold). |
 
 ## Settings
-![Screenshot](../../img/custom/EditCustomAction-SettingsOverview.png){align=right width=50%}
-![Screenshot](../../img/custom/EditCustomAction-SettingsPI.png){align=right width=50%}
+<div class="imgContainer">
+<img src="../../../img/custom/EditCustomAction-SettingsOverview.png">
+<img src="../../../img/custom/EditCustomAction-SettingsPI.png">
+</div>
 The settings section gives an overview of all the settings for the action.<br>
 
 These settings will show up in the Stream Deck app's property inspector in the order that they are configured in this screen.
@@ -49,7 +51,7 @@ Each setting has the following columns:
 At the bottom there is a `+` button which will create a new setting and open the [Edit Settings](#configuring-settings) menu.
 
 ## On Update
-![Screenshot](../../img/custom/EditCustomAction-OnUpdate.png){align=right width=50%}
+<div class="imgContainer"><img src="../../../img/custom/EditCustomAction-OnUpdate.png"></div>
 Here you configure the 'On Update' behavior.
 
 You enter the code at the bottom. This code will be executed when 'On Update' is called.<br>
@@ -136,7 +138,7 @@ It is possible to directly edit this instead of using the GUI above, however, th
 It is possible to copy `Result` from one action to another, which will essentially copy it.
 
 ## Configuring Settings
-![Screenshot](../../img/custom/EditCustomAction-EditSettings.png){align=right width=33%}
+<div class="imgContainer"><img src="../../../img/custom/EditCustomAction-EditSettings.png"></div>
 In this menu you can configure settings for the action. These settings will show up in the Stream Deck app's Property Inspector and are accessible from the `settings` object when [writing code](./writingCode.md).
 
 Each setting has the following options:

@@ -1,5 +1,4 @@
-![Screenshot](../img/moduleSettings/deviceManager.png){align=right width=50%}
-
+<div class="imgContainer"><img src="../../img/moduleSettings/deviceManager.png"></div>
 The device manager allows you to prevent certain devices from connecting to the Foundry client.<br>
 You can access the device manager through the [module settings](./moduleSettings.md).
 

@@ -21,6 +21,7 @@ You will need to:
         If you're using Brave Browser, you will have to disable the shields for your Foundry server (press the lion icon, and set the shields to 'down'), or use another browser like Chrome or Firefox.
     </p>
 </div>
+<BR CLEAR="left">
 
 ## Linking a Patreon Account
 Material Deck is a premium module that requires a subscription to the [Material Foundry Patreon](https://www.patreon.com/materialfoundry) at the 'Material Apprentice' tier or higher.<br>
@@ -32,7 +33,8 @@ As a patron you can gain access to the module by linking your Patreon account to
 4. Verify that Material Deck shows up under your [subscriptions](https://foundryvtt.com/me/subscriptions). If it doesn't appear as expected under the "Subscribed Content" page of your user profile, you may need to Refresh your Patreon link
 
 ## Module
-![Screenshot](../img/misc/enablePopup.png){align=right}
+<div class="imgContainer"><img src="../../img/misc/enablePopup.png"></div>
+
 You will need to install and enable the [Material Deck module](https://foundryvtt.com/packages/MaterialDeck) by following [this](https://foundryvtt.com/article/modules/) guide.
 
 When you or any players accesses a Foundry server with Material Deck enabled, while it has not been enabled for the client in the [module settings](../moduleSettings/moduleSettings.md), a popup will appear asking if you want to enable Material Deck for the client.
@@ -42,7 +44,7 @@ Any user that wants to use Material Deck should click 'Enable', other users shou
 Tick the 'Do not show again' checkbox to prevent the popup from appearing.
 
 ## Gaming System Modules
-![Screenshot](../img/misc/noSystemPopup.png){align=right}
+<div class="imgContainer"><img src="../../img/misc/noSystemPopup.png"></div>
 While the core Material Deck module is system agnostic, some features will require the installation of a [gaming system module](./gamingSystems.md).
 
 If no gaming system module is installed and enabled, a popup will appear notifying you of this every time you access the Foundry server (as a GM).
@@ -81,11 +83,8 @@ You can now test if a connection can be established between the Stream Deck and 
 5. Select a token in Foundry, its icon and name should appear on the Stream Deck
 
 ## Stream Deck Profiles
-Stream Deck profiles are essentially collections of button actions that you can easily switch between.<br>
-You could, for example, have a dedicated profile for when you want to use Material Deck, and another for a different application.
+Stream Deck profiles are essentially collections of button actions that you can easily switch between.
 
-You can create your own profiles and add whatever [actions](../actions/actions.md) you like, or you can download one of the pre-built profiles.<br>
-Pre-built profiles can be downloaded using the [Download Utility](../moduleSettings/downloadUtility.md) or from [GitHub](https://github.com/MaterialFoundry/MaterialDeck_Profiles).<br>
-After downloading a profile, you can install it to the Stream Deck application by doubleclicking it.
+You can create your own or download one of the pre-made profiles.
 
-If you'd like to share your profile, please follow [this](https://github.com/MaterialFoundry/MaterialDeck_Profiles/blob/main/submittingProfiles.md) guide.
+See [here](../profiles/profiles.md) for more info on profiles.

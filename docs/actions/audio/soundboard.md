@@ -12,7 +12,7 @@ Each user has access to 2 soundboards:
 * <b>World Soundboard</b>: This is a shared soundboard that all users (with [permission](../../moduleSettings/permissionConfig.md)) have access to.
 
 ## Soundboard App
-![Screenshot](../../img/soundboard/soundboard_app.png){align=right width=50%}
+<div class="imgContainer"><img src="../../../img/soundboard/soundboard_app.png"></div>
 The soundboard app is used to configure the soundboard. Additionally, it is possible to play sounds from the soundboard app.<br>
 The app can be accessed from the [module settings](../../moduleSettings/moduleSettings.md), or by using the 'Open Soundboard' function on the Stream Deck, see [here](#stream-deck-configuration).
 
@@ -34,7 +34,7 @@ Pressing one of the sound boxes will do one of two things, depending on whether 
 You can drag a configured sound onto another sound box to move it.
 
 #### Sound Config
-![Screenshot](../../img/soundboard/soundboard_app_sound_config.png){align=right}
+<div class="imgContainer"><img src="../../../img/soundboard/soundboard_app_sound_config.png"></div>
 The sound config is used to configure each sound.<br>
 Any changes are saved immediately.
 
@@ -97,7 +97,7 @@ For example:<br>
 If you're exporting a sound `assets/sound1.wav`, and choose to not export the audio file, you will have to make sure that the sound `assets/sound1.wav` exists on the Foundry server when you import it.
 
 #### Exporting
-![Screenshot](../../img/soundboard/soundboard_app_export.png){align=right}
+<div class="imgContainer"><img src="../../../img/soundboard/soundboard_app_export.png"></div>
 Pressing the `Export` button will open a new window. This window will have a list of all configured sounds of the currently selected soundboard.
 
 | Option       | Description |
@@ -110,8 +110,10 @@ Pressing the `Export` button will open a new window. This window will have a lis
 Pressing the `Export` button will start the export process. A progress bar will show the progress, after which a window will open where you can choose the file name and the location to save the file.
 
 #### Importing
-![Screenshot](../../img/soundboard/soundboard_app_import1.png){align=right}
-![Screenshot](../../img/soundboard/soundboard_app_import2.png){align=right}
+<div class="imgContainer">
+<img src="../../../img/soundboard/soundboard_app_import1.png">
+<img src="../../../img/soundboard/soundboard_app_import2.png">
+</div>
 
 Pressing the `Import` button will open a new window. You will have to select a file to import to continue.<br>
 Once a valid file (`.materialDeckSoundboard`) is loaded, some information about the file is displayed:

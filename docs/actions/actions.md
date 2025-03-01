@@ -1,11 +1,11 @@
-![Screenshot](../img/streamDeckApp/app.png){align=right width=33%}
+<div class="imgContainer"><img src="../../img/streamDeckApp/app.png"></div>
 To use a Stream Deck button with Material Deck, you must apply an action to that button.
 
 ## Applying an Action to a Button
 After [installing the Material Deck plugin](../gettingStarted/installation.md#stream-deck-plugin), the Material Deck category will appear on the right side of the Stream Deck app. Expanding the category will reveal all the Material Deck actions. By dragging one of the actions onto one of the 'buttons', the action will be assigned to that button.
 <BR CLEAR="right" />
 ## Editing an Action
-![Screenshot](../img/streamDeckApp/propertyInspector.png){align=right width=33%}
+<div class="imgContainer"><img src="../../img/streamDeckApp/propertyInspector.png"></div>
 By pressing one of the 'buttons' in the Stream Deck app, you can edit the action.<br>
 All the settings for that action will be displayed in the 'Property Inspector' at the bottom-left.<br>
 
@@ -61,9 +61,9 @@ The following actions are available:
 
 * [Audio](./audio/audio.md): Control playlists, play audio from the [soundboard](../actions/audio/soundboard.md), or play audio from any source.
 * [Combat Tracker](./combatTracker.md): Control the combat tracker or display combatants.
-* [Custom](./custom/custom.md): Configure fully customized actions.
+* [Custom Actions](./custom/custom.md): Configure fully customized actions.
 * [External Modules](./externalModules.md): Use Material Deck with other modules.
 * [Macro](./macro.md): Trigger macros or execute custom code.
-* [Other](./otherActions.md): Misc other actions.
+* [Other Actions](./otherActions.md): Misc other actions.
 * [Scene](./scene.md): Display and control scenes.
 * [Token](./token/token.md): Display token stats, control tokens, and perform other token-related actions.

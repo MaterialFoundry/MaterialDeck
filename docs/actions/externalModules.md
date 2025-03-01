@@ -19,6 +19,7 @@ The following modules are supported:
         This is also the case if Foundry gets a major update, and the supported module has not been updated.
     </p>
 </div>
+<BR CLEAR="left">
 
 | Option            | Description   |
 |-------------------|---------------|
