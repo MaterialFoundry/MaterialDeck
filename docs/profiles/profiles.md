@@ -8,4 +8,4 @@ You can create your own profiles and add whatever [actions](../actions/actions.m
 Pre-built profiles can be downloaded using the [Download Utility](../moduleSettings/downloadUtility.md) or from [GitHub](https://github.com/MaterialFoundry/MaterialDeck_Profiles).<br>
 After downloading a profile, you can install it to the Stream Deck application by doubleclicking it.
 
-If you'd like to share your profile, please follow [this](https://github.com/MaterialFoundry/MaterialDeck/blob/main/profiles/submittingProfiles.md) guide.
+If you'd like to share your profile, please follow [this](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/profiles/submittingProfiles.md) guide.
