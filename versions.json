@@ -42,9 +42,9 @@
             "compatibility": { 
                 "minimum": "2.0.0" 
             },
-            "download": "https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck_Profiles/main/profiles/MaterialDeck.streamDeckProfile"
+            "download": "https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck/Master/profiles/MaterialDeck.streamDeckProfile"
         },{
-            "title": "MaterialDeck_XL",
+            "title": "MaterialDeck XL",
             "description": "Default profile for the Stream Deck XL",
             "device": "Stream Deck XL",
             "file": "MaterialDeck_XL.streamDeckProfile",
@@ -52,7 +52,35 @@
             "compatibility": {
                 "minimum": "2.0.0"
             },
-            "download": "https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck_Profiles/main/profiles/MaterialDeck_XL.streamDeckProfile"
+            "download": "https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck/Master/profiles/MaterialDeck_XL.streamDeckProfile"
+        },{
+            "title": "MaterialDeck XL DnD5e",
+            "description": "Default DnD5e profile for the Stream Deck XL",
+            "device": "Stream Deck XL",
+            "system": {
+                "id": "dnd5e",
+                "title": "Dungeons & Dragons 5e"
+            },
+            "file": "MaterialDeck_XL_DnD5e.streamDeckProfile",
+            "author": "Material Foundry",
+            "compatibility": {
+                "minimum": "2.0.0"
+            },
+            "download": "https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck/Master/profiles/MaterialDeck_XL_DnD5e.streamDeckProfile"
+        },{
+            "title": "MaterialDeck XL PF2E",
+            "description": "Default PF2E profile for the Stream Deck XL",
+            "device": "Stream Deck XL",
+            "system": {
+                "id": "pf2e",
+                "title": "Pathfinder 2e"
+            },
+            "file": "MaterialDeck_XL_PF2E.streamDeckProfile",
+            "author": "Material Foundry",
+            "compatibility": {
+                "minimum": "2.0.0"
+            },
+            "download": "https://raw.githubusercontent.com/MaterialFoundry/MaterialDeck/Master/profiles/MaterialDeck_XL_PF2E.streamDeckProfile"
         }
     ]
 }
