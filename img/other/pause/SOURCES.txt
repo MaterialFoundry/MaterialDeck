@@ -1,3 +1,0 @@
-resume.png: Edited from https://fontawesome.com/icons/play?style=solid
-pause.png: Edited from https://fontawesome.com/icons/pause?style=solid
-playpause.png: Combined resume.png and pause.png

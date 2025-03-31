@@ -34,8 +34,8 @@ nav:
       - Custom On-Click: actions/token/customOnClick.md
   - Profiles:
     - Profiles: profiles/profiles.md
-    - MaterialDeck: profiles/MaterialDeck.md
-    - MaterialDeck XL: profiles/MaterialDeck_XL.md
+  #  - MaterialDeck: profiles/MaterialDeck.md
+  #  - MaterialDeck XL: profiles/MaterialDeck_XL.md
   #- Troubleshooting: troubleshooting.md
 
   #- System Development: 

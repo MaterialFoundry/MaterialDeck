@@ -1,0 +1,25 @@
+[
+    {
+        "title": "Dungeons & Dragons 5e",
+        "id": "materialdeck-dnd5e",
+        "system": "dnd5e",
+        "author": "Material Foundry",
+        "url": "https://foundryvtt.com/packages/materialdeck-dnd5e",
+        "manifest": "https://github.com/MaterialFoundry/MaterialDeck_DnD5e/releases/latest/download/module.json",
+        "compatibility": {
+            "minimum": "2.0.0"
+        },
+        "version": "v1.0.2"
+    },{
+        "title": "Pathfinder 2e",
+        "id": "materialdeck-pf2e",
+        "system": "pf2e",
+        "author": "Material Foundry",
+        "url": "https://foundryvtt.com/packages/materialdeck-pf2e",
+        "manifest": "https://github.com/MaterialFoundry/MaterialDeck_PF2e/releases/latest/download/module.json",
+        "compatibility": {
+            "minimum": "2.0.0"
+        },
+        "version": "v1.0.2"
+    }
+]

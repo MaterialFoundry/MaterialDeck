@@ -1,2 +1,0 @@
-decreasedarkness.png: Made using https://www.elgato.com/en/gaming/keycreator
-increasedarkness.png: Made using https://www.elgato.com/en/gaming/keycreator

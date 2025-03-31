@@ -1,0 +1,50 @@
+[
+    {
+        "title": "MaterialDeck",
+        "description": "Default profile for the normal Stream Deck",
+        "device": "Stream Deck",
+        "file": "MaterialDeck.streamDeckProfile",
+        "author": "Material Foundry",
+        "compatibility": {
+            "minimum": "2.0.0"
+        }
+    },
+    
+    {
+        "title": "MaterialDeck XL",
+        "description": "Default profile for the Stream Deck XL",
+        "device": "Stream Deck XL",
+        "file": "MaterialDeck_XL.streamDeckProfile",
+        "author": "Material Foundry",
+        "compatibility": {
+            "minimum": "2.0.0"
+        }
+    },{
+        "title": "MaterialDeck XL DnD5e",
+        "description": "Default DnD5e profile for the Stream Deck XL",
+        "device": "Stream Deck XL",
+        "system": {
+            "id": "dnd5e",
+            "title": "Dungeons & Dragons 5e"
+        },
+        "file": "MaterialDeck_XL_DnD5e.streamDeckProfile",
+        "author": "Material Foundry",
+        "compatibility": {
+            "minimum": "2.0.0"
+        }
+    },{
+        "title": "MaterialDeck XL PF2E",
+        "description": "Default PF2E profile for the Stream Deck XL",
+        "device": "Stream Deck XL",
+        "system": {
+            "id": "pf2e",
+            "title": "Pathfinder 2e"
+        },
+        "file": "MaterialDeck_XL_PF2E.streamDeckProfile",
+        "author": "Material Foundry",
+        "compatibility": {
+            "minimum": "2.0.0"
+        }
+    }
+
+]
