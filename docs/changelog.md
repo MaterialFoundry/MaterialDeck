@@ -1,7 +1,7 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
-??? changelog "v2.0.0 - 20-02-2025"
+??? changelog "v2.0.0 - 01-04-2025"
 
     The entire module has been rewritten. This changelog only summarizes the most important changes compared to v1.
 
