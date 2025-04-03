@@ -12,15 +12,11 @@ You will need to:
 * [Test if everything works](#testing-if-everything-works)
 * (Optionally) install a [Stream Deck profile](#stream-deck-profiles)
 
-<div class="warning">
-    <p class="header">Adblockers, Script Blockers and Brave Browser</p>
-    <p class="content">
-        Adblockers, script blockers and other extensions may prevent Foundry from connecting to the Stream Deck.<br>
-        If you run into connection issues, try disabling the extension or whitelist your Foundry server.<br>
-        <br>
-        If you're using Brave Browser, you will have to disable the shields for your Foundry server (press the lion icon, and set the shields to 'down'), or use another browser like Chrome or Firefox.
-    </p>
-</div>
+!!! warning "Adblockers, Script Blockers and Brave Browser"
+    Adblockers, script blockers and other extensions may prevent Foundry from connecting to the Stream Deck.<br>
+    If you run into connection issues, try disabling the extension or whitelist your Foundry server.<br>
+    <br>
+    If you're using Brave Browser, you will have to disable the shields for your Foundry server (press the lion icon, and set the shields to 'down'), or use another browser like Chrome or Firefox.
 <BR CLEAR="left">
 
 ## Linking a Patreon Account
@@ -31,6 +27,9 @@ As a patron you can gain access to the module by linking your Patreon account to
 2. Edit your profile [here](https://foundryvtt.com/me/edit)
 3. Link your Patreon account at the bottom of the page if you haven't already
 4. Verify that Material Deck shows up under your [subscriptions](https://foundryvtt.com/me/subscriptions). If it doesn't appear as expected under the "Subscribed Content" page of your user profile, you may need to Refresh your Patreon link
+
+!!! tip "Apple In-App Subscriptions"
+    Apple requires a 30% app store fee for any purchases made through app store apps, which includes subscriptions like on Patreon. In reality, this means a price increase of around 43% (see [here](https://support.patreon.com/hc/en-us/articles/27991664769677-How-iOS-in-app-purchases-work-on-Patreon) for more info). Unless you want to sponsor Apple, I highly suggest not using the Patreon app to subscribe. Use a browser or non-iOS device instead.
 
 ## Module
 <div class="imgContainer"><img src="../../img/misc/enablePopup.png"></div>

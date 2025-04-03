@@ -20,6 +20,11 @@ Material Deck is a premium [Foundry VTT](https://foundryvtt.com/) module that al
 
 The module allows a high degree of customization, where each button on the Stream Deck can be assigned any desired function. Furthermore, it supports folder structures, allowing easy switching between various button configurations so you can easily switch between the combat tracker, soundboard, or any other (custom) configuration.
 
+Material Deck requires a [Patreon](https://www.patreon.com/materialfoundry) subscription at the 'Material Apprentice' tier or higher, after which you can [link you Patreon account](./gettingStarted/installation.md#linking-a-patreon-account) to get access to the module through Foundry's built-in module browser.
+
+!!! tip "Apple In-App Subscriptions"
+    Apple requires a 30% app store fee for any purchases made through app store apps, which includes subscriptions like on Patreon. In reality, this means a price increase of around 43% (see [here](https://support.patreon.com/hc/en-us/articles/27991664769677-How-iOS-in-app-purchases-work-on-Patreon) for more info). Unless you want to sponsor Apple, I highly suggest not using the Patreon app to subscribe. Use a browser or non-iOS device instead.
+
 ## Feature Highlights
 
 * Control tokens

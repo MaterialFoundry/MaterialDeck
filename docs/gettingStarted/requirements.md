@@ -7,6 +7,9 @@ To get Material Deck to work, you will need to have the following:
 * Be a patron of the [Material Foundry Patreon](https://www.patreon.com/materialfoundry) at the 'Material Apprentice' tier or higher
 * A Windows or MacOS computer (see [here](../gettingStarted/linuxInstallation.md) for Linux users)
 
+!!! tip "Apple In-App Subscriptions"
+    Apple requires a 30% app store fee for any purchases made through app store apps, which includes subscriptions like on Patreon. In reality, this means a price increase of around 43% (see [here](https://support.patreon.com/hc/en-us/articles/27991664769677-How-iOS-in-app-purchases-work-on-Patreon) for more info). Unless you want to sponsor Apple, I highly suggest not using the Patreon app to subscribe. Use a browser or non-iOS device instead.
+
 ## Compatible Devices
 Material Deck has been written for [Elgato](https://www.elgato.com/ww/en)'s line of Stream Deck devices.
 

@@ -18,7 +18,7 @@
             "compatibility": {
                 "minimum": "2.0.0"
             },
-            "version": "v2.0.0"
+            "version": "2.0.0"
         },{
             "title": "Pathfinder 2e",
             "id": "materialdeck-pf2e",
@@ -29,7 +29,7 @@
             "compatibility": {
                 "minimum": "2.0.0"
             },
-            "version": "v2.0.0"
+            "version": "2.0.0"
         }
     ],
     "profiles": [
