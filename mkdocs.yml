@@ -38,20 +38,16 @@ nav:
   #  - MaterialDeck XL: profiles/MaterialDeck_XL.md
   #- Troubleshooting: troubleshooting.md
 
-  #- System Development: 
-  #  - Getting Started: systemDevelopment/gettingStarted.md
-  #  - Creating a System Module: systemDevelopment/creatingSystem.md
-  #  - Actions: 
-  #    - Intro: systemDevelopment/actions.md
-  #    - Registering Settings:
-  #      - Registering Settings: systemDevelopment/registerSettings.md
-  #      - Setting Types: systemDevelopment/settingTypes.md
-  #      - Synchronized Settings: systemDevelopment/synchronizedSettings.md
-  #      - Visibility: systemDevelopment/visibility.md
-  #    - Registering Callbacks: systemDevelopment/registerCallback.md
-  #    - Permissions: systemDevelopment/permissions.md
-  #    - Useful Functions: systemDevelopment/usefulFunctions.md
-  #  - Publishing: systemDevelopment/publishing.md
+  - System Development: 
+    - Getting Started: systemDevelopment/gettingStarted.md
+    - Actions: 
+      - Actions: systemDevelopment/actions.md
+      - Setting Types: systemDevelopment/settingTypes.md
+      - Setting Visibility: systemDevelopment/visibility.md
+      - Synchronized Settings: systemDevelopment/synchronizedSettings.md
+      - Useful Functions: systemDevelopment/usefulFunctions.md
+    - Permissions: systemDevelopment/permissions.md
+    - Publishing: systemDevelopment/publishing.md
     
 theme:
   name: material

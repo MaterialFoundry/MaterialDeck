@@ -3,7 +3,7 @@
 <div class="info">
     <p class="header">Material Deck v2 Documentation</p>
     <p class="content">
-        This documentation is for Material Deck v2.<br>
+        This documentation is for Material Deck Premium (v2+).<br>
         For older versions, please refer to the <a href="https://github.com/MaterialFoundry/MaterialDeck/wiki">old documentation</a>.
     </p>
 </div>
@@ -22,7 +22,7 @@ The module allows a high degree of customization, where each button on the Strea
 
 Material Deck requires a [Patreon](https://www.patreon.com/materialfoundry) subscription at the 'Material Apprentice' tier or higher, after which you can [link you Patreon account](./gettingStarted/installation.md#linking-a-patreon-account) to get access to the module through Foundry's built-in module browser.
 
-!!! tip "Apple In-App Subscriptions"
+!!! tip "Apple In-App Purchases"
     Apple requires a 30% app store fee for any purchases made through app store apps, which includes subscriptions like on Patreon. In reality, this means a price increase of around 43% (see [here](https://support.patreon.com/hc/en-us/articles/27991664769677-How-iOS-in-app-purchases-work-on-Patreon) for more info). Unless you want to sponsor Apple, I highly suggest not using the Patreon app to subscribe. Use a browser or non-iOS device instead.
 
 ## Feature Highlights

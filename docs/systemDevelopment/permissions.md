@@ -10,11 +10,11 @@ Material Deck already has many permissions built-in. You can get them by calling
 A gaming system can modify existing permissions, disabling existing permissions or add new permissions.
 
 ### Required Setup
-To modify or add permissions, you must add a `permissions` array variable to your system class.
+To modify or add permissions, you must add a `permissions` array variable when `game.materialDeck.registerSystem` is called.
 Each element of that array is a permission category, which in turn has one or more permissions for that category:
 
 ```js
-this.permissions = [
+const permissions = [
     {
         id: "Category Id",
         label: "Category label",
@@ -129,3 +129,29 @@ The following example will disable the 'Other' category and the 'OpenAny' scene 
     ]
 }
 ```
+
+## Checking Permissions
+
+You can use `game.materialDeck.permissions.getPermission` or `game.materialDeck.permissions.getPermissions` to check for permissions.
+
+### Checking Single Permission
+`game.materialDeck.permissions.getPermission` is used to check for single permissions. It takes 3 arguments:
+
+| Argument | Description |
+|----------|-------------|
+| permissionId<br>(String) | The id of the permission to check, for example `Token.All` or `Scene.DisplayVisible` |
+| notify<br>(Boolean, optional) | A notification will be shown to the user if they have no permission, defaults to `false` |
+| userId<br>(String, optional)| Id of the user to check the permission for, defaults to the current user's id |
+
+It returns `true` if the user has permission and `false` if the user does not have permission.
+
+### Checking Multiple Permissions
+`game.materialDeck.permissions.getPermissions` is used to check for multiple permissions at the same time. It takes 3 arguments:
+
+| Argument | Description |
+|----------|-------------|
+| permissions<br>(String array) | An array of permission ids of the permissions to check, for example `["Token.All", "Scene.DisplayVisible"]` |
+| mode<br>(String, optional) | If set to `or`: Will return true if any permission is allowed.<br> If set to `and`: Will return true if all permissions are allowed. Defaults to `or`. |
+| userId<br>(String, optional)| Id of the user to check the permission for, defaults to the current user's id |
+
+It returns `true` if the user has permission and `false` if the user does not have permission.
