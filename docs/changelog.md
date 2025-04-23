@@ -1,6 +1,26 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.0.2 - 23-04-2025"
+    ### Additions
+    * Combat Tracker Action => Control: Added 'Add/Remove Tokens From Combat' function that toggles the combat state of all selected tokens
+    * Select options parsed from Foundry (actors, playlists, scenes, etc) are now ordered as they are displayed in Foundry, including the folder structure
+    * Macro Action: Added macro offsets to be used with 'Select by Number'
+    * When selecting something by name, only partial names are required. For example, to find the scene 'Scene 1', MD will find it if you fill in 'Scene' (if no other scenes have the same partial name).
+
+    ### Fixes:
+    * Scene Action => Visible Scenes: Now only show the visible scenes as it should.
+    * Audio Action => Playlist Control => Play: Now correctly starts all tracks if playlist is configured to 'Simultaneous Playback'
+    * Fixed incompatibility with Dorako UI/UX
+    * Fixed broken links in 'Foundry VTT is not connected' message in Stream Deck's Property Inspector
+    * Minor fixes to make compatible with Foundry v13.340
+
+    ### Other:
+    * Stream Deck Plugin: Made the Material Deck category white to bring it in line with other Stream Deck plugins
+
+    ### Compatible Stream Deck Plugin
+    * [v2.0.1.0](https://github.com/MaterialFoundry/MaterialDeck_SD/releases/tag/v2.0.1.0)
+
 ??? changelog "v2.0.1 - 01-04-2025"
 
     The entire module has been rewritten. This changelog only summarizes the most important changes compared to v1.
@@ -30,6 +50,9 @@ This changelog is for v2+ only, for the pre v2 changelog click [here](https://gi
     * New 'Audio' action combines the previous 'Soundboard' and 'Playlist' actions
     * Audio => Soundboard: Changed how the soundboard config looks, and you can now use it to play sounds directly
     * All client settings have been converted to user settings, which means that settings are no longer lost when using a different browser or after clearing cookies
+
+    ### Compatible Stream Deck Plugin
+    * [v2.0.0.0](https://github.com/MaterialFoundry/MaterialDeck_SD/releases/tag/v2.0.0.0)
     
 
 
