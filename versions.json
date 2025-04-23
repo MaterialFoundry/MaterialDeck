@@ -5,7 +5,7 @@
     "plugin": {
         "version": "2.0.1.0",
         "github": "https://github.com/MaterialFoundry/MaterialDeck_SD",
-        "download": "https://github.com/MaterialFoundry/MaterialDeck_SD/releases/download/v2.0.2.0/com.material-foundry.material-deck.streamDeckPlugin"
+        "download": "https://github.com/MaterialFoundry/MaterialDeck_SD/releases/download/v2.0.1.0/com.material-foundry.material-deck.streamDeckPlugin"
     },
     "systems": [
         {
