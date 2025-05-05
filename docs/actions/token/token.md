@@ -2,16 +2,12 @@
 
 The Token Action allows you to control tokens and display data related to tokens, such as their hitpoints.
 
-<div class="warning">
-    <p class="header">Gaming System Dependency</p>
-    <p class="content">
-        Many interesting token related features are system dependent. This means that to take full advantage of this action you should install a suitable system module.<br>
-        <br>
-        This page of the documentation only handles features that are available in the core Material Deck module. For system-specific features please consult the documentation of the relevant system module.<br>
-        <br>
-        See <a href="../../../gettingStarted/gamingSystems">here</a> for more info.
-    </p>
-</div>
+!!! warning "External Module Combatibility Issues"
+    Many interesting token related features are system dependent. This means that to take full advantage of this action you should install a suitable system module.<br>
+    <br>
+    This page of the documentation only handles features that are available in the core Material Deck module. For system-specific features please consult the documentation of the relevant system module.<br>
+    <br>
+    See <a href="../../../gettingStarted/gamingSystems">here</a> for more info.
 <BR CLEAR="left">
 
 ## General Settings

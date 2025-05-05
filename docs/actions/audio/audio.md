@@ -13,10 +13,10 @@ This mode will allow you to play any sound from any source.
 
 | Option        | Description   |
 |---------------|---------------|
-| Selection     | Select whether to play a sound from a playlist or from an url |
-| URL           | (Only if selection is set to `Play from Url`) Url of the sound to play. This can be a file on the Foundry server (e.g. `assets/sound.wav`), or on the internet (e.g. `https://somesound.wav`).<br>Files located on your computer will not play for other users |
-| Playlist      | (Only if selection is set to `Play from Playlist`) List of playlists on the Foundry server |
-| Sound         | (Only if selection is set to `Play from Playlist`) List of sounds in the selected playlist |
+| Selection     | <b>-Play from Playlist</b>: Play a sound from a playlist.<br><b>-Play from Url</b>: Play sound from an url |
+| URL           | (`Play from Url` only) Url of the sound to play. This can be a file on the Foundry server (e.g. `assets/sound.wav`), or on the internet (e.g. `https://somesound.wav`).<br>Files located on your computer will not play for other users |
+| Playlist      | (`Play from Playlist` only) List of playlists on the Foundry server |
+| Sound         | (`Play from Playlist` only) List of sounds in the selected playlist |
 | Volume        | Volume of the sound |
 | Colors            | <b>-On Color</b>: A border of this color will be displayed if the sound is playing<br><b>-Off Color</b>: A border of this color will be displayed if the sound is not playing<br><b>-Background</b>: Background color of the button |
 

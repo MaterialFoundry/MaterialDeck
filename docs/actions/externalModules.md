@@ -11,14 +11,11 @@ The following modules are supported:
 * [Simple Calendar](#simple-calendar)
 * [Soundscape](#soundscape)
 
-<div class="warning" style="margin-left:0">
-    <p class="header">External Module Combatibility Issues</p>
-    <p class="content">
-        The functionality of the 'External Modules' action depends on (the API of) the supported modules.<br>
-        This means that if one of the modules is updated and changes its API, Material Deck's functionality might break.<br>
-        This is also the case if Foundry gets a major update, and the supported module has not been updated.
-    </p>
-</div>
+!!! warning "External Module Combatibility Issues"
+    The functionality of the 'External Modules' action depends on (the API of) the supported modules.<br>
+    This means that if one of the modules is updated and changes its API, Material Deck's functionality might break.<br>
+    This is also the case if Foundry gets a major update, and the supported module has not been updated.
+
 <BR CLEAR="left">
 
 | Option            | Description   |

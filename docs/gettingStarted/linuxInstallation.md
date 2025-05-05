@@ -4,16 +4,13 @@ While there have been attempts to create applications to control a Stream Deck f
 
 It is possible to get it to work by running a the Stream Deck app on a Windows virtual machine.<br>
 
-<div class="warning">
-    <p class="header">Disclaimer</p>
-    <p class="content">
-        Running Material Deck like this is not ideal:<br>
-        * Running a virtual machine is not exactly resource efficient, so performance might suffer.<br>
-        * Following these instruction might or might not work for you. It is purely meant as a way to help you get started.<br>
-        <br>
-        No support is provided for installations like these.
-    </p>
-</div>
+!!! warning "Disclaimer"
+    Running Material Deck like this is not ideal:<br>
+    * Running a virtual machine is not exactly resource efficient, so performance might suffer.<br>
+    * Following these instruction might or might not work for you. It is purely meant as a way to help you get started.<br>
+    <br>
+    No support is provided for installations like these.
+
 <BR CLEAR="left">
 
 #### Important Notes

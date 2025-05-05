@@ -1,6 +1,18 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.0.3 - 06-05-2025"
+    ### Additions:
+    * Macro Action: Added macro offsets for the hotbar
+
+    ### Fixes:
+    * Made compatible with V13 stable
+    * Fixed incompatibility with Dorako UX if 'Adjust chat controls' is disabled
+    * The previous update caused documents within folders to not show up when selecting by number, this is fixed
+
+    ### Compatible Stream Deck Plugin
+    * [v2.0.1.0](https://github.com/MaterialFoundry/MaterialDeck_SD/releases/tag/v2.0.1.0) (unchanged)
+
 ??? changelog "v2.0.2 - 23-04-2025"
     ### Additions
     * Combat Tracker Action => Control: Added 'Add/Remove Tokens From Combat' function that toggles the combat state of all selected tokens
