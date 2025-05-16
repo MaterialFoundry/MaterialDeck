@@ -1,6 +1,15 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.0.5 - 16-05-2025"
+    ### Fixes:
+    * External Modules -> fxMaster: Fixed errors that are thrown if effects are disabled in the fxMaster module settings
+    * Fixed buttons in module settings not showing up properly in v12
+    * Icons with upper case name extensions can now be displayed
+
+??? changelog "v2.0.4 - 07-05-2025"
+    Some debug code was left in the previous version that, for some reason, would throw an error in the v12 Foundry app, but not in the browser. This would prevent the module from loading. The code served no purpose for users, so it has been removed.
+
 ??? changelog "v2.0.3 - 06-05-2025"
     ### Additions:
     * Macro Action: Added macro offsets for the hotbar

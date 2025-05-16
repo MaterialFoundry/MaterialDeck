@@ -1,6 +1,6 @@
 {
     "module": {
-        "version": "2.0.4"
+        "version": "2.0.5"
     },
     "plugin": {
         "version": "2.0.1.0",
@@ -22,6 +22,19 @@
             },
             "version": "2.0.0"
         },{
+            "title": "Pathfinder 1",
+            "id": "materialdeck-pf1",
+            "system": "pf1",
+            "author": "Material Foundry",
+            "url": "https://foundryvtt.com/packages/materialdeck-pf1",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_PF1/releases/download/v2.0.0/module.json",
+            "repository": "https://github.com/MaterialFoundry/MaterialDeck_PF1",
+            "documentation": "https://materialfoundry.github.io/MaterialDeck_PF1",
+            "compatibility": {
+                "minimum": "2.0.5"
+            },
+            "version": "2.0.0"
+        },{
             "title": "Pathfinder 2e",
             "id": "materialdeck-pf2e",
             "system": "pf2e",
@@ -32,6 +45,19 @@
             "documentation": "https://materialfoundry.github.io/MaterialDeck_PF2E",
             "compatibility": {
                 "minimum": "2.0.0"
+            },
+            "version": "2.0.0"
+        },{
+            "title": "Starfinder",
+            "id": "materialdeck-sfrpg",
+            "system": "sfrpg",
+            "author": "Material Foundry",
+            "url": "https://foundryvtt.com/packages/materialdeck-sfrpg",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG/releases/download/v2.0.0/module.json",
+            "repository": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG",
+            "documentation": "https://materialfoundry.github.io/MaterialDeck_SFRPG",
+            "compatibility": {
+                "minimum": "2.0.5"
             },
             "version": "2.0.0"
         }
