@@ -60,6 +60,19 @@
                 "minimum": "2.0.5"
             },
             "version": "2.0.0"
+        },{
+            "title": "Savage Worlds Adventure Edition",
+            "id": "materialdeck-swade",
+            "system": "swade",
+            "author": "Dustin Larsen",
+            "url": "https://foundryvtt.com/packages/materialdeck-swade",
+            "manifest": "https://github.com/tarmonthir/MaterialDeck_SWADE/releases/download/v1.0.0/module.json",
+            "repository": "https://github.com/tarmonthir/MaterialDeck_SWADE",
+            "documentation": "https://tarmonthir.github.io/MaterialDeck_SWADE",
+            "compatibility": {
+                "minimum": "2.0.5"
+            },
+            "version": "1.0.0"
         }
     ],
     "profiles": [
