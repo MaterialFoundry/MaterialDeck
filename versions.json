@@ -1,6 +1,6 @@
 {
     "module": {
-        "version": "2.0.5"
+        "version": "2.0.6"
     },
     "plugin": {
         "version": "2.0.1.0",
@@ -48,19 +48,6 @@
             },
             "version": "2.0.0"
         },{
-            "title": "Starfinder",
-            "id": "materialdeck-sfrpg",
-            "system": "sfrpg",
-            "author": "Material Foundry",
-            "url": "https://foundryvtt.com/packages/materialdeck-sfrpg",
-            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG/releases/download/v2.0.0/module.json",
-            "repository": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG",
-            "documentation": "https://materialfoundry.github.io/MaterialDeck_SFRPG",
-            "compatibility": {
-                "minimum": "2.0.5"
-            },
-            "version": "2.0.0"
-        },{
             "title": "Savage Worlds Adventure Edition",
             "id": "materialdeck-swade",
             "system": "swade",
@@ -73,6 +60,19 @@
                 "minimum": "2.0.5"
             },
             "version": "1.0.0"
+        },{
+            "title": "Starfinder",
+            "id": "materialdeck-sfrpg",
+            "system": "sfrpg",
+            "author": "Material Foundry",
+            "url": "https://foundryvtt.com/packages/materialdeck-sfrpg",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG/releases/download/v2.0.0/module.json",
+            "repository": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG",
+            "documentation": "https://materialfoundry.github.io/MaterialDeck_SFRPG",
+            "compatibility": {
+                "minimum": "2.0.5"
+            },
+            "version": "2.0.0"
         }
     ],
     "profiles": [
