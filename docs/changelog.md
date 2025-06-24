@@ -1,6 +1,15 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.0.6 - 25-06-2025"
+    ### Fixes:
+    * Soundboard: Fixed issues with importing and exporting the soundboard
+    * Token Action => On Press/On Hold => Move Token: Sometimes a token would end up halfway across a grid space, this should no longer happen
+
+    ### Additions:
+    * (v13) Token Action => On Press/On Hold => Move Token: Token now rotates when it is moved in the direction of its movement, if the core setting 'Automatic Token Rotation' is enabled
+
+
 ??? changelog "v2.0.5 - 16-05-2025"
     ### Fixes:
     * External Modules -> fxMaster: Fixed errors that are thrown if effects are disabled in the fxMaster module settings
