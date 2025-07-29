@@ -1,6 +1,27 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.1.0 - 29-07-2025"
+    ### Breaking Changes:
+    * Macro => Select from Folder: Folders are now automatically parsed from your Foundry server. Existing actions with manually entered folders will no longer work, and will need to be reconfigured.
+    * External Modules => FXMaster => Animated Effects: Split the old "Target" option into "Target" and "Source" to make it easier to edit and give more options. This means that existing actions might need some minor reconfiguring.
+
+    ### Fixes:
+    * External Modules: API changes of modules could lock up Material Deck's initialization, essentially breaking Material Deck. This should no longer be possible.
+    * External Modules => FXMaster: Compatible with the new FXMaster by Gambit, support for the older versions of FXMaster is not guaranteed.
+
+    ### Additions:
+    * Other Actions => Dice Pool: Added the ability to add a flat modifier to the dice pool.
+    * External Modules => FXMaster => Animated Effects: Added option to display effect thumbnail as icon.
+    * Audio => Play Any Sound: Added "Play from Folder" option.
+    * Soundboard => Import & Export: Added "Select All" to select or deselect all checkboxes.
+    * Soundboard => Import & Export: Added a "Name" field to display the name of the sound to be imported or exported.
+    * Soundboard => Import & Export: Wildcard sounds can now be imported and exported.
+
+    ### Other:
+    * External Modules => FXMaster: Renamed "Special Effects" to "Animated Effects" to reflect the name change in FXMaster.
+    * Almost all applications and dialogs have been migrated to ApplicationV2 and DialogV2.
+
 ??? changelog "v2.0.6 - 25-06-2025"
     ### Fixes:
     * Soundboard: Fixed issues with importing and exporting the soundboard
@@ -8,7 +29,6 @@ This changelog is for v2+ only, for the pre v2 changelog click [here](https://gi
 
     ### Additions:
     * (v13) Token Action => On Press/On Hold => Move Token: Token now rotates when it is moved in the direction of its movement, if the core setting 'Automatic Token Rotation' is enabled
-
 
 ??? changelog "v2.0.5 - 16-05-2025"
     ### Fixes:

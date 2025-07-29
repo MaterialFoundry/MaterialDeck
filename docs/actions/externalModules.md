@@ -33,15 +33,21 @@ Using Material Deck you can enable or disable these effects.
 |-------------------|---------------|
 | Mode              | Mode of the button:<br><b>-[Special Effects](#special-effects)</b>: Trigger special effects.<br><b>-[Particle Effects](#particle-effects)</b>: Enable or disable particle effects.<br><b>-[Filter Effects](#filter-effects)</b>: Enable or disable filter effects.<br><b>-Clear All</b>: Clear all effects.   |
 
-### Special Effects
-Special effects are effects that are displayed on the canvas, for example explosions or spell effects.
+### Animation Effects
+Animation effects are effects that are displayed on the canvas, for example explosions or spell effects.<br>
+Please see the [FXMaster documentation](https://github.com/gambit07/fxmaster?tab=readme-ov-file#usage) for information on how to get animation effects added to FXMaster.
 
 | Option            | Description   |
 |-------------------|---------------|
 | Effect            | Effect to trigger |
-| Target            | Target of the effect:<br><b>-Cursor</b>: Place effect at the mouser cursor.<br><b>-Selected Token</b>: Place effect on the selected token.<br><b>-Targeted Token</b>: Place effect on the targeted token.<br><b>-From Cursor to Selected Token</b>: Animate effect from the mouse cursor to the selected token.<br><b>-From Cursor to Targeted Token</b>: Animate effect from the mouse cursor to the targeted token.<br><b>-From Selected to Targeted Token</b>: Animate effect from the selected to the targeted token.<br><b>-From Targeted to Selected Token</b>: Animate effect from the targeted to the selected token. |
-| Display           | <b>-Name</b>: Display the effect's name on the Stream Deck. |
+| Target            | Target of the effect:<br><b>-Cursor</b>: Target effect at the mouser cursor.<br><b>-Selected Token</b>: Target effect on the selected token.<br><b>-Targeted Token</b>: Target effect on the targeted token. |
+| Source            | Source of the effect:<br><b>-None</b>: No source, effect is only applied at the target.<br><b>-Cursor</b>: Start effect at the mouser cursor.<br><b>-Selected Token</b>: Start effect on the selected token.<br><b>-Targeted Token</b>: Start effect on the targeted token. |
+| Display           | <b>-Name</b>: Display the effect's name on the Stream Deck.<br><b>-Icon:</b> Display a thumbnail of the effect on the Stream Deck. |
 | Colors            | <b>-Background</b>: Background color of the button. |
+
+!!! info "Note on using Source"
+    The Source option allows effect animations to start at the Source location and end at the Target location.<br>
+    Depending on the selected effect, this may or may not work correctly. Suitable animations are ones that start at the left and move to the right, such as the Beam or Arrow animations of the [Jules&Ben's Animated Assets](https://foundryvtt.com/packages/JB2A_DnD5e) module.
 
 ### Particle Effects
 Particle effects are effects that are displayed across the entire scene, such as weather effects.
