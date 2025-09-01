@@ -34,7 +34,7 @@ As a patron you can gain access to the module by linking your Patreon account to
 ## Module
 <div class="imgContainer"><img src="../../img/misc/enablePopup.png"></div>
 
-You will need to install and enable the [Material Deck module](https://foundryvtt.com/packages/MaterialDeck) by following [this](https://foundryvtt.com/article/modules/) guide.
+You will need to install and enable the [Material Deck module](https://foundryvtt.com/packages/materialdeck-premium) by following [this](https://foundryvtt.com/article/modules/) guide.
 
 When you or any players accesses a Foundry server with Material Deck enabled, while it has not been enabled for the client in the [module settings](../moduleSettings/moduleSettings.md), a popup will appear asking if you want to enable Material Deck for the client.
 
