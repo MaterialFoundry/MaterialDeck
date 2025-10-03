@@ -28,9 +28,6 @@ As a patron you can gain access to the module by linking your Patreon account to
 3. Link your Patreon account at the bottom of the page if you haven't already
 4. Verify that Material Deck shows up under your [subscriptions](https://foundryvtt.com/me/subscriptions). If it doesn't appear as expected under the "Subscribed Content" page of your user profile, you may need to Refresh your Patreon link
 
-!!! tip "Apple In-App Subscriptions"
-    Apple requires a 30% app store fee for any purchases made through app store apps, which includes subscriptions like on Patreon. In reality, this means a price increase of around 43% (see [here](https://support.patreon.com/hc/en-us/articles/27991664769677-How-iOS-in-app-purchases-work-on-Patreon) for more info). Unless you want to sponsor Apple, I highly suggest not using the Patreon app to subscribe. Use a browser or non-iOS device instead.
-
 ## Module
 <div class="imgContainer"><img src="../../img/misc/enablePopup.png"></div>
 
@@ -53,8 +50,19 @@ You can press the 'Download Utility' button to open the [Download Utility](../mo
 Tick the 'Do not show again' checkbox to prevent the popup from appearing.
 
 ## Stream Deck Application
-For you computer to communicate with your Stream Deck, you will need to install the [Stream Deck application](https://www.elgato.com/ww/en/s/downloads).<br>
-This application is only available for Windows and MacOS. See [here](./linuxInstallation.md) for Linux users.
+For you computer to communicate with your Stream Deck, you will need to install either the [official Stream Deck application](https://www.elgato.com/ww/en/s/downloads) or [OpenDeck](#opendeck).
+
+The official Stream Deck application only works on Windows and MacOS, and only with Elgato's devices. Linux users, or users of non-Elgato [compatible devices](./requirements.md#compatible-devices) will need to use OpenDeck.
+
+### OpenDeck
+OpenDeck is an open-source alternative to the official Stream Deck application that runs on Windows, MacOS and Linux. While Material Deck is currently fully functional in OpenDeck, you should consider it unofficially supported. This means that there is no guarantee that Material Deck will keep functioning on OpenDeck, and OpenDeck-specific issues might not be solved.
+
+Please note that the default [profiles](../profiles/profiles.md) cannot be imported into OpenDeck. This means that you will have to create your own from scratch.
+
+This documentation will assume the use of the official Stream Deck application, it is up to you to figure out how this translates to OpenDeck.<br>
+
+You can get OpenDeck [here](https://github.com/nekename/OpenDeck).<br>
+For the Ajazz AKP153 (and similar devices), you will need [this](https://github.com/4ndv/opendeck-akp153) plugin.
 
 ## Stream Deck Plugin
 The Stream Deck plugin is what allows the Stream Deck to communicate with Foundry.
