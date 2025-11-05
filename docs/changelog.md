@@ -1,6 +1,10 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.1.2 - 05-11-2025"
+    ### Fixes:
+    * Module would throw an error if Worldbuilder wasn't installed. This is now fixed.
+
 ??? changelog "v2.1.1 - 05-11-2025"
     ### Additions:
     * Settings => Added setting to configure which connection notifications should be displayed
