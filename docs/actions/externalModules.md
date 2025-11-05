@@ -10,6 +10,7 @@ The following modules are supported:
 * [Shared Vision](#shared-vision)
 * [Simple Calendar](#simple-calendar)
 * [Soundscape](#soundscape)
+* [Worldbuilder](#worldbuilder)
 
 !!! warning "External Module Combatibility Issues"
     The functionality of the 'External Modules' action depends on (the API of) the supported modules.<br>
@@ -169,3 +170,36 @@ Using Material Deck you can control Soundscape's mixer and trigger sounds from i
 | Value             | (`Mixer` mode and `Set Volume` only) Volume to set.   |
 | Display           | <b>-Channel</b>: Display the channel number on the Stream Deck.<br><b>-Name</b>: Display the mode's name on the Stream Deck.<br><b>-Icon</b>: Display the an icon on the Stream Deck.<br><b>-Volume</b>: (`Mixer` mode and `Set Volume` only) Display the channel's volume on the Stream Deck. |
 | Colors            | <b>-On Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently not active<br><b>-Background</b>: Background color of the button. |
+
+## Worldbuilder
+[Worldbuilder](https://foundryvtt.com/packages/worldbuilder) is a campaign management and worldbuilding toolkit for Foundry VTT.
+
+Using Material Deck you can open or close the Worldbuilder application, open and close articles/widgets/tags or show article/widgets/tags to all players.
+
+| Option            | Description   |
+|-------------------|---------------|
+| Mode              | Mode of the button:<br><b>-[Main App](#main-app-mode)</b>: Control Worldbuilder's main application.<br><b>-[Articles, Widgets & Tags](#articles-widgets-tags-mode)</b>: Control specific articles, widgets or tags.   |
+| Display           | <b>-Name</b>: Display a relevant name on the Stream Deck.<br><b>-Icon</b>: Display a relevant icon on the Stream Deck. |
+| Colors            | <b>-On Color</b>: A border is drawn on the Stream Deck of this color if the app/tab/article is open<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the app/tab/article is closed<br><b>-Background</b>: Background color of the button. |
+
+### Main App Mode
+In "Main App" mode, you can open, close or toggle the main Worldbuilder application, or open a specific tab of the application.
+
+| Option            | Description   |
+|-------------------|---------------|
+| On Press/On Hold  | Action to be performed when pressing/holding the button:<br><b>-Do Nothing</b>: Do Nothing.<br><b>-Open App</b>: Open the main app.<br><b>-Close App</b>: Close the main app.<br><b>-Toggle App</b>: Toggle between opening and closing the main app.<br><b>-Set Tab</b>: Open a specific tab of the main app.   |
+| Tab               | (`Set Tab` only) The tab to open. |
+| Open App          | (`Set Tab` only) Also open the application if it's currently closed. |
+
+### Articles, Widgets & Tags Mode
+In the "Articles, Widgets & Tags" mode you can open specific articles/widgets/tags and/or show them to all players.
+
+| Option            | Description   |
+|-------------------|---------------|
+| Selection         | Method of selecting the article/widget/tag:<br><b>-Select by UUID</b>: Select an article/widget/tag by its UUID.<br><b>-Select by Nr</b>: Select an article/widget/tag using a number.<br><b>-All other options</b>: List of articles/widgets/tags to select. |
+| UUID              | (`Select by UUID` only) UUID of the article/widget/tag.   |
+| Type              | (`Select by Nr` only) Select the type of article/widget/tag. |
+| Sorting Mode      | (`Select by Nr` only) Set how to sort the articles/widgets/tags:<br><b>-Same as Worldbuilder App</b>: The same sorting method as the relevant Tab of the Worlbuilder app will be used, see [here](https://materialfoundry.github.io/Worldbuilder/mainApplication/articles/#sorting).<br><b>-Manually</b>: Manual sorting, as configured in the Worldbuilder app, see [here](https://materialfoundry.github.io/Worldbuilder/mainApplication/articles/#sorting).<br><b>-Name (A-Z)</b>: Sort alphabetically, starting with A.<br><b>-Name (Z-A)</b>: Sort alphabetically, starting with Z. |
+| Page-Wide Type & Sorting  | (`Select by Nr` only) Apply the same `Type` and `Sorting Mode` to all buttons with this setting enabled. |
+| Nr                | (`Select by Nr` only) Number of the article/widget/tag to select.    |
+| On Press/On Hold  | Action to be performed when pressing/holding the button:<br><b>-Do Nothing</b>: Do Nothing.<br><b>-Open</b>: Open the article/widget/tag.<br><b>-Close</b>: Close the article/widget/tag.<br><b>-Toggle App</b>: Toggle between opening and closing the article/widget/tag.<br><b>-Show Players</b>: Show the article/widget/tag to all players.   |

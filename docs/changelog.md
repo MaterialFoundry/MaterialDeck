@@ -1,6 +1,22 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.1.1 - 05-11-2025"
+    ### Additions:
+    * Settings => Added setting to configure which connection notifications should be displayed
+    * External Modules => Added support for [Worldbuilder](https://foundryvtt.com/packages/worldbuilder) (needs Worldbuilder v1.0.4+)
+
+    ### Fixes:
+    * Other Actions => Control Buttons: Toggleable control buttons could not be toggled
+    * In some situations, Material Deck would unnecessarily force a refresh after loading. This should no longer happen
+    * Exporting/Importing Soundboard: Importing or exporting a soundboard with a single sound, or with sounds without configured audio file or icon should no longer throw errors
+
+    ### Other:
+    * Migrated soundboard import & export apps to ApplicationV2
+    * Migrated Custom Action Config & related apps to ApplicationV2
+
+    This means that all Material Deck apps and dialogs are now using ApplicationV2/DialogV2
+
 ??? changelog "v2.1.0 - 29-07-2025"
     ### Breaking Changes:
     * Macro => Select from Folder: Folders are now automatically parsed from your Foundry server. Existing actions with manually entered folders will no longer work, and will need to be reconfigured.

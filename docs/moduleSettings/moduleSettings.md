@@ -1,7 +1,7 @@
 <div class="imgContainer"><img src="../../img/moduleSettings/moduleSettings.png"></div>
 The module settings can be accessed in Foundry by pressing the 'Game Settings' (cogs icon) in the sidebar on the right, and then pressing 'Configure Settings'. This will open the 'Configure Game Settings' menu, where you have to select 'Material Deck' in the left column.
 
-At the top you will find 5 buttons:
+At the top you will find 6 buttons:
 
 * <b>Documentation</b>: Pressing this button will lead you to this documentation.
 * <b>Download Utility</b>: Opens the [Download Utility](./downloadUtility.md).
@@ -16,6 +16,7 @@ Below that, you will find the following settings:
 * [Hold Time](#hold-time)
 * [Stream Deck Port](#stream-deck-port)
 * [Maximum Connection Attempts](#maximum-connection-attempts)
+* [Connection Notifications](#connection-notifications)
 * [Image Cache Size](#image-cache-size)
 
 ## Enable Module for this Client
@@ -39,6 +40,17 @@ Material Deck will attempt to connect to the Stream Deck whenever Foundry is ref
 It will attempt to create a connection as many times as configured here. So if set to 5, Material Deck will attempt to connect 5 times, after which it stops. You will then have to refresh Foundry to retry the connection.
 
 Setting this to 0 will cause Material Deck to keep trying to connect indefinitely.
+
+## Connection Notifications
+By default, Material Deck will display notifications whenever a connection event occurs (e.g. a Stream Deck is connected).
+
+With this setting you can configure which of these notifications should be displayed:
+
+| Option    | Description   |
+|-----------|---------------|
+| Always    | Display all connection notifications |
+| Failed Attempts   | Display notifications when a connection between Material Deck and the Stream Deck could not be established.   |
+| Never     | Never show connection notifications.  |
 
 ## Image Cache Size
 Material Deck often has to generate and send a lot of images to the Stream Deck, which can be time consuming. To improve performance, an image cache is implemented which stores images in the Stream Deck app. This means that if an image has to be sent that has already been sent previously (maybe because you switched between two folders), Material Deck no longer has to generate and then send that image, instead it tells the Stream Deck app to display an image from the cache.
