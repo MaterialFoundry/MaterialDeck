@@ -18,8 +18,10 @@ Material Deck has been written for [Elgato](https://www.elgato.com/ww/en)'s line
 | [Stream Deck XL](https://www.elgato.com/ww/en/p/stream-deck-xl)               | Yes       |                                           |
 | [Stream Deck Mini](https://www.elgato.com/ww/en/p/stream-deck-mini)           | Yes       |                                           |
 | [Stream Deck Mobile](https://www.elgato.com/ww/en/s/stream-deck-mobile)       | Yes       | Requires a subscription if you want to use more than 6 buttons    |
-| [Stream Deck +](https://www.elgato.com/ww/en/p/stream-deck-plus-black)        | Buttons: Yes<br>Knobs: No<br>Display: Unknown             | Untested  |
-| [Stream Deck Neo](https://www.elgato.com/ww/en/p/stream-deck-neo)             | Buttons: Yes<br>Touch Points: Unknown<br>Display: Unknown | Untested  |
+| [Virtual Stream Deck](https://www.elgato.com/ww/en/s/virtual-stream-deck)     | Yes       |   |
+| [Stream Deck +](https://www.elgato.com/ww/en/p/stream-deck-plus-black)        | Buttons: Yes<br>Dials: Not natively            | Tested by users. Buttons are reported to work, but there is no native integration for the dials. Dials can reportedly be made to work using "Action Wheel" or "Action Triggers"  |
+| [Stream Deck Neo](https://www.elgato.com/ww/en/p/stream-deck-neo)             | Buttons: Yes<br>Touch Points: Unknown<br>Display: Unknown | Buttons will probably work  |
+| [Stream Deck Module](https://www.elgato.com/ww/en/p/stream-deck-module-15-keys)   | Probably  | Untested, but probably works    |
 | [Stream Deck Studio](https://www.elgato.com/ww/en/p/stream-deck-studio)       | Unknown, probably not | Untested. Uses [different software](https://bitfocus.io/buttons) than the Stream Deck app         |
 | [Stream Deck Pedal](https://www.elgato.com/ww/en/p/stream-deck-pedal)         | Unknown   | Untested. You might be able to trigger some basic things, but probably not very useful for this application   |
 | [Ajazz AKP153](https://ajazzbrand.com/products/ajazz-akp153-desk-controller) and similar*  | Yes, unofficially through [OpenDeck](./installation.md#opendeck) with [AKP153 plugin](https://github.com/4ndv/opendeck-akp153) | (Continued) support is not guaranteed. This is fully reliant on future development of OpenDeck and the AKP153 plugin    |
