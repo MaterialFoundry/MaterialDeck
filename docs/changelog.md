@@ -1,6 +1,20 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.1.3 - 01-04-2026"
+    This version is mostly compatible with Foundry v14. A quick test has been performed, and issues that were found have been fixed, but a more complete test is required before it's officially    compatible with v14.
+
+    ### Fixes:
+    * Fontawesome icons not showing in v14 fixed.
+    * Scene Action => Scene darkness fixed for v14.
+    * Other Action => Dice Pool: Rolling with `Roll Mode` `Default` fixed for v14.
+    * Fixed overflow issue with the import and export dialog, where the "Import" or "Export" button would not be displayed if there were a lot of sounds to import/export
+    * Some control buttons provided by systems or modules could not be activated, this should be fixed (for `button` type controls).
+    * Soundboard => Fixed wildcard sound selection issue with `world` soundboard and the module's soundboard UI.
+
+    ### Other
+    * Added skipDialog argument to the dice pool to prevent dice dialog from showing up (for some modules/systems)
+
 ??? changelog "v2.1.2 - 05-11-2025"
     ### Fixes:
     * Module would throw an error if Worldbuilder wasn't installed. This is now fixed.
