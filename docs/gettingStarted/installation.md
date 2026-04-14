@@ -9,14 +9,15 @@ You will need to:
 * (Optionally) install a [gaming system module](#gaming-system-modules)
 * Install the [Stream Deck application](#stream-deck-application)
 * Install the [Stream Deck plugin](#stream-deck-plugin)
+* Make sure the browser is allowed to [access the plugin](#allowing-browser-access-to-the-plugin)
 * [Test if everything works](#testing-if-everything-works)
 * (Optionally) install a [Stream Deck profile](#stream-deck-profiles)
 
-!!! warning "Adblockers, Script Blockers and Brave Browser"
-    Adblockers, script blockers and other extensions may prevent Foundry from connecting to the Stream Deck.<br>
-    If you run into connection issues, try disabling the extension or whitelist your Foundry server.<br>
-    <br>
-    If you're using Brave Browser, you will have to disable the shields for your Foundry server (press the lion icon, and set the shields to 'down'), or use another browser like Chrome or Firefox.
+!!! warning "Chrome, Brave, Adblockers and Script Blockers"
+    Chrome, Brave and other browsers have settings that may prevent a communication between Foundry and the Stream Deck plugin.<br>
+    Similarly, browser plugins/extensions can block the connection.<br>
+    See [here](#allowing-browser-access-to-the-plugin) for more info.
+
 <BR CLEAR="left">
 
 ## Linking a Patreon Account
@@ -79,6 +80,28 @@ If that doesn't work, you can try the following:
     * Windows: `%appdata%\Elgato\StreamDeck\Plugins\`
     * MacOS: `~/Library/Application Support/com.elgato.StreamDeck/Plugins/`
 3. Restart the Stream Deck application.
+
+## Allowing Browser Access to the Plugin
+<b>Only for secured Foundry servers (servers that use `https` instead of `http`).</b>
+<div class="imgContainer"><img src="../../img/misc/ChromeFix1.png"></div>
+By default, some browsers may prevent connections between a secured website and local apps and services (which the Stream Deck plugin is).
+
+You might see a pop-up appear when you first access your Foundry server, which asks you to allow this access. If you see this popup, select `Allow`.
+
+<BR CLEAR="right">
+
+<div class="imgContainer"><img src="../../img/misc/ChromeFix2.png"></div>
+If you do not see that pop-up, click the icon to the left of the address bar and make sure `Apps on device` is enabled.
+
+On older versions of Brave you have to disable the shields for your Foundry server:
+1. Press the lion icon to the right of the address bar
+2. Set shields to 'down'
+
+<BR CLEAR="right">
+
+### Browser Plugins/Extensions
+Some browser plugins/extensions such as ad-blockers and script blockers may prevent the connection between Foundry and the Stream Deck.
+If you run into connection issues, try disabling the extension or whitelist your Foundry server.
 
 ## Testing If Everything Works
 You can now test if a connection can be established between the Stream Deck and Foundry:
