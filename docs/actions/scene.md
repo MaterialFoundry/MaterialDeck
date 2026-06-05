@@ -65,3 +65,14 @@ This function allows you to move the canvas or zoom in or out.
 | Distance          | (Not shown for `Center`) The distance to move the canvas or value to zoom in/out by. |
 | Display           | <b>-Icon</b>: Display an icon on the Stream Deck. |
 | Colors            | <b>-Background</b>: Background color of the button. |
+
+## Dial Functions
+The following Dial Functions are available for dials (Stream Deck + and Stream Deck XL +):
+
+| Dial Function     | Description                                   |
+|-------------------|-----------------------------------------------|
+| Scene Offset      | Sets the [scene offset](#scene-offsets).      |
+| Darkness Control  | Sets scene darkness.                          |
+| Move Canvas       | Moves the canvas in the specified direction.  |
+
+The `Dial Stepsize` option sets how much the configured value should increase or decrease for each dial "tick".

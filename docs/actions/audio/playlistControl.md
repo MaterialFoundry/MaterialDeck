@@ -5,15 +5,16 @@ It is part of the [Audio action](./audio.md).
 
 Sets the function of the button.
 
-| Option                                            | Description   |
-|---------------------------------------------------|---------------|
-| [Playlist Control](#playlist-control)             | Control (start/stop) playlists. |
-| [Track Control](#track-control)                   | Control (start/stop) playlist tracks. |
-| [Pause All Playlists](#pause-stop-all-playlists) | Pauses all currently playing playlists. |
-| [Stop All Playlists](#pause-stop-all-playlists)  | Stops all currently playing playlists. |
-| [Playlist Offset](#offsets)                       | Configure playlist offsets. |
-| [Track Offset](#offsets)                          | Configure track offsets. |
-| [Set Page-Wide Playlist](#set-page-wide-playlist) | Set the page-wide playlist to the selected playlist |
+| Option                                            | Description                                           |
+|---------------------------------------------------|-------------------------------------------------------|
+| [Playlist Control](#playlist-control)             | Control (start/stop) playlists.                       |
+| [Track Control](#track-control)                   | Control (start/stop) playlist tracks.                 |
+| [Pause All Playlists](#pause-stop-all-playlists)  | Pauses all currently playing playlists.               |
+| [Stop All Playlists](#pause-stop-all-playlists)   | Stops all currently playing playlists.                |
+| [Playlist Offset](#offsets)                       | Configure playlist offsets.                           |
+| [Track Offset](#offsets)                          | Configure track offsets.                              |
+| [Set Page-Wide Playlist](#set-page-wide-playlist) | Set the page-wide playlist to the selected playlist.  |
+| [Set Page-Wide Folder](#set-page-wide-folder)     | Sets the page-wide folder to the selected folder.     |
 
 ## Playlist Control
 The playlist control function allows you to start, stop or pause playlists.<br>
@@ -23,8 +24,10 @@ When starting a playlist, the track that will be played will depend on the `Play
 |---------------------------------------------------|---------------|
 | Mode          | Sets what to do on a button press:<br><b>-Play/Stop</b>: Will start the playlist if it's not  playing, otherwise it will stop the playlist.<br><b>-Play/Stop</b>: Will start the playlist if it's not  playing, otherwise it will pause the playlist.<br><b>-Play</b>: Will start the playlist.<br><b>-Stop</b>: Will stop the playlist.<br><b>-Pause</b>: Will pause the playlist.<br><b>-Next Track</b>: Will start the next track in the playlist.<br><b>-Previous Track</b>: Will start the previous track in the playlist.<br> |
 | Page-Wide Playlist | All playlist actions on the current page with this setting enabled will share the playlist selection. So if on one of these actions you select a playlist using `Select by Name/ID`, all other actions with `Page-Wide Playlist` enabled will also select that playlist. |
-| Playlist          | The playlist to select:<br><b>-Currently Playing</b>: A currently playing playlist.<br><b>-Select by Name/ID</b>: Select a playlist using its name or ID.<br><b>-Select by Number</b>: Select a playlist using a number<br><b>-All Other Options</b> A list of all playlists.
-| Playlist Nr       | (`Currently Playing` and `Select by Number` only) Number of the playlist to select, see [below](#playlist-track-nr). | 
+| Playlist          | The playlist to select:<br><b>-Currently Playing</b>: A currently playing playlist.<br><b>-Select by Name/ID</b>: Select a playlist using its name or ID.<br><b>-Select by Number</b>: Select a playlist using a number<br><b>-Select by Folder</b>: Select a playlist from a specified folder using a number.<br><b>-All Other Options</b> A list of all playlists.  |
+| Folder            | (`Select by Folder` only) Folder to select a playlist from. |
+| Page-Wide Folder  | (`Select by Folder` only) All `Select by Folder` actions on the current page with this setting enabled will share the folder selection. |
+| Playlist Nr       | (`Currently Playing`, `Select by Number` and `Select by Folder` only) Number of the playlist to select, see [below](#playlist-track-nr). | 
 | Playlist Name/ID  | (`Select by Name/ID` only) Name or ID of the playlist to select.
 | Display           | <b>-Name</b>: Display the name of the playlist on the Stream Deck.<br><b>-Icon</b>: Display a relevant icon on the Stream Deck. |
 | Colors            | <b>-On Color</b>: A border is drawn on the Stream Deck of this color if the playlist is currently playing.<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the playlist is currently not playing.<br><b>-Background</b>: Background color of the button. |
@@ -83,3 +86,6 @@ Using this function, you can set the playlist selection for all buttons with `Pa
 | Playlist Name/ID  | (`Select by Name/ID` only) Name or ID of the playlist to select.
 | Display           | <b>-Name</b>: Display the name of the playlist on the Stream Deck.<br><b>-Icon</b>: Display a relevant icon on the Stream Deck. |
 | Colors            | <b>-Background</b>: Background color of the button. |
+
+## Set Page-Wide Folder
+Similar to `Page-Wide Folder`, but allows you to set folder if `Select by Folder` is set.

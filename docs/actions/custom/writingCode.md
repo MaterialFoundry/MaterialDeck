@@ -9,6 +9,7 @@ Within your code you have access to the following Material Deck specific objects
 * <b>eventType</b>: Returns the type of the event (`onUpdate`, `onKeyDown`, `onKeyUp`, `onHold`).
 * <b>variables</b>: Gives a way to store variables between different events (of the same button).
 * <b>hooks</b>: (On Update only) Returns the hook that triggered the 'On Update' event (`hook.hook`) and the hook's arguments (`hook.args`).
+* <b>ticks</b>: (SD+ and SD XL+ dials only) Returns the dial ticks (how far it has rotated).
 
 ## Setting a Button's Text & Icon
 You can set a button's text and icon through the `button` object:

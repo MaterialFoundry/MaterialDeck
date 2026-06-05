@@ -26,6 +26,7 @@ Each custom action has the following options, of which only `id` is required:
 | On Press          | (Optional) Configures what to do when the button is pressed down, see [here](#on-press). |
 | On Release        | (Optional) Configures what to do when the button is released, see [here](#on-release). |
 | On Hold           | (Optional) Configures what to do when the button is held down, see [here](#on-hold). |
+| On Dial           | (Optional) Configures what to do when the (SD+ or SD XL+) dial is rotated, see [here](#on-dial). |
 
 ## Settings
 <div class="imgContainer">
@@ -129,6 +130,14 @@ This can be delayed by setting `Delay`, otherwise 'On Hold' will be triggered im
 
 #### Code to Run
 The configured code under `Code to Run` will be executed whenever 'On Hold' is triggered.<br>
+This is normal JavaScript code. See [here](./writingCode.md) for info on how to write code.
+
+## On Dial
+Here you configure the 'On Dial' behavior.<br>
+This will only have any effect on the dials of the Stream Deck + or Stream Deck XL +.
+
+#### Code to Run
+The configured code under `Code to Run` will be executed whenever 'On Dial' is triggered.<br>
 This is normal JavaScript code. See [here](./writingCode.md) for info on how to write code.
 
 ## Result

@@ -42,3 +42,15 @@ With the control mode you can control the combat tracker.
 | Function          | Function of the button:<br><b>-Start/Stop Combat</b>: Start or stop the combat.<br><b>-End Turn</b>: End your turn (mainly meant for players).<br><b>-Next Turn</b>: Go to the next turn.<br><b>-Previous Turn</b>: Go to the previous turn.<br><b>-Next Round</b>: Go to the next round.<br><b>-Previous Round</b>: Go to the previous round.<br><b>-Turn Display</b>: Display the current round and turn.<br><b>-Roll Initiative</b>: Roll initiative for the combatants.<br><b>-Add/Remove Tokens From Combat</b>: Adds or removes all selected tokens from the combat. |
 | Initiative Mode   | (`Roll Initiative` only) Set what combatants to roll initiative for:<br><b>-All</b>: All combatants.<br><b>-Current Combatant</b>: The current combatant only.<br><b>-Player Characters</b>: Player characters only.<br><b>-Non-Player Characters</b>: Non-player characters only. |
 | Display           | <b>-Icon</b>: (All except for `Turn Display`) Display a relevant icon.<br><b>-Round</b>: (`Turn Display` only) Display the current round.<br><b>-Turn</b>: (`Turn Display` only) Display the current turn. |
+
+## Dial Functions
+The following Dial Functions are available for dials (Stream Deck + and Stream Deck XL +):
+
+| Button Mode                                           | Dial Function         | Description           |
+|---------------------------|-------------------|-------------------------------------------------------|
+| Mode: Combatants          | Combatant Nr      | Sets the combatant nr for the dial (not persistent).  |
+| Mode: Current Combatant   | Combatant Offset  | Sets the combatant offset (not persistent).           |
+| Any                       | Set Turn          | Sets the turn for the selected encounter.             |
+| Any                       | Set Round         | Sets the round for the selected encounter.            |
+
+The `Dial Stepsize` option sets how much the configured value should increase or decrease for each dial "tick".

@@ -1,11 +1,11 @@
 {
     "module": {
-        "version": "2.1.3"
+        "version": "2.2.0"
     },
     "plugin": {
-        "version": "2.0.1.0",
+        "version": "2.1.0.0",
         "github": "https://github.com/MaterialFoundry/MaterialDeck_SD",
-        "download": "https://github.com/MaterialFoundry/MaterialDeck_SD/releases/download/v2.0.1.0/com.material-foundry.material-deck.streamDeckPlugin"
+        "download": "https://github.com/MaterialFoundry/MaterialDeck_SD/releases/download/v2.1.0.0/com.material-foundry.material-deck.streamDeckPlugin"
     },
     "systems": [
         {
@@ -14,39 +14,39 @@
             "system": "dnd5e",
             "author": "Material Foundry",
             "url": "https://foundryvtt.com/packages/materialdeck-dnd5e",
-            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_DnD5e/releases/download/v2.0.0/module.json",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_DnD5e/releases/download/v2.1.0/module.json",
             "repository": "https://github.com/MaterialFoundry/MaterialDeck_DnD5e",
             "documentation": "https://materialfoundry.github.io/MaterialDeck_DnD5e",
             "compatibility": {
-                "minimum": "2.0.0"
+                "minimum": "2.2.0"
             },
-            "version": "2.0.0"
+            "version": "2.1.0"
         },{
             "title": "Pathfinder 1",
             "id": "materialdeck-pf1",
             "system": "pf1",
             "author": "Material Foundry",
             "url": "https://foundryvtt.com/packages/materialdeck-pf1",
-            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_PF1/releases/download/v2.0.0/module.json",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_PF1/releases/download/v2.1.0/module.json",
             "repository": "https://github.com/MaterialFoundry/MaterialDeck_PF1",
             "documentation": "https://materialfoundry.github.io/MaterialDeck_PF1",
             "compatibility": {
-                "minimum": "2.0.5"
+                "minimum": "2.2.0"
             },
-            "version": "2.0.0"
+            "version": "2.1.0"
         },{
-            "title": "Pathfinder 2e",
+            "title": "Pathfinder 2e/Starfinder 2e",
             "id": "materialdeck-pf2e",
-            "system": "pf2e",
+            "system": ["pf2e", "sf2e"],
             "author": "Material Foundry",
             "url": "https://foundryvtt.com/packages/materialdeck-pf2e",
-            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_PF2e/releases/download/v2.0.0/module.json",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_PF2e/releases/download/v2.1.0/module.json",
             "repository": "https://github.com/MaterialFoundry/MaterialDeck_PF2e",
             "documentation": "https://materialfoundry.github.io/MaterialDeck_PF2E",
             "compatibility": {
-                "minimum": "2.0.0"
+                "minimum": "2.2.0"
             },
-            "version": "2.0.0"
+            "version": "2.1.0"
         },{
             "title": "Savage Worlds Adventure Edition",
             "id": "materialdeck-swade",
@@ -66,13 +66,13 @@
             "system": "sfrpg",
             "author": "Material Foundry",
             "url": "https://foundryvtt.com/packages/materialdeck-sfrpg",
-            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG/releases/download/v2.0.0/module.json",
+            "manifest": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG/releases/download/v2.1.0/module.json",
             "repository": "https://github.com/MaterialFoundry/MaterialDeck_SFRPG",
             "documentation": "https://materialfoundry.github.io/MaterialDeck_SFRPG",
             "compatibility": {
-                "minimum": "2.0.5"
+                "minimum": "2.2.0"
             },
-            "version": "2.0.0"
+            "version": "2.1.0"
         }
     ],
     "profiles": [

@@ -19,8 +19,9 @@ Material Deck has been written for [Elgato](https://www.elgato.com/ww/en)'s line
 | [Stream Deck Mini](https://www.elgato.com/ww/en/p/stream-deck-mini)           | Yes       |                                           |
 | [Stream Deck Mobile](https://www.elgato.com/ww/en/s/stream-deck-mobile)       | Yes       | Requires a subscription if you want to use more than 6 buttons    |
 | [Virtual Stream Deck](https://www.elgato.com/ww/en/s/virtual-stream-deck)     | Yes       |   |
-| [Stream Deck +](https://www.elgato.com/ww/en/p/stream-deck-plus-black)        | Buttons: Yes<br>Dials: Not natively            | Tested by users. Buttons are reported to work, but there is no native integration for the dials. Dials can reportedly be made to work using "Action Wheel" or "Action Triggers"  |
-| [Stream Deck Neo](https://www.elgato.com/ww/en/p/stream-deck-neo)             | Buttons: Yes<br>Touch Points: Unknown<br>Display: Unknown | Buttons will probably work  |
+| [Stream Deck +](https://www.elgato.com/ww/en/p/stream-deck-plus-black)        | Yes       | Buttons and dials work |
+| [Stream Deck + XL](https://www.elgato.com/ww/en/p/stream-deck-plus-xl)        | Yes       | Buttons and dials work |
+| [Stream Deck Neo](https://www.elgato.com/ww/en/p/stream-deck-neo)             | Buttons: Yes<br>Touch Points: No<br>Display: No | |
 | [Stream Deck Module](https://www.elgato.com/ww/en/p/stream-deck-module-15-keys)   | Probably  | Untested, but probably works    |
 | [Stream Deck Studio](https://www.elgato.com/ww/en/p/stream-deck-studio)       | Unknown, probably not | Untested. Uses [different software](https://bitfocus.io/buttons) than the Stream Deck app         |
 | [Stream Deck Pedal](https://www.elgato.com/ww/en/p/stream-deck-pedal)         | Unknown   | Untested. You might be able to trigger some basic things, but probably not very useful for this application   |

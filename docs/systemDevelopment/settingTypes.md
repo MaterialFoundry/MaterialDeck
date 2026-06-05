@@ -87,6 +87,7 @@ A select setting allows the user to select from a list.
 |-------|-----|
 | options | An array containing the options the user can select from |
 | permission | An option can prevent a user from having access to that option, see [here](./permissions.md) for more info |
+| sort | If configured, the options will be automatically sorted. For example, set to `label` to sort by the option label, set to `value` to sort by the option value. You can also give the option the `sort` key. |
 
 ```js
 {
@@ -120,6 +121,8 @@ If the setting already exists, it is possible to append options to the existing 
     ]
 }
 ```
+
+
 
 ### Color
 A color setting allows the user to set a color using a color picker.

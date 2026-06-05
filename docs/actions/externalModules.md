@@ -3,12 +3,13 @@ This action allows you to control other modules.
 
 The following modules are supported:
 
+* [Ember](#ember)
 * [FXMaster](#fxmaster)
 * [Lock View](#lock-view)
 * [Monk's Active Tile Triggers](#monks-active-tile-triggers)
 * [Not Your Turn!](#not-your-turn)
 * [Shared Vision](#shared-vision)
-* [Simple Calendar](#simple-calendar)
+* [Simple Calendar Reborn](#simple-calendar-reborn)
 * [Soundscape](#soundscape)
 * [Worldbuilder](#worldbuilder)
 
@@ -25,6 +26,30 @@ The following modules are supported:
 | Icon Override     | Url to a custom icon. If configured, this will override any icon that would normally be displayed. |
 | Module | Module to control |
 
+## Ember
+[Ember](https://foundryvtt.com/packages/ember) is a roleplaying campaign by the Foundry team.
+
+| Option            | Description   |
+|-------------------|---------------|
+| Mode              | Mode of the button:<br><b>-Open Map</b>: Open a specified map.<br><b>-Open Party Sheet</b>: Open or close the party sheet.<br><b>-Open Codex</b>: Open or close the codex.<br><b>-[Calendar](#calendar)</b>: Control or display the calendar.   |
+| Map               | (`Open Map` only) The map to open. |
+| On Press/ On Hold | (`Open Map` only) Select what to do when the button is pressed:<br><b>-View:</b> View the scene.<br><b>-Activate:</b> Activate the scene.<br><b>-View/Activate if Viewed:</b> View the scene, activate the scene if the scene is already being viewed.<br><b>-Preload Scene:</b> Preload the scene. |
+| Open Mode         | (`Open Party Sheet` or `Open Codex` only):<br><b>-Toggle:</b> Toggle between opening and closing.<br><b>-Open:</b> Open.<br><b>-Close:</b> Close. |
+
+### Calendar
+Ember has a built-in calendar system.
+
+You can advance or rewind the time and display the time and date.
+
+### Time Display
+The time display option consists of multiple checkboxes for the 'Digital' and 'Analog' time.<br>
+The digital time displays the time as a value, while the analog time displays a clock face.<br>
+In both cases you can configure to display the hours, minutes or seconds by checking the respective checkbox. For the digital time you can additionally set it to a 24 hour or 12 hour clock.
+
+### Date Display
+The date display option consists of multiple checkboxes, these define how the date is displayed.<br>
+For example, if only `Display` is checked for `Month`, the month's number will be displayed, if `Name` is also checked, the month's name will be displayed, and lastly, if `Abbreviated` is also checked, the month's abbreviated name is displayed.
+
 ## FXMaster
 [FXMaster](https://foundryvtt.com/packages/fxmaster/) can display effects, such as weather effects, filters or special effects.
 
@@ -33,22 +58,6 @@ Using Material Deck you can enable or disable these effects.
 | Option            | Description   |
 |-------------------|---------------|
 | Mode              | Mode of the button:<br><b>-[Special Effects](#special-effects)</b>: Trigger special effects.<br><b>-[Particle Effects](#particle-effects)</b>: Enable or disable particle effects.<br><b>-[Filter Effects](#filter-effects)</b>: Enable or disable filter effects.<br><b>-Clear All</b>: Clear all effects.   |
-
-### Animation Effects
-Animation effects are effects that are displayed on the canvas, for example explosions or spell effects.<br>
-Please see the [FXMaster documentation](https://github.com/gambit07/fxmaster?tab=readme-ov-file#usage) for information on how to get animation effects added to FXMaster.
-
-| Option            | Description   |
-|-------------------|---------------|
-| Effect            | Effect to trigger |
-| Target            | Target of the effect:<br><b>-Cursor</b>: Target effect at the mouser cursor.<br><b>-Selected Token</b>: Target effect on the selected token.<br><b>-Targeted Token</b>: Target effect on the targeted token. |
-| Source            | Source of the effect:<br><b>-None</b>: No source, effect is only applied at the target.<br><b>-Cursor</b>: Start effect at the mouser cursor.<br><b>-Selected Token</b>: Start effect on the selected token.<br><b>-Targeted Token</b>: Start effect on the targeted token. |
-| Display           | <b>-Name</b>: Display the effect's name on the Stream Deck.<br><b>-Icon:</b> Display a thumbnail of the effect on the Stream Deck. |
-| Colors            | <b>-Background</b>: Background color of the button. |
-
-!!! info "Note on using Source"
-    The Source option allows effect animations to start at the Source location and end at the Target location.<br>
-    Depending on the selected effect, this may or may not work correctly. Suitable animations are ones that start at the left and move to the right, such as the Beam or Arrow animations of the [Jules&Ben's Animated Assets](https://foundryvtt.com/packages/JB2A_DnD5e) module.
 
 ### Particle Effects
 Particle effects are effects that are displayed across the entire scene, such as weather effects.
@@ -128,8 +137,8 @@ Using Material Deck you can enable or disable vision sharing.
 | Display           | <b>-Name</b>: Display the mode's name on the Stream Deck.<br><b>-Icon</b>: Display the mode's icon on the Stream Deck. |
 | Colors            | <b>-On Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently not active<br><b>-Background</b>: Background color of the button. |
 
-## Simple Calendar
-[Simple Calendar](https://foundryvtt.com/packages/foundryvtt-simple-calendar) adds a calendar to Foundry.
+## Simple Calendar Reborn
+[Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn) adds a calendar to Foundry.
 
 Using Material Deck you can display the in-game time and date, start or stop the clock and set the time or date.
 

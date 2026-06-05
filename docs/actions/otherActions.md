@@ -5,7 +5,7 @@ Other Actions is used for miscellaneous actions.
 |-------------------|---------------|
 | Title             | If configured, will set the title/text on the button. This will override any other text that would normally be displayed |
 | Icon Override     | Url to a custom icon. If configured, this will override any icon that would normally be displayed |
-| Function          | Sets the function of the button:<br><b>-[Pause](#pause)</b>: Pause or unpause the game<br><b>-[Control Buttons](#control-buttons)</b>: Open or enable the control buttons<br><b>-[Open Sidebar Tab](#open-sidebar-tab)</b>: Open or close sidebar tabs<br><b>-[Roll Dice](#roll-dice)</b>: Roll dice using a formula<br><b>-[Dice Pool](#dice-pool)</b>: Create a dice pool and roll it<br><b>-[Roll Tables](#roll-tables)</b>: Open or close roll tables and roll from them<br><b>-[Open Compendium Pack](#open-compendium-pack)</b>: Open or close compendium packs<br><b>-[Open Journal](#open-journal)</b>: Open or close journal entries<br><b>-[Send Chat Message](#send-chat-message)</b>: Send a chat message<br><b>-[Set Roll Sharing Mode](#set-roll-sharing-mode)</b>: Set the roll sharing mode<br><b>-[Cycle Through Tokens](#cycle-through-tokens)</b>: Cycle through tokens on the canvas
+| Function          | Sets the function of the button:<br><b>-[Pause](#pause)</b>: Pause or unpause the game<br><b>-[Control Buttons](#control-buttons)</b>: Open or enable the control buttons<br><b>-[Open Sidebar Tab](#open-sidebar-tab)</b>: Open or close sidebar tabs<br><b>-[Roll Dice](#roll-dice)</b>: Roll dice using a formula<br><b>-[Dice Pool](#dice-pool)</b>: Create a dice pool and roll it<br><b>-[Roll Tables](#roll-tables)</b>: Open or close roll tables and roll from them<br><b>-[Open Compendium Pack](#open-compendium-pack)</b>: Open or close compendium packs<br><b>-[Open Journal](#open-journal)</b>: Open or close journal entries<br><b>-[Send Chat Message](#send-chat-message)</b>: Send a chat message<br><b>-[Set Message Mode](#set-message-mode)</b>: Set the message mode<br><b>-[Cycle Through Tokens](#cycle-through-tokens)</b>: Cycle through tokens on the canvas
 
 ## Pause
 This function allows you to pause or unpause the game.
@@ -60,7 +60,7 @@ This function allows you to roll dice from a formula
 
 | Option            | Description   |
 |-------------------|---------------|
-| Mode              | The roll mode:<br><b>-Default</b>: Result is shown as set in Foundry<br><b>-Public Roll</b>: Result is shown in chat to everyone<br><b>-GM Roll</b>: Result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Result is shown in chat to the GM only<br><b>-Self Roll</b>: Result is shown in chat to the user who rolled<br><b>-Display on Stream Deck</b>: Result is displayed on the Stream Deck |
+| Message Mode      | The message mode:<br><b>-Default</b>: Result is shown as set in Foundry<br><b>-Public Roll</b>: Result is shown in chat to everyone<br><b>-GM Roll</b>: Result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Result is shown in chat to the GM only<br><b>-Self Roll</b>: Result is shown in chat to the user who rolled<br><b>-Display on Stream Deck</b>: Result is displayed on the Stream Deck |
 | Formula           | The roll formula. Follows the same format as standard Foundry [roll commands](https://foundryvtt.com/article/dice/), but omit `/r` or `/roll`.<br>For example: `1d20 + 7` or `1d4 / 2 + 2d8` |
 | Display           | <b>-Formula</b>: Display the formula on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck |
 | Colors            | <b>-Background</b>: Background color of the button |
@@ -72,7 +72,7 @@ You can add or remove dice using the `Add Dice` and `Remove Dice` modes and roll
 | Option            | Description   |
 |-------------------|---------------|
 | Mode              | <b>-Roll Dice Pool</b>: Rolls the dice pool<br><b>-Clear Dice Pool</b>: Clear the dice pool<br><b>-Add Dice</b>: Add a die to the dice pool<br><b>-Remove Dice</b>: Remove a die from the dice pool |
-| Roll Mode         | (Only on `Roll Dice Pool`) The roll mode:<br><b>-Public Roll</b>: Result is shown in chat to everyone<br><b>-GM Roll</b>: Result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Result is shown in chat to the GM only<br><b>-Self Roll</b>: Result is shown in chat to the user who rolled<br><b>-Display on Stream Deck</b>: Result is displayed on the Stream Deck |
+| Message Mode      | (Only on `Roll Dice Pool`) The message mode:<br><b>-Public Roll</b>: Result is shown in chat to everyone<br><b>-GM Roll</b>: Result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Result is shown in chat to the GM only<br><b>-Self Roll</b>: Result is shown in chat to the user who rolled<br><b>-Display on Stream Deck</b>: Result is displayed on the Stream Deck |
 | Clear After Roll  | (Only on `Roll Dice Pool`) Clears the dice pool after it has been rolled |
 | Dice              | (Only on `Add/Remove Dice`) The dice type to add or remove |
 | Display           | <b>-Formula</b>: (Only on `Roll Dice Pool`) Display the formula of the dice pool on the Stream Deck<br><b>-Value</b>: (Only on `Add/Remove Dice`) The amount of dice of this dice type in the dice pool<br><b>-Icon</b>: Display an icon on the Stream Deck |
@@ -125,8 +125,8 @@ This function allows you to send a chat message.
 | Display           | <b>-Message</b>: Display the chat message on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck |
 | Colors            | <b>-Background</b>: Background color of the button |
 
-## Set Roll Sharing Mode
-This function allows you to set the roll mode in Foundry for generic rolls.
+## Set Message Mode
+This function allows you to set the message mode in Foundry.
 
 | Option            | Description   |
 |-------------------|---------------|
@@ -142,3 +142,11 @@ This function allows you to cycle through tokens to select them.
 | Mode              | <b>-All Tokens</b>: Cycle through all tokens<br><b>-Owned Tokens</b>: Cycle through owned tokens<br><b>-Friendly Tokens</b>: Cycle through friendly tokens |
 | Display           | <b>-Icon</b>: Display an icon on the Stream Deck |
 | Colors            | <b>-Background</b>: Background color of the button |
+
+## Dial Functions
+The following Dial Functions are available for dials (Stream Deck + and Stream Deck XL +):
+
+| Button Mode                                   | Description                                   |
+|-----------------------------------------------|-----------------------------------------------|
+| Function: Dice Pool<br>Mode: Add/Remove Dice  | Increases or decreases the configured dice.   |
+| Function: Cycle Through Tokens                | Cycles through tokens.                        |

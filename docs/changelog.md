@@ -1,6 +1,91 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.2.0 - 05-06-2026"
+    ## Requirements
+    * Stream Deck software v6.9 or higher
+    * Stream Deck plugin v2.1.0.0 or higher
+    * Foundry v13 or v14
+    * For Simple Calendar users: Simple Calendar support has been replaced with [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn)
+
+    ## Highlights
+    ### v14 Compatibility
+    With this update Material Deck is fully compatible with Foundry v13 and v14. Support for Foundry v12 has been dropped.
+
+    ### Stream Deck + Dials
+    This update brings support for the dials of the Stream Deck + and Stream Deck XL +. These dials can be used like a normal button, but some actions have dial-specific features, such as changing volumes in the Audio action, or rotating tokens in the Token action. See the full changelog for a complete list of dial features.<br>
+    More info can be found [here](./actions/actions.md#buttons--dials).
+    
+    ### Damage Overlays
+    The Token action now has support for damage overlays, these can give a quick estimate of a token's health. For example, as a token loses HP a blood droplet will be overlayed over the token image, and as the token takes more damage a second or third droplet appears.<br>
+    This can be especially useful for player-facing Stream Decks, because a GM might not want to give players the exact HP, but might want to give them an indication of a NPC's health.<br>
+    Damage overlays are implemented by the [gaming system modules](./gettingStarted/gamingSystems.md). All system modules by Material Foundry (DnD5e, PF1, PF2e, SFRPG) have been updated to add damage overlays.
+
+    ### Ember Support
+    Support for [Ember](https://foundryvtt.com/ember/) has been added in the External Modules action. The following features are available:
+
+    * Opening/closing the world, cosmos or region map
+    * Opening/closing the party sheet
+    * Opening/closing the codex
+    * Displaying and controlling the calendar
+
+    ## Full Changelog
+    * Added support for dials (Stream Deck + and Stream Deck XL +). The following dial options are currently available:
+        * Audio: 
+            * Soundboard => Set Sound Volume
+            * Soundboard => Set Offset
+            * Playlist Control => Sets Playlist Offset
+            * Playlist Control => Sound Control => Set Sound Volume
+            * Playlist Control => Sound Control => Set Sound Offset
+            * All => Sets User Volume
+        * Combat Tracker:
+            * Combatants => Set Combatant Nr (not persistent)
+            * Current Combatant => Set Offset (not persistent)
+            * All => Set Round
+            * All => Set Turn
+        * Custom Actions:
+            * Dial functionality added (On Dial), and dial values can be accessed
+        * Other Actions:
+            * Dice Pool => Add/Remove Dice
+            * Cycle Through Tokens
+        * Scene:
+            * All => Set Scene Offset
+            * All => Darkness Control
+            * All => Move Canvas
+        * Token:
+            * All => Move Token
+            * All => Rotate Token
+            * All => Set Vision & Light
+                * Vision Range
+                * Vision Angle
+                * Dim Light Radius
+                * Bright Light Radius
+                * Light Angle
+    * Added damage overlays to the Token action which display an overlay depending on how much HP a token has left (implementation is done through the MD gaming system modules).
+    * Added support for Ember in External Modules with the following features:
+        * Open Map (World, Cosmos or Region)
+        * Open Party Sheet
+        * Open Codex
+        * Calendar (display and control the calendar)
+    * Sections in the Stream Deck app for the Token action are now collapsable, a "Global Plugin Setting" has been added to collapse all section by default.
+    * System settings can now be loaded dynamically, this means that the settings in the SD PI can be changed when needed.
+    * Audio => Playlist Control: Added "Select by Folder" so you can set a folder from which to parse playlists. Also added "Page-Wide Folder" so you can easily select between different folders.
+    * Token => On Press/On Hold: Added "Delete Token" option
+    * Token => On Press/On Hold: Added "Place Token" option that can move or place a token at the cursor or a specified coordinate
+
+    ### Fixes:
+    * Token => On Press => Move Token: Setting a distance now works.
+    * Audio => Playlist Control => Sound Control: Selecting a sound from the selector wouldn't work, this is fixed.
+    * Audio => Play Any Sound => Play from Folder: Fixed issues with parsing folders when playlist weren't located in folders.
+    * Token => Token Selection: Token list is now correctly updated in the SD PI when a token is added or removed from the scene.
+
+    ### Other:
+    * External Modules => Simple Calendar: The original Simple Calendar module is no longer maintained and has been replaced with Simple Calendar Reborn. Settings and configuration are identical.
+    * External Modules => FxMaster: Removed "Animation Effects", since this has been removed from FxMaster.
+    * Replaced custom user settings implementation with built in implementation.
+    * Other Actions: Renamed "Set Roll Mode" to "Set Message Mode"
+    * Other Actions => Dice Pool: Renamed "Roll Mode" to "Message Mode"
+
 ??? changelog "v2.1.3 - 01-04-2026"
     This version is mostly compatible with Foundry v14. A quick test has been performed, and issues that were found have been fixed, but a more complete test is required before it's officially    compatible with v14.
 

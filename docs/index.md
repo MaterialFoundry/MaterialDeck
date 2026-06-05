@@ -36,7 +36,7 @@ And much more
 
 ## Combatibility
 
-<b>Foundry VTT</b>: v12-v13<br>
+<b>Foundry VTT</b>: v13-v14<br>
 <b>Module incompatibilities</b>: None known
 
 ## Feedback & Issues

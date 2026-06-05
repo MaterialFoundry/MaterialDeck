@@ -7,8 +7,7 @@ The Sound Action allows you to play sounds, control playlists and set the user v
 | Icon Override     | Url to a custom icon. If configured, this will override any icon that would normally be displayed. |
 | Mode              | The mode of the button:<br><b>-[Soundboard](./soundboard.md)</b>: Control the Material Deck soundboard.<br><b>-[Playlist Control](./playlistControl.md)</b>: Control playlists.<br><b>-[Play Any Sound](#play-any-sound)</b>: Play any sound.<br><b>-[Volume Control](#volume-control)</b>: Control Foundry's volume sliders. |
 
-
-# Play Any Sound
+## Play Any Sound
 This mode will allow you to play any sound from any source.
 
 | Option        | Description   |
@@ -20,7 +19,7 @@ This mode will allow you to play any sound from any source.
 | Volume        | Volume of the sound |
 | Colors            | <b>-On Color</b>: A border of this color will be displayed if the sound is playing<br><b>-Off Color</b>: A border of this color will be displayed if the sound is not playing<br><b>-Background</b>: Background color of the button |
 
-# Volume Control
+## Volume Control
 This mode allows you to control Foundry's volume sliders.
 
 | Option            | Description   |
@@ -30,3 +29,19 @@ This mode allows you to control Foundry's volume sliders.
 | Value             | The value in % to set the volume to (in case of `Set to Value`), or the value in % to change the volume by (in case of `Increase/Decrease`) |
 | Display           | <b>-Value</b>: Display the current volume on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck |
 | Colors            | <b>-Background</b>: Background color of the button |
+
+## Dial Functions
+The following Dial Functions are available for dials (Stream Deck + and Stream Deck XL +):
+
+| Button Mode                                           | Dial Function         | Description                                                       |
+|-------------------------------------------------------|-----------------------|-------------------------------------------------------------------|
+| Mode: Soundboard<br>Function: Play Soundboard Sound   | Sound Volume          | Sets the volume of the selected soundboard sound.                 |
+| Mode: Soundboard                                      | Sound Offset          | Sets the [soundboard offset](./soundboard.md#offset).             |
+| Mode: Playlist Control                                | Playlist Offset       | Sets the [playlist offset](./playlistControl.md#offsets).         |
+| Mode: Playlist Control<br>Function: Sound Control     | Sound Offset          | Sets the [sound offset](./playlistControl.md#offsets).            |
+| Mode: Playlist Control<br>Function: Sound Control     | Sound Volume          | Sets the volume of the selected sound.                            |
+| Any                                                   | Music Volume          | Sets the global music volume in the User Volume Controls.         |
+| Any                                                   | Environment Volume    | Sets the global environment volume in the User Volume Controls.   |
+| Any                                                   | Interface Volume      | Sets the global interface volume in the User Volume Controls.     |
+
+The `Dial Stepsize` option sets how much the configured value should increase or decrease for each dial "tick".

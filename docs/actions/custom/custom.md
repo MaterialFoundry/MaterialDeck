@@ -5,12 +5,13 @@ You can configure settings that show up in the Stream Deck's property inspector,
 
 To use custom actions, you need to register an action. This is done through the [Custom Action Config](./config.md/#custom-action-config).<br>
 
-Each custom action can register on 4 events:
+Each custom action can register on the following events:
 
 * <b>On Update</b>: the button appears or a specified hook is called
 * <b>On Press</b>: the button is pressed down
 * <b>On Release</b>: The button is released
 * <b>On Hold</b>: The button is held down
+* <b>On Dial</b>: The dial is rotated (SD+ and SD XL+ dials only)
 
 On these events specified code can be executed. This code has access to the complete Foundry API, so it could change anything in the game, similar to script macros.<br>
 Besides that, the code can be used to configure the button by setting its text and icon.

@@ -1,7 +1,23 @@
 <div class="imgContainer"><img src="../../img/streamDeckApp/app.png"></div>
-To use a Stream Deck button with Material Deck, you must apply an action to that button.
+The Material Deck plugin's functionality is split into different 'actions', where each action handles different aspects of Foundry VTT. For example, there is an audio action, which can be used to start and stop playlists, play sounds from a soundboard, or set volume levels. The token action can do things related to tokens and actors, such as moving them, displaying hit points, etc. You can find the full list of actions [below](#actions).
+
+## Buttons & Dials
+Stream Decks can offer 2 different input/output types:
+
+### Buttons
+All Stream Decks currently available have multiple buttons.<br>
+Buttons can be pressed, released and held, and depending on the action one or more of these can be used to do something in Foundry.<br>
+Each button has its own display that can display various things, like icons and text.
+
+### Dials
+Dials can be found on the [Stream Deck +](https://www.elgato.com/us/en/p/stream-deck-plus-xl) line of products. These products have normal buttons on the top, with a row of dials at the bottom, with a LCD above it.<br>
+Dials can be pressed, released and held, and you can rotate them. All actions and features that work on buttons can be used on a dial.<br>
+For normal (non-dial) features the dial will behave identical to a button, where pressing the dial does the same as pressing a button, and the display above the dial displays the same as the display on a button.<br>
+Most actions have some support for dial-specific features (such as rotating the dial to change volumes). These features are generally applied on top of the 'normal' button behavior. See the action pages for more info on what dials can be used for.<br>
+If dial-specific features are enabled, the left part of the dial's LCD will display the 'normal' button display, while the right part will display dial-specific information.
 
 ## Applying an Action to a Button
+To use a Stream Deck button with Material Deck, you must apply an action to that button.
 After [installing the Material Deck plugin](../gettingStarted/installation.md#stream-deck-plugin), the Material Deck category will appear on the right side of the Stream Deck app. Expanding the category will reveal all the Material Deck actions. By dragging one of the actions onto one of the 'buttons', the action will be assigned to that button.
 <BR CLEAR="right" />
 ## Editing an Action
