@@ -24,6 +24,7 @@ nav:
       - Custom Actions: actions/custom/custom.md
       - Config Menu: actions/custom/config.md
       - Writing Code: actions/custom/writingCode.md
+      - Sharing Custom Actions: actions/custom/sharing.md
     - External Modules: actions/externalModules.md
     - Macro: actions/macro.md
     - Other Actions: actions/otherActions.md
