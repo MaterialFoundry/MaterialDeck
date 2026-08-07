@@ -1,0 +1,2612 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://materialfoundry.github.io/MaterialDeck/actions/otherActions/">
+      
+      
+        <link rel="prev" href="../macro/">
+      
+      
+        <link rel="next" href="../scene/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/icon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Other Actions - Material Deck Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../style.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#other-actions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Material Deck Documentation" class="md-header__button md-logo" aria-label="Material Deck Documentation" data-md-component="logo">
+      
+  <img src="../../img/MaterialFoundry.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Material Deck Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Other Actions
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../gettingStarted/gettingStarted/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../moduleSettings/moduleSettings/" class="md-tabs__link">
+          
+  
+  
+  Module Settings
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../actions/" class="md-tabs__link">
+          
+  
+  
+  Actions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../profiles/profiles/" class="md-tabs__link">
+          
+  
+  
+  Profiles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../systemDevelopment/gettingStarted/" class="md-tabs__link">
+          
+  
+  
+  System Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Material Deck Documentation" class="md-nav__button md-logo" aria-label="Material Deck Documentation" data-md-component="logo">
+      
+  <img src="../../img/MaterialFoundry.png" alt="logo">
+
+    </a>
+    Material Deck Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/gettingStarted/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/gamingSystems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gaming Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Settings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Module Settings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moduleSettings/moduleSettings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moduleSettings/deviceManager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moduleSettings/permissionConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audio
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/soundboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Soundboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/playlistControl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Playlist Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../combatTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Combat Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Custom Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/custom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config Menu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/writingCode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/sharing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sharing Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../externalModules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../macro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Actions
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#pause" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pause
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Control Buttons
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Control Buttons">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#controlstools-offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controls/Tools Offset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-sidebar-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Sidebar Tab
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roll-dice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roll Dice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dice-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dice Pool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roll-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roll Tables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-compendium-pack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Compendium Pack
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#open-journal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Journal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#send-chat-message" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Send Chat Message
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#set-message-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set Message Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cycle-through-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cycle Through Tokens
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dial-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dial Functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Token
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../token/token/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../token/customStats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../token/customOnClick/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom On-Click
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Profiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profiles/profiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    System Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/gettingStarted/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/settingTypes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/visibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/synchronizedSettings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronized Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/usefulFunctions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Useful Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/publishing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Publishing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="other-actions">Other Actions</h1>
+<p>Other Actions is used for miscellaneous actions.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>If configured, will set the title/text on the button. This will override any other text that would normally be displayed</td>
+</tr>
+<tr>
+<td>Icon Override</td>
+<td>Url to a custom icon. If configured, this will override any icon that would normally be displayed</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>Sets the function of the button:<br><b>-<a href="#pause">Pause</a></b>: Pause or unpause the game<br><b>-<a href="#control-buttons">Control Buttons</a></b>: Open or enable the control buttons<br><b>-<a href="#open-sidebar-tab">Open Sidebar Tab</a></b>: Open or close sidebar tabs<br><b>-<a href="#roll-dice">Roll Dice</a></b>: Roll dice using a formula<br><b>-<a href="#dice-pool">Dice Pool</a></b>: Create a dice pool and roll it<br><b>-<a href="#roll-tables">Roll Tables</a></b>: Open or close roll tables and roll from them<br><b>-<a href="#open-compendium-pack">Open Compendium Pack</a></b>: Open or close compendium packs<br><b>-<a href="#open-journal">Open Journal</a></b>: Open or close journal entries<br><b>-<a href="#send-chat-message">Send Chat Message</a></b>: Send a chat message<br><b>-<a href="#set-message-mode">Set Message Mode</a></b>: Set the message mode<br><b>-<a href="#cycle-through-tokens">Cycle Through Tokens</a></b>: Cycle through tokens on the canvas</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pause">Pause</h2>
+<p>This function allows you to pause or unpause the game.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Sets what to do on a button press:<br><b>-Pause Game</b>: Pause the game<br><b>-Resume</b>: Resumes/unpauses the game<br><b>-Toggle Pause</b>: Will pause the game if unpaused, or will unpause the game if paused</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the game is paused<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the game is not paused<br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="control-buttons">Control Buttons</h2>
+<p>This function allows you to open control buttons or select/activate tools (the buttons on the left of the Foundry window).<br>
+Controls are the 'categories' on the left. Each category can contain one or more tools and are shown to the right of the controls.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control</td>
+<td>The control/tool to open or the control that contains the tool that you want to open or activate:<br><b>-Displayed Controls</b>: Select from one of the controls that are currently displayed in Foundry using <code>Nr</code><br><b>-Displayed Tools</b>: Select from one of the tools that are currently displayed in Foundry using <code>Nr</code><br><b>-Controls/Tools Offset</b>: Configure offsets for <code>Displayed Controls</code> and <code>Displayed Tools</code>. See <a href="#controlstools-offset">here</a> for more info<br><b>-Rest</b>: All other options are a list of controls in Foundry that can be selected</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>(Only for <code>Displayed Controls/Tools</code>) The control or tool number that you want to select. 1 is the topmost tool/control.</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>(Not for <code>Displayed Controls/Tools</code> or <code>Controls/Tools Offset</code>) Select what you want to do when the button is pressed:<br><b>-Open Control</b>: Open the control<br><b>-Rest</b>: All other options are the tools for the selected control. Will select or activate the tool</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the control or tool is selected<br><b>-Active Color</b>: A border is drawn on the Stream Deck of this color if the tool is activated<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the control or tool is not selected<br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h3 id="controlstools-offset">Controls/Tools Offset</h3>
+<p>Control and tool offsets can be used in combination with <code>Nr</code> to give an offset to the selected control or tool.<br>
+For example, if the controls offset is set to 3, a button with <code>Control</code> set to <code>Displayed Controls</code> and <code>Nr</code> set to 1 will now select control 4, 
+and a button with <code>Nr</code> set to 3 will not select control 6.<br>
+<br>
+This can be used to browse through the controls or tools.<br>
+For example, say you have 5 <code>Displayed Controls</code> buttons with <code>Nr</code> set from 1 to 5, and a button with <code>Offset Mode</code> <code>Increase/Decrease</code> and <code>Offset</code> of 1. 
+If you then press the offset button, the offset will increase to 1, so now controls 2 through 6 ar selected.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Offset Mode</td>
+<td>Sets how to set the offset:<br><b>-Set to Value</b>: Sets the offset to the value set in <code>Offset</code><br><b>-Increase/Decrease</b>: Increases the offset by the value set in <code>Offset</code></td>
+</tr>
+<tr>
+<td>Offset</td>
+<td>The value to set the offset to (in case of <code>Set to Value</code>), or the value to increment the offset with (in case of <code>Increase/Decrease</code>).<br> The offset can be any value, positive or negative.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Offset</b>: Display the current offset on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: (<code>Set to Value</code> only) A border is drawn on the Stream Deck of this color if the current offset is equal to the offset configured in <code>Offset</code><br><b>-Off Color</b>: (<code>Set to Value</code> only) A border is drawn on the Stream Deck of this color if the current offset is not equal to the offset configured in <code>Offset</code><br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="open-sidebar-tab">Open Sidebar Tab</h2>
+<p>This function allows you to open or close sidebar tabs.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tab</td>
+<td>The sidebar tab to open or close</td>
+</tr>
+<tr>
+<td>Pop Out</td>
+<td>If selected, will pop out the sidebar tab in a separate window</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the name of the sidebar tab on the Stream Deck<br><b>-Icon</b>: Display the icon of the sidebar tab on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the sidebar tab is open<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the sidebar is not open<br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="roll-dice">Roll Dice</h2>
+<p>This function allows you to roll dice from a formula</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Message Mode</td>
+<td>The message mode:<br><b>-Default</b>: Result is shown as set in Foundry<br><b>-Public Roll</b>: Result is shown in chat to everyone<br><b>-GM Roll</b>: Result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Result is shown in chat to the GM only<br><b>-Self Roll</b>: Result is shown in chat to the user who rolled<br><b>-Display on Stream Deck</b>: Result is displayed on the Stream Deck</td>
+</tr>
+<tr>
+<td>Formula</td>
+<td>The roll formula. Follows the same format as standard Foundry <a href="https://foundryvtt.com/article/dice/">roll commands</a>, but omit <code>/r</code> or <code>/roll</code>.<br>For example: <code>1d20 + 7</code> or <code>1d4 / 2 + 2d8</code></td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Formula</b>: Display the formula on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dice-pool">Dice Pool</h2>
+<p>This function allows you to create a dice pool and roll it.<br>
+You can add or remove dice using the <code>Add Dice</code> and <code>Remove Dice</code> modes and roll using the <code>Roll Dice Pool</code> mode.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td><b>-Roll Dice Pool</b>: Rolls the dice pool<br><b>-Clear Dice Pool</b>: Clear the dice pool<br><b>-Add Dice</b>: Add a die to the dice pool<br><b>-Remove Dice</b>: Remove a die from the dice pool</td>
+</tr>
+<tr>
+<td>Message Mode</td>
+<td>(Only on <code>Roll Dice Pool</code>) The message mode:<br><b>-Public Roll</b>: Result is shown in chat to everyone<br><b>-GM Roll</b>: Result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Result is shown in chat to the GM only<br><b>-Self Roll</b>: Result is shown in chat to the user who rolled<br><b>-Display on Stream Deck</b>: Result is displayed on the Stream Deck</td>
+</tr>
+<tr>
+<td>Clear After Roll</td>
+<td>(Only on <code>Roll Dice Pool</code>) Clears the dice pool after it has been rolled</td>
+</tr>
+<tr>
+<td>Dice</td>
+<td>(Only on <code>Add/Remove Dice</code>) The dice type to add or remove</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Formula</b>: (Only on <code>Roll Dice Pool</code>) Display the formula of the dice pool on the Stream Deck<br><b>-Value</b>: (Only on <code>Add/Remove Dice</code>) The amount of dice of this dice type in the dice pool<br><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="roll-tables">Roll Tables</h2>
+<p>This function allows you to open and close roll tables, and roll from them.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td>Table to select:<br><b>-Select by Number</b>: Select a table by its number<br><b>-Select by Name/Id</b>: Select a table by its name or id<br><b>-Rest</b>: List of all roll tables</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>(Only on <code>Select by Number</code>) The number of the table to select</td>
+</tr>
+<tr>
+<td>Name/Id</td>
+<td>(Only on <code>Select by Name/Id</code>) The name or id of the table to select</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>Selects what to do on a button press:<br><b>-Open Table</b>: Opens or closes the table<br><b>-Public Roll</b>: Roll from the table, the result is shown in chat to everyone<br><b>-GM Roll</b>: Roll from the table, the result is shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Roll from the table, the result is shown in chat to the GM only<br><b>-Self Roll</b>: Roll from the table, the result is shown in chat to the user who rolled</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the name of the roll table on the Stream Deck<br><b>-Icon</b>: Display the icon of the roll table on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the roll table is open<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the roll table is not open<br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="open-compendium-pack">Open Compendium Pack</h2>
+<p>This function allows you to open and close compendium packs.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compendium</td>
+<td>Compendium pack to select:<br><b>-Select by Number</b>: Select a compendium pack by its number<br><b>-Select by Name</b>: Select a compendium pack by its name<br><b>-Rest</b>: List of all compendium packs</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>(Only on <code>Select by Number</code>) The number of the compendium pack to select</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>(Only on <code>Select by Name</code>) The name of the compendium pack to select</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the name of the compendium pack on the Stream Deck<br><b>-Icon</b>: Display the icon of the compendium pack on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the compendium pack is open<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the compendium pack not open<br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="open-journal">Open Journal</h2>
+<p>This function allows you to open and close journal entries or specific pages of journal entries.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Journal</td>
+<td>Journal to select:<br><b>-Select by Number</b>: Select a journal by its number<br><b>-Select by Name</b>: Select a journal by its name<br><b>-Rest</b>: List of all journals</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>(Only on <code>Select by Number</code>) The number of the journal to select</td>
+</tr>
+<tr>
+<td>Name/Id</td>
+<td>(Only on <code>Select by Name/Id</code>) The name or id of the journal to select</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>Selects what to do on a button press:<br><b>-Open Journal</b>: Opens or closes the journal<br><b>-Open Page by Number</b>: Open a specific page of the journal by its page number<br><b>-Open Page by Name</b>: Open a specific page of the journal by its name</td>
+</tr>
+<tr>
+<td>Page Number</td>
+<td>(Only on <code>Open Page by Number</code>) The number of the journal's page to open</td>
+</tr>
+<tr>
+<td>Page Name</td>
+<td>(Only on <code>Open Page by Name</code>) The name of the journal's page to open</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the name of the journal on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the journal is open. If <code>Open Page by Number/Name</code> is selected, only half of a border will be of this color if the journal is open but not on the right page<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the journal is not open<br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="send-chat-message">Send Chat Message</h2>
+<p>This function allows you to send a chat message.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Speaker</td>
+<td><b>-User</b>: Chat message will be spoken by the user<br><b>-Token</b>: Chat message will be spoken by the selected token or the player token</td>
+</tr>
+<tr>
+<td>Message</td>
+<td>The message to send to chat</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Message</b>: Display the chat message on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="set-message-mode">Set Message Mode</h2>
+<p>This function allows you to set the message mode in Foundry.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td><b>-Public Roll</b>: Results are shown in chat to everyone<br><b>-GM Roll</b>: Results are shown in chat to the player that rolled and the GM<br><b>-Blind Roll</b>: Results are shown in chat to the GM only<br><b>-Self Roll</b>: Results are shown in chat to the user who rolled</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Mode</b>: Display the selected mode on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the current roll mode is <code>Mode</code><br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the current roll mode is not <code>Mode</code><br><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cycle-through-tokens">Cycle Through Tokens</h2>
+<p>This function allows you to cycle through tokens to select them.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td><b>-All Tokens</b>: Cycle through all tokens<br><b>-Owned Tokens</b>: Cycle through owned tokens<br><b>-Friendly Tokens</b>: Cycle through friendly tokens</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Icon</b>: Display an icon on the Stream Deck</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-Background</b>: Background color of the button</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dial-functions">Dial Functions</h2>
+<p>The following Dial Functions are available for dials (Stream Deck + and Stream Deck XL +):</p>
+<table>
+<thead>
+<tr>
+<th>Button Mode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Function: Dice Pool<br>Mode: Add/Remove Dice</td>
+<td>Increases or decreases the configured dice.</td>
+</tr>
+<tr>
+<td>Function: Cycle Through Tokens</td>
+<td>Cycles through tokens.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/3hd4G6TkmA" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.patreon.com/materialfoundry" target="_blank" rel="noopener" title="www.patreon.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M490 153.8c-.1-65.4-51-119-110.7-138.3-74.2-24-172-20.5-242.9 12.9C50.6 68.9 23.6 157.7 22.6 246.2 21.8 319 29 510.6 137.2 512c80.3 1 92.3-102.5 129.5-152.3 26.4-35.5 60.5-45.5 102.4-55.9 72-17.8 121.1-74.7 121-150z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tracking", "navigation.tabs", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

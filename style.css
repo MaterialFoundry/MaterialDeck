@@ -1,0 +1,100 @@
+.imgContainer {
+  float: right; 
+  max-width: 450px; 
+  margin-left:10px;
+  text-align: center;
+}
+
+@media (max-width:700px) {
+  .imgContainer {
+    min-width: 100%; 
+  }
+
+  .imgContainer img {
+    max-width: 450px;
+  }
+}
+
+
+
+/****************************************************
+ * Warning & Info Boxes
+ ****************************************************/
+.warning {
+  background-color:#ab4a00; 
+  color:black; 
+  float: left; 
+}
+
+.info {
+  background-color: rgb(12, 61, 167); 
+  color: rgb(209, 209, 209);
+}
+
+.warning,
+.info {
+  border-radius: 10px; 
+  border: 2px solid black;
+  padding: 0.7em; 
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width:700px) {
+  .warning,
+  .info {
+    width: 100%;
+  }
+}
+
+.warning .header,
+.info .header {
+  margin-top:1em; 
+  font-weight: bold;
+}
+
+.warning .content,
+.info .content {
+  margin-left: 1em;
+}
+
+/****************************************************
+ * Changelog Admonition
+ ****************************************************/
+
+.md-typeset .admonition.changelog,
+.md-typeset details.changelog {
+  border-color: rgb(0, 0, 0);
+}
+
+.md-typeset .changelog > summary {
+  font-size: 1.1em;
+  padding-left: 15px;
+}
+
+.md-typeset .changelog > .admonition-title::before,
+.md-typeset .changelog > summary::before {
+  display: none !important;
+}
+
+/****************************************************
+ * Color elmnts
+ ****************************************************/
+red {
+  color: rgb(255, 59, 59);
+}
+
+blue {
+  color: rgb(75, 75, 255);
+}
+
+yellow {
+  color: rgb(207, 207, 8);
+}
+
+green {
+  color: rgb(85, 199, 85)
+}

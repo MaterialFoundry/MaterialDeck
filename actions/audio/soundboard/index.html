@@ -1,0 +1,2643 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://materialfoundry.github.io/MaterialDeck/actions/audio/soundboard/">
+      
+      
+        <link rel="prev" href="../audio/">
+      
+      
+        <link rel="next" href="../playlistControl/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../img/icon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Soundboard - Material Deck Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../style.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#soundboard" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Material Deck Documentation" class="md-header__button md-logo" aria-label="Material Deck Documentation" data-md-component="logo">
+      
+  <img src="../../../img/MaterialFoundry.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Material Deck Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Soundboard
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../.." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../gettingStarted/gettingStarted/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../moduleSettings/moduleSettings/" class="md-tabs__link">
+          
+  
+  
+  Module Settings
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../actions/" class="md-tabs__link">
+          
+  
+  
+  Actions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../profiles/profiles/" class="md-tabs__link">
+          
+  
+  
+  Profiles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../systemDevelopment/gettingStarted/" class="md-tabs__link">
+          
+  
+  
+  System Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Material Deck Documentation" class="md-nav__button md-logo" aria-label="Material Deck Documentation" data-md-component="logo">
+      
+  <img src="../../../img/MaterialFoundry.png" alt="logo">
+
+    </a>
+    Material Deck Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gettingStarted/gettingStarted/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gettingStarted/requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gettingStarted/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gettingStarted/gamingSystems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gaming Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Settings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Module Settings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../moduleSettings/moduleSettings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../moduleSettings/deviceManager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../moduleSettings/permissionConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audio
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Soundboard
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Soundboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#soundboard-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soundboard App
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Soundboard App">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sounds-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sounds Section
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sounds Section">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sound-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sound Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#controls-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controls Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importing-and-exporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Importing and Exporting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Importing and Exporting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exporting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Importing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stream-deck-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Deck Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stream Deck Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open-soundboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open Soundboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#play-soundboard-sound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Play Soundboard Sound
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stop-all-sounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stop All Sounds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set Target
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../playlistControl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Playlist Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../combatTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Combat Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Custom Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../custom/custom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../custom/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config Menu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../custom/writingCode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../custom/sharing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sharing Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../externalModules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../macro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../otherActions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Token
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../token/token/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../token/customStats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../token/customOnClick/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom On-Click
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Profiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../profiles/profiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    System Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/gettingStarted/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/settingTypes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/visibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/synchronizedSettings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronized Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/usefulFunctions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Useful Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../systemDevelopment/publishing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Publishing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="soundboard">Soundboard</h1>
+<p>Material Deck provides a soundboard from which sounds can be played from the Stream Deck or the soundboard app.<br>
+It is part of the <a href="../audio/">Audio action</a>.</p>
+<p>A soundboard is a collection of audio files that can be played from the Stream Deck or from the soundboard app.<br>
+The audio file can be a file on the Foundry server, such as from a playlist or stored as an asset, or the file can be hosted remotely (on the internet or your local network).<br>
+Files can be played once, repeated, or as long as the Stream Deck button is held down.</p>
+<p>Each user has access to 2 soundboards:</p>
+<ul>
+<li><b>User Soundboard</b>: Each user has their own soundboard that is only accessible by that user.</li>
+<li><b>World Soundboard</b>: This is a shared soundboard that all users (with <a href="../../../moduleSettings/permissionConfig/">permission</a>) have access to.</li>
+</ul>
+<h2 id="soundboard-app">Soundboard App</h2>
+<div class="imgContainer"><img src="../../../img/soundboard/soundboard_app.png"></div>
+<p>The soundboard app is used to configure the soundboard. Additionally, it is possible to play sounds from the soundboard app.<br>
+The app can be accessed from the <a href="../../../moduleSettings/moduleSettings/">module settings</a>, or by using the 'Open Soundboard' function on the Stream Deck, see <a href="#stream-deck-configuration">here</a>.</p>
+<p>The soundboard app consists of 4 sections, from the top to the bottom:</p>
+<ul>
+<li><b>Navigation</b>: For navigating the soundboard (display the next or previous sounds).</li>
+<li><b>Sounds Section</b>: For editing or playing sounds, see <a href="#sounds-section">here</a>.</li>
+<li><b>Controls Section</b>: For setting the soundboard to use, the play mode, and to stop all sounds, see <a href="#controls-section">here</a>.</li>
+<li><b>Data Section</b>: For data management, such as clearing the soundboard, importing or exporting data, see <a href="#data-section">here</a>.</li>
+</ul>
+<h3 id="sounds-section">Sounds Section</h3>
+<p>The sounds section gives an overview of the configured sounds, where each square represents a sound. 32 sounds are visible at a time, you can see the next or previous sounds by pressing the arrow keys in the navigation section at the top of the app.</p>
+<p>Pressing one of the sound boxes will do one of two things, depending on whether <code>Play Mode</code> is enabled in the <a href="#controls-section">controls section</a>:</p>
+<ul>
+<li><b>Play Mode Off</b>: Open the sound config.</li>
+<li><b>Play Mode On</b>: Play/Stop the sound.</li>
+</ul>
+<p>You can drag a configured sound onto another sound box to move it.</p>
+<h4 id="sound-config">Sound Config</h4>
+<div class="imgContainer"><img src="../../../img/soundboard/soundboard_app_sound_config.png"></div>
+<p>The sound config is used to configure each sound.<br>
+Any changes are saved immediately.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Sets the name of the sound. This will be displayed in the app or on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Playlist</td>
+<td>Sets the playlist from which to pick the sound, or, if <code>Filepicker</code> is selected, allows any file on the Foundry server to be played.</td>
+</tr>
+<tr>
+<td>Sound</td>
+<td>The selected sound. This is either a sound from the selected playlist, or an input field for the url to the sound if <code>Filepicker</code> was selected.<br>In case of <code>Filepicker</code>, the button on the right will open a filepicker from which the sound can be selected, or the url can be inputted manually.</td>
+</tr>
+<tr>
+<td>Icon</td>
+<td>Sets the icon to be displayed in the app or on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Play Mode</td>
+<td>Sets the play mode:<br><b>-Once</b>: Will play the sound once and will stop the sound if pressed again<br><b>-Once - Allow Simultaneous</b>: Will play the sound once and will play the sound again if pressed again, even if it was already playing<br><b>-Repeat</b>: Will restart the sound if it's done playing, will stop the sound if pressed again<br><b>-Hold</b>: Will start the sound when pressed and stop the sound when released.</td>
+</tr>
+<tr>
+<td>On Color</td>
+<td>A colored ring of this color will be displayed when the sound is playing.</td>
+</tr>
+<tr>
+<td>Off Color</td>
+<td>A colored ring of this color will be displayed when the sound is not playing.</td>
+</tr>
+<tr>
+<td>Volume</td>
+<td>Sets the volume of the sound.</td>
+</tr>
+<tr>
+<td>Preview</td>
+<td>Will play or stop the sound so it can be previewed.</td>
+</tr>
+<tr>
+<td>Clear Sound</td>
+<td>Will clear the sound data.</td>
+</tr>
+</tbody>
+</table>
+<p><b>Wildcard Files</b><br>
+When you choose the 'FilePicker' option, you can use wildcards in the sound path to play a random sound from a selection.<br>
+You use the <code>*</code> character as a wildcard character, meaning that <code>*</code> can be anything.</p>
+<p>For example, say you have 4 sounds in the folder <code>assets</code>: <code>audio1.mp3</code>, <code>audio2.mp3</code>, <code>audio3.wav</code> and <code>anotherFile.mp3</code>.<br>
+If you want to play any random file from that folder, use <code>assets/*</code>.<br>
+If you want to only play <code>.mp3</code> files, use <code>assets/*.mp3</code>.<br>
+If you want to only play one of the files starting with <code>audio</code>, use `assets/audio*.</p>
+<p><b>Playback Volume</b><br>
+The playback volume of the sounds is determined by 2 things:</p>
+<ul>
+<li>The volume configured in the sound config. This setting is the same for all users.</li>
+<li>The <code>Environment</code> volume slider in the <code>User Volume Controls</code> of the playlists sidebar tab. This setting can be configured by each user.</li>
+</ul>
+<h3 id="controls-section">Controls Section</h3>
+<p>The Controls Section has 3 settings/inputs:</p>
+<table>
+<thead>
+<tr>
+<th>Setting/Input</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Soundboard Selection</td>
+<td>Selects whether the 'User' or 'World' soundboard is displayed.</td>
+</tr>
+<tr>
+<td>Play Mode</td>
+<td>Sets whether the soundboard app should be in play mode:<br><b>-Off</b>: Pressing a sound box will open the <a href="#sound-config">sound config</a><br><b>-On</b>: Pressing a sound box will start or stop the sound.</td>
+</tr>
+<tr>
+<td>Stop All</td>
+<td>Will stop all currently playing sounds.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="data-section">Data Section</h3>
+<p>The Data Section gives some data management buttons:</p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clear Page</td>
+<td>Clears the currently selected page.</td>
+</tr>
+<tr>
+<td>Clear All</td>
+<td>Clears the entire soundboard (only the selected soundboard, so it will not clear the 'World' soundboard if the 'User' soundboard is selected).</td>
+</tr>
+<tr>
+<td>Import</td>
+<td>Import soundboard data, see <a href="#importing-and-exporting">here</a>.</td>
+</tr>
+<tr>
+<td>Export</td>
+<td>Export soundboard data, see <a href="#importing-and-exporting">here</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Please note that anything you do in the Data Section is irreversible.</p>
+<h3 id="importing-and-exporting">Importing and Exporting</h3>
+<p>The current soundboard can be exported, and previously exported soundboards can be imported.</p>
+<p>During both the importing and exporting, you can choose to include the actual audio and/or icon files.<br>
+Doing this will make sure that all files will be available on import, otherwise, you will have to make sure that when the data is imported, the audio and icon files are in the exact same relative location.<br>
+<br>
+For example:<br>
+If you're exporting a sound <code>assets/sound1.wav</code>, and choose to not export the audio file, you will have to make sure that the sound <code>assets/sound1.wav</code> exists on the Foundry server when you import it.</p>
+<h4 id="exporting">Exporting</h4>
+<div class="imgContainer"><img src="../../../img/soundboard/soundboard_app_export.png"></div>
+<p>Pressing the <code>Export</code> button will open a new window. This window will have a list of all configured sounds of the currently selected soundboard.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sound</td>
+<td>The number of the sound in the soundboard.</td>
+</tr>
+<tr>
+<td>Export Audio</td>
+<td>Will export the audio file if selected.</td>
+</tr>
+<tr>
+<td>Export Icon</td>
+<td>Will export the icon file if selected.</td>
+</tr>
+<tr>
+<td>Export</td>
+<td>Will include this sound in the export.</td>
+</tr>
+</tbody>
+</table>
+<p>Pressing the <code>Export</code> button will start the export process. A progress bar will show the progress, after which a window will open where you can choose the file name and the location to save the file.</p>
+<h4 id="importing">Importing</h4>
+<div class="imgContainer">
+<img src="../../../img/soundboard/soundboard_app_import1.png">
+<img src="../../../img/soundboard/soundboard_app_import2.png">
+</div>
+
+<p>Pressing the <code>Import</code> button will open a new window. You will have to select a file to import to continue.<br>
+Once a valid file (<code>.materialDeckSoundboard</code>) is loaded, some information about the file is displayed:</p>
+<table>
+<thead>
+<tr>
+<th>Info</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Filename</td>
+<td>The name of the file.</td>
+</tr>
+<tr>
+<td>Created By</td>
+<td>Username of the user who created the file.</td>
+</tr>
+<tr>
+<td>User Id</td>
+<td>User id of the user who created the file.</td>
+</tr>
+<tr>
+<td>Module Version</td>
+<td>Version of the Material Deck module that was used to create the file.</td>
+</tr>
+<tr>
+<td>Creation Date</td>
+<td>Date and time the file was created.</td>
+</tr>
+</tbody>
+</table>
+<p>Below that, there is a list of the sounds that can be imported:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Original Sound</td>
+<td>The number of the sound as it was in the exported soundboard.</td>
+</tr>
+<tr>
+<td>Import Audio</td>
+<td>Will import the audio file if selected. This is only possible if the file is included in the file.</td>
+</tr>
+<tr>
+<td>Import Icon</td>
+<td>Will import the icon file if selected. This is only possible if the file is included in the file.</td>
+</tr>
+<tr>
+<td>Import To Sound</td>
+<td>The sound number of the selected soundboard to import to. This will overwrite the existing sound.</td>
+</tr>
+<tr>
+<td>Import</td>
+<td>Will include this sound in the import.</td>
+</tr>
+</tbody>
+</table>
+<p>At the bottom, an import location can be specified. Files that are imported will be imported to this folder.<br>
+If a sound or icon file already exists, the file will not be imported, so it will not end up in the <code>Import Location</code>.</p>
+<p>By pressing the <code>Import</code> button, the selected sounds will be imported.</p>
+<h2 id="stream-deck-configuration">Stream Deck Configuration</h2>
+<p>This configuration is for the <code>Soundboard</code> mode.<br>
+See <a href="../audio/">here</a> for other modes.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>If configured, will set the title/text on the button. This will override any other text that would normally be displayed.</td>
+</tr>
+<tr>
+<td>Icon Override</td>
+<td>Url to a custom icon. If configured, this will override any icon that would normally be displayed.</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>Sets the function of the button:<br><b>-<a href="#open-soundboard">Open Soundboard</a></b>: Open or close the <a href="#soundboard-app">soundboard app</a>.<br><b>-<a href="#play-soundboard-sound">Play Soundboard Sound</a></b>: Play a sound from the soundboard.<br><b>-<a href="#stop-all-sounds">Stop All Sounds</a></b>: Stop all currently playing soundboard sounds.<br><b>-<a href="#set-target">Set Target</a></b>: Set who will hear a played sound.<br><b>-<a href="#offset">Offset</a></b>: Configure an offset to the selected sounds.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="open-soundboard">Open Soundboard</h3>
+<p>This function will allow you to open or close the <a href="#soundboard-app">soundboard app</a> in Foundry.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Display</td>
+<td><b>-Icon</b>: Display an icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border of this color will be displayed if the soundboard app is open.<br><b>-Off Color</b>: A border of this color will be displayed if the soundboard app is closed.<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="play-soundboard-sound">Play Soundboard Sound</h3>
+<p>This function will allow you to play a sound configured in the <a href="#soundboard-app">soundboard app</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Soundboard</td>
+<td>The soundboard from which to select a sound: 'User Soundboard' or 'World Soundboard'.</td>
+</tr>
+<tr>
+<td>Sound Nr</td>
+<td>The selected sound. For example, setting it to <code>1</code> will start or stop <code>Sound 1</code>.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the name of the sound on the Stream Deck.<br><b>-Icon</b>: Display the icon of the sound on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stop-all-sounds">Stop All Sounds</h3>
+<p>Pressing the button will stop all currently playing soundboard sounds.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Display</td>
+<td><b>-Icon</b>: Display an icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border of this color will be displayed if any sound is playing.<br><b>-Off Color</b>: A border of this color will be displayed if no sound is playing.<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="set-target">Set Target</h3>
+<p>This function allows you to set a target for played sounds. Only the selected user will hear the sound.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target</td>
+<td>List of all users. Sound will only be played for that user. <code>All Users</code> will allow all users to hear the sound.</td>
+</tr>
+<tr>
+<td>Reset to 'All'</td>
+<td>If set, will reset the target to <code>All Users</code> after the next sound is played.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Icon</b>: Display an icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border of this color will be displayed if the current target is the same as this button's target.<br><b>-Off Color</b>: A border of this color will be displayed if the current target is not the same as this button's target.<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="offset">Offset</h3>
+<p>Offsets can be used in combination with <code>Sound Nr</code> (if <code>Function</code> is set to <code>Play Soundboard Sound</code>) to give an offset to the sound nr.</p>
+<p>For example, if the sound offset is set to 10, a button with <code>Sound Nr</code> set to 1 will then have <code>Sound 11</code> selected, a button with <code>Sound Nr</code> set to 5 will have <code>Sound 15</code> selected.</p>
+<p>This can be used to browse through sounds.<br>
+For example, say you have 5 buttons with <code>Sound Nr</code> set from 1 to 5, and a button with <code>Offset Mode</code> <code>Increment/Decrease</code> and <code>Offset</code> of 1`. 
+If you then press the offset button, the offset will increase to 1, so now sounds 2 through 6 are selected.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Offset Mode</td>
+<td>Sets how to set the offset:<br><b>-Set to Value</b>: Sets the offset to the value set in <code>Offset</code>.<br><b>-Increase/Decrease</b>: Increases the offset by the value set in <code>Offset</code>.</td>
+</tr>
+<tr>
+<td>Offset</td>
+<td>The value to set the offset to (in case of <code>Set to Value</code>), or the value to increment the offset with (in case of <code>Increase/Decrease</code>).<br> The offset can be any value, positive or negative.</td>
+</tr>
+<tr>
+<td>Display Offset</td>
+<td>Display the current offset on the Stream Deck.</td>
+</tr>
+<tr>
+<td>On Color</td>
+<td>(<code>Set to Value</code> only) A border is drawn on the Stream Deck of this color if the current offset is equal to the offset configured in <code>Offset</code>.</td>
+</tr>
+<tr>
+<td>Off Color</td>
+<td>(<code>Set to Value</code> only) A border is drawn on the Stream Deck of this color if the current offset is not equal to the offset configured in <code>Offset</code>.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/3hd4G6TkmA" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.patreon.com/materialfoundry" target="_blank" rel="noopener" title="www.patreon.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M490 153.8c-.1-65.4-51-119-110.7-138.3-74.2-24-172-20.5-242.9 12.9C50.6 68.9 23.6 157.7 22.6 246.2 21.8 319 29 510.6 137.2 512c80.3 1 92.3-102.5 129.5-152.3 26.4-35.5 60.5-45.5 102.4-55.9 72-17.8 121.1-74.7 121-150z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tracking", "navigation.tabs", "toc.integrate", "navigation.top"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

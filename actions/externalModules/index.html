@@ -1,0 +1,2776 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://materialfoundry.github.io/MaterialDeck/actions/externalModules/">
+      
+      
+        <link rel="prev" href="../custom/sharing/">
+      
+      
+        <link rel="next" href="../macro/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/icon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>External Modules - Material Deck Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../style.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#external-modules-action" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Material Deck Documentation" class="md-header__button md-logo" aria-label="Material Deck Documentation" data-md-component="logo">
+      
+  <img src="../../img/MaterialFoundry.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Material Deck Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              External Modules
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../.." class="md-tabs__link">
+          
+  
+  
+  Home
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../gettingStarted/gettingStarted/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../moduleSettings/moduleSettings/" class="md-tabs__link">
+          
+  
+  
+  Module Settings
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../actions/" class="md-tabs__link">
+          
+  
+  
+  Actions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../profiles/profiles/" class="md-tabs__link">
+          
+  
+  
+  Profiles
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../systemDevelopment/gettingStarted/" class="md-tabs__link">
+          
+  
+  
+  System Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Material Deck Documentation" class="md-nav__button md-logo" aria-label="Material Deck Documentation" data-md-component="logo">
+      
+  <img src="../../img/MaterialFoundry.png" alt="logo">
+
+    </a>
+    Material Deck Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/gettingStarted/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gettingStarted/gamingSystems/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gaming Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Settings
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Module Settings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moduleSettings/moduleSettings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moduleSettings/deviceManager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moduleSettings/permissionConfig/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permission Config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Audio
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/soundboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Soundboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/playlistControl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Playlist Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../combatTracker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Combat Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Custom Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/custom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config Menu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/writingCode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom/sharing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sharing Custom Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External Modules
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ember
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ember">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calendar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calendar
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Date Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fxmaster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FXMaster
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FXMaster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#particle-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Particle Effects
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filter Effects
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lock-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lock View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lock View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set View
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monks-active-tile-triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monk's Active Tile Triggers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#not-your-turn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Not Your Turn!
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Vision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#simple-calendar-reborn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple Calendar Reborn
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simple Calendar Reborn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-display_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#date-display_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Date Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-time-to-value-change-time-to-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set Time to Value/ Change Time to Value
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#soundscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Soundscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worldbuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worldbuilder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Worldbuilder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#main-app-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main App Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#articles-widgets-tags-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Articles, Widgets &amp; Tags Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../macro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../otherActions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Other Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Token
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../token/token/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Token
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../token/customStats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Stats
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../token/customOnClick/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom On-Click
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Profiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../profiles/profiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    System Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/gettingStarted/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Actions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/settingTypes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/visibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/synchronizedSettings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronized Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/usefulFunctions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Useful Functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../systemDevelopment/publishing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Publishing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="external-modules-action">External Modules Action</h1>
+<p>This action allows you to control other modules.</p>
+<p>The following modules are supported:</p>
+<ul>
+<li><a href="#ember">Ember</a></li>
+<li><a href="#fxmaster">FXMaster</a></li>
+<li><a href="#lock-view">Lock View</a></li>
+<li><a href="#monks-active-tile-triggers">Monk's Active Tile Triggers</a></li>
+<li><a href="#not-your-turn">Not Your Turn!</a></li>
+<li><a href="#shared-vision">Shared Vision</a></li>
+<li><a href="#simple-calendar-reborn">Simple Calendar Reborn</a></li>
+<li><a href="#soundscape">Soundscape</a></li>
+<li><a href="#worldbuilder">Worldbuilder</a></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">External Module Combatibility Issues</p>
+<p>The functionality of the 'External Modules' action depends on (the API of) the supported modules.<br>
+This means that if one of the modules is updated and changes its API, Material Deck's functionality might break.<br>
+This is also the case if Foundry gets a major update, and the supported module has not been updated.</p>
+</div>
+<p><BR CLEAR="left"></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>If configured, will set the title/text on the button. This will override any other text that would normally be displayed.</td>
+</tr>
+<tr>
+<td>Icon Override</td>
+<td>Url to a custom icon. If configured, this will override any icon that would normally be displayed.</td>
+</tr>
+<tr>
+<td>Module</td>
+<td>Module to control</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ember">Ember</h2>
+<p><a href="https://foundryvtt.com/packages/ember">Ember</a> is a roleplaying campaign by the Foundry team.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-Open Map</b>: Open a specified map.<br><b>-Open Party Sheet</b>: Open or close the party sheet.<br><b>-Open Codex</b>: Open or close the codex.<br><b>-<a href="#calendar">Calendar</a></b>: Control or display the calendar.</td>
+</tr>
+<tr>
+<td>Map</td>
+<td>(<code>Open Map</code> only) The map to open.</td>
+</tr>
+<tr>
+<td>On Press/ On Hold</td>
+<td>(<code>Open Map</code> only) Select what to do when the button is pressed:<br><b>-View:</b> View the scene.<br><b>-Activate:</b> Activate the scene.<br><b>-View/Activate if Viewed:</b> View the scene, activate the scene if the scene is already being viewed.<br><b>-Preload Scene:</b> Preload the scene.</td>
+</tr>
+<tr>
+<td>Open Mode</td>
+<td>(<code>Open Party Sheet</code> or <code>Open Codex</code> only):<br><b>-Toggle:</b> Toggle between opening and closing.<br><b>-Open:</b> Open.<br><b>-Close:</b> Close.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="calendar">Calendar</h3>
+<p>Ember has a built-in calendar system.</p>
+<p>You can advance or rewind the time and display the time and date.</p>
+<h3 id="time-display">Time Display</h3>
+<p>The time display option consists of multiple checkboxes for the 'Digital' and 'Analog' time.<br>
+The digital time displays the time as a value, while the analog time displays a clock face.<br>
+In both cases you can configure to display the hours, minutes or seconds by checking the respective checkbox. For the digital time you can additionally set it to a 24 hour or 12 hour clock.</p>
+<h3 id="date-display">Date Display</h3>
+<p>The date display option consists of multiple checkboxes, these define how the date is displayed.<br>
+For example, if only <code>Display</code> is checked for <code>Month</code>, the month's number will be displayed, if <code>Name</code> is also checked, the month's name will be displayed, and lastly, if <code>Abbreviated</code> is also checked, the month's abbreviated name is displayed.</p>
+<h2 id="fxmaster">FXMaster</h2>
+<p><a href="https://foundryvtt.com/packages/fxmaster/">FXMaster</a> can display effects, such as weather effects, filters or special effects.</p>
+<p>Using Material Deck you can enable or disable these effects.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-<a href="#special-effects">Special Effects</a></b>: Trigger special effects.<br><b>-<a href="#particle-effects">Particle Effects</a></b>: Enable or disable particle effects.<br><b>-<a href="#filter-effects">Filter Effects</a></b>: Enable or disable filter effects.<br><b>-Clear All</b>: Clear all effects.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="particle-effects">Particle Effects</h3>
+<p>Particle effects are effects that are displayed across the entire scene, such as weather effects.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Effect</td>
+<td>Effect to trigger</td>
+</tr>
+<tr>
+<td>Effect Options</td>
+<td>Effect options will depend on the effect, see <a href="https://github.com/ghost-fvtt/fxmaster?tab=readme-ov-file#particle-effect-options">here</a> for more info.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the effect's name on the Stream Deck.<br><b>-Icon</b>: Display the effect's icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the effect is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the effect is currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="filter-effects">Filter Effects</h3>
+<p>Similar to 'Particle Effects', filter effects are displayed across the entire scene but function as a filter.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Effect</td>
+<td>Effect to trigger</td>
+</tr>
+<tr>
+<td>Effect Options</td>
+<td>Effect options will depend on the effect, see <a href="https://github.com/ghost-fvtt/fxmaster?tab=readme-ov-file#available-filter-effects-with-supported-options">here</a> for more info.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the effect's name on the Stream Deck.<br><b>-Icon</b>: Display the effect's icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the effect is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the effect is currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="lock-view">Lock View</h2>
+<p><a href="https://foundryvtt.com/packages/LockView/">Lock View</a> gives the GM control over the zoom and pan capabilities of the player.</p>
+<p>Using Material Deck you can enable or disable <code>Pan Lock</code>, <code>Zoom Lock</code> and <code>Bounding Box</code>, and you can set the view of players.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-Pan Lock</b>: Enable or disable the 'Pan Lock'.<br><b>-Zoom Lock</b>: Enable or disable the 'Zoom Lock'.<br><b>-Bounding Box</b>: Enable or disable the 'Bounding Box'.<br><b>-<a href="#set-view">Set View</a></b>: Set the view of players.</td>
+</tr>
+<tr>
+<td>Toggle Mode</td>
+<td>(All but <code>Set View</code>) Sets what to do when pressed:<br><b>-Toggle</b>: Toggle between on and off.<br><b>-Enable</b>: Enable.<br><b>-Disable</b>: Disable.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the mode's name on the Stream Deck.<br><b>-Icon</b>: Display the mode's icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="set-view">Set View</h3>
+<p>With the 'Set View' mode you can set the view of players.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Movement</td>
+<td>Configures how to move the canvas for the players:<br><b>-Ignore Movement</b>: Do not move canvas.<br><b>-Reset to Initial View</b>: Reset canvas to the initial view position.<br><b>-Clone View</b>: Clone GM's view.<br><b>-Horizontal Fit</b>: Move canvas to fit it horizontally within the window.<br><b>-Vertical Fit</b>: Move canvas to fit it vertically within the window.<br><b>-Automatic Fit (inside)</b>: Move canvas so it fits within the window with padding visible on the short side.<br><b>-Automatic Fit (outside)</b>: Move canvas to it fits within the window with no padding visible.<br><b>-Move Grid Spaces</b>: Move a specified amount of grid spaces.<br><b>-Move to Coordinates</b>: Move to specified coordinates.<br><b>-Cursor</b>: Move to cursor position.<br></td>
+</tr>
+<tr>
+<td>X</td>
+<td>(<code>Move Grid Spaces</code>) Grid spaces to move in x-direction.<br>(<code>Move to Coordinates</code>) X-coordinate to move to.</td>
+</tr>
+<tr>
+<td>Y</td>
+<td>(<code>Move Grid Spaces</code>) Grid spaces to move in y-direction.<br>(<code>Move to Coordinates</code>) Y-coordinate to move to.</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>Configures how to set the scale for the players:<br><b>-Ignore Scale</b>: Do not change the scale.<br><b>-Reset to Initial View</b>: Reset scale to the initial view position.<br><b>-Clone View</b>: Clone the scale from GM.<br><b>-Physical Gridsize</b>: Scale to physical gridsize.<br><b>-Set Scale</b>: Set scale to a specified value.</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>(<code>Set Scale</code> only) Value to set the scale to.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="monks-active-tile-triggers">Monk's Active Tile Triggers</h2>
+<p><a href="https://foundryvtt.com/packages/monks-active-tiles/">Monk's Active Tile Triggers</a> allows you to configure actions for tiles, such as teleporting tokens or displaying a message when they move onto a tile.</p>
+<p>Using Material Deck you can enable or disable triggers.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tile Name/ID</td>
+<td>Name or ID of the tile.</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-Toggle Tile</b>: Enable or disable the tile triggers.<br><b>-Enable Tile</b>: Enable the tile triggers.<br><b>-Disable</b>: Enable or disable the tile triggers.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the tile's name on the Stream Deck.<br><b>-Icon</b>: Display the tile's image on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the tile's triggers are currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the tile's triggers are currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="not-your-turn">Not Your Turn!</h2>
+<p><a href="https://foundryvtt.com/packages/NotYourTurn">Not Your Turn!</a> allows the GM to block unintended token movement of players.</p>
+<p>Using Material Deck you can enable or disable the blocks.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-Toggle Combat Movement Block</b>: Enable or disable the 'Combat Movement Block'.<br><b>-Enable Combat Movement Block</b>: Enable the 'Combat Movement Block'.<br><b>-Disable Combat Movement Block</b>: Disable the 'Combat Movement Block'.<br><b>-Toggle Non-Combat Movement Block</b>: Enable or disable the 'Non-Combat Movement Block'.<br><b>-Enable Non-Combat Movement Block</b>: Enable the 'Non-Combat Movement Block'.<br><b>-Disable Non-Combat Movement Block</b>: Disable the 'Non-Combat Movement Block'.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the mode's name on the Stream Deck.<br><b>-Icon</b>: Display the mode's icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="shared-vision">Shared Vision</h2>
+<p><a href="https://foundryvtt.com/packages/SharedVision">Shared Vision</a> allows vision of tokens to be shared with players, even if they have no permission for that token.</p>
+<p>Using Material Deck you can enable or disable vision sharing.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-Global Vision Sharing</b>: Enable or disable 'Global Vision Sharing'.<br><b>-All Vision Sharing</b>: Enable or disable the 'All Vision Sharing'.</td>
+</tr>
+<tr>
+<td>Toggle Mode</td>
+<td>Sets what to do when pressed:<br><b>-Toggle</b>: Toggle between on and off.<br><b>-Enable</b>: Enable.<br><b>-Disable</b>: Disable.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display the mode's name on the Stream Deck.<br><b>-Icon</b>: Display the mode's icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="simple-calendar-reborn">Simple Calendar Reborn</h2>
+<p><a href="https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn">Simple Calendar Reborn</a> adds a calendar to Foundry.</p>
+<p>Using Material Deck you can display the in-game time and date, start or stop the clock and set the time or date.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time</td>
+<td>Configures the <a href="#time-display">time display</a>.</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>Configures the <a href="#date-display">date display</a>.</td>
+</tr>
+<tr>
+<td>Date Format</td>
+<td>Configures the date format.</td>
+</tr>
+<tr>
+<td>On Press</td>
+<td>Configures what to do when the button is pressed:<br><b>-Do Nothing</b>: Do nothing.<br><b>-Start/Stop the Clock</b>: Start or stops the clock.<br><b>-Set the Time</b>: Sets the time/date.</td>
+</tr>
+<tr>
+<td>Toggle Mode</td>
+<td>(<code>Start/Stop the Clock</code> only) Sets what to do when pressed:<br><b>-Toggle</b>: Toggle between on and off.<br><b>-Enable</b>: Enable.<br><b>-Disable</b>: Disable.</td>
+</tr>
+<tr>
+<td>Set Time Mode</td>
+<td>Sets the mode when the button is pressed:<br><b>-Next Sunrise</b>: Advance clock to the next sunrise.<br><b>-Previous Sunrise</b>: Recede clock to the previous sunrise.<br><b>-Next Midday</b>: Advance clock to the next midday.<br><b>-Previous Midday</b>: Recede clock to the previous midday.<br><b>-Next Sunset</b>: Advance clock to the next sunset.<br><b>-Previous Sunset</b>: Recede clock to the previous sunset.<br><b>-Next Midnight</b>: Advance clock to the next midnight.<br><b>-Previous Midnight</b>: Recede clock to the previous midnight.<br><b>-Set Time to Value</b>: <a href="#set-time-to-value-change-time-to-value">Set the time to a specified value</a>.<br><b>-Change Time by Value</b>: <a href="#set-time-to-value-change-time-to-value">Change the time by a specified value</a>.<br></td>
+</tr>
+</tbody>
+</table>
+<h3 id="time-display_1">Time Display</h3>
+<p>The time display option consists of multiple checkboxes for the 'Digital' and 'Analog' time.<br>
+The digital time displays the time as a value, while the analog time displays a clock face.<br>
+In both cases you can configure to display the hours, minutes or seconds by checking the respective checkbox. For the digital time you can additionally set it to a 24 hour or 12 hour clock.</p>
+<h3 id="date-display_1">Date Display</h3>
+<p>The date display option consists of multiple checkboxes, these define how the date is displayed.<br>
+For example, if only <code>Display</code> is checked for <code>Month</code>, the month's number will be displayed, if <code>Name</code> is also checked, the month's name will be displayed, and lastly, if <code>Abbreviated</code> is also checked, the month's abbreviated name is displayed.</p>
+<h3 id="set-time-to-value-change-time-to-value">Set Time to Value/ Change Time to Value</h3>
+<p>The time and date can be changed by setting the values in the <code>Time</code> and <code>Date</code> rows.<br>
+Only fields that have a value will be changed, for example, if <code>Mode</code> is set to <code>Change Time by Value</code> and <code>Hours</code> is set to 1, the time will be incremented by 1 hour.</p>
+<h2 id="soundscape">Soundscape</h2>
+<p><a href="https://foundryvtt.com/packages/soundscape">Soundscape</a> adds comprehensive audio mixing capabilities to Foundry.</p>
+<p>Using Material Deck you can control Soundscape's mixer and trigger sounds from its soundboard.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-Open Soundscape</b>: Opens or closes the Soundscape mixer.<br><b>-Set Soundscape</b>: Sets the current soundscape.<br><b>-Mixer</b>: Control Soundscape's mixer.</td>
+</tr>
+<tr>
+<td>Soundscape Nr</td>
+<td>(<code>Set Soundscape</code> only) Sets the current soundscape to this value.</td>
+</tr>
+<tr>
+<td>Mixer Mode</td>
+<td>(<code>Mixer</code> mode only)<br><b>-Start/Stop All</b>: Start or stops all channels from playing.<br><b>Start/Stop</b>: Start stop the channel from playing.<br><b>Toggle Mute</b>: Toggle the channel's mute.<br><b>-Toggle Solo</b>: Toggle the channel's solo.<br><b>-Toggle Link</b>: Toggles the channel's link.</td>
+</tr>
+<tr>
+<td>Channel</td>
+<td>(<code>Mixer</code> mode only) Channel to control.</td>
+</tr>
+<tr>
+<td>Volume Mode</td>
+<td>(<code>Mixer</code> mode and <code>Set Volume</code> only) Configures how to control the channel's volume:<br><b>-Increase/Decrease</b>: Increase or decrease the volume by a specified value.<br><b>-Set to Value</b>: Set the volume to a specified value.</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>(<code>Mixer</code> mode and <code>Set Volume</code> only) Volume to set.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Channel</b>: Display the channel number on the Stream Deck.<br><b>-Name</b>: Display the mode's name on the Stream Deck.<br><b>-Icon</b>: Display the an icon on the Stream Deck.<br><b>-Volume</b>: (<code>Mixer</code> mode and <code>Set Volume</code> only) Display the channel's volume on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently active<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the mode is currently not active<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="worldbuilder">Worldbuilder</h2>
+<p><a href="https://foundryvtt.com/packages/worldbuilder">Worldbuilder</a> is a campaign management and worldbuilding toolkit for Foundry VTT.</p>
+<p>Using Material Deck you can open or close the Worldbuilder application, open and close articles/widgets/tags or show article/widgets/tags to all players.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode</td>
+<td>Mode of the button:<br><b>-<a href="#main-app-mode">Main App</a></b>: Control Worldbuilder's main application.<br><b>-<a href="#articles-widgets-tags-mode">Articles, Widgets &amp; Tags</a></b>: Control specific articles, widgets or tags.</td>
+</tr>
+<tr>
+<td>Display</td>
+<td><b>-Name</b>: Display a relevant name on the Stream Deck.<br><b>-Icon</b>: Display a relevant icon on the Stream Deck.</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><b>-On Color</b>: A border is drawn on the Stream Deck of this color if the app/tab/article is open<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the app/tab/article is closed<br><b>-Background</b>: Background color of the button.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="main-app-mode">Main App Mode</h3>
+<p>In "Main App" mode, you can open, close or toggle the main Worldbuilder application, or open a specific tab of the application.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>On Press/On Hold</td>
+<td>Action to be performed when pressing/holding the button:<br><b>-Do Nothing</b>: Do Nothing.<br><b>-Open App</b>: Open the main app.<br><b>-Close App</b>: Close the main app.<br><b>-Toggle App</b>: Toggle between opening and closing the main app.<br><b>-Set Tab</b>: Open a specific tab of the main app.</td>
+</tr>
+<tr>
+<td>Tab</td>
+<td>(<code>Set Tab</code> only) The tab to open.</td>
+</tr>
+<tr>
+<td>Open App</td>
+<td>(<code>Set Tab</code> only) Also open the application if it's currently closed.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="articles-widgets-tags-mode">Articles, Widgets &amp; Tags Mode</h3>
+<p>In the "Articles, Widgets &amp; Tags" mode you can open specific articles/widgets/tags and/or show them to all players.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Selection</td>
+<td>Method of selecting the article/widget/tag:<br><b>-Select by UUID</b>: Select an article/widget/tag by its UUID.<br><b>-Select by Nr</b>: Select an article/widget/tag using a number.<br><b>-All other options</b>: List of articles/widgets/tags to select.</td>
+</tr>
+<tr>
+<td>UUID</td>
+<td>(<code>Select by UUID</code> only) UUID of the article/widget/tag.</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>(<code>Select by Nr</code> only) Select the type of article/widget/tag.</td>
+</tr>
+<tr>
+<td>Sorting Mode</td>
+<td>(<code>Select by Nr</code> only) Set how to sort the articles/widgets/tags:<br><b>-Same as Worldbuilder App</b>: The same sorting method as the relevant Tab of the Worlbuilder app will be used, see <a href="https://materialfoundry.github.io/Worldbuilder/mainApplication/articles/#sorting">here</a>.<br><b>-Manually</b>: Manual sorting, as configured in the Worldbuilder app, see <a href="https://materialfoundry.github.io/Worldbuilder/mainApplication/articles/#sorting">here</a>.<br><b>-Name (A-Z)</b>: Sort alphabetically, starting with A.<br><b>-Name (Z-A)</b>: Sort alphabetically, starting with Z.</td>
+</tr>
+<tr>
+<td>Page-Wide Type &amp; Sorting</td>
+<td>(<code>Select by Nr</code> only) Apply the same <code>Type</code> and <code>Sorting Mode</code> to all buttons with this setting enabled.</td>
+</tr>
+<tr>
+<td>Nr</td>
+<td>(<code>Select by Nr</code> only) Number of the article/widget/tag to select.</td>
+</tr>
+<tr>
+<td>On Press/On Hold</td>
+<td>Action to be performed when pressing/holding the button:<br><b>-Do Nothing</b>: Do Nothing.<br><b>-Open</b>: Open the article/widget/tag.<br><b>-Close</b>: Close the article/widget/tag.<br><b>-Toggle App</b>: Toggle between opening and closing the article/widget/tag.<br><b>-Show Players</b>: Show the article/widget/tag to all players.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/3hd4G6TkmA" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.patreon.com/materialfoundry" target="_blank" rel="noopener" title="www.patreon.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M490 153.8c-.1-65.4-51-119-110.7-138.3-74.2-24-172-20.5-242.9 12.9C50.6 68.9 23.6 157.7 22.6 246.2 21.8 319 29 510.6 137.2 512c80.3 1 92.3-102.5 129.5-152.3 26.4-35.5 60.5-45.5 102.4-55.9 72-17.8 121.1-74.7 121-150z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tracking", "navigation.tabs", "toc.integrate", "navigation.top"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
