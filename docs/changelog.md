@@ -1,6 +1,3 @@
-Changes between module versions are documented here.<br>
-This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
-
 ??? changelog "v2.3.0 - 16-11-2026"
 
     ## Requirements:

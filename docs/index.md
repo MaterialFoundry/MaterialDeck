@@ -1,10 +1,6 @@
 # Material Deck Documentation
 
-!!! info "Material Deck v2 Documentation"
-    This documentation is for Material Deck Premium (v2+).<br>
-    For older versions, please refer to the <a href="https://github.com/MaterialFoundry/MaterialDeck/wiki">old documentation</a>.
-
-Welcome to the [Material Deck](https://foundryvtt.com/packages/MaterialDeck) documentation.
+Welcome to the [Material Deck](https://foundryvtt.com/packages/materialdeck-premium) documentation.
 
 * [Getting Started](./gettingStarted/gettingStarted.md)
 * [Feedback & Issues](#feedback-issues)
