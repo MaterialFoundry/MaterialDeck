@@ -7,7 +7,9 @@ To get Material Deck to work, you will need to have the following:
 * Be a patron of the [Material Foundry Patreon](https://www.patreon.com/materialfoundry) at the 'Material Apprentice' tier or higher
 
 !!! info "Linux Users & Non-Elgato Devices"
-    The official Stream Deck application is only available on Windows and MacOS, and only works with Elgato's devices. For Linux users and non-Elgato devices you will need to use [OpenDeck](./installation.md#opendeck).
+    The official Stream Deck application is only available on Windows and MacOS, and only works with Elgato's devices.<br>
+    Linux users can use [OpenDeck](./installation.md#opendeck) or [WebHID](./installation.md#webhid).<br>
+    Users of non-Elgato devices you will need to use [OpenDeck](./installation.md#opendeck).
 
 ## Compatible Devices
 Material Deck has been written for [Elgato](https://www.elgato.com/ww/en)'s line of Stream Deck devices, but other Stream Deck-like devices might work through [OpenDeck](./installation.md#opendeck).

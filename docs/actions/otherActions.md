@@ -5,7 +5,7 @@ Other Actions is used for miscellaneous actions.
 |-------------------|---------------|
 | Title             | If configured, will set the title/text on the button. This will override any other text that would normally be displayed |
 | Icon Override     | Url to a custom icon. If configured, this will override any icon that would normally be displayed |
-| Function          | Sets the function of the button:<br><b>-[Pause](#pause)</b>: Pause or unpause the game<br><b>-[Control Buttons](#control-buttons)</b>: Open or enable the control buttons<br><b>-[Open Sidebar Tab](#open-sidebar-tab)</b>: Open or close sidebar tabs<br><b>-[Roll Dice](#roll-dice)</b>: Roll dice using a formula<br><b>-[Dice Pool](#dice-pool)</b>: Create a dice pool and roll it<br><b>-[Roll Tables](#roll-tables)</b>: Open or close roll tables and roll from them<br><b>-[Open Compendium Pack](#open-compendium-pack)</b>: Open or close compendium packs<br><b>-[Open Journal](#open-journal)</b>: Open or close journal entries<br><b>-[Send Chat Message](#send-chat-message)</b>: Send a chat message<br><b>-[Set Message Mode](#set-message-mode)</b>: Set the message mode<br><b>-[Cycle Through Tokens](#cycle-through-tokens)</b>: Cycle through tokens on the canvas
+| Function          | Sets the function of the button:<br><b>-[Pause](#pause)</b>: Pause or unpause the game<br><b>-[Control Buttons](#control-buttons)</b>: Open or enable the control buttons<br><b>-[Open Sidebar Tab](#open-sidebar-tab)</b>: Open or close sidebar tabs<br><b>-[Roll Dice](#roll-dice)</b>: Roll dice using a formula<br><b>-[Dice Pool](#dice-pool)</b>: Create a dice pool and roll it<br><b>-[Roll Tables](#roll-tables)</b>: Open or close roll tables and roll from them<br><b>-[Open Compendium Pack](#open-compendium-pack)</b>: Open or close compendium packs<br><b>-[Journal Entry](#journal-entry)</b>: Open or close journal entries<br><b>-[Send Chat Message](#send-chat-message)</b>: Send a chat message<br><b>-[Set Message Mode](#set-message-mode)</b>: Set the message mode<br><b>-[Cycle Through Tokens](#cycle-through-tokens)</b>: Cycle through tokens on the canvas<br><b>-[Material Deck](#material-deck)</b>: Open and close Material Deck related applications within Foundry |
 
 ## Pause
 This function allows you to pause or unpause the game.
@@ -101,7 +101,7 @@ This function allows you to open and close compendium packs.
 | Display           | <b>-Name</b>: Display the name of the compendium pack on the Stream Deck<br><b>-Icon</b>: Display the icon of the compendium pack on the Stream Deck |
 | Colors            | <b>-On Color</b>: A border is drawn on the Stream Deck of this color if the compendium pack is open<br><b>-Off Color</b>: A border is drawn on the Stream Deck of this color if the compendium pack not open<br><b>-Background</b>: Background color of the button|
 
-## Open Journal
+## Journal Entry
 This function allows you to open and close journal entries or specific pages of journal entries.
 
 | Option            | Description   |
@@ -109,7 +109,7 @@ This function allows you to open and close journal entries or specific pages of 
 | Journal           | Journal to select:<br><b>-Select by Number</b>: Select a journal by its number<br><b>-Select by Name</b>: Select a journal by its name<br><b>-Rest</b>: List of all journals |
 | Number            | (Only on `Select by Number`) The number of the journal to select |
 | Name/Id           | (Only on `Select by Name/Id`) The name or id of the journal to select |
-| Mode              | Selects what to do on a button press:<br><b>-Open Journal</b>: Opens or closes the journal<br><b>-Open Page by Number</b>: Open a specific page of the journal by its page number<br><b>-Open Page by Name</b>: Open a specific page of the journal by its name |
+| Mode              | Selects what to do on a button press:<br><b>-Open Journal</b>: Opens or closes the journal<br><b>-Open Page by Number</b>: Open a specific page of the journal by its page number<br><b>-Open Page by Name</b>: Open a specific page of the journal by its name<br><b>-Toggle Journal Sidebar</b>: Toggle the display of the journal's sidebar |
 | Page Number       | (Only on `Open Page by Number`) The number of the journal's page to open |
 | Page Name         | (Only on `Open Page by Name`) The name of the journal's page to open |
 | Display           | <b>-Name</b>: Display the name of the journal on the Stream Deck<br><b>-Icon</b>: Display an icon on the Stream Deck |
@@ -140,6 +140,17 @@ This function allows you to cycle through tokens to select them.
 | Option            | Description   |
 |-------------------|---------------|
 | Mode              | <b>-All Tokens</b>: Cycle through all tokens<br><b>-Owned Tokens</b>: Cycle through owned tokens<br><b>-Friendly Tokens</b>: Cycle through friendly tokens |
+| Display           | <b>-Icon</b>: Display an icon on the Stream Deck |
+| Colors            | <b>-Background</b>: Background color of the button |
+
+## Material Deck
+Open or close Material Deck related applications within Foundry.
+
+| Option            | Description   |
+|-------------------|---------------|
+| Mode              | <b>-Open Documentation</b>: Opens this documentation<br><b>-Open Download Utility</b>: Opens the [Download Utility](../moduleSettings/downloadUtility.md)<br><b>-Open Device Manager</b>: Opens the [Device Manager](../moduleSettings/deviceManager.md)<br><b>-Open Permission Config</b>: Opens the [Permission Config](../moduleSettings/permissionConfig.md)<br><b>-Open Soundboard</b>: Opens the [Soundboard](../actions/audio/soundboard.md)<br><b>-Open Custom Action Config</b>: Opens the [Custom Action Config](../actions/custom/config.md)<br><b>-Open Virtual Deck</b>: Opens a [Virtual Deck]() |
+| Virtual Deck      | (Only on `Open Virtual Deck`) The virtual deck to open |
+| Edit Mode         | (Only on `Open Virtual Deck`) Opens the virtual deck in edit mode if ticked |
 | Display           | <b>-Icon</b>: Display an icon on the Stream Deck |
 | Colors            | <b>-Background</b>: Background color of the button |
 

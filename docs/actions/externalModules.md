@@ -31,7 +31,7 @@ The following modules are supported:
 
 | Option            | Description   |
 |-------------------|---------------|
-| Mode              | Mode of the button:<br><b>-Open Map</b>: Open a specified map.<br><b>-Open Party Sheet</b>: Open or close the party sheet.<br><b>-Open Codex</b>: Open or close the codex.<br><b>-[Calendar](#calendar)</b>: Control or display the calendar.   |
+| Mode              | Mode of the button:<br><b>-Open Map</b>: Open a specified map.<br><b>-Open Party Sheet</b>: Open or close the party sheet.<br><b>-Open Codex</b>: Open or close the codex.<br><b>-[Set Calendar](#calendar)</b>: Set and/or display the calendar.<br><b>-Toggle Calendar</b>: Collapse or expand the Ember calendar.<br><b>-Moons</b>: Display the Ember moons and their phase.    |
 | Map               | (`Open Map` only) The map to open. |
 | On Press/ On Hold | (`Open Map` only) Select what to do when the button is pressed:<br><b>-View:</b> View the scene.<br><b>-Activate:</b> Activate the scene.<br><b>-View/Activate if Viewed:</b> View the scene, activate the scene if the scene is already being viewed.<br><b>-Preload Scene:</b> Preload the scene. |
 | Open Mode         | (`Open Party Sheet` or `Open Codex` only):<br><b>-Toggle:</b> Toggle between opening and closing.<br><b>-Open:</b> Open.<br><b>-Close:</b> Close. |
@@ -41,12 +41,12 @@ Ember has a built-in calendar system.
 
 You can advance or rewind the time and display the time and date.
 
-### Time Display
+#### Time Display
 The time display option consists of multiple checkboxes for the 'Digital' and 'Analog' time.<br>
 The digital time displays the time as a value, while the analog time displays a clock face.<br>
 In both cases you can configure to display the hours, minutes or seconds by checking the respective checkbox. For the digital time you can additionally set it to a 24 hour or 12 hour clock.
 
-### Date Display
+#### Date Display
 The date display option consists of multiple checkboxes, these define how the date is displayed.<br>
 For example, if only `Display` is checked for `Month`, the month's number will be displayed, if `Name` is also checked, the month's name will be displayed, and lastly, if `Abbreviated` is also checked, the month's abbreviated name is displayed.
 
@@ -57,7 +57,7 @@ Using Material Deck you can enable or disable these effects.
 
 | Option            | Description   |
 |-------------------|---------------|
-| Mode              | Mode of the button:<br><b>-[Special Effects](#special-effects)</b>: Trigger special effects.<br><b>-[Particle Effects](#particle-effects)</b>: Enable or disable particle effects.<br><b>-[Filter Effects](#filter-effects)</b>: Enable or disable filter effects.<br><b>-Clear All</b>: Clear all effects.   |
+| Mode              | Mode of the button:<br><b>-[Particle Effects](#particle-effects)</b>: Enable or disable particle effects.<br><b>-[Filter Effects](#filter-effects)</b>: Enable or disable filter effects.<br><b>-Clear All</b>: Clear all effects.   |
 
 ### Particle Effects
 Particle effects are effects that are displayed across the entire scene, such as weather effects.

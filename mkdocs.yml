@@ -7,7 +7,12 @@ nav:
   - Getting Started: 
     - Getting Started: gettingStarted/gettingStarted.md
     - Requirements: gettingStarted/requirements.md
-    - Installation: gettingStarted/installation.md
+    - Installation:
+      - Installation: gettingStarted/installation.md
+      - Stream Deck App: gettingStarted/streamDeckApp.md
+      - OpenDeck: gettingStarted/openDeck.md
+      - WebHID: gettingStarted/webHID.md
+      - Virtual Deck: gettingStarted/virtualDeck.md
     - Gaming Systems: gettingStarted/gamingSystems.md
   - Module Settings: 
     - Module Settings: moduleSettings/moduleSettings.md

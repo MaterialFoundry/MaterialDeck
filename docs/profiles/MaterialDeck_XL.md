@@ -31,7 +31,7 @@ Buttons to control the current scene:
 <div class="imgContainer"><img src="../../img/profiles/MaterialDeck_XL/TokenControl.png"></div>
 The 'Token Control' folder allows you to control tokens.
 
-This folder and its sub-folders have been configured to use 'Global Sync', which means that all buttons share the same token selection.<br>
+This folder and its sub-folders have been configured to use 'Device Sync', which means that all buttons share the same token selection.<br>
 The token that will be acted on will be referred to as the 'active token'.
 
 #### <blue>Active Token Selection</blue>
@@ -49,7 +49,7 @@ The other 2 buttons allow you to configure the selected token:
 
     1. Create a new 'Token Action'
     2. Set `Selection Mode` and its sub-options so it selects the desired token (see [here](../actions/token/token.md#general-settings) for more info)
-    3. Set `On Press` to `Set Global Sync`
+    3. Set `On Press` to `Set Device Sync`
     4. Set `On Press->Mode` to `Token` or `Actor` (see [here](../actions/token/token.md#sync-tokenactor-selection) for more info)
 
 <yellow>Toggles</yellow><br>

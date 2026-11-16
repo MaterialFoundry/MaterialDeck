@@ -18,7 +18,7 @@ If dial-specific features are enabled, the left part of the dial's LCD will disp
 
 ## Applying an Action to a Button
 To use a Stream Deck button with Material Deck, you must apply an action to that button.
-After [installing the Material Deck plugin](../gettingStarted/installation.md#stream-deck-plugin), the Material Deck category will appear on the right side of the Stream Deck app. Expanding the category will reveal all the Material Deck actions. By dragging one of the actions onto one of the 'buttons', the action will be assigned to that button.
+In the Stream Deck app, the Material Deck category will appear on the right side of the Stream Deck app. Expanding the category will reveal all the Material Deck actions. By dragging one of the actions onto one of the 'buttons', the action will be assigned to that button.
 <BR CLEAR="right" />
 ## Editing an Action
 <div class="imgContainer"><img src="../../img/streamDeckApp/propertyInspector.png"></div>

@@ -20,13 +20,15 @@ The soundboard app consists of 4 sections, from the top to the bottom:
 
 * <b>Navigation</b>: For navigating the soundboard (display the next or previous sounds).
 * <b>Sounds Section</b>: For editing or playing sounds, see [here](#sounds-section).
-* <b>Controls Section</b>: For setting the soundboard to use, the play mode, and to stop all sounds, see [here](#controls-section).
+* <b>Controls Section</b>: For setting the soundboard to use and to stop all sounds, see [here](#controls-section).
 * <b>Data Section</b>: For data management, such as clearing the soundboard, importing or exporting data, see [here](#data-section).
+
+In the header you will find a toggle to switch between play and edit mode. In play mode, pressing one of the sounds will play that sound. In edit mode it will open the [sound config](#sound-config) for that sound.
 
 ### Sounds Section
 The sounds section gives an overview of the configured sounds, where each square represents a sound. 32 sounds are visible at a time, you can see the next or previous sounds by pressing the arrow keys in the navigation section at the top of the app.
 
-Pressing one of the sound boxes will do one of two things, depending on whether `Play Mode` is enabled in the [controls section](#controls-section):
+Pressing one of the sound boxes will do one of two things, depending on whether `Play Mode` is enabled in the header:
 
 * <b>Play Mode Off</b>: Open the sound config.
 * <b>Play Mode On</b>: Play/Stop the sound.
@@ -72,7 +74,6 @@ The Controls Section has 3 settings/inputs:
 | Setting/Input         | Description   |
 |-----------------------|---------------|
 | Soundboard Selection  | Selects whether the 'User' or 'World' soundboard is displayed. |
-| Play Mode             | Sets whether the soundboard app should be in play mode:<br><b>-Off</b>: Pressing a sound box will open the [sound config](#sound-config)<br><b>-On</b>: Pressing a sound box will start or stop the sound. |
 | Stop All              | Will stop all currently playing sounds. |
 
 ### Data Section

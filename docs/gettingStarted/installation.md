@@ -7,18 +7,8 @@ You will need to:
 * [Link your Patreon account to your Foundry account](#linking-a-patreon-account)
 * Install and enable the [Material Deck module](#module)
 * (Optionally) install a [gaming system module](#gaming-system-modules)
-* Install the [Stream Deck application](#stream-deck-application)
-* Install the [Stream Deck plugin](#stream-deck-plugin)
-* Make sure the browser is allowed to [access the plugin](#allowing-browser-access-to-the-plugin)
-* [Test if everything works](#testing-if-everything-works)
+* Select a [communication method](#communication-method) and install/configure it
 * (Optionally) install a [Stream Deck profile](#stream-deck-profiles)
-
-!!! warning "Chrome, Brave, Adblockers and Script Blockers"
-    Chrome, Brave and other browsers have settings that may prevent a communication between Foundry and the Stream Deck plugin.<br>
-    Similarly, browser plugins/extensions can block the connection.<br>
-    See [here](#allowing-browser-access-to-the-plugin) for more info.
-
-<BR CLEAR="left">
 
 ## Linking a Patreon Account
 Material Deck is a premium module that requires a subscription to the [Material Foundry Patreon](https://www.patreon.com/materialfoundry) at the 'Material Apprentice' tier or higher.<br>
@@ -50,67 +40,61 @@ You can press the 'Download Utility' button to open the [Download Utility](../mo
 
 Tick the 'Do not show again' checkbox to prevent the popup from appearing.
 
-## Stream Deck Application
-For you computer to communicate with your Stream Deck, you will need to install either the [official Stream Deck application](https://www.elgato.com/ww/en/s/downloads) or [OpenDeck](#opendeck).
+## Communication Method
+Material Deck allows for different communication methods between your Stream Deck hardware and Foundry:
 
-The official Stream Deck application only works on Windows and MacOS, and only with Elgato's devices. Linux users, or users of non-Elgato [compatible devices](./requirements.md#compatible-devices) will need to use OpenDeck.
+* [Stream Deck Application](#stream-deck-application)
+* [OpenDeck](#opendeck)
+* [WebHID](#webhid)
+* [Virtual Deck](#virtual-deck)
+
+Each of these methods have advantages and disadvantages. See below for a quick overview of the different methods and a comparison table.
+
+### Stream Deck Application
+The [Stream Deck application](https://www.elgato.com/us/en/s/stream-deck-app) is the default method for genuine Stream Deck devices. It can run on Windows and MacOS devices and has no further server or browser requirements (although it might require you to configure some settings, see [here](./streamDeckApp.md#allowing-browser-access-to-the-plugin)). Connection between the Stream Deck application and your browser takes place over websockets.
+
+Most genuine Stream Deck devices are supported.
+
+See [here](./streamDeckApp.md) for more info.
 
 ### OpenDeck
-OpenDeck is an open-source alternative to the official Stream Deck application that runs on Windows, MacOS and Linux. While Material Deck is currently fully functional in OpenDeck, you should consider it unofficially supported. This means that there is no guarantee that Material Deck will keep functioning on OpenDeck, and OpenDeck-specific issues might not be solved.
+[OpenDeck](https://github.com/nekename/OpenDeck) is an open source alternative to the Stream Deck application that works on Windows, MacOS and Linux. It has no further server or browser requirements (although it might require you to configure some settings, see [here](./streamDeckApp.md#allowing-browser-access-to-the-plugin)). Connection between the Stream Deck application and your browser takes place over websockets.
 
-Please note that the default [profiles](../profiles/profiles.md) cannot be imported into OpenDeck. This means that you will have to create your own from scratch.
+Most genuine Stream Deck devices and some clones (such as the Ajazz AKP153) are supported.
 
-This documentation will assume the use of the official Stream Deck application, it is up to you to figure out how this translates to OpenDeck.<br>
+See [here](./openDeck.md) for more info.
 
-You can get OpenDeck [here](https://github.com/nekename/OpenDeck).<br>
-For the Ajazz AKP153 (and similar devices), you will need [this](https://github.com/4ndv/opendeck-akp153) plugin.
+### WebHID
+WebHID is a way that browsers can communicate directly with hardware. This means that a separate application is not necessary. This will work on any operating system and any compatible browser (Chrome, Edge, Opera, Brave and some other Chromium-based browsers). It does require a secure Foundry server (that uses https)*, which will (probably) be the case if you're using a hosting provider, otherwise you will have to set that up yourself. All configuration will take place within Foundry.
 
-## Stream Deck Plugin
-The Stream Deck plugin is what allows the Stream Deck to communicate with Foundry.
+Most genuine Stream Deck devices are supported, however, at the moment only buttons are implemented. Support for dials of the Stream Deck + will be added later.
 
-1. Download the latest plugin file (com.cdeenen.materialdeck.streamDeckPlugin) from [here](https://github.com/MaterialFoundry/MaterialDeck_SD/releases) or get it from the [Download Utility](../moduleSettings/downloadUtility.md)
-2. Double-click the file, this should open the Stream Deck software if it's not open yet
-3. Press 'Install' in the pop-up
+<b>WebHID support is currently experimental, so it may be a bit buggy.</b>
 
-If that doesn't work, you can try the following:
+See [here](./webHID.md) for more info.
 
-1. Download the source code from [here](https://github.com/MaterialFoundry/MaterialDeck_SD/archive/refs/tags/v1.7.2.zip)
-2. Extract the file (using, for example, [WinRAR](https://www.win-rar.com/start.html?&L=0))
-2. Copy the `com.cdeenen.materialdeck.sdPlugin` folder (in the 'Plugin' folder) to:
-    * Windows: `%appdata%\Elgato\StreamDeck\Plugins\`
-    * MacOS: `~/Library/Application Support/com.elgato.StreamDeck/Plugins/`
-3. Restart the Stream Deck application.
+\* You can reduce the browser's security settings to allow WebHID on insecure Foundry servers. See [here](./webHID.md#insecure-foundry-servers).
 
-## Allowing Browser Access to the Plugin
-<b>Only for secured Foundry servers (servers that use `https` instead of `http`).</b>
-<div class="imgContainer"><img src="../../img/misc/ChromeFix1.png"></div>
-By default, some browsers may prevent connections between a secured website and local apps and services (which the Stream Deck plugin is).
+### Virtual Deck
+While it's not a communication method, Virtual Deck is mentioned here as an option. Virtual Deck allows you to create a virtual Stream Deck within Foundry. It is configured the same as [WebHID](#webhid) but does not have any browser or server requirements or limitations.
 
-You might see a pop-up appear when you first access your Foundry server, which asks you to allow this access. If you see this popup, select `Allow`.
+See [here](./virtualDeck.md) for more info.
 
-<BR CLEAR="right">
+### Comparison
 
-<div class="imgContainer"><img src="../../img/misc/ChromeFix2.png"></div>
-If you do not see that pop-up, click the icon to the left of the address bar and make sure `Apps on device` is enabled.
+|               | Stream Deck App    | OpenDeck  | WebHID    | Virtual Deck|
+|------|----|----|----|----|
+| <b>Support Status</b> | Fully supported | Unofficially supported* | Experimental | Experimental |
+| <b>Compatible Hardware</b>  | Most genuine Stream Decks | Most genuine Stream Decks and some clones | Most genuine Stream Decks.<br>Dials are currently not supported.  | - |
+| <b>Compatible Operating System</b>    | Windows, MacOS | Windows, MacOS, Linux | Windows, MacOS, Linux | Windows, MacOS, Linux |
+| <b>Requires Separate App</b>          | Yes   | Yes   | No    | No    |
+| <b>Requires Plugin</b>                | Yes   | Yes   | No    | No    |
+| <b>Browser Requirements</b>           | None  | None  | Requires WebHID support   | None  |
+| <b>Foundry Server Requirements</b>    | None  | None  | Must be secure (https)**    | None  |
+| <b>Mobile Support</b>                 | Though [Stream Deck Mobile](https://help.elgato.com/hc/en-us/articles/16786832942221-Elgato-Stream-Deck-Mobile-2-0-Getting-Started):<br>Up to 6 buttons is free, more requires subscription | Through [Tacto Mobile](https://tacto.live/):<br>Up to 6 buttons is free, more requires subscription or one-time purchase | - | Planned |
 
-On older versions of Brave you have to disable the shields for your Foundry server:
-1. Press the lion icon to the right of the address bar
-2. Set shields to 'down'
-
-<BR CLEAR="right">
-
-### Browser Plugins/Extensions
-Some browser plugins/extensions such as ad-blockers and script blockers may prevent the connection between Foundry and the Stream Deck.
-If you run into connection issues, try disabling the extension or whitelist your Foundry server.
-
-## Testing If Everything Works
-You can now test if a connection can be established between the Stream Deck and Foundry:
-
-1. Make sure the Stream Deck is connected to your computer and you are running the Stream Deck app
-2. Start a world in Foundry and access it (or refresh it)
-3. A notification should appear stating `Material Deck: Connected to Stream Deck`, which means the connection is established
-4. In the Stream Deck app, drag a 'Token' action to one of the buttons (see [here](../actions/actions.md) if you don't know how to do that)
-5. Select a token in Foundry, its icon and name should appear on the Stream Deck
+\* OpenDeck is unofficially supported. At the time of writing everything works, but there is no guarantee that this will remain the case and bugs might not be fixed.<br>
+\*\* You can reduce the browser's security settings to allow WebHID on insecure Foundry servers. See [here](./webHID.md#insecure-foundry-servers).
 
 ## Stream Deck Profiles
 Stream Deck profiles are essentially collections of button actions that you can easily switch between.

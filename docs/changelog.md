@@ -1,10 +1,64 @@
 Changes between module versions are documented here.<br>
 This changelog is for v2+ only, for the pre v2 changelog click [here](https://github.com/MaterialFoundry/MaterialDeck/blob/Master/changelog.md).
 
+??? changelog "v2.3.0 - 16-11-2026"
+
+    ## Requirements:
+    * Stream Deck app: v6.9+ (if using the SD app)
+    * Stream Deck plugin: v2.1.0.0+ (if using the SD app)
+    * Foundry v13 or v14
+
+    ## Highlights
+    This update introduces Virtual Decks and WebHID support.<br>
+    <b>Virtual Deck and WebHID is currently experimental, feel free to use it, but there will probably be bugs</b>
+
+    ### WebHID
+    WebHID enables browsers to connect directly to hardware, without requiring additional apps (such as the SD app), which simplifies things.
+    Configuration takes place within Foundry, and once configured, the Stream Deck will be automatically detected and will connect when it's plugged in.
+    Unlike the SD app, with WebHID you can use Material Deck on Linux. Most genuine SD devices are supported, however, at the moment only normal buttons are supported. Support for dials will be added in a future update.
+
+    WebHID requires a compatible browser (most Chromium-based browsers are supported, Foundry app is not) and a secure Foundry server (unless you whitelist your server).
+    You cannot use WebHID and the Stream Deck app at the same time.
+
+    See [here](./gettingStarted/webHID.md) for more info.
+
+    ### Virtual Deck
+    A Virtual Deck is basically a Stream Deck that's rendered and configured completely within Foundry, and function like a normal Stream Deck. You can create dedicated Virtual Decks (with configurable amount of buttons), or open a configured WebHID device as Virtual Deck (it can function with or without the WebHID device connected). In Foundry v14 you can also detach a Virtual Deck into it's own separate browser window.<br>
+    Virtual Decks work on any operating system or browser and can be used together with the Stream Deck app or WebHID.
+
+    See [here](./gettingStarted/virtualDeck.md) for more info.
+
+    ## Full Changelog
+    ### Additions:
+    * WebHID & Virtual Deck Support (experimental, buttons only for now).
+    * Other => Journal: Added option to toggle the journal sidebar.
+    * Other: Added "Material Deck" function that allows you to open/close Material Deck related apps within Foundry (Download Utility, Device Manager, etc).
+    * External Modules => Ember: Added moon display with (simplified) phase indicator.
+    * External Modules => Ember: Added option to expand/collapse the calendar.
+    * Token: Added option to select token or actor by offset.
+    * Stream Deck + dials: Touching the display above the dial now registers as a press. `On Hold` is not supported.
+
+    ### Fixes:
+    * Modules that add control buttons with no activeTool defined would throw an error, this is now fixed.
+    * Helpers.sort no longer returns undefined on Helpers.sort, which sometimes caused issues.
+    * Dial display would not always be updated when it should, this should now be fixed.
+    * Audio => Playlist/Sound Control: `Currently Playing` playlist now correctly includes playlists with paused sounds.
+    * Other => Journal: Fixed border color not correctly updating when opening or closing journals.
+    * The "Module not enabled" popup now correctly refreshes the browser if the user chooses to enable the module.
+
+    ### Other:
+    * Cleaned up css
+    * Soundboard mode switch has been moved to the header, and when in play mode, the lower buttons are now hidden.
+    * Other => Open Journal: Has been renamed to "Journal Entry".
+    * External Modules => Ember: Renamed "Calendar" to "Set Calendar"
+    * Made some changes to the module setting UI: Settings are categorized and use tooltips to clean up the UI.
+    * Renamed "Global Sync" to "Device Sync". This makes more sense, because the sync is only applied to one device.
+    * Permission Config: Max height is reduced and buttons are now always visible.
+
 ??? changelog "v2.2.0 - 05-06-2026"
     ## Requirements
-    * Stream Deck software v6.9 or higher
-    * Stream Deck plugin v2.1.0.0 or higher
+    * Stream Deck app: v6.9+
+    * Stream Deck plugin: v2.1.0.0+
     * Foundry v13 or v14
     * For Simple Calendar users: Simple Calendar support has been replaced with [Simple Calendar Reborn](https://foundryvtt.com/packages/foundryvtt-simple-calendar-reborn)
 
@@ -14,7 +68,7 @@ This changelog is for v2+ only, for the pre v2 changelog click [here](https://gi
 
     ### Stream Deck + Dials
     This update brings support for the dials of the Stream Deck + and Stream Deck XL +. These dials can be used like a normal button, but some actions have dial-specific features, such as changing volumes in the Audio action, or rotating tokens in the Token action. See the full changelog for a complete list of dial features.<br>
-    More info can be found [here](./actions/actions.md#buttons--dials).
+    More info can be found [here](./actions/actions.md#buttons-dials).
     
     ### Damage Overlays
     The Token action now has support for damage overlays, these can give a quick estimate of a token's health. For example, as a token loses HP a blood droplet will be overlayed over the token image, and as the token takes more damage a second or third droplet appears.<br>
